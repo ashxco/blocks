@@ -124,7 +124,7 @@ export function PaymentMethodDialog({
         <CreditCardIcon data-icon="inline-start" />
         Update payment method
       </DialogTrigger>
-      <DialogContent className="sm:max-w-(--dialog-width)">
+      <DialogContent>
         <form onSubmit={handleSubmit} noValidate className="contents">
           <DialogHeader>
             <DialogTitle>Update payment method</DialogTitle>

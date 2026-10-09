@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
+import { OTPInputContext, REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS, type RenderProps } from "input-otp"
 import { CheckIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
@@ -14,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
+import { Field, FieldDescription, FieldError, FieldLabel, FieldTitle } from "@/components/ui/field"
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp"
 
 type SixDigitsProps = Omit<
@@ -51,13 +51,64 @@ function SixDigits({ defaultValue = "", value, onChange, ...props }: SixDigitsPr
   )
 }
 
-function BackupCode() {
+/**
+ * A still picture of a code mid-entry: three digits typed and the fourth slot
+ * active, with its caret. It feeds the real slots a fixed context, so the
+ * active state can be read without clicking.
+ */
+const typingSnapshot: RenderProps = {
+  isFocused: true,
+  isHovering: false,
+  slots: ["4", "8", "1", null, null, null].map((char, index) => ({
+    char,
+    placeholderChar: null,
+    isActive: index === 3,
+    hasFakeCaret: index === 3,
+  })),
+}
+
+function TypingSnapshot() {
+  return (
+    <OTPInputContext.Provider value={typingSnapshot}>
+      <div
+        role="img"
+        aria-label="Three digits typed; the fourth slot is active"
+        className="group/input-otp flex items-center gap-2 sm:gap-3"
+      >
+        <InputOTPGroup>
+          <InputOTPSlot index={0} />
+          <InputOTPSlot index={1} />
+          <InputOTPSlot index={2} />
+        </InputOTPGroup>
+        <InputOTPSeparator />
+        <InputOTPGroup>
+          <InputOTPSlot index={3} />
+          <InputOTPSlot index={4} />
+          <InputOTPSlot index={5} />
+        </InputOTPGroup>
+      </div>
+    </OTPInputContext.Provider>
+  )
+}
+
+/** One row of the States example: a real field, with the state it shows named underneath, as on the Input page. */
+function StateCell({ state, children }: { state: string; children: React.ReactNode }) {
+  return (
+    <div className="grid gap-3">
+      {children}
+      <p className="border-t pt-2.5 text-caption text-muted-foreground">{state}</p>
+    </div>
+  )
+}
+
+function BackupCode({ id, ...props }: { id: string; "aria-describedby"?: string }) {
   const [code, setCode] = React.useState("K7F2QX")
   return (
     <InputOTP
+      id={id}
+      {...props}
       maxLength={6}
       pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-      aria-label="Backup code"
       value={code}
       onChange={(next) => setCode(next.toUpperCase())}
       pasteTransformer={(text) => text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()}
@@ -91,7 +142,7 @@ function VerifySignIn() {
     }
     // In the demo, 000000 stands in for an expired code.
     if (value === "000000") {
-      setError("That code has expired. Send a new one and try again.")
+      setError("This code expired. Send a new one.")
       return
     }
     setError(null)
@@ -194,37 +245,48 @@ export default function InputOTPDocs() {
     <Examples>
       <Example
         title="Six digits"
-        description="Each character gets its own slot with the same fill as Input, empty or not. The active slot turns to the canvas colour with a caret and the violet focus border."
+        layout="stack"
+        description="Each character gets its own slot with the same fill as Input, empty or not. Click a slot to type: the active slot is drawn under States."
         code={`import { REGEXP_ONLY_DIGITS } from "input-otp"
 
-<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS}>
-  <InputOTPGroup>
-    <InputOTPSlot index={0} />
-    <InputOTPSlot index={1} />
-    <InputOTPSlot index={2} />
-  </InputOTPGroup>
-  <InputOTPSeparator />
-  <InputOTPGroup>
-    <InputOTPSlot index={3} />
-    <InputOTPSlot index={4} />
-    <InputOTPSlot index={5} />
-  </InputOTPGroup>
-</InputOTP>`}
+<Field className="w-fit">
+  <FieldLabel htmlFor="code">Verification code</FieldLabel>
+  <InputOTP id="code" maxLength={6} pattern={REGEXP_ONLY_DIGITS} autoComplete="one-time-code" aria-describedby="code-hint">
+    <InputOTPGroup>
+      <InputOTPSlot index={0} />
+      <InputOTPSlot index={1} />
+      <InputOTPSlot index={2} />
+    </InputOTPGroup>
+    <InputOTPSeparator />
+    <InputOTPGroup>
+      <InputOTPSlot index={3} />
+      <InputOTPSlot index={4} />
+      <InputOTPSlot index={5} />
+    </InputOTPGroup>
+  </InputOTP>
+  <FieldDescription id="code-hint">Enter the code we emailed to jamie@acme.dev.</FieldDescription>
+</Field>`}
       >
-        <SixDigits aria-label="Verification code" defaultValue="42" />
+        <Field className="w-fit">
+          <FieldLabel htmlFor="otp-six">Verification code</FieldLabel>
+          <SixDigits id="otp-six" defaultValue="42" autoComplete="one-time-code" aria-describedby="otp-six-hint" />
+          <FieldDescription id="otp-six-hint">Enter the code we emailed to jamie@acme.dev.</FieldDescription>
+        </Field>
       </Example>
 
       <Example
         title="Letters and digits"
+        layout="stack"
         description="Backup codes mix letters and digits. Split them into two groups of three so they are easy to read back."
         code={`import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 
 const [code, setCode] = React.useState("")
 
+<FieldLabel htmlFor="backup-code">Backup code</FieldLabel>
 <InputOTP
+  id="backup-code"
   maxLength={6}
   pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-  aria-label="Backup code"
   value={code}
   onChange={(next) => setCode(next.toUpperCase())}
   pasteTransformer={(text) => text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()}
@@ -242,13 +304,17 @@ const [code, setCode] = React.useState("")
   </InputOTPGroup>
 </InputOTP>`}
       >
-        <BackupCode />
+        <Field className="w-fit">
+          <FieldLabel htmlFor="otp-backup">Backup code</FieldLabel>
+          <BackupCode id="otp-backup" aria-describedby="otp-backup-hint" />
+          <FieldDescription id="otp-backup-hint">Use one of the codes you saved when you turned on two-step sign-in.</FieldDescription>
+        </Field>
       </Example>
 
       <Example
         title="States"
         layout="stack"
-        description="Set aria-invalid on InputOTP and every slot turns destructive. Disabled codes dim as a whole."
+        description="While someone types, the next slot turns to the canvas colour with a caret and the violet focus border. Set aria-invalid on InputOTP and every slot turns destructive. Disabled codes dim as a whole."
         code={`<Field data-invalid className="w-fit">
   <FieldLabel htmlFor="code">Verification code</FieldLabel>
   <InputOTP id="code" maxLength={6} pattern={REGEXP_ONLY_DIGITS} defaultValue="481920" aria-invalid aria-describedby="code-error">
@@ -285,17 +351,29 @@ const [code, setCode] = React.useState("")
   <FieldDescription>Too many attempts. Try again in 5 minutes.</FieldDescription>
 </Field>`}
       >
-        <div className="grid gap-8">
-          <Field data-invalid className="w-fit">
-            <FieldLabel htmlFor="otp-invalid">Verification code</FieldLabel>
-            <SixDigits id="otp-invalid" defaultValue="481920" aria-invalid aria-describedby="otp-invalid-error" />
-            <FieldError id="otp-invalid-error">That code is incorrect. Check the latest email from Lumen.</FieldError>
-          </Field>
-          <Field className="w-fit">
-            <FieldLabel htmlFor="otp-disabled">Verification code</FieldLabel>
-            <SixDigits id="otp-disabled" defaultValue="4819" disabled />
-            <FieldDescription>Too many attempts. Try again in 5 minutes.</FieldDescription>
-          </Field>
+        {/* One width for every row, so the rules under them line up. */}
+        <div className="grid w-fit max-w-full gap-8">
+          <StateCell state="Active">
+            <Field>
+              <FieldTitle>Verification code</FieldTitle>
+              <TypingSnapshot />
+              <FieldDescription>Enter the code we emailed to jamie@acme.dev.</FieldDescription>
+            </Field>
+          </StateCell>
+          <StateCell state="Invalid">
+            <Field data-invalid>
+              <FieldLabel htmlFor="otp-invalid">Verification code</FieldLabel>
+              <SixDigits id="otp-invalid" defaultValue="481920" aria-invalid aria-describedby="otp-invalid-error" />
+              <FieldError id="otp-invalid-error">That code is incorrect. Check the latest email from Lumen.</FieldError>
+            </Field>
+          </StateCell>
+          <StateCell state="Disabled">
+            <Field>
+              <FieldLabel htmlFor="otp-disabled">Verification code</FieldLabel>
+              <SixDigits id="otp-disabled" defaultValue="4819" disabled />
+              <FieldDescription>Too many attempts. Try again in 5 minutes.</FieldDescription>
+            </Field>
+          </StateCell>
         </div>
       </Example>
 

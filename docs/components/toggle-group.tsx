@@ -81,15 +81,15 @@ function RequestsCard() {
         <dl className="grid grid-cols-3 gap-x-4 gap-y-1">
           <div className="row-span-2 grid grid-rows-subgrid">
             <dt className="text-caption text-muted-foreground">Total</dt>
-            <dd className="text-title text-foreground tabular-nums @md/requests:text-h3">{data.requests}</dd>
+            <dd className="text-title text-foreground tabular @md/requests:text-h3">{data.requests}</dd>
           </div>
           <div className="row-span-2 grid grid-rows-subgrid">
             <dt className="text-caption text-muted-foreground">Change</dt>
-            <dd className="text-title text-success tabular-nums @md/requests:text-h3">{data.change}</dd>
+            <dd className="text-title text-success tabular @md/requests:text-h3">{data.change}</dd>
           </div>
           <div className="row-span-2 grid grid-rows-subgrid">
             <dt className="text-caption text-muted-foreground">Error rate</dt>
-            <dd className="text-title text-foreground tabular-nums @md/requests:text-h3">{data.errors}</dd>
+            <dd className="text-title text-foreground tabular @md/requests:text-h3">{data.errors}</dd>
           </div>
         </dl>
         <ChartContainer
@@ -279,7 +279,7 @@ export default function ToggleGroupDocs() {
         title="Vertical and disabled"
         description="Stack the track for side panels; vertical items become rounded rectangles that nest in the track. Disable single items, or the whole group, which fades as one so the choice stays readable."
         code={`<ToggleGroup orientation="vertical" defaultValue={["iad1"]} aria-label="Region">
-  <ToggleGroupItem value="iad1">Washington, D.C. (iad1)</ToggleGroupItem>
+  <ToggleGroupItem value="iad1">Virginia (iad1)</ToggleGroupItem>
   <ToggleGroupItem value="fra1">Frankfurt (fra1)</ToggleGroupItem>
   <ToggleGroupItem value="syd1" disabled>Sydney (syd1)</ToggleGroupItem>
 </ToggleGroup>
@@ -290,7 +290,7 @@ export default function ToggleGroupDocs() {
 </ToggleGroup>`}
       >
         <ToggleGroup orientation="vertical" defaultValue={["iad1"]} aria-label="Region">
-          <ToggleGroupItem value="iad1">Washington, D.C. (iad1)</ToggleGroupItem>
+          <ToggleGroupItem value="iad1">Virginia (iad1)</ToggleGroupItem>
           <ToggleGroupItem value="fra1">Frankfurt (fra1)</ToggleGroupItem>
           <ToggleGroupItem value="syd1" disabled>
             Sydney (syd1)

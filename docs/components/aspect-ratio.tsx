@@ -11,10 +11,79 @@ const ratios = [
 ]
 
 const projects = [
-  { name: "lumen-web", url: "lumen-web.lumen.app", branch: "main", updated: "4m ago", tint: "bg-tint-violet" },
-  { name: "lumen-api", url: "api.lumen.app", branch: "main", updated: "1h ago", tint: "bg-tint-sky" },
-  { name: "docs", url: "docs.lumen.app", branch: "content/regions", updated: "Yesterday", tint: "bg-tint-mint" },
+  { name: "lumen-web", url: "lumen-web.lumen.app", branch: "main", updated: "4m ago", tint: "bg-tint-violet", layout: "landing" },
+  { name: "lumen-api", url: "api.lumen.app", branch: "main", updated: "1h ago", tint: "bg-tint-sky", layout: "dashboard" },
+  { name: "docs", url: "docs.lumen.app", branch: "content/regions", updated: "Yesterday", tint: "bg-tint-mint", layout: "docs" },
+] as const
+
+const deployLines = [
+  { text: "$ git push origin main", tone: "text-terminal-foreground" },
+  { text: "Building lumen-web from 8f2c1a9", tone: "text-panel-muted" },
+  { text: "Compiled 184 routes in 17.6s", tone: "text-panel-muted" },
+  { text: "Ready at lumen-web.lumen.app", tone: "text-panel-success" },
 ]
+
+/**
+ * A miniature of the deployed site, drawn with flat ink shapes and hairlines
+ * on the project's tint, so it reads the same in both themes: a nav bar, then
+ * a landing hero, an app dashboard or a docs page.
+ */
+function SitePreview({ layout }: { layout: (typeof projects)[number]["layout"] }) {
+  return (
+    <div aria-hidden="true" className="absolute inset-0 flex flex-col gap-3 p-3">
+      <div className="flex items-center justify-between border-b border-foreground/10 px-1 pb-2">
+        <span className="h-1.5 w-8 rounded-full bg-foreground" />
+        <span className="flex gap-1.5">
+          <span className="h-1.5 w-4 rounded-full bg-foreground/25" />
+          <span className="h-1.5 w-4 rounded-full bg-foreground/25" />
+          <span className="h-1.5 w-6 rounded-full bg-foreground" />
+        </span>
+      </div>
+      {layout === "landing" ? (
+        <div className="grid flex-1 grid-cols-[1.2fr_1fr] items-center gap-3 px-1">
+          <div className="grid gap-1.5">
+            <span className="h-2.5 w-full rounded-full bg-foreground" />
+            <span className="h-2.5 w-2/3 rounded-full bg-foreground" />
+            <span className="mt-1 h-1.5 w-5/6 rounded-full bg-foreground/25" />
+            <span className="mt-2 h-3.5 w-12 rounded-full bg-foreground" />
+          </div>
+          <span className="h-full max-h-16 rounded-sm bg-panel" />
+        </div>
+      ) : null}
+      {layout === "dashboard" ? (
+        <div className="grid flex-1 grid-cols-3 grid-rows-[auto_1fr] gap-2 px-1">
+          {[0, 1, 2].map((i) => (
+            <span key={i} className="grid gap-1 rounded-xs border border-foreground/15 p-1.5">
+              <span className="h-1 w-2/3 rounded-full bg-foreground/25" />
+              <span className="h-2 w-1/2 rounded-full bg-foreground" />
+            </span>
+          ))}
+          <span className="col-span-3 flex items-end gap-1 rounded-xs border border-foreground/15 p-1.5">
+            {[40, 65, 50, 80, 60, 90, 75].map((height, i) => (
+              <span key={i} className="flex-1 rounded-t-xs bg-foreground/25" style={{ height: `${height}%` }} />
+            ))}
+          </span>
+        </div>
+      ) : null}
+      {layout === "docs" ? (
+        <div className="grid flex-1 grid-cols-[1fr_3fr] gap-3 px-1">
+          <span className="grid content-start gap-1.5 border-r border-foreground/10 pr-2">
+            <span className="h-1 w-full rounded-full bg-foreground" />
+            <span className="h-1 w-3/4 rounded-full bg-foreground/25" />
+            <span className="h-1 w-5/6 rounded-full bg-foreground/25" />
+            <span className="h-1 w-2/3 rounded-full bg-foreground/25" />
+          </span>
+          <span className="grid content-start gap-1.5">
+            <span className="h-2.5 w-1/2 rounded-full bg-foreground" />
+            <span className="h-1.5 w-full rounded-full bg-foreground/25" />
+            <span className="h-1.5 w-5/6 rounded-full bg-foreground/25" />
+            <span className="mt-1 h-5 w-full rounded-xs bg-terminal" />
+          </span>
+        </div>
+      ) : null}
+    </div>
+  )
+}
 
 export default function AspectRatioDocs() {
   return (
@@ -31,7 +100,7 @@ export default function AspectRatioDocs() {
             <div key={r.label} className="grid gap-3">
               <AspectRatio
                 ratio={r.ratio}
-                className="grid place-items-center rounded-(--card-radius) border border-dashed border-border-strong bg-subtle"
+                className="grid place-items-center rounded-(--card-radius) border border-border bg-subtle"
               >
                 <span className="text-h4 text-foreground tabular-nums">{r.label}</span>
               </AspectRatio>
@@ -50,6 +119,14 @@ export default function AspectRatioDocs() {
 </AspectRatio>`}
       >
         <AspectRatio ratio={16 / 9} className="rounded-(--panel-radius) border border-border bg-terminal text-terminal-foreground">
+          {/* The poster: the deploy the tour walks through. Hidden on narrow frames, where the button takes the corner. */}
+          <ol aria-hidden="true" className="absolute top-0 left-0 hidden gap-1.5 p-8 font-mono text-code @md:grid">
+            {deployLines.map((line) => (
+              <li key={line.text} className={line.tone}>
+                {line.text}
+              </li>
+            ))}
+          </ol>
           {/* On a narrow frame the button moves to the top corner, clear of the caption. */}
           <div className="absolute inset-0 grid place-items-start p-6 @md:place-items-center @md:p-0">
             <Button size="icon-lg" variant="inverse" aria-label="Play the two-minute tour of Lumen">
@@ -80,10 +157,7 @@ export default function AspectRatioDocs() {
               className="grid gap-4 rounded-(--card-radius) border border-border bg-card p-3 outline-none transition-colors duration-(--duration-fast) ease-standard hover:border-border-strong focus-visible:focus-ring"
             >
               <AspectRatio ratio={16 / 10} className={`rounded-md ${p.tint}`}>
-                <div className="absolute inset-x-4 top-4 grid gap-2">
-                  <span className="h-2 w-1/3 rounded-full bg-foreground/15" />
-                  <span className="h-2 w-2/3 rounded-full bg-foreground/10" />
-                </div>
+                <SitePreview layout={p.layout} />
               </AspectRatio>
               <div className="grid gap-1 px-1 pb-1">
                 <p className="text-title text-foreground">{p.name}</p>

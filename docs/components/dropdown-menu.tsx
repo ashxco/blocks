@@ -11,16 +11,19 @@ import {
   FolderInputIcon,
   LifeBuoyIcon,
   LogOutIcon,
+  MonitorIcon,
+  MoonIcon,
   MoreHorizontalIcon,
   PencilIcon,
   RotateCcwIcon,
   SettingsIcon,
+  SunIcon,
   Trash2Icon,
   UserIcon,
   UsersIcon,
 } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, blurWithin, useReturnFocus } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -45,30 +48,19 @@ type Stage = HTMLDivElement | null
 
 /**
  * The examples show their menus already open, portalled into a stage inside
- * the example so they follow its theme and stay under the site header. A
- * shown menu stays open while people click elsewhere on the page; its trigger,
- * an item or Escape close it.
+ * the example so they follow its theme, and isolate keeps their z-index
+ * inside the example so they scroll under the site header. A shown menu
+ * stays open while people click elsewhere on the page; its trigger, an item
+ * or Escape close it.
  */
 function MenuStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
   const [container, setContainer] = React.useState<Stage>(null)
   useReturnFocus(container)
   return (
-    <div ref={setContainer} className={cn("relative flex w-full items-start justify-center", className)}>
+    <div ref={setContainer} className={cn("relative isolate flex w-full items-start justify-center", className)}>
       {children(container)}
     </div>
   )
-}
-
-/** A menu focuses itself when it opens. These open on load, so hand focus back to the page. */
-function useReturnFocus(container: Stage) {
-  React.useEffect(() => {
-    if (!container) return
-    const timer = window.setTimeout(() => {
-      const active = document.activeElement
-      if (active instanceof HTMLElement && container.contains(active)) active.blur()
-    }, 250)
-    return () => window.clearTimeout(timer)
-  }, [container])
 }
 
 /**
@@ -87,10 +79,11 @@ function useShownMenu(container: Stage) {
 
 /**
  * Shown menus keep their side and their full height as the page scrolls, so
- * they never flip over the example's own text. Each stage leaves room below.
+ * they never flip over the example's own text, and the wheel carries on to
+ * the page over them. Each stage leaves room below.
  */
 function pinnedTo(container: Stage) {
-  return { collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined, className: "max-h-none" } as const
+  return { collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined, className: "max-h-none overscroll-auto" } as const
 }
 
 const columns = [
@@ -185,7 +178,12 @@ function AccountMenu({ container }: { container: Stage }) {
         Priya Raman
         <ChevronDownIcon data-icon="inline-end" className="text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" container={container} {...pinnedTo(container)} className="w-64 max-h-none">
+      <DropdownMenuContent
+        align="end"
+        container={container}
+        {...pinnedTo(container)}
+        className={cn(pinnedTo(container).className, "min-w-(--menu-min-width-lg)")}
+      >
         <div className="grid gap-0.5 px-2.5 pt-2 pb-2.5">
           <p className="text-sm font-semibold text-foreground">Priya Raman</p>
           <p className="truncate text-caption text-muted-foreground">priya@lumen.app</p>
@@ -213,11 +211,20 @@ function AccountMenu({ container }: { container: Stage }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Theme</DropdownMenuLabel>
+          <DropdownMenuLabel inset>Theme</DropdownMenuLabel>
           <DropdownMenuRadioGroup value={theme} onValueChange={(value) => setTheme(String(value))}>
-            <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="system">System</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="light">
+              <SunIcon />
+              Light
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="dark">
+              <MoonIcon />
+              Dark
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="system">
+              <MonitorIcon />
+              System
+            </DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -273,8 +280,34 @@ function ActionsMenu({ container }: { container: Stage }) {
   )
 }
 
+/** Two --menu-min-width panels and the gap between them. */
+const SIDE_BY_SIDE_REM = 26
+
 function ProjectMenu({ container }: { container: Stage }) {
   const shown = useShownMenu(container)
+  // The submenu is open on load too, beside its trigger, and stays open on
+  // outside clicks like the menu. Hovering another item closes it, as in an app.
+  // It opens once the menu has settled in place, so it is placed beside the
+  // item's final position, then hands focus back to the page. A stage too
+  // narrow for both panels side by side (a phone) leaves it closed: there it
+  // would open over its own menu.
+  const [subOpen, setSubOpen] = React.useState(false)
+  const shownOpen = shown.open
+  React.useEffect(() => {
+    if (!shownOpen || !container) return
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+    const roomForBoth = container.clientWidth >= SIDE_BY_SIDE_REM * rem
+    const open = roomForBoth ? window.setTimeout(() => setSubOpen(true), 320) : undefined
+    const blur = window.setTimeout(() => blurWithin(container), 480)
+    return () => {
+      window.clearTimeout(open)
+      window.clearTimeout(blur)
+    }
+  }, [shownOpen, container])
+  const onSubOpenChange = React.useCallback((next: boolean, details: { reason: string }) => {
+    if (!next && (details.reason === "outside-press" || details.reason === "focus-out")) return
+    setSubOpen(next)
+  }, [])
 
   return (
     <DropdownMenu {...shown}>
@@ -287,12 +320,13 @@ function ProjectMenu({ container }: { container: Stage }) {
           <PencilIcon />
           Rename
         </DropdownMenuItem>
-        <DropdownMenuSub>
+        <DropdownMenuSub open={subOpen && shown.open} onOpenChange={onSubOpenChange}>
           <DropdownMenuSubTrigger>
             <FolderInputIcon />
             Move to team
           </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
+          {/* Lined up with its item while the page scrolls, like the pinned menu. */}
+          <DropdownMenuSubContent collisionAvoidance={{ align: "none" }}>
             <DropdownMenuItem>Lumen Labs</DropdownMenuItem>
             <DropdownMenuItem>Marketing site</DropdownMenuItem>
             <DropdownMenuItem>Internal tools</DropdownMenuItem>
@@ -373,7 +407,7 @@ export default function DropdownMenuDocs() {
 
       <Example
         title="Submenu"
-        description="Nest a short list behind a sub-trigger. It opens on hover or with the right arrow key."
+        description="Nest a short list behind a sub-trigger. It opens on hover or with the right arrow key, beside the item that opened it."
         code={`<DropdownMenuSub>
   <DropdownMenuSubTrigger>Move to team</DropdownMenuSubTrigger>
   <DropdownMenuSubContent>
@@ -382,7 +416,9 @@ export default function DropdownMenuDocs() {
   </DropdownMenuSubContent>
 </DropdownMenuSub>`}
       >
-        <MenuStage className="min-h-72">{(container) => <ProjectMenu container={container} />}</MenuStage>
+        <MenuStage className="min-h-72">
+          {(container) => <ProjectMenu container={container} />}
+        </MenuStage>
       </Example>
 
       <Example

@@ -81,7 +81,7 @@ export function ChangePlanDialog({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger render={<Button variant="inverse" />}>Change plan</DialogTrigger>
-      <DialogContent className="sm:max-w-(--dialog-width)">
+      <DialogContent>
         <form onSubmit={handleSubmit} className="contents">
           <DialogHeader>
             <DialogTitle>Change plan</DialogTitle>
@@ -111,7 +111,9 @@ export function ChangePlanDialog({
                     {plan.id === currentPlanId ? <Badge variant="secondary">Current</Badge> : null}
                   </span>
                   <span className="text-caption text-muted-foreground">
-                    {plan.description} {plan.seats ? `${plan.seats} seats.` : "Unlimited seats."}
+                    {plan.description} {plan.seats
+                      ? `${plan.seats} ${plan.seats === 1 ? "seat" : "seats"}.`
+                      : "Unlimited seats."}
                   </span>
                 </span>
                 <span className="shrink-0 text-right">

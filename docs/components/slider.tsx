@@ -73,7 +73,7 @@ function AlertThresholds() {
     Object.fromEntries(thresholds.map((t) => [t.id, t.value]))
   )
   return (
-    <div role="group" aria-labelledby="sl-thresholds" className="grid justify-items-center gap-5">
+    <div role="group" aria-labelledby="sl-thresholds" className="grid justify-items-start gap-5">
       <Label id="sl-thresholds">Alert thresholds</Label>
       <div className="flex gap-10">
         {thresholds.map((t) => (
@@ -252,6 +252,7 @@ export default function SliderDocs() {
 
       <Example
         title="Vertical and disabled"
+        layout="stack"
         description="Vertical sliders fill the height of their container; put the label and value under each one. Disabled sliders dim and ignore input."
         code={`<div className="grid h-56 grid-rows-[minmax(0,1fr)_auto] justify-items-center gap-3">
   <Slider orientation="vertical" aria-labelledby="cpu" value={cpu} onValueChange={setCpu} />
@@ -270,9 +271,9 @@ export default function SliderDocs() {
   <FieldDescription>0 to 10 GB. Your plan sets it to 3 GB; upgrade to Pro to change it.</FieldDescription>
 </Field>`}
       >
-        <div className="grid w-full justify-items-center gap-12">
+        <div className="grid w-full max-w-sm gap-10">
           <AlertThresholds />
-          <Field data-disabled="true" className="w-full max-w-sm border-t pt-8">
+          <Field data-disabled="true" className="border-t pt-8">
             <SliderHeader id="sl-disabled" label="Build cache size" value="3 GB" />
             <Slider aria-labelledby="sl-disabled" disabled defaultValue={30} getAriaValueText={() => "3 GB"} />
             <FieldDescription>0 to 10&nbsp;GB. Your plan sets it to 3&nbsp;GB; upgrade to Pro to change it.</FieldDescription>

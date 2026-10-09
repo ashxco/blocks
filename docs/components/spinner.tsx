@@ -1,7 +1,27 @@
+import * as React from "react"
+
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
+
+const sizes = ["size-3", "size-4", "size-5", "size-6", "size-8"]
+
+const colours = [
+  { className: "text-foreground", label: "text-foreground" },
+  { className: "text-muted-foreground", label: "text-muted-foreground" },
+  { className: "text-brand", label: "text-brand" },
+]
+
+/** One spinner with the class that draws it, so each specimen says what it is. */
+function Specimen({ caption, children }: { caption: string; children: React.ReactNode }) {
+  return (
+    <figure className="grid min-w-20 justify-items-center gap-3">
+      <span className="grid h-8 place-items-center">{children}</span>
+      <figcaption className="font-mono text-code text-muted-foreground">{caption}</figcaption>
+    </figure>
+  )
+}
 
 export default function SpinnerDocs() {
   return (
@@ -12,13 +32,16 @@ export default function SpinnerDocs() {
         code={`<Spinner className="size-3" />
 <Spinner />
 <Spinner className="size-5" />
-<Spinner className="size-6" />`}
+<Spinner className="size-6" />
+<Spinner className="size-8" />`}
       >
-        <Spinner className="size-3" />
-        <Spinner />
-        <Spinner className="size-5" />
-        <Spinner className="size-6" />
-        <Spinner className="size-8" />
+        <div className="flex flex-wrap items-end justify-center gap-x-6 gap-y-8">
+          {sizes.map((size) => (
+            <Specimen key={size} caption={size}>
+              <Spinner className={size} />
+            </Specimen>
+          ))}
+        </div>
       </Example>
 
       <Example
@@ -27,9 +50,13 @@ export default function SpinnerDocs() {
         code={`<Spinner className="text-muted-foreground" />
 <Spinner className="text-brand" />`}
       >
-        <Spinner className="size-5 text-foreground" />
-        <Spinner className="size-5 text-muted-foreground" />
-        <Spinner className="size-5 text-brand" />
+        <div className="flex flex-wrap items-end justify-center gap-x-8 gap-y-8">
+          {colours.map((colour) => (
+            <Specimen key={colour.label} caption={colour.label}>
+              <Spinner className={`size-5 ${colour.className}`} />
+            </Specimen>
+          ))}
+        </div>
       </Example>
 
       <Example title="On a panel" surface="panel" description="On dark panels it inherits the panel text colour.">

@@ -11,7 +11,6 @@ import {
   tokenByVar,
   tokens,
   tokensIn,
-  utilityFor,
   type DesignToken,
 } from "./data"
 import { Code, FoundationPage, Meta, Section, SubHeading } from "./layout"
@@ -28,9 +27,8 @@ function usedBy(t: DesignToken) {
 const cropped = "absolute inset-x-4 top-4 h-48 @prose:inset-x-6 @prose:top-6"
 
 /*
- * Literal class names so Tailwind generates every radius. Stages are subtle,
- * except where the sample is a card: in dark mode subtle and card are the
- * same colour, so a card sits on muted instead.
+ * Literal class names so Tailwind generates every radius. Stages are muted;
+ * the input sits on a card instead, so its own muted fill still reads.
  */
 const radiusDemo: Record<string, { label: string; demo: React.ReactNode; stage?: string }> = {
   xs: {
@@ -51,11 +49,13 @@ const radiusDemo: Record<string, { label: string; demo: React.ReactNode; stage?:
   sm: {
     label: "Menu items",
     demo: (
-      <span className="grid w-full max-w-48 rounded-md border bg-popover p-1">
-        <span className="flex h-8 items-center rounded-sm bg-accent px-2.5 text-label text-accent-foreground">
+      <span className="grid w-full max-w-(--menu-min-width) rounded-md border border-popover-border bg-popover p-(--overlay-padding)">
+        <span className="flex h-(--overlay-item-height) items-center rounded-sm bg-accent px-3 text-label text-accent-foreground">
           Redeploy
         </span>
-        <span className="flex h-8 items-center rounded-sm px-2.5 text-label text-popover-foreground">View logs</span>
+        <span className="flex h-(--overlay-item-height) items-center rounded-sm px-3 text-label text-popover-foreground">
+          View logs
+        </span>
       </span>
     ),
   },
@@ -105,7 +105,7 @@ const radiusDemo: Record<string, { label: string; demo: React.ReactNode; stage?:
           <RocketIcon data-icon="inline-start" />
           Deploy
         </Button>
-        <span className="hidden size-(--avatar-size-md) place-items-center rounded-full bg-tint-mint text-caption font-semibold text-foreground @prose:grid">
+        <span className="grid size-(--avatar-size-md) place-items-center rounded-full bg-tint-mint text-caption font-semibold text-foreground">
           PS
         </span>
       </span>
@@ -118,7 +118,8 @@ function RadiusTile({ token }: { token: DesignToken }) {
   const users = usedBy(token)
   const demo = radiusDemo[name]
   return (
-    <li className="grid content-start gap-4">
+    // Two across below @narrow, so the last of an odd count spans the row rather than leaving half of it empty.
+    <li className="grid content-start gap-4 @max-narrow:last:odd:col-span-2">
       <div
         aria-hidden
         className={`relative grid h-32 place-items-center overflow-hidden rounded-(--card-radius) border p-4 @prose:h-36 @prose:p-6 ${demo?.stage ?? "bg-muted"}`}
@@ -165,7 +166,7 @@ function BorderWidths() {
         const demo = widthDemo[w.name]
         return (
           <li key={w.name} className="grid content-start gap-5">
-            <div aria-hidden className="grid h-36 place-items-center rounded-(--card-radius) bg-muted p-6">
+            <div aria-hidden className="grid h-36 place-items-center rounded-(--card-radius) border bg-muted p-6">
               <span
                 className={`flex h-16 w-full max-w-64 items-center gap-3 rounded-lg bg-background px-4 ${demo?.className ?? "border"}`}
               >
@@ -180,7 +181,7 @@ function BorderWidths() {
                   {String(w.value)} · {w.cssVar}
                 </Meta>
               </div>
-              <Code className="text-muted-foreground">{utilityFor(w) ?? w.cssVar}</Code>
+              <Code className="text-muted-foreground">{w.utility ?? w.cssVar}</Code>
               {w.description ? <p className="text-caption text-copy">{w.description}</p> : null}
             </div>
           </li>
@@ -190,8 +191,12 @@ function BorderWidths() {
   )
 }
 
-/* Each line colour drawn on the element it is made for. The card sits on muted, which stays distinct from bg-card in dark mode. */
-const lineDemos: { cssVar: string; demo: React.ReactNode; stage?: string }[] = [
+/*
+ * Each line colour drawn on the element it is made for. The page lines run
+ * three across; the two edges of floating and dark surfaces share the second
+ * row. The card sits on muted, which stands clear of bg-card in both themes.
+ */
+const lineDemos: { cssVar: string; demo: React.ReactNode; stage?: string; span?: string }[] = [
   {
     cssVar: "--border",
     stage: "bg-muted",
@@ -219,32 +224,48 @@ const lineDemos: { cssVar: string; demo: React.ReactNode; stage?: string }[] = [
       </span>
     ),
   },
+  {
+    cssVar: "--popover-border",
+    stage: "bg-muted",
+    span: "@narrow:col-span-3",
+    demo: (
+      <span className="grid w-full max-w-(--menu-min-width) rounded-(--overlay-radius) border border-popover-border bg-popover p-(--overlay-padding)">
+        <span className="flex h-(--overlay-item-height) items-center rounded-(--overlay-item-radius) bg-accent px-3 text-label text-accent-foreground">
+          Redeploy
+        </span>
+        <span className="flex h-(--overlay-item-height) items-center rounded-(--overlay-item-radius) px-3 text-label text-popover-foreground">
+          View logs
+        </span>
+      </span>
+    ),
+  },
 ]
 
 function BorderColors() {
   const panelBorder = tokenByVar("--panel-border")
-  const tile = "grid h-32 place-items-center rounded-(--card-radius) p-5"
+  /* Bordered like the radius stages, so a card-coloured stage still reads as a tile on the page. */
+  const tile = "grid h-36 place-items-center rounded-(--card-radius) border p-5"
   return (
-    <ul className="grid gap-x-6 gap-y-10 @prose:grid-cols-2 @narrow:grid-cols-4">
-      {lineDemos.map(({ cssVar, demo, stage }) => {
+    <ul className="grid gap-x-6 gap-y-10 @prose:grid-cols-2 @narrow:grid-cols-6">
+      {lineDemos.map(({ cssVar, demo, stage, span }) => {
         const t = tokenByVar(cssVar)
         if (!t) return null
         return (
-          <li key={cssVar} className="grid content-start gap-4">
+          <li key={cssVar} className={`grid content-start gap-4 ${span ?? "@narrow:col-span-2"}`}>
             <span aria-hidden className={`${tile} ${stage ?? "bg-muted"}`}>
               {demo}
             </span>
             <div className="grid gap-1">
               <h4 className="text-title text-foreground">{cssVar.slice(2)}</h4>
-              <Code className="text-muted-foreground">border-{cssVar.slice(2)}</Code>
+              <Code className="text-muted-foreground">{t.utility ?? `border-${cssVar.slice(2)}`}</Code>
               {t.description ? <p className="text-caption text-copy">{t.description}</p> : null}
             </div>
           </li>
         )
       })}
       {panelBorder ? (
-        <li className="grid content-start gap-4">
-          <span aria-hidden className={`${tile} bg-panel`}>
+        <li className="grid content-start gap-4 @prose:col-span-2 @narrow:col-span-3">
+          <span aria-hidden className={`${tile} border-transparent bg-panel`}>
             <span className="grid w-full gap-2 rounded-lg border border-panel-border bg-panel-raised p-4">
               <span className="h-2 w-2/3 rounded-full bg-panel-foreground/20" />
               <span className="h-2 w-1/2 rounded-full bg-panel-foreground/20" />
@@ -252,7 +273,7 @@ function BorderColors() {
           </span>
           <div className="grid gap-1">
             <h4 className="text-title text-foreground">panel-border</h4>
-            <Code className="text-muted-foreground">border-panel-border</Code>
+            <Code className="text-muted-foreground">{panelBorder.utility ?? "border-panel-border"}</Code>
             {panelBorder.description ? <p className="text-caption text-copy">{panelBorder.description}</p> : null}
           </div>
         </li>
@@ -295,7 +316,7 @@ function Focus() {
           </div>
         </div>
       </div>
-      <dl className="grid content-start border-b">
+      <dl className="grid content-start @narrow:border-b">
         {[
           { label: "Width", token: width, value: String(width?.value ?? "") },
           { label: "Offset", token: offset, value: String(offset?.value ?? "") },
@@ -345,8 +366,8 @@ const layers: { name: string; body: string; tokens: string[] }[] = [
   },
   {
     name: "Overlays",
-    body: "Menus and dialogs sit on bg-popover with a border. Backdrops dim with the overlay colour.",
-    tokens: ["bg-popover", "bg-overlay"],
+    body: "Menus and popovers sit on bg-popover with the popover edge; dialogs keep the plain hairline. Backdrops dim with the overlay colour.",
+    tokens: ["bg-popover", "border-popover-border", "bg-overlay"],
   },
 ]
 
@@ -357,15 +378,25 @@ const deploys: { env: string; branch: string; status: string }[] = [
   { env: "Preview", branch: "edge-config", status: "Ready" },
 ]
 
-/* Rows the open menu sits over. */
-const menuCovers = 2
+/*
+ * The open menu. Phones get a compact two-item menu that covers the first
+ * row; from @prose the full menu covers two.
+ */
+const menuItems: { label: string; wide?: boolean }[] = [
+  { label: "Redeploy" },
+  { label: "Promote to production", wide: true },
+  { label: "Roll back" },
+]
+
+/* Status labels the open menu sits over: hidden, so they do not peek past its corner. */
+const coveredStatus = ["invisible", "@prose:invisible"]
 
 /* Builds per day, Monday to Sunday. Today is highlighted. */
 const week = [62, 78, 54, 91, 70, 38, 84]
 
 function DepthScene() {
   return (
-    /* Muted, not subtle: in dark mode subtle is the same colour as the card on it. */
+    /* Muted, so the card on it stands clear in both themes. */
     <div aria-hidden className="grid gap-6 rounded-(--panel-radius) border bg-muted p-(--panel-padding-sm) @narrow:grid-cols-2">
       {/* Card with an open menu on top of it */}
       <div className="relative grid content-start gap-4 rounded-(--card-radius) border bg-card p-(--card-padding)">
@@ -385,24 +416,22 @@ function DepthScene() {
                 <span className="truncate text-label text-foreground">{d.branch}</span>
                 <span className="text-caption text-muted-foreground">{d.env}</span>
               </span>
-              {/* From @prose the open menu covers the first two rows; their status would peek past its corner. */}
-              <span className={i < menuCovers ? "text-caption text-muted-foreground @prose:invisible" : "text-caption text-muted-foreground"}>
-                {d.status}
-              </span>
+              <span className={`text-caption text-muted-foreground ${coveredStatus[i] ?? ""}`}>{d.status}</span>
             </li>
           ))}
         </ul>
-        <div className="absolute top-[calc(var(--card-padding)+var(--button-height-sm)+--spacing(2))] right-(--card-padding) hidden w-max min-w-48 rounded-(--overlay-radius) @prose:grid border bg-popover p-(--overlay-padding)">
-          {["Redeploy", "Promote to production", "Roll back"].map((item, i) => (
+        <div className="absolute top-[calc(var(--card-padding)+var(--button-height-sm)+--spacing(2))] right-(--card-padding) grid w-max @prose:min-w-(--menu-min-width) rounded-(--overlay-radius) border border-popover-border bg-popover p-(--overlay-padding)">
+          {menuItems.map((item, i) => (
             <span
-              key={item}
+              key={item.label}
               className={
-                i === 0
-                  ? "flex h-(--overlay-item-height) items-center rounded-(--overlay-item-radius) bg-accent px-3 text-label whitespace-nowrap text-accent-foreground"
-                  : "flex h-(--overlay-item-height) items-center rounded-(--overlay-item-radius) px-3 text-label whitespace-nowrap text-popover-foreground"
+                (item.wide ? "hidden @prose:flex " : "flex ") +
+                (i === 0
+                  ? "h-(--overlay-item-height) items-center rounded-(--overlay-item-radius) bg-accent px-3 text-label whitespace-nowrap text-accent-foreground"
+                  : "h-(--overlay-item-height) items-center rounded-(--overlay-item-radius) px-3 text-label whitespace-nowrap text-popover-foreground")
               }
             >
-              {item}
+              {item.label}
             </span>
           ))}
         </div>

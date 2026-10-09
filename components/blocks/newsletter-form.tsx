@@ -103,26 +103,30 @@ export function NewsletterForm({
         data-status="success"
         role="status"
         className={cn(
-          "flex min-h-(--control-height-lg) w-full max-w-112 flex-wrap items-center gap-x-3 gap-y-1 rounded-(--control-radius) border px-4 py-2.5",
+          "@container/newsletter flex min-h-(--control-height-lg) w-full max-w-112 items-center rounded-(--control-radius) border px-4 py-2.5",
           panel ? "border-panel-border bg-panel-raised" : "border-border bg-subtle",
           className
         )}
       >
-        <CircleCheckIcon aria-hidden="true" className="size-4 shrink-0 text-success" />
-        <p className={panel ? "min-w-0 flex-1 text-sm text-panel-foreground" : "min-w-0 flex-1 text-sm text-foreground"}>
-          {successMessage(email)}
-        </p>
-        <button
-          type="button"
-          onClick={reset}
-          className={
-            panel
-              ? "rounded-xs text-sm font-semibold text-panel-muted underline-offset-4 outline-none hover:text-panel-foreground hover:underline focus-visible:focus-ring"
-              : "rounded-xs text-sm font-semibold text-muted-foreground underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:focus-ring"
-          }
-        >
-          Use another email
-        </button>
+        {/* The button sits beside the message from 24rem; narrower, it drops under it, aligned with the text. */}
+        <div className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-1 @min-[24rem]/newsletter:grid-cols-[auto_minmax(0,1fr)_auto]">
+          <CircleCheckIcon
+            aria-hidden="true"
+            className={cn("mt-0.5 size-4 shrink-0", panel ? "text-panel-success" : "text-success")}
+          />
+          <p className={cn("text-sm", panel ? "text-panel-foreground" : "text-foreground")}>{successMessage(email)}</p>
+          <button
+            type="button"
+            onClick={reset}
+            className={cn(
+              "col-start-2 justify-self-start rounded-xs text-sm font-semibold underline-offset-4 outline-none hover:underline focus-visible:focus-ring",
+              "@min-[24rem]/newsletter:col-start-3 @min-[24rem]/newsletter:self-center",
+              panel ? "text-panel-muted hover:text-panel-foreground" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            Use another email
+          </button>
+        </div>
       </div>
     )
   }
@@ -141,7 +145,10 @@ export function NewsletterForm({
           "transition-colors duration-(--duration-fast) ease-standard",
           "has-[input:focus-visible]:border-ring has-[input:focus-visible]:focus-ring",
           panel ? "border-panel-border bg-panel-raised" : "border-input bg-background hover:border-foreground/30",
-          invalid && "border-destructive has-[input:focus-visible]:border-destructive"
+          invalid &&
+            (panel
+              ? "border-panel-destructive has-[input:focus-visible]:border-panel-destructive"
+              : "border-destructive has-[input:focus-visible]:border-destructive")
         )}
       >
         <label htmlFor={id} className="sr-only">
@@ -192,7 +199,7 @@ export function NewsletterForm({
               : "flex items-center gap-1.5 pl-5 text-caption text-destructive"
           }
         >
-          <CircleAlertIcon aria-hidden="true" className={panel ? "size-3.5 shrink-0 text-destructive" : "size-3.5 shrink-0"} />
+          <CircleAlertIcon aria-hidden="true" className={panel ? "size-3.5 shrink-0 text-panel-destructive" : "size-3.5 shrink-0"} />
           {message}
         </p>
       ) : null}

@@ -10,7 +10,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 
 import { CopyButton } from "./copy-button"
-import { colorAlias, formatValue, intendedUtility, isColor, tokens, type DesignToken } from "./data"
+import { colorAlias, formatValue, isColor, tokens, type DesignToken } from "./data"
 import { CodeList, ScopedChip } from "./layout"
 
 /* ------------------------------------------------------------------------ */
@@ -84,7 +84,7 @@ interface Row {
   token: DesignToken
   tier: Tier
   group: string
-  /** The one utility to reach for. Every other spelling stays searchable. */
+  /** The utility hint from the token build. Primitive colours have none: they are CSS variables only. */
   utility?: string
   light: string
   dark?: string
@@ -106,7 +106,7 @@ const rows: Row[] = blocks.flatMap(({ tier, group }) =>
   bySize(tokens.filter((t) => tierOf(t) === tier && groupOf(t) === group)).map((t) => {
     const light = formatValue(t, t.value)
     const dark = t.dark ? formatValue(t, t.dark.value) : undefined
-    const utility = intendedUtility(t)
+    const utility = t.utility
     const semantic = t.tier === "semantic" && isColor(t)
     const lightAlias = semantic ? colorAlias(String(t.value), t.ref) : undefined
     const darkAlias = semantic && t.dark ? colorAlias(String(t.dark.value), t.dark.ref) : undefined
@@ -119,7 +119,7 @@ const rows: Row[] = blocks.flatMap(({ tier, group }) =>
       dark,
       lightAlias,
       darkAlias,
-      haystack: [t.name, t.cssVar, utility, t.utility, light, dark, lightAlias, darkAlias, t.description, t.group, tier]
+      haystack: [t.name, t.cssVar, utility, light, dark, lightAlias, darkAlias, t.description, t.group, tier]
         .filter(Boolean)
         .join(" ")
         .toLowerCase(),
@@ -405,7 +405,8 @@ export function TokenExplorer() {
                           ) : (
                             <td colSpan={2} className={cn(td, "min-w-0")}>
                               <span className="flex min-w-0 items-center gap-3">
-                                <span className="shrink-0 text-caption text-muted-foreground">Both themes</span>
+                                {/* Wide rows drop it: the block header already says "same in both themes". */}
+                                <span className="shrink-0 text-caption text-muted-foreground @narrow:hidden">Both themes</span>
                                 <Value row={row} />
                               </span>
                             </td>

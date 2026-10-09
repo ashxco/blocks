@@ -37,10 +37,10 @@ export default function AppMockupDocs() {
       <Example
         title="In a narrow slot"
         layout="full"
-        description="The frame lays out from its own width: the sidebar hides and the form stacks to one column."
+        description="The frame lays out from its own width, not the viewport. Below 46rem the sidebar hides; below 34rem the form stacks to one column, as it does here."
         code={`<AppMockup contained={false} />`}
       >
-        <div className="max-w-prose p-6 sm:p-10">
+        <div className="max-w-md p-6 @2xl:p-10">
           <AppMockup contained={false} />
         </div>
       </Example>

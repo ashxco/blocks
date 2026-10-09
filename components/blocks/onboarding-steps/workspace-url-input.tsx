@@ -38,12 +38,12 @@ export function WorkspaceUrlInput({
       <InputGroupAddon>
         <InputGroupText className="font-mono">{domain}/</InputGroupText>
       </InputGroupAddon>
-      {/* pl-0 so the domain and the slug read as one address. */}
+      {/* A text prefix: the input group starts the slug right after it, so the two read as one address. */}
       <InputGroupInput
         spellCheck={false}
         autoCapitalize="none"
         autoComplete="off"
-        className={cn("pl-0! font-mono", className)}
+        className={cn("font-mono", className)}
         {...props}
       />
       {endAddon ? (

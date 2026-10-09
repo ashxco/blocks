@@ -28,9 +28,9 @@ import {
 } from "@/components/ui/item"
 
 const domains = [
-  { name: "lumen.app", note: "Production · certificate renews 14 Dec", status: "Valid", variant: "success" },
-  { name: "www.lumen.app", note: "Redirects to lumen.app with a 308", status: "Redirect", variant: "secondary" },
-  { name: "status.lumen.app", note: "Add a CNAME record pointing at cname.lumen.app", status: "Pending DNS", variant: "warning" },
+  { name: "lumen.app", note: "Certificate renews 14 Dec", status: "Valid", variant: "success" },
+  { name: "www.lumen.app", note: "Redirects to lumen.app", status: "Redirect", variant: "secondary" },
+  { name: "status.lumen.app", note: "Add a CNAME to cname.lumen.app", status: "Pending", variant: "warning" },
 ] as const
 
 const members = [
@@ -72,7 +72,7 @@ export default function ItemDocs() {
             </ItemMedia>
             <ItemContent>
               <ItemTitle>Postgres</ItemTitle>
-              <ItemDescription>Managed Postgres 16 next to your app, with daily backups.</ItemDescription>
+              <ItemDescription>Version 16, backed up daily.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">
@@ -86,7 +86,7 @@ export default function ItemDocs() {
             </ItemMedia>
             <ItemContent>
               <ItemTitle>Deploy key</ItemTitle>
-              <ItemDescription>Read-only access to lumen-labs/lumen-web. Added 3 days ago.</ItemDescription>
+              <ItemDescription>Read-only. Added 3 days ago.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">
@@ -99,8 +99,8 @@ export default function ItemDocs() {
               <ShieldCheckIcon />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Two-factor authentication</ItemTitle>
-              <ItemDescription>Required for every member of Lumen Labs</ItemDescription>
+              <ItemTitle>Two-factor sign-in</ItemTitle>
+              <ItemDescription>Required for every member.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Badge variant="success">On</Badge>
@@ -189,11 +189,14 @@ export default function ItemDocs() {
                 <GlobeIcon />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>{d.name}</ItemTitle>
+                {/* The status rides on the title line and wraps under the name when the row is narrow. */}
+                <ItemTitle className="flex-wrap gap-y-1">
+                  <span>{d.name}</span>
+                  <Badge variant={d.variant}>{d.status}</Badge>
+                </ItemTitle>
                 <ItemDescription>{d.note}</ItemDescription>
               </ItemContent>
               <ItemActions>
-                <Badge variant={d.variant}>{d.status}</Badge>
                 <ChevronRightIcon aria-hidden="true" className="size-4 text-muted-foreground" />
               </ItemActions>
             </Item>
@@ -212,8 +215,8 @@ export default function ItemDocs() {
               <WebhookIcon />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Deployment webhook</ItemTitle>
-              <ItemDescription>POST https://lumen.app/api/hooks/deploy on every deployment.</ItemDescription>
+              <ItemTitle>Deploy hook</ItemTitle>
+              <ItemDescription>Sent on every deployment.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">
@@ -230,8 +233,8 @@ export default function ItemDocs() {
               <WebhookIcon />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Incident webhook</ItemTitle>
-              <ItemDescription>POST https://lumen.app/api/hooks/incident when a deployment fails.</ItemDescription>
+              <ItemTitle>Incident hook</ItemTitle>
+              <ItemDescription>Sent when a deployment fails.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">

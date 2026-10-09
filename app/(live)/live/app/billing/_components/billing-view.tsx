@@ -38,6 +38,8 @@ export function BillingView() {
         usage={USAGE}
         paymentMethod={payment}
         changePlanHref="#change-plan"
+        // The plan picker below already links to the full comparison.
+        pricingHref={null}
         nextCharge={LUMEN_PLANS.find((p) => p.id === (scheduledId ?? planId))?.price}
         onPaymentMethodChange={(method) => setPayment((current) => ({ ...current, ...method }))}
       />

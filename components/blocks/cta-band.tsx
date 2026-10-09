@@ -101,7 +101,7 @@ export function CtaBand({
                     <ul className={cn("grid gap-2.5", command && "pt-1")}>
                       {points.map((point) => (
                         <li key={point} className="flex items-center gap-2.5 text-sm text-panel-muted">
-                          <CheckIcon aria-hidden="true" className="size-4 shrink-0 text-success" />
+                          <CheckIcon aria-hidden="true" className="size-4 shrink-0 text-panel-success" />
                           {point}
                         </li>
                       ))}

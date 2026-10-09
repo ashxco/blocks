@@ -239,7 +239,7 @@ export function ScaledFrame({
   title: string
   /** Width the page is rendered at before scaling. */
   viewportWidth?: number
-  /** Shown until the page has loaded, e.g. the page's name and route. */
+  /** Fills the frame until the page has loaded, e.g. a wireframe of the page. */
   placeholder?: React.ReactNode
   className?: string
 }) {
@@ -303,6 +303,12 @@ export function ScaledFrame({
 
   return (
     <div ref={ref} className={cn("relative overflow-hidden bg-subtle", className)}>
+      {/* Under the frame, which fades in over it once the page has loaded. */}
+      {placeholder ? (
+        <div aria-hidden="true" className="absolute inset-0">
+          {placeholder}
+        </div>
+      ) : null}
       {frameSrc && size && scale > 0 ? (
         <iframe
           src={frameSrc}
@@ -335,33 +341,30 @@ export function ScaledFrame({
       ) : null}
       {!loaded ? (
         <div className="pointer-events-none absolute inset-0 grid place-items-center p-6 text-center">
-          <div className="grid justify-items-center gap-3">
-            <div aria-hidden="true">{placeholder}</div>
-            {failed ? (
-              <div className="flex items-center gap-3">
-                <span className="text-caption text-muted-foreground">Preview unavailable</span>
-                {/* Above the card's stretched link, so it can be clicked. */}
-                <Button
-                  variant="outline"
-                  size="xs"
-                  onClick={retry}
-                  aria-label={`Retry the ${title} preview`}
-                  className="pointer-events-auto relative z-10"
-                >
-                  <RotateCwIcon data-icon="inline-start" />
-                  Retry
-                </Button>
-              </div>
-            ) : (
-              <Spinner
-                aria-hidden="true"
-                className={cn(
-                  "size-4 text-muted-foreground transition-opacity duration-(--duration-base)",
-                  phase === "loading" ? "opacity-100" : "opacity-0"
-                )}
-              />
-            )}
-          </div>
+          {failed ? (
+            <div className="flex items-center gap-3 rounded-(--button-radius) border bg-background py-1 pr-1 pl-4">
+              <span className="text-caption text-muted-foreground">Preview unavailable</span>
+              {/* Above the card's stretched link, so it can be clicked. */}
+              <Button
+                variant="outline"
+                size="xs"
+                onClick={retry}
+                aria-label={`Retry the ${title} preview`}
+                className="pointer-events-auto relative z-10"
+              >
+                <RotateCwIcon data-icon="inline-start" />
+                Retry
+              </Button>
+            </div>
+          ) : (
+            <Spinner
+              aria-hidden="true"
+              className={cn(
+                "size-4 text-muted-foreground transition-opacity duration-(--duration-base)",
+                phase === "loading" ? "opacity-100" : "opacity-0"
+              )}
+            />
+          )}
         </div>
       ) : null}
     </div>

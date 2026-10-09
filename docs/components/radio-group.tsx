@@ -176,15 +176,15 @@ export default function RadioGroupDocs() {
         code={`<FieldSet>
   <FieldLegend variant="label">Log retention</FieldLegend>
   <RadioGroup defaultValue="7d" name="retention" className="flex flex-wrap gap-x-6 gap-y-3">
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-3">
       <RadioGroupItem value="1d" id="retention-1d" />
       <Label htmlFor="retention-1d" className="font-medium">1 day</Label>
     </div>
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-3">
       <RadioGroupItem value="7d" id="retention-7d" />
       <Label htmlFor="retention-7d" className="font-medium">7 days</Label>
     </div>
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-3">
       <RadioGroupItem value="30d" id="retention-30d" />
       <Label htmlFor="retention-30d" className="font-medium">30 days</Label>
     </div>
@@ -199,7 +199,7 @@ export default function RadioGroupDocs() {
               { value: "7d", label: "7 days" },
               { value: "30d", label: "30 days" },
             ].map((o) => (
-              <div key={o.value} className="flex items-center gap-2.5">
+              <div key={o.value} className="flex items-center gap-3">
                 <RadioGroupItem value={o.value} id={`rgi-${o.value}`} />
                 <Label htmlFor={`rgi-${o.value}`} className="font-medium">
                   {o.label}

@@ -54,14 +54,14 @@ export default function ChartCardDocs() {
   defaultPeriod="30d"
 />`}
       >
-        <div className="p-6 md:p-10">
+        <div className="p-6 @prose:p-10">
           <ChartCard />
         </div>
       </Example>
 
       <Example
         title="Bars"
-        description="For counts per day, such as deployments. Bars cap at 24px wide and grow from one baseline. A single series next to the page’s main chart draws in ink, so violet stays on the one chart that matters most."
+        description="For counts per day, such as deployments. Bars cap at 24px wide and grow from one baseline. A single series next to the page’s main chart draws in neutral grey (color “ink”, the muted-foreground colour), so violet stays on the one chart that matters most."
         layout="full"
         surface="subtle"
         code={`<ChartCard
@@ -74,7 +74,7 @@ export default function ChartCardDocs() {
   data={deployments}
 />`}
       >
-        <div className="p-6 md:p-10">
+        <div className="p-6 @prose:p-10">
           <ChartCard
             type="bar"
             title="Deployments"
@@ -131,7 +131,7 @@ export default function ChartCardDocs() {
         do={[
           "Plot one measure per card. Two measures with different scales need two cards.",
           "Give every day a point, oldest first, and at least as many days as the longest period.",
-          "Keep violet (chart-1) for the page’s main chart and draw other single series in ink. Save chart-2 to chart-4 for charts with several series.",
+          "Keep violet (chart-1) for the page’s main chart and draw other single series in neutral grey (color “ink”). Save chart-2 to chart-4 for charts with several series.",
         ]}
         dont={[
           "Don’t add a second y-axis.",
@@ -202,7 +202,7 @@ export default function ChartCardDocs() {
             type: '1 | 2 | 3 | 4 | "ink"',
             default: "1",
             description:
-              "Chart token for the series, or ink (the foreground colour) for a quiet single series.",
+              "Chart token for the series, or ink: the neutral muted-foreground grey, for a quiet single series.",
           },
           {
             prop: "goodWhen",

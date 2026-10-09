@@ -82,7 +82,7 @@ export const defaultBentoFeatures: BentoFeature[] = [
   },
   {
     title: "Teams and roles",
-    description: "Invite the whole team. Granular roles and a full audit log on every plan.",
+    description: "Invite the whole team. Roles and a full audit log from Pro, SAML single sign-on on Scale.",
     icon: <UsersIcon />,
     visual: <AvatarStack />,
   },
@@ -96,9 +96,9 @@ const tileTone = {
     body: "mt-2 text-body text-copy",
   },
   dark: {
-    // In dark mode the cards are near-black too, so the emphasis tile steps up to the raised panel.
-    tile: "border-panel-border bg-panel text-panel-foreground dark:bg-panel-raised",
-    icon: "border-panel-border bg-panel-raised text-panel-foreground dark:bg-panel",
+    // The emphasis panel: it sits above the cards in both themes.
+    tile: "border-panel-border bg-panel text-panel-foreground",
+    icon: "border-panel-border bg-panel-raised text-panel-foreground",
     title: "text-h4 text-panel-foreground",
     body: "mt-2 text-body text-panel-muted",
   },
@@ -150,7 +150,7 @@ export function FeatureBento({
       Nothing bolted on.
     </>
   ),
-  description = "Builds, previews, metrics, secrets, domains and roles come with every plan. No add-on store and no surprise line items on your bill.",
+  description = "Builds, previews, metrics, secrets and domains come with every plan. No add-on store and no surprise line items on your bill.",
   features = defaultBentoFeatures,
   contained = true,
   className,

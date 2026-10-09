@@ -2,12 +2,19 @@
 
 import * as React from "react"
 import {
+  CalendarClockIcon,
   ChevronDownIcon,
+  CopyIcon,
   ExternalLinkIcon,
+  EyeIcon,
+  HistoryIcon,
   MinusIcon,
   MoreHorizontalIcon,
   PlusIcon,
   RotateCcwIcon,
+  ScrollTextIcon,
+  SendIcon,
+  Trash2Icon,
   UndoIcon,
 } from "lucide-react"
 
@@ -19,6 +26,13 @@ import {
   ButtonGroupSeparator,
   ButtonGroupText,
 } from "@/components/ui/button-group"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 function ReplicaStepper() {
   const [replicas, setReplicas] = React.useState(3)
@@ -33,7 +47,7 @@ function ReplicaStepper() {
       >
         <MinusIcon />
       </Button>
-      <ButtonGroupText className="min-w-32 justify-center text-foreground tabular-nums">
+      <ButtonGroupText className="min-w-32 justify-center text-foreground tabular">
         {replicas} {replicas === 1 ? "replica" : "replicas"}
       </ButtonGroupText>
       <Button
@@ -49,6 +63,45 @@ function ReplicaStepper() {
   )
 }
 
+/**
+ * The "…" button at the end of a group: a menu of the less common actions.
+ * Leave Roll back out where the group already shows it as a button.
+ */
+function MoreActionsMenu({
+  size = "icon",
+  rollBack = true,
+}: {
+  size?: "icon" | "icon-sm"
+  rollBack?: boolean
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger render={<Button variant="outline" size={size} aria-label="More actions" />}>
+        <MoreHorizontalIcon />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem>
+          <CopyIcon />
+          Copy deployment URL
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <ScrollTextIcon />
+          View build logs
+        </DropdownMenuItem>
+        {rollBack ? (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <UndoIcon />
+              Roll back
+            </DropdownMenuItem>
+          </>
+        ) : null}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 export default function ButtonGroupDocs() {
   return (
     <Examples>
@@ -58,44 +111,103 @@ export default function ButtonGroupDocs() {
         code={`<ButtonGroup aria-label="Deployment actions">
   <Button variant="outline">Redeploy</Button>
   <Button variant="outline">Promote</Button>
-  <Button variant="outline" size="icon" aria-label="More actions">
-    <MoreHorizontalIcon />
-  </Button>
+  <DropdownMenu>
+    <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="More actions" />}>
+      <MoreHorizontalIcon />
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end">
+      <DropdownMenuItem><CopyIcon />Copy deployment URL</DropdownMenuItem>
+      <DropdownMenuItem><ScrollTextIcon />View build logs</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem><UndoIcon />Roll back</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
 </ButtonGroup>`}
       >
         <ButtonGroup aria-label="Deployment actions">
           <Button variant="outline">Redeploy</Button>
           <Button variant="outline">Promote</Button>
-          <Button variant="outline" size="icon" aria-label="More actions">
-            <MoreHorizontalIcon />
-          </Button>
+          <MoreActionsMenu />
         </ButtonGroup>
       </Example>
 
       <Example
         title="Split button"
         description="A primary action with a menu of related ones. Put a separator between filled buttons so the split stays visible."
-        code={`<ButtonGroup>
+        code={`<ButtonGroup aria-label="Deploy">
   <Button>Deploy to production</Button>
   <ButtonGroupSeparator />
-  <Button size="icon" aria-label="More deploy options">
-    <ChevronDownIcon />
-  </Button>
+  <DropdownMenu>
+    <DropdownMenuTrigger render={<Button size="icon" aria-label="More deploy options" />}>
+      <ChevronDownIcon />
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end">
+      <DropdownMenuItem><EyeIcon />Deploy to preview</DropdownMenuItem>
+      <DropdownMenuItem><HistoryIcon />Promote a previous build</DropdownMenuItem>
+      <DropdownMenuItem><CalendarClockIcon />Schedule a deploy</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+</ButtonGroup>
+
+<ButtonGroup aria-label="Draft">
+  <Button variant="secondary">Save draft</Button>
+  <ButtonGroupSeparator />
+  <DropdownMenu>
+    <DropdownMenuTrigger render={<Button variant="secondary" size="icon" aria-label="More save options" />}>
+      <ChevronDownIcon />
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end">
+      <DropdownMenuItem><SendIcon />Save and request review</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem variant="destructive"><Trash2Icon />Discard draft</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
 </ButtonGroup>`}
       >
-        <ButtonGroup>
+        <ButtonGroup aria-label="Deploy">
           <Button>Deploy to production</Button>
           <ButtonGroupSeparator />
-          <Button size="icon" aria-label="More deploy options">
-            <ChevronDownIcon />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger render={<Button size="icon" aria-label="More deploy options" />}>
+              <ChevronDownIcon />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <EyeIcon />
+                Deploy to preview
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <HistoryIcon />
+                Promote a previous build
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <CalendarClockIcon />
+                Schedule a deploy
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </ButtonGroup>
-        <ButtonGroup>
+        <ButtonGroup aria-label="Draft">
           <Button variant="secondary">Save draft</Button>
           <ButtonGroupSeparator />
-          <Button variant="secondary" size="icon" aria-label="More save options">
-            <ChevronDownIcon />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={<Button variant="secondary" size="icon" aria-label="More save options" />}
+            >
+              <ChevronDownIcon />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <SendIcon />
+                Save and request review
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive">
+                <Trash2Icon />
+                Discard draft
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </ButtonGroup>
       </Example>
 
@@ -195,9 +307,15 @@ export default function ButtonGroupDocs() {
         <UndoIcon data-icon="inline-start" />
         Roll back
       </Button>
-      <Button variant="outline" size="icon-sm" aria-label="More actions">
-        <MoreHorizontalIcon />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger render={<Button variant="outline" size="icon-sm" aria-label="More actions" />}>
+          <MoreHorizontalIcon />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem><CopyIcon />Copy deployment URL</DropdownMenuItem>
+          <DropdownMenuItem><ScrollTextIcon />View build logs</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </ButtonGroup>
   </ButtonGroup>
 </Card>`}
@@ -222,9 +340,7 @@ export default function ButtonGroupDocs() {
                 <UndoIcon data-icon="inline-start" />
                 Roll back
               </Button>
-              <Button variant="outline" size="icon-sm" aria-label="More actions">
-                <MoreHorizontalIcon />
-              </Button>
+              <MoreActionsMenu size="icon-sm" rollBack={false} />
             </ButtonGroup>
           </ButtonGroup>
         </Card>

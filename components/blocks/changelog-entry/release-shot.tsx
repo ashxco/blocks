@@ -42,7 +42,7 @@ export function ReleaseShot({
   className,
 }: ReleaseShotProps) {
   return (
-    <div aria-hidden="true" className={cn("grid place-items-center p-5 sm:p-10", className)}>
+    <div aria-hidden="true" className={cn("grid place-items-center p-5 @lg:p-10", className)}>
       <div className="@container/shot w-full max-w-md overflow-hidden rounded-(--card-radius) border bg-card text-card-foreground">
         <div className="flex items-start justify-between gap-4 p-5">
           <div className="grid min-w-0 gap-1">

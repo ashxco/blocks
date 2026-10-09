@@ -264,7 +264,7 @@ export function InviteDialog({
         <UserPlusIcon data-icon="inline-start" />
         {triggerLabel}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-(--dialog-width)">
+      <DialogContent>
         {/* The form unmounts when the dialog closes, so it opens empty every time. */}
         <InviteForm
           workspaceName={workspaceName}

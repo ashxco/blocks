@@ -2,6 +2,7 @@
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Hero, HeroProductMoment } from "@/components/blocks/hero"
+import { ReleaseShot } from "@/components/blocks/changelog-entry"
 
 export default function HeroDocs() {
   return (
@@ -27,13 +28,18 @@ export default function HeroDocs() {
       <Example
         title="Custom copy"
         layout="full"
-        description="Change the headline, actions and command for a product or campaign page. Highlight one word, never more."
+        description="Change the headline, actions, command and visual for a product or campaign page. Highlight one word, never more."
         code={`<Hero
   title={<>Preview every branch. Merge with <span className="text-brand">confidence</span>.</>}
   description="Every pull request gets its own URL with production-like data, so reviewers see the change before it ships."
   primaryAction={{ label: "Start free trial", href: "/live/sign-up" }}
   secondaryAction={{ label: "See all features", href: "/live/features" }}
   command="lumen preview --branch feat/billing"
+  visual={
+    <div className="@container rounded-(--panel-radius) border bg-subtle">
+      <ReleaseShot />
+    </div>
+  }
 />`}
       >
         <Hero
@@ -46,6 +52,11 @@ export default function HeroDocs() {
           primaryAction={{ label: "Start free trial", href: "/live/sign-up" }}
           secondaryAction={{ label: "See all features", href: "/live/features" }}
           command="lumen preview --branch feat/billing"
+          visual={
+            <div className="@container rounded-(--panel-radius) border bg-subtle">
+              <ReleaseShot />
+            </div>
+          }
         />
       </Example>
 
@@ -80,13 +91,21 @@ export default function HeroDocs() {
       <Example
         title="Product moment"
         layout="stack"
-        description="The visual on its own: deployments, requests and a dark deploy confirmation. It lays itself out from its own width, from one column to three."
+        description="The visual on its own: deployments, requests and a dark deploy confirmation. It lays itself out from its own width, from three columns down to one. Pass stage={false} to drop the tinted stage."
         code={`<HeroProductMoment />
 <HeroProductMoment stage={false} />`}
       >
-        <HeroProductMoment />
-        <div className="max-w-prose">
-          <HeroProductMoment stage={false} />
+        <div className="@container">
+          <div className="grid items-start gap-8 @4xl:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
+            <figure className="m-0 grid gap-3">
+              <HeroProductMoment />
+              <figcaption className="text-caption text-muted-foreground">With the stage, full width</figcaption>
+            </figure>
+            <figure className="m-0 grid gap-3">
+              <HeroProductMoment stage={false} />
+              <figcaption className="text-caption text-muted-foreground">stage={"{false}"}, in a narrow column</figcaption>
+            </figure>
+          </div>
         </div>
       </Example>
 
@@ -126,7 +145,7 @@ export default function HeroDocs() {
         title="HeroProductMoment"
         rows={[
           { prop: "stage", type: "boolean", default: "true", description: "Tinted, bordered stage behind the cards." },
-          { prop: "className", type: "string", description: "Classes for the stage." },
+          { prop: "className", type: "string", description: "Classes for the root, which is also the container its layout reads." },
         ]}
       />
     </Examples>

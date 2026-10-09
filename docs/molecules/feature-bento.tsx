@@ -114,7 +114,7 @@ export default function FeatureBentoDocs() {
 <AvatarStack />
 <LiveMetrics /> // on a dark panel`}
       >
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-8 @3xl:grid-cols-2">
           <div className="grid content-start gap-3">
             <p className="text-label text-foreground">PreviewUrls</p>
             <PreviewUrls />
@@ -131,7 +131,7 @@ export default function FeatureBentoDocs() {
             <p className="text-label text-foreground">MaskedSecrets</p>
             <MaskedSecrets />
           </div>
-          <div className="grid content-start gap-3 rounded-(--card-radius) bg-brand-subtle p-5">
+          <div className="grid content-start gap-3 rounded-(--card-radius) bg-tint-sky p-5">
             <p className="text-label text-foreground">EdgeRegions</p>
             <EdgeRegions />
           </div>
@@ -139,7 +139,7 @@ export default function FeatureBentoDocs() {
             <p className="text-label text-foreground">AvatarStack</p>
             <AvatarStack />
           </div>
-          <div className="grid content-start gap-3 rounded-(--card-radius) bg-panel p-5 md:col-span-2">
+          <div className="grid content-start gap-3 rounded-(--card-radius) bg-panel p-5 @3xl:col-span-2">
             <p className="text-label text-panel-foreground">LiveMetrics</p>
             <LiveMetrics />
           </div>
@@ -176,7 +176,7 @@ export default function FeatureBentoDocs() {
           { prop: "title", type: "string", description: "Tile title." },
           { prop: "description", type: "string", description: "One sentence." },
           { prop: "icon", type: "ReactNode", description: "A lucide icon element, such as <GitBranchIcon />." },
-          { prop: "tone", type: '"default" | "dark" | "tint"', default: '"default"', description: "Card, dark panel or brand-subtle surface." },
+          { prop: "tone", type: '"default" | "dark" | "tint"', default: '"default"', description: "Card, dark panel or a flat sky tint." },
           { prop: "wide", type: "boolean", default: "false", description: "Span two columns from the two-column layout up." },
           { prop: "visual", type: "ReactNode", description: "Small visual pinned to the bottom of the tile." },
         ]}

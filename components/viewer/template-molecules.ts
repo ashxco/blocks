@@ -12,9 +12,10 @@ import { molecules, type RegistryEntry } from "@/lib/registry"
  * to keep in sync by hand.
  */
 
-const root = process.cwd()
+// Read at render time from the project's own sources. The ignore comment
+// keeps Turbopack from tracing the whole project into the server output.
+const root = path.join(/* turbopackIgnore: true */ process.cwd())
 const liveRoot = path.join(root, "app", "(live)")
-const blockImport = /from\s+["']@\/components\/blocks\/([a-z0-9-]+)(?:\/[^"']*)?["']/g
 const localImport = /(?:from|import)\s+["']((?:\.{1,2}\/|@\/app\/)[^"']+)["']/g
 const extensions = ["", ".tsx", ".ts", "/index.tsx", "/index.ts"]
 
@@ -184,7 +185,16 @@ export function moleculesForTemplate(href: string): RegistryEntry[] {
     } catch {
       continue
     }
-    for (const match of source.matchAll(blockImport)) found.add(match[1])
+    // A molecule counts when the template renders something imported from
+    // it: the molecule itself or one of its visible parts. Data, constants,
+    // helpers and types borrowed from a molecule do not make the page built
+    // from it.
+    const imports = [...source.matchAll(importStatement)]
+    const body = imports.length ? imports[imports.length - 1].index! + imports[imports.length - 1][0].length : 0
+    for (const [, clause, spec] of imports) {
+      const block = spec.match(blockSpec)
+      if (block && importedNames(clause).some((name) => firstTag(source, name, body) < Infinity)) found.add(block[1])
+    }
     for (const match of source.matchAll(localImport)) {
       const next = resolveImport(file, match[1])
       // Follow the template's own modules only, never into other routes' pages.
@@ -200,7 +210,7 @@ export function moleculesForTemplate(href: string): RegistryEntry[] {
     if (!rank.has(slug)) rank.set(slug, index)
   })
 
-  // Anything imported but never rendered as JSX goes last, in registry order.
+  // Anything the render order could not place goes last, in registry order.
   const result = molecules
     .filter((m) => found.has(m.slug))
     .map((m, index) => ({ m, key: rank.get(m.slug) ?? order.length + index }))

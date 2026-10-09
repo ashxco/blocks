@@ -1,19 +1,16 @@
 import type { Metadata } from "next"
 import type * as React from "react"
-import Link from "next/link"
-import { ArrowRightIcon } from "lucide-react"
 
-import { ChangelogTimeline, ReleaseShot, type ChangelogEntryProps } from "@/components/blocks/changelog-entry"
+import {
+  ChangelogCode as Code,
+  ChangelogTimeline,
+  ReleaseShot,
+  type ChangelogEntryProps,
+} from "@/components/blocks/changelog-entry"
 import { CtaBand } from "@/components/blocks/cta-band"
 import { NewsletterForm } from "@/components/blocks/newsletter-form"
-import { Button } from "@/components/ui/button"
 
 import { LogsShot, SpendLimitShot } from "./_components/release-media"
-
-/** Inline code in release notes. */
-function Code({ children }: { children: React.ReactNode }) {
-  return <code className="rounded-xs bg-muted px-1 font-mono text-code text-foreground">{children}</code>
-}
 
 export const metadata: Metadata = {
   title: "Changelog",
@@ -114,8 +111,8 @@ export default function ChangelogPage() {
           <div className="grid gap-6">
             <h1 className="text-display text-foreground">Changelog</h1>
             <p className="max-w-prose text-lead text-copy">
-              New features, improvements and fixes in Lumen, newest first. We ship most weeks and write up everything
-              you would notice.
+              New features, improvements and fixes in Lumen, newest first. We ship a release every two weeks and write up
+              everything you would notice.
             </p>
           </div>
 
@@ -134,19 +131,13 @@ export default function ChangelogPage() {
       {/* Lines up with the entries: past the date column and the rail. */}
       <div className="container-page pt-16">
         <div className="@container">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-4 pl-10 @narrow:ml-48">
-            <Button variant="outline" nativeButton={false} render={<Link href="/live/changelog?page=2" />}>
-              Older releases
-              <ArrowRightIcon data-icon="inline-end" />
-            </Button>
-            <p className="text-caption text-muted-foreground">Showing the 5 newest of 94 releases.</p>
-          </div>
+          <p className="pl-10 text-caption text-muted-foreground @narrow:ml-48">Showing the 5 newest of 94 releases.</p>
         </div>
       </div>
 
       <CtaBand
         title="Try what shipped this week."
-        description="Every release on this page is live on every plan. Start a 14-day Pro trial and get a preview URL for your first branch in about a minute."
+        description="Every release on this page is live now. Start a 14-day Pro trial and get a preview URL for your first branch in about a minute."
       />
     </>
   )

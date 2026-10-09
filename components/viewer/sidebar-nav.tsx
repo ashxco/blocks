@@ -151,6 +151,7 @@ export function SidebarNav({
                 key={key}
                 open={open}
                 onOpenChange={(next) => setOpen(key, next)}
+                data-nav-section=""
                 className="grid"
               >
                 <Collapsible.Trigger
@@ -236,7 +237,7 @@ function SidebarGroup({
   if (!group.title) return links
 
   return (
-    <Collapsible.Root open={open} onOpenChange={onOpenChange} className="grid gap-1">
+    <Collapsible.Root open={open} onOpenChange={onOpenChange} data-nav-group="" className="grid gap-1">
       <Collapsible.Trigger
         className={cn(
           "group/group ml-3 flex h-7 items-center gap-1.5 rounded-xs pr-3 text-left text-caption font-semibold text-muted-foreground outline-none",

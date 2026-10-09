@@ -85,6 +85,9 @@ export function EntryThumbnail({
         "relative overflow-hidden bg-subtle select-none",
         // Guidance and API tables are never part of a thumbnail.
         "[&_[data-slot=api]]:hidden [&_[data-slot=guidelines]]:hidden",
+        // Scaled down, a frosted backdrop reads as a grey smudge: overlays
+        // keep their flat tint over a crisp page instead.
+        "[&_*]:backdrop-blur-none!",
         className
       )}
     >

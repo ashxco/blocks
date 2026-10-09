@@ -24,8 +24,8 @@ export default function PlanMatrixDocs() {
   contained={false}
   title={null}
   columns={[
-    { name: "Cloud", price: "From $5 / month", featured: true },
-    { name: "Self-hosted", price: "Free" },
+    { name: "Cloud", price: "$5 / month", featured: true },
+    { name: "Self-host", price: "Free" },
   ]}
   groups={[
     {
@@ -33,19 +33,19 @@ export default function PlanMatrixDocs() {
       rows: [
         { feature: "Managed upgrades", values: [true, false] },
         { feature: "Regions", values: ["14", "Any"] },
-        { feature: "Backups", values: ["Hourly", "You run them"] },
+        { feature: "Backups", values: ["Hourly", "Manual"] },
       ],
     },
   ]}
 />`}
       >
-        <div className="p-6 sm:p-10">
+        <div className="p-6 @2xl:p-10">
           <PlanMatrix
             contained={false}
             title={null}
             columns={[
-              { name: "Cloud", price: "From $5 / month", featured: true },
-              { name: "Self-hosted", price: "Free" },
+              { name: "Cloud", price: "$5 / month", featured: true },
+              { name: "Self-host", price: "Free" },
             ]}
             groups={[
               {
@@ -53,14 +53,14 @@ export default function PlanMatrixDocs() {
                 rows: [
                   { feature: "Managed upgrades", values: [true, false] },
                   { feature: "Regions", values: ["14", "Any"] },
-                  { feature: "Backups", values: ["Hourly", "You run them"] },
-                  { feature: "Support", values: ["Email and chat", "Community"] },
+                  { feature: "Backups", values: ["Hourly", "Manual"] },
+                  { feature: "Support", values: ["Email", "Community"] },
                 ],
               },
               {
                 title: "Security",
                 rows: [
-                  { feature: "SAML single sign-on", values: [true, true] },
+                  { feature: "SAML SSO", values: [true, true] },
                   { feature: "SOC 2 report", values: [true, false] },
                 ],
               },

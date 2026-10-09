@@ -21,7 +21,7 @@ export default function SettingsSectionDocs() {
         layout="full"
         code={`<SettingsSection />`}
       >
-        <div className="px-(--card-padding) sm:px-10">
+        <div className="px-(--card-padding) @prose:px-10">
           <SettingsSection />
         </div>
       </Example>
@@ -45,7 +45,7 @@ export default function SettingsSectionDocs() {
   </SettingsSection>
 </div>`}
       >
-        <div className="divide-y px-(--card-padding) sm:px-10">
+        <div className="divide-y px-(--card-padding) @prose:px-10">
           <SettingsSection
             title="Build and deploy"
             description="How Lumen builds web. Changes apply from the next push."

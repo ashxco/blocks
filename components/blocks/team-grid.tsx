@@ -53,7 +53,7 @@ function initialsOf(name: string) {
 export function TeamGrid({
   members = defaultTeam,
   title = "Small team. Big leverage.",
-  description = "Fourteen people across six time zones, building Lumen in the open and shipping something every week.",
+  description = "Fourteen people across six time zones, building Lumen in the open and shipping a release every two weeks.",
   hiring = null,
   contained = true,
   className,
@@ -88,19 +88,26 @@ export function TeamGrid({
           })}
 
           {hiring ? (
-            <li className="grid content-start gap-4">
+            <li>
               <Link
                 href={hiring.href}
-                className="group relative flex aspect-4/5 flex-col justify-between rounded-(--card-radius) border border-dashed bg-background p-5 outline-none transition-colors duration-(--duration-fast) hover:border-foreground/40 focus-visible:focus-ring"
+                className="group grid content-start gap-4 rounded-(--card-radius) outline-none focus-visible:focus-ring"
               >
-                <span className="grid size-10 place-items-center rounded-full bg-primary text-primary-foreground transition-transform duration-(--duration-base) ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
-                  <ArrowUpRightIcon className="size-4" aria-hidden="true" />
+                {/* Same frame as a portrait, with the arrow where the initials sit. */}
+                <span className="flex aspect-4/5 items-end rounded-(--card-radius) border bg-subtle p-5 transition-colors duration-(--duration-fast) group-hover:border-border-strong">
+                  <span className="grid size-12 place-items-center rounded-full bg-primary text-primary-foreground transition-transform duration-(--duration-base) ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                    <ArrowUpRightIcon className="size-5" aria-hidden="true" />
+                  </span>
                 </span>
-                <span className="text-h4 text-foreground">{hiring.title}</span>
+                <span className="grid gap-0.5">
+                  <span className="text-title text-foreground underline-offset-4 group-hover:underline">
+                    {hiring.title}
+                  </span>
+                  {hiring.description ? (
+                    <span className="text-caption text-muted-foreground">{hiring.description}</span>
+                  ) : null}
+                </span>
               </Link>
-              {hiring.description ? (
-                <p className="text-caption text-muted-foreground">{hiring.description}</p>
-              ) : null}
             </li>
           ) : null}
         </ul>

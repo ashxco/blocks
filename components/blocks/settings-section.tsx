@@ -139,23 +139,49 @@ export function SettingsSection({
 
 const REGIONS = [
   { value: "fra1", label: "Frankfurt, Germany (fra1)" },
-  { value: "iad1", label: "Washington, D.C., USA (iad1)" },
+  { value: "iad1", label: "Virginia, USA (iad1)" },
   { value: "sfo1", label: "San Francisco, USA (sfo1)" },
   { value: "gru1", label: "São Paulo, Brazil (gru1)" },
   { value: "sin1", label: "Singapore (sin1)" },
   { value: "syd1", label: "Sydney, Australia (syd1)" },
 ]
 
-/** Default controls: Lumen workspace settings. */
-function WorkspaceFields() {
+export interface WorkspaceFieldsProps {
+  /** Workspace name on first render. */
+  defaultName?: string
+  /** Workspace URL slug on first render. */
+  defaultSlug?: string
+  /** Default region on first render, e.g. "fra1". */
+  defaultRegion?: string
+  /** Require the name and URL before the form saves. */
+  required?: boolean
+}
+
+/**
+ * Lumen workspace settings: name, URL, default region and preview
+ * deployments. SettingsSection shows them when it has no children, and the
+ * settings page uses them too, so the fields and their copy live in one place.
+ */
+export function WorkspaceFields({
+  defaultName = "Acme Inc.",
+  defaultSlug = "acme",
+  defaultRegion = "fra1",
+  required = false,
+}: WorkspaceFieldsProps) {
   const id = React.useId()
-  const [region, setRegion] = React.useState("fra1")
+  const [region, setRegion] = React.useState(defaultRegion)
 
   return (
     <FieldGroup>
       <Field>
         <FieldLabel htmlFor={`${id}-name`}>Workspace name</FieldLabel>
-        <Input id={`${id}-name`} name="workspaceName" defaultValue="Acme Inc." autoComplete="organization" />
+        <Input
+          id={`${id}-name`}
+          name="workspaceName"
+          defaultValue={defaultName}
+          autoComplete="organization"
+          required={required}
+        />
       </Field>
 
       <Field>
@@ -163,8 +189,11 @@ function WorkspaceFields() {
         <WorkspaceUrlInput
           id={`${id}-url`}
           name="workspaceSlug"
-          defaultValue="acme"
+          defaultValue={defaultSlug}
+          pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+          title="Use lowercase letters and numbers, with single hyphens between words."
           aria-describedby={`${id}-url-hint`}
+          required={required}
         />
         <FieldDescription id={`${id}-url-hint`}>
           Changing the URL breaks links people have bookmarked. Old links redirect for 30 days.
@@ -194,7 +223,7 @@ function WorkspaceFields() {
         <FieldDescription>New projects deploy here unless you pick another region.</FieldDescription>
       </Field>
 
-      <Field orientation="horizontal" className="border-t pt-5">
+      <Field orientation="horizontal" className="gap-6 border-t pt-6">
         <FieldContent>
           <FieldLabel htmlFor={`${id}-previews`}>Preview deployments</FieldLabel>
           <FieldDescription>Deploy every pull request to its own URL and comment the link on GitHub.</FieldDescription>

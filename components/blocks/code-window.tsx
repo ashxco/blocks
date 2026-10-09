@@ -27,7 +27,7 @@ const defaultLines = [
   "→ Building acme/web from main (a41c9e2)",
   "→ Restored build cache in 1.2s",
   "✓ Built image in 14.2s",
-  "→ Starting 2 replicas in fra-1",
+  "→ Starting 2 replicas in fra1",
   "✓ Health checks passed",
   "✓ Live at https://web.acme.dev",
 ]
@@ -46,7 +46,7 @@ function CodeLine({ text }: { text: string }) {
   if (text.startsWith("✓")) {
     return (
       <span className="block text-panel-foreground">
-        <span className="text-success">✓</span>
+        <span className="text-panel-success">✓</span>
         {text.slice(1)}
       </span>
     )
@@ -72,13 +72,14 @@ export function CodeWindow({ title = "terminal", lines, children, wrap = false, 
         className
       )}
     >
-      <div className="relative flex h-11 shrink-0 items-center border-b border-panel-border px-4">
-        <span aria-hidden="true" className="flex gap-1.5">
+      {/* Narrow windows set the title after the dots, left-aligned; from 20rem it centres in the bar. */}
+      <div className="@container/bar relative flex h-11 shrink-0 items-center gap-3 border-b border-panel-border px-4">
+        <span aria-hidden="true" className="flex shrink-0 gap-1.5">
           <span className="size-2.5 rounded-full bg-panel-foreground/15" />
           <span className="size-2.5 rounded-full bg-panel-foreground/15" />
           <span className="size-2.5 rounded-full bg-panel-foreground/15" />
         </span>
-        <figcaption className="pointer-events-none absolute inset-x-20 truncate text-center font-mono text-xs text-panel-muted">
+        <figcaption className="pointer-events-none min-w-0 flex-1 truncate font-mono text-xs text-panel-muted @min-[20rem]/bar:absolute @min-[20rem]/bar:inset-x-20 @min-[20rem]/bar:text-center">
           {title}
         </figcaption>
       </div>

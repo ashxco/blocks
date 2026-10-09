@@ -66,8 +66,8 @@ const deploysConfig = {
 } satisfies ChartConfig
 
 const latencyConfig = {
-  iad: { label: "Washington, D.C.", color: "var(--chart-1)" },
-  fra: { label: "Frankfurt", color: "var(--chart-2)" },
+  fra: { label: "Frankfurt", color: "var(--chart-1)" },
+  iad: { label: "Virginia", color: "var(--chart-2)" },
   sin: { label: "Singapore", color: "var(--chart-3)" },
 } satisfies ChartConfig
 
@@ -93,7 +93,7 @@ export default function ChartDocs() {
 <ChartContainer config={config} className="aspect-auto h-64 w-full">
   <AreaChart data={data} margin={{ left: 0, right: 8, top: 8 }}>
     <CartesianGrid vertical={false} />
-    <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} minTickGap={24} />
+    <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} minTickGap={24} interval="equidistantPreserveStart" />
     <YAxis tickLine={false} axisLine={false} width={44} tickFormatter={compact.format} />
     <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
     <Area
@@ -123,7 +123,7 @@ export default function ChartDocs() {
           <ChartContainer config={requestsConfig} className="aspect-auto h-64 w-full">
             <AreaChart data={requests} margin={{ left: 0, right: 8, top: 8 }}>
               <CartesianGrid vertical={false} />
-              <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} minTickGap={24} />
+              <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} minTickGap={24} interval="equidistantPreserveStart" />
               <YAxis
                 tickLine={false}
                 axisLine={false}
@@ -203,8 +203,8 @@ export default function ChartDocs() {
         layout="stack"
         description="Compare a few series on one scale. Series take chart colours in order, 1 to 5, and keep them when filters change."
         code={`const config = {
-  iad: { label: "Washington, D.C.", color: "var(--chart-1)" },
-  fra: { label: "Frankfurt", color: "var(--chart-2)" },
+  fra: { label: "Frankfurt", color: "var(--chart-1)" },
+  iad: { label: "Virginia", color: "var(--chart-2)" },
   sin: { label: "Singapore", color: "var(--chart-3)" },
 } satisfies ChartConfig
 
@@ -214,7 +214,7 @@ export default function ChartDocs() {
   <YAxis tickLine={false} axisLine={false} unit=" ms" />
   <ChartTooltip content={<ChartTooltipContent />} />
   <ChartLegend content={<ChartLegendContent />} />
-  <Line dataKey="iad" stroke="var(--color-iad)" strokeWidth={2} dot={false} />
+  <Line dataKey="fra" stroke="var(--color-fra)" strokeWidth={2} dot={false} />
   …
 </LineChart>`}
       >
@@ -230,7 +230,7 @@ export default function ChartDocs() {
               <YAxis tickLine={false} axisLine={false} width={44} domain={[80, 200]} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <ChartLegend content={<ChartLegendContent />} />
-              {(["iad", "fra", "sin"] as const).map((key) => (
+              {(["fra", "iad", "sin"] as const).map((key) => (
                 <Line
                   {...chartMotion}
                   key={key}

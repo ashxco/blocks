@@ -98,12 +98,8 @@ function RuleList({ tone, title, items }: { tone: "do" | "dont"; title: string; 
   const Icon = tone === "do" ? CheckIcon : XIcon
   const color = tone === "do" ? "text-success" : "text-destructive"
   return (
-    <div
-      className={cn(
-        "grid content-start border-t-(length:--border-width-strong) pt-5",
-        tone === "do" ? "border-success" : "border-destructive"
-      )}
-    >
+    /* An ink rule over both lists; only the small marks carry the status colour. */
+    <div className="grid content-start border-t-(length:--border-width-strong) border-foreground pt-5">
       <h3 className="flex items-center gap-2.5 text-title text-foreground">
         <span
           className={cn(

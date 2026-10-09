@@ -50,9 +50,9 @@ const nav = [
 ]
 
 const regions = [
-  { value: "fra-1", label: "Frankfurt (fra-1)" },
-  { value: "iad-1", label: "Washington, D.C. (iad-1)" },
-  { value: "sin-1", label: "Singapore (sin-1)" },
+  { value: "fra1", label: "Frankfurt (fra1)" },
+  { value: "iad1", label: "Virginia (iad1)" },
+  { value: "sin1", label: "Singapore (sin1)" },
 ]
 
 const commands = [
@@ -149,7 +149,7 @@ function DeploySettings({ idPrefix }: { idPrefix: string }) {
 
         <div className="grid gap-2">
           <Label htmlFor={id("region")}>Region</Label>
-          <Select items={regions} defaultValue="fra-1">
+          <Select items={regions} defaultValue="fra1">
             <SelectTrigger id={id("region")} className="w-full">
               <SelectValue />
             </SelectTrigger>

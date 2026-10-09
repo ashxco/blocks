@@ -29,6 +29,15 @@ export default function CodeWindowDocs() {
         layout="stack"
         surface="subtle"
         description="Plain lines keep the terminal colour, which suits request logs and metrics."
+        code={`<CodeWindow
+  title="lumen logs --follow"
+  lines={[
+    "$ lumen logs web --follow",
+    "12:04:01  GET   /              200    8ms",
+    "12:04:02  POST  /api/login     200   41ms",
+    "→ p95 latency 112ms, error rate 0.0%",
+  ]}
+/>`}
       >
         <CodeWindow
           className="mx-auto w-full max-w-narrow"
@@ -58,13 +67,13 @@ export default function CodeWindowDocs() {
             {"\n"}
             <span className="text-panel-foreground">[build]</span>
             {"\ncommand = "}
-            <span className="text-success">&quot;npm run build&quot;</span>
+            <span className="text-panel-success">&quot;npm run build&quot;</span>
             {"\noutput  = "}
-            <span className="text-success">&quot;.next&quot;</span>
+            <span className="text-panel-success">&quot;.next&quot;</span>
             {"\n\n"}
             <span className="text-panel-foreground">[deploy]</span>
             {"\nregion   = "}
-            <span className="text-success">&quot;fra-1&quot;</span>
+            <span className="text-panel-success">&quot;fra1&quot;</span>
             {"\nreplicas = 2"}
           </pre>
         </CodeWindow>
@@ -75,6 +84,15 @@ export default function CodeWindowDocs() {
         layout="stack"
         surface="panel"
         description="The frame is darker than panels, so it still reads as a window inside one."
+        code={`<div className="rounded-(--panel-radius) bg-panel p-(--panel-padding)">
+  <CodeWindow
+    lines={[
+      "$ lumen domains add acme.dev",
+      "→ Waiting for DNS",
+      "✓ Certificate issued for acme.dev",
+    ]}
+  />
+</div>`}
       >
         <CodeWindow
           className="mx-auto w-full max-w-prose"

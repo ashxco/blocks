@@ -213,7 +213,7 @@ export function MaskedSecrets({
 /* -------------------------------------------------------------------------- */
 
 export interface EdgeRegion {
-  /** Region code, e.g. "fra-1". */
+  /** Region code, e.g. "fra1". */
   code: string
   /** City the region serves, shown when the tile is wide enough. */
   city: string
@@ -222,10 +222,10 @@ export interface EdgeRegion {
 }
 
 const defaultRegions: EdgeRegion[] = [
-  { code: "fra-1", city: "Frankfurt", latency: 9 },
-  { code: "iad-1", city: "Virginia", latency: 14 },
-  { code: "sin-1", city: "Singapore", latency: 21 },
-  { code: "gru-1", city: "São Paulo", latency: 27 },
+  { code: "fra1", city: "Frankfurt", latency: 9 },
+  { code: "iad1", city: "Virginia", latency: 14 },
+  { code: "sin1", city: "Singapore", latency: 21 },
+  { code: "gru1", city: "São Paulo", latency: 27 },
 ]
 
 /**

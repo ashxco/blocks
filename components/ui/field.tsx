@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator"
 
 /**
  * Blocks field. Lays out a label, a control, a description and an error with
- * one rhythm: 8px inside a field, 24px between fields in a <FieldGroup>.
+ * one rhythm: gap-2 inside a field, gap-6 between fields in a <FieldGroup>.
  *
  * Mark a field invalid with `data-invalid` on <Field> (controls inside turn
  * destructive) and `aria-invalid` on the control, then render a <FieldError>

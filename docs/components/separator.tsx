@@ -6,7 +6,7 @@ export default function SeparatorDocs() {
     <Examples>
       <Example
         title="Horizontal"
-        description="A 1px hairline between groups of content. It is the only divider in Blocks: no shadows, no fades."
+        description="A hairline (--border-width-hairline) between groups of content. It is the only divider in Blocks: no shadows, no fades."
         layout="stack"
         code={`<div className="grid gap-1">
   <h3 className="text-title">lumen-web</h3>
@@ -18,7 +18,7 @@ export default function SeparatorDocs() {
         <div className="mx-auto w-full max-w-96">
           <div className="grid gap-1">
             <h3 className="text-title text-foreground">lumen-web</h3>
-            <p className="text-sm text-muted-foreground">Next.js · Node.js 22 · Washington, iad1</p>
+            <p className="text-sm text-muted-foreground">Next.js · Node.js 22 · Virginia, iad1</p>
           </div>
           <Separator className="my-5" />
           <dl className="grid grid-cols-2 gap-4 text-sm">
@@ -88,7 +88,7 @@ export default function SeparatorDocs() {
           <div className="flex h-5 items-center gap-3 text-sm text-panel-muted">
             <span>99.99% uptime</span>
             <Separator variant="panel" orientation="vertical" />
-            <span>35 regions</span>
+            <span>14 regions</span>
             <Separator variant="panel" orientation="vertical" />
             <span>SOC 2 Type II</span>
           </div>

@@ -42,7 +42,7 @@ export default function ActivityFeedDocs() {
   ]}
 />`}
       >
-        <div className="mx-auto max-w-narrow p-6 md:p-10">
+        <div className="mx-auto max-w-narrow p-6 @prose:p-10">
           <ActivityFeed />
         </div>
       </Example>
@@ -62,7 +62,7 @@ export default function ActivityFeedDocs() {
   }
 />`}
       >
-        <div className="mx-auto max-w-prose p-6 md:p-10">
+        <div className="mx-auto max-w-prose p-6 @prose:p-10">
           <ActivityFeed
             limit={4}
             description="Latest changes across your projects."

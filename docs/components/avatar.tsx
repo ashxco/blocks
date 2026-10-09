@@ -31,7 +31,7 @@ export default function AvatarDocs() {
     <Examples>
       <Example
         title="Sizes"
-        description="Four sizes from --avatar-size-*: 28, 36, 48 and 72px."
+        description="Four sizes, each a token: --avatar-size-sm, --avatar-size-md (the default), --avatar-size-lg and --avatar-size-xl."
         code={`<Avatar size="sm"><AvatarFallback>PR</AvatarFallback></Avatar>
 <Avatar><AvatarFallback>PR</AvatarFallback></Avatar>
 <Avatar size="lg"><AvatarFallback>PR</AvatarFallback></Avatar>

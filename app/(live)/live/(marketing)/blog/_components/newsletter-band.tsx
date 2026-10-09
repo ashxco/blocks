@@ -17,7 +17,7 @@ export interface NewsletterBandProps {
  */
 export function NewsletterBand({
   title = "Get the next post in your inbox.",
-  description = "Every new post, about twice a month. No sales emails, and you can unsubscribe with one click.",
+  description = "Every new post, the day it goes out. No sales emails, and you can unsubscribe with one click.",
   className = "container-page pb-section",
 }: NewsletterBandProps) {
   return (

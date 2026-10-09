@@ -87,8 +87,7 @@ export function OnboardingComplete({
       <div className="grid gap-10 p-(--panel-padding-sm) @narrow/complete:grid-cols-2 @narrow/complete:items-center @narrow/complete:gap-12">
         <div className="min-w-0">
           <span className="grid size-12 place-items-center rounded-full bg-panel-raised">
-            {/* dark: the check takes the dark theme's green, which reads on the panel in both themes. */}
-            <CheckIcon className="dark size-5 text-success" strokeWidth={2.5} aria-hidden="true" />
+            <CheckIcon className="size-5 text-panel-success" strokeWidth={2.5} aria-hidden="true" />
           </span>
           <h2
             id={titleId}
@@ -121,7 +120,15 @@ export function OnboardingComplete({
             </Button>
           </div>
         </div>
-        <CodeWindow title={`${repoName} · main`} lines={lines.slice(0, shown)} className="dark min-h-72" />
+        {/* The log is sentence-like, so it wraps on phones instead of cutting lines off. The
+            minimum height holds the space while lines stream in. The title is the repository
+            alone (the log names the branch), so it fits the title bar on a phone. */}
+        <CodeWindow
+          title={repoName}
+          lines={lines.slice(0, shown)}
+          wrap
+          className="min-h-56 @narrow/complete:min-h-72"
+        />
       </div>
     </section>
   )

@@ -32,10 +32,10 @@ const capabilities: Capability[] = [
   { title: "Scheduled jobs", description: "Cron jobs and one-off tasks, with logs and retries.", icon: CalendarClockIcon },
   { title: "Zero-downtime deploys", description: "New versions take traffic only once they are healthy.", icon: RefreshCwIcon },
   { title: "Autoscaling", description: "Add replicas on CPU or request load, and scale down at night.", icon: ScalingIcon },
-  { title: "Managed Postgres", description: "Nightly backups, point-in-time restore and read replicas.", icon: DatabaseIcon },
+  { title: "Managed Postgres", description: "Backups on every plan, point-in-time restore from Pro, read replicas on Scale.", icon: DatabaseIcon },
   { title: "Edge protection", description: "TLS, rate limits and DDoS filtering in 38 edge regions.", icon: ShieldCheckIcon },
   { title: "Secrets vault", description: "Encrypted at rest and scoped to each environment.", icon: KeyRoundIcon },
-  { title: "Roles and audit log", description: "Four roles, single sign-on and a record of every change.", icon: UsersIcon },
+  { title: "Roles and audit log", description: "Four roles and an audit log from Pro, SAML single sign-on on Scale.", icon: UsersIcon },
 ]
 
 /**
@@ -51,10 +51,10 @@ export function CapabilityGrid() {
             <>
               Twelve capabilities.
               <br />
-              Every plan.
+              One platform.
             </>
           }
-          description="Limits grow as you move up a plan, but features never sit behind an upgrade and there is no add-on store."
+          description="Every plan runs the same platform. Limits, backups, team controls and support grow as you move up."
           className="mb-12 md:mb-16"
         />
         <ul className="grid gap-px overflow-hidden rounded-(--card-radius) border bg-border sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

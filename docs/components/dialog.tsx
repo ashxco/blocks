@@ -65,8 +65,11 @@ const buildLog = [
 
 type Stage = HTMLDivElement | null
 
-/** Inside a stage, the dialog fits the stage rather than the viewport. */
-const inStage = "max-h-[calc(100%-2rem)]"
+/**
+ * Inside a stage, the dialog fits the stage rather than the viewport, and the
+ * wheel carries on to the page once the dialog has nothing left to scroll.
+ */
+const inStage = "max-h-[calc(100%-2rem)] overscroll-auto"
 
 function AddDomainDialog({ container }: { container: Stage }) {
   const [open, setOpen] = React.useState(true)
@@ -200,11 +203,13 @@ function ProjectMenuWithDialog({ container }: { container: Stage }) {
  * containing block for the fixed overlay and popup, and isolate keeps them
  * under the site header. The dialog is non-modal there, so the page still
  * scrolls, and a click elsewhere leaves it open. Close it to reach the trigger.
+ * The overlay keeps its tint but not its blur, which in a stage this small only
+ * smears the page into grey.
  */
 function DialogStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className={cn("relative isolate h-full min-h-112 w-full overflow-hidden contain-layout", className)}>
+    <div ref={setContainer} className={cn("relative isolate h-full min-h-112 w-full overflow-hidden contain-layout [&_[data-slot=dialog-overlay]]:backdrop-blur-none", className)}>
       <StagePage action={children(container)} />
     </div>
   )
@@ -411,7 +416,7 @@ export default function DialogDocs() {
       <Example
         title="Sizes"
         layout="full"
-        description="Default width is --dialog-width. Use sm for a single field or a short message, lg (--container-prose) for reference content such as a list of shortcuts."
+        description="Default width is --dialog-width. Use sm (--dialog-width-sm) for a single field or a short message, and lg (--dialog-width-lg) for reference content such as a list of shortcuts."
         code={`<DialogContent size="sm">…</DialogContent>
 <DialogContent>…</DialogContent>
 <DialogContent size="lg">…</DialogContent>`}
@@ -448,7 +453,7 @@ export default function DialogDocs() {
 
       <Example
         title="Close in the footer"
-        description="Set showCloseButton={false} on the content and showCloseButton on the footer when the dialog only informs, so the one way out is obvious."
+        description="Set showCloseButton={false} on the content and use <DialogFooter showCloseButton> when the dialog only informs, so the one way out is obvious."
         layout="full"
         code={`<DialogContent showCloseButton={false}>
   …
@@ -492,6 +497,23 @@ export default function DialogDocs() {
         title="Long content"
         layout="full"
         description="The dialog never grows past the viewport. Put long output in its own scrolling region so the title and actions stay in view."
+        code={`<DialogContent size="lg">
+  <DialogHeader>
+    <DialogTitle>Build log</DialogTitle>
+    <DialogDescription>lumen-web · main · 8f2c1a9 · built in 38s</DialogDescription>
+  </DialogHeader>
+  <pre
+    tabIndex={0}
+    aria-label="Build log"
+    className="max-h-64 overflow-auto rounded-(--control-radius) border bg-terminal p-4 font-mono text-code text-terminal-foreground"
+  >
+    {log}
+  </pre>
+  <DialogFooter>
+    <DialogClose render={<Button variant="outline" />}>Close</DialogClose>
+    <Button>Download log</Button>
+  </DialogFooter>
+</DialogContent>`}
       >
         <DialogStage className="min-h-144">
           {(container) => (
@@ -505,7 +527,7 @@ export default function DialogDocs() {
                 <pre
                   tabIndex={0}
                   aria-label="Build log"
-                  className="max-h-64 overflow-auto rounded-(--control-radius) bg-terminal p-4 font-mono text-code text-terminal-foreground outline-none focus-visible:focus-ring"
+                  className="max-h-64 overflow-auto rounded-(--control-radius) border bg-terminal p-4 font-mono text-code text-terminal-foreground outline-none focus-visible:focus-ring"
                 >
                   {buildLog.join("\n")}
                 </pre>
@@ -554,7 +576,7 @@ export default function DialogDocs() {
           { prop: "onOpenChange", type: "(open: boolean) => void", description: "Called when the dialog opens or closes." },
           { prop: "defaultOpen", type: "boolean", default: "false", description: "Initial open state when uncontrolled." },
           { prop: "modal", type: 'boolean | "trap-focus"', default: "true", description: "Locks scroll and traps focus while open." },
-          { prop: "size", type: '"sm" | "default" | "lg"', default: '"default"', description: "On DialogContent. Maximum width: three quarters of --dialog-width, --dialog-width, or --container-prose." },
+          { prop: "size", type: '"sm" | "default" | "lg"', default: '"default"', description: "On DialogContent. Maximum width: --dialog-width-sm, --dialog-width or --dialog-width-lg." },
           { prop: "showCloseButton", type: "boolean", default: "true", description: "On DialogContent. Shows the close button in the top-right corner." },
           { prop: "initialFocus", type: "RefObject | boolean", description: "On DialogContent. The element to focus when the dialog opens." },
           { prop: "showCloseButton (footer)", type: "boolean", default: "false", description: "On DialogFooter. Adds an outline Close button after the other actions." },

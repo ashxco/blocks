@@ -12,7 +12,7 @@ export default function MembersListDocs() {
         layout="full"
         code={`<MembersList workspaceName="Acme Inc." seats={10} planName="Pro" />`}
       >
-        <div className="p-(--card-padding) sm:p-10">
+        <div className="p-(--card-padding) @prose:p-10">
           <MembersList />
         </div>
       </Example>
@@ -33,7 +33,7 @@ export default function MembersListDocs() {
   ]}
 />`}
       >
-        <div className="p-(--card-padding) sm:p-10">
+        <div className="p-(--card-padding) @prose:p-10">
           <MembersList
             seats={3}
             planName="Starter"
@@ -59,7 +59,7 @@ export default function MembersListDocs() {
 // The dialog's content on its own surface, for an empty team page or onboarding
 <InvitePanel workspaceName="Acme Inc." existingEmails={emails} />`}
       >
-        <div className="grid justify-items-center gap-6 px-4 py-10 sm:px-10">
+        <div className="grid justify-items-center gap-6 px-4 py-10 @prose:px-10">
           <InviteDialog existingEmails={["maya@acme.dev"]} />
           <InvitePanel existingEmails={["maya@acme.dev"]} />
         </div>

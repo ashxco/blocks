@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ArrowRightIcon, CompassIcon, FlameIcon, MountainIcon, WavesIcon } from "lucide-react"
+import { AnchorIcon, ArrowRightIcon, CompassIcon, FlameIcon, MountainIcon } from "lucide-react"
 
 import { CtaBand } from "@/components/blocks/cta-band"
 import { LogoCloud } from "@/components/blocks/logo-cloud"
@@ -36,7 +36,7 @@ const backers = [
   { name: "Fieldstone", icon: MountainIcon },
   { name: "Northlight", icon: CompassIcon },
   { name: "Kiln", icon: FlameIcon },
-  { name: "Tidewater", icon: WavesIcon },
+  { name: "Harbor", icon: AnchorIcon },
 ]
 
 export default function AboutPage() {
@@ -77,17 +77,12 @@ export default function AboutPage() {
       <ValuesGrid />
 
       <TeamGrid
-        members={defaultTeam.slice(0, 7)}
+        members={defaultTeam}
         title="The people behind Lumen."
-        description="Fourteen of us across six time zones, building Lumen in the open and shipping something every week."
-        hiring={{
-          title: "Join the team",
-          description: "Six open roles in engineering, design and support.",
-          href: "#careers",
-        }}
+        description="Fourteen of us across six time zones, building Lumen in the open and shipping a release every two weeks."
       />
 
-      <LogoCloud title="Backed by investors who have run infrastructure at scale" items={backers} />
+      <LogoCloud layout="center" title="Backed by investors who have run infrastructure at scale" items={backers} />
 
       <div id="careers" className="scroll-mt-(--header-height)">
         <CtaBand

@@ -15,14 +15,14 @@ export default function SectionHeadingDocs() {
         layout="full"
         description="The default. Title on the left, the supporting sentence on the right, sitting on the title’s last line. Stacks in narrow slots."
         code={`<SectionHeading
-  title="From repo to production in four moves."
-  description="No agent on your servers and no black box. Connect a repository and Lumen handles the build, the rollout and the routing."
+  title="See every request, from edge to database."
+  description="Logs, traces and metrics arrive in one view. No agent to install, and nothing sampled away."
 />`}
       >
-        <div className="p-8 sm:p-12">
+        <div className="p-8 @2xl:p-12">
           <SectionHeading
-            title="From repo to production in four moves."
-            description="No agent on your servers and no black box. Connect a repository and Lumen handles the build, the rollout and the routing."
+            title="See every request, from edge to database."
+            description="Logs, traces and metrics arrive in one view. No agent to install, and nothing sampled away."
           />
         </div>
       </Example>
@@ -45,7 +45,7 @@ export default function SectionHeadingDocs() {
   </Button>
 </SectionHeading>`}
       >
-        <div className="p-8 sm:p-12">
+        <div className="p-8 @2xl:p-12">
           <SectionHeading
             align="center"
             title="Pay for traffic, not teammates."
@@ -68,11 +68,11 @@ export default function SectionHeadingDocs() {
         description="One column for content-led pages, where the section reads like an article."
         code={`<SectionHeading align="left" title="Everything included." description="…" />`}
       >
-        <div className="p-8 sm:p-12">
+        <div className="p-8 @2xl:p-12">
           <SectionHeading
             align="left"
             title="Everything included. Nothing bolted on."
-            description="Logs, metrics, domains, databases and roles ship with every plan. There is no add-on store to shop in."
+            description="Logs, metrics, domains and databases ship with every plan. There is no add-on store to shop in."
           />
         </div>
       </Example>
@@ -85,7 +85,7 @@ export default function SectionHeadingDocs() {
   title={<>Ship anything. Own <span className="text-brand">everything</span>.</>}
 />`}
       >
-        <div className="p-8 sm:p-12">
+        <div className="p-8 @2xl:p-12">
           <SectionHeading
             title={
               <>
@@ -104,12 +104,12 @@ export default function SectionHeadingDocs() {
         description="Set as to h1 for the title of an inner page, such as Pricing or About. Only one per page."
         code={`<SectionHeading as="h1" align="left" title="Changelog" description="…" />`}
       >
-        <div className="p-8 sm:p-12">
+        <div className="p-8 @2xl:p-12">
           <SectionHeading
             as="h1"
             align="left"
             title="Changelog"
-            description="New features, fixes and improvements to Lumen, every week."
+            description="New features, fixes and improvements to Lumen, every two weeks."
           />
         </div>
       </Example>

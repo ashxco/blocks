@@ -17,6 +17,7 @@ import {
   MessageScrollerViewport,
 } from "@/components/ui/message-scroller"
 import { Spinner } from "@/components/ui/spinner"
+import { cn } from "@/lib/utils"
 
 type Turn =
   | { id: string; role: "user" | "assistant"; text: string }
@@ -161,6 +162,110 @@ function AskLumen() {
   )
 }
 
+/** A bordered, fixed-height frame for the smaller examples. */
+function ScrollerFrame({ className, children }: { className: string; children: React.ReactNode }) {
+  return (
+    <div
+      className={cn(
+        "mx-auto flex w-full max-w-2xl flex-col overflow-hidden rounded-(--card-radius) border border-border bg-background",
+        className
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+
+/**
+ * Opens at the top of the thread, so the newest message is out of view and the
+ * pill shows. The pill sits in the footer row rather than over the thread, so
+ * it never covers a message: it can live anywhere inside the provider, and
+ * bottom-4 centres it in the h-16 row.
+ */
+function JumpToLatest() {
+  return (
+    <MessageScrollerProvider defaultScrollPosition="start">
+      <ScrollerFrame className="h-96">
+        <MessageScroller className="flex-1">
+          <MessageScrollerViewport aria-label="Earlier conversation with Lumen">
+            <MessageScrollerContent className="px-5 py-6">
+              <Turns turns={history} />
+            </MessageScrollerContent>
+          </MessageScrollerViewport>
+        </MessageScroller>
+        <div className="relative flex h-16 shrink-0 items-center border-t border-border px-5">
+          <p className="text-caption text-muted-foreground">
+            {history.filter((turn) => turn.role !== "marker").length} messages
+          </p>
+          <MessageScrollerButton />
+        </div>
+      </ScrollerFrame>
+    </MessageScrollerProvider>
+  )
+}
+
+const earlier: Turn[] = [
+  { id: "e1", role: "user", text: "Which regions does lumen-web run in?" },
+  { id: "e2", role: "assistant", text: "Frankfurt, Virginia and Singapore. Requests go to the closest one." },
+  { id: "e3", role: "user", text: "Can I pin the database to Frankfurt?" },
+  { id: "e4", role: "assistant", text: "Yes. Choose the region when you create the database. It stays there; only the functions move." },
+]
+
+/**
+ * Older messages load above what people are reading. The viewport keeps
+ * their place (preserveScrollOnPrepend), so nothing jumps when history arrives.
+ */
+function LoadEarlier() {
+  const [turns, setTurns] = React.useState<Turn[]>(history.slice(-3))
+  const [state, setState] = React.useState<"more" | "loading" | "done">("more")
+  const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  React.useEffect(() => {
+    return () => {
+      if (timer.current) clearTimeout(timer.current)
+    }
+  }, [])
+
+  function loadEarlier() {
+    setState("loading")
+    timer.current = setTimeout(() => {
+      setTurns((current) => [...earlier, ...current])
+      setState("done")
+    }, 1200)
+  }
+
+  return (
+    <MessageScrollerProvider defaultScrollPosition="end">
+      <ScrollerFrame className="h-96">
+        <MessageScroller className="flex-1">
+          <MessageScrollerViewport aria-label="Conversation with Lumen, with earlier messages" preserveScrollOnPrepend>
+            <MessageScrollerContent className="px-5 py-6">
+              {state !== "done" ? (
+                <MessageScrollerItem messageId="earlier" className="flex justify-center">
+                  {state === "loading" ? (
+                    <Marker>
+                      <MarkerIcon>
+                        <Spinner className="size-3.5" />
+                      </MarkerIcon>
+                      <MarkerContent>Loading earlier messages</MarkerContent>
+                    </Marker>
+                  ) : (
+                    <Button variant="ghost" size="sm" onClick={loadEarlier}>
+                      Show {earlier.length} earlier messages
+                    </Button>
+                  )}
+                </MessageScrollerItem>
+              ) : null}
+              <Turns turns={turns} />
+            </MessageScrollerContent>
+          </MessageScrollerViewport>
+          <MessageScrollerButton />
+        </MessageScroller>
+      </ScrollerFrame>
+    </MessageScrollerProvider>
+  )
+}
+
 export default function MessageScrollerDocs() {
   return (
     <Examples>
@@ -184,6 +289,46 @@ export default function MessageScrollerDocs() {
 </MessageScrollerProvider>`}
       >
         <AskLumen />
+      </Example>
+
+      <Example
+        title="Jump to latest"
+        layout="stack"
+        description="This thread opens at its first message, so the newest one is out of view. MessageScrollerButton fades in; choose it to jump to the latest message, and it fades out again. Inside MessageScroller it floats over the bottom of the thread. Here it sits in the footer row instead, so it never covers a message."
+        code={`<MessageScrollerProvider defaultScrollPosition="start">
+  <MessageScroller className="h-80">
+    <MessageScrollerViewport aria-label="Conversation with Lumen">…</MessageScrollerViewport>
+  </MessageScroller>
+  <div className="relative flex h-16 items-center border-t px-5">
+    <p className="text-caption text-muted-foreground">8 messages</p>
+    <MessageScrollerButton />
+  </div>
+</MessageScrollerProvider>`}
+      >
+        <JumpToLatest />
+      </Example>
+
+      <Example
+        title="Loading earlier messages"
+        layout="stack"
+        description="Load history above what people are reading. While it loads, a marker with a spinner holds the top; when it arrives, preserveScrollOnPrepend keeps the reading position, so the visible messages don’t move."
+        code={`<MessageScrollerViewport preserveScrollOnPrepend>
+  <MessageScrollerContent>
+    {loading ? (
+      <MessageScrollerItem messageId="earlier">
+        <Marker>
+          <MarkerIcon><Spinner /></MarkerIcon>
+          <MarkerContent>Loading earlier messages</MarkerContent>
+        </Marker>
+      </MessageScrollerItem>
+    ) : null}
+    {turns.map((turn) => (
+      <MessageScrollerItem key={turn.id} messageId={turn.id}>…</MessageScrollerItem>
+    ))}
+  </MessageScrollerContent>
+</MessageScrollerViewport>`}
+      >
+        <LoadEarlier />
       </Example>
 
       <Guidelines

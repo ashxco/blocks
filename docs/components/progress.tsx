@@ -19,7 +19,8 @@ const steps = [
 ]
 
 function DeployProgress() {
-  const [value, setValue] = React.useState<number | null>(null)
+  // Rests on the last finished deploy, so the preview shows a full, labelled bar.
+  const [value, setValue] = React.useState<number | null>(100)
   const timer = React.useRef<ReturnType<typeof setInterval> | null>(null)
 
   React.useEffect(() => () => {
@@ -127,7 +128,7 @@ export default function ProgressDocs() {
 
       <Example
         title="Deploy"
-        description="The width animates between values, so frequent updates look smooth."
+        description="The width animates between values, so frequent updates look smooth. Choose Deploy again to watch it run, with the current step next to the bar."
         layout="stack"
         code={`const [value, setValue] = React.useState(0)
 

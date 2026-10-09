@@ -117,7 +117,8 @@ function Families() {
         <div className="grid gap-2">
           <h3 className="text-h3 text-foreground">Plus Jakarta Sans</h3>
           <p className="text-caption text-copy">{withoutName(sans?.description, "Plus Jakarta Sans")}</p>
-          <Code className="text-muted-foreground">font-sans · font-heading</Code>
+          {/* font-heading is an alias of the sans stack that headings use. */}
+          <Code className="text-muted-foreground">{[sans?.utility ?? "font-sans", "font-heading"].join(" · ")}</Code>
         </div>
         <p aria-hidden className="text-7xl leading-none font-extrabold text-foreground">
           Aa
@@ -156,7 +157,7 @@ function Families() {
         <div className="grid gap-2">
           <h3 className="text-h3 text-panel-foreground">Geist Mono</h3>
           <p className="text-caption text-panel-muted">{withoutName(mono?.description, "Geist Mono")}</p>
-          <code className="font-mono text-code text-panel-muted">font-mono</code>
+          <code className="font-mono text-code text-panel-muted">{mono?.utility ?? "font-mono"}</code>
         </div>
         <p aria-hidden className="font-mono text-7xl leading-none font-bold text-panel-foreground">
           Aa

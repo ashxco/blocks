@@ -2,23 +2,16 @@
 
 import { KeyRoundIcon } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, typeRole } from "@/docs/kit"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { tokens } from "@/design-system/generated/tokens"
 
-/** The label type role, read from the generated tokens so the copy follows the system. */
-const labelRole = (() => {
-  const value = tokens.find((token) => token.cssVar === "--text-label")?.value as
-    | { fontSize?: string; fontWeight?: number }
-    | undefined
-  const size = value?.fontSize?.endsWith("rem") ? `${parseFloat(value.fontSize) * 16}px` : value?.fontSize
-  const weights: Record<number, string> = { 400: "regular", 500: "medium", 600: "semibold", 700: "bold", 800: "extra-bold" }
-  return [size, value?.fontWeight ? weights[value.fontWeight] : undefined].filter(Boolean).join(", ")
-})()
+/** The label type role, read from the tokens so the copy follows the system. */
+const label = typeRole("--text-label")
+const labelRole = `${label.px}px, ${label.weight}`
 
 export default function LabelDocs() {
   return (
@@ -76,7 +69,7 @@ export default function LabelDocs() {
   <Label htmlFor="company">
     Company <span className="font-normal text-muted-foreground">Optional</span>
   </Label>
-  <Input id="company" autoComplete="organization" />
+  <Input id="company" autoComplete="organization" placeholder="Acme Inc." />
 </div>
 
 <div className="grid gap-2">
@@ -92,7 +85,7 @@ export default function LabelDocs() {
             <Label htmlFor="label-company">
               Company <span className="font-normal text-muted-foreground">Optional</span>
             </Label>
-            <Input id="label-company" autoComplete="organization" />
+            <Input id="label-company" autoComplete="organization" placeholder="Acme Inc." />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="label-token">
@@ -108,7 +101,7 @@ export default function LabelDocs() {
         title="Disabled"
         layout="stack"
         description="A label dims with its control. When the control comes first and carries the peer class, as a checkbox does, that happens on its own. When the label comes first, as before a switch, set data-disabled on the surrounding Field."
-        code={`<div className="flex items-center gap-2">
+        code={`<div className="flex items-center gap-3">
   <Checkbox id="legacy" disabled />
   <Label htmlFor="legacy" className="font-medium">
     Use the legacy build image
@@ -123,7 +116,7 @@ export default function LabelDocs() {
 </Field>`}
       >
         <div className="grid w-full max-w-sm gap-5">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Checkbox id="label-disabled-check" disabled />
             <Label htmlFor="label-disabled-check" className="font-medium">
               Use the legacy build image

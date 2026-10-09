@@ -12,7 +12,7 @@ export default function BillingSummaryDocs() {
         layout="full"
         code={`<BillingSummary />`}
       >
-        <div className="p-(--card-padding) sm:p-10">
+        <div className="p-(--card-padding) @prose:p-10">
           <BillingSummary />
         </div>
       </Example>
@@ -33,7 +33,7 @@ export default function BillingSummaryDocs() {
   invoices={[…]}
 />`}
       >
-        <div className="p-(--card-padding) sm:p-10">
+        <div className="p-(--card-padding) @prose:p-10">
           <BillingSummary
             currentPlanId="starter"
             renewsOn="October 14, 2026"
@@ -85,7 +85,7 @@ export default function BillingSummaryDocs() {
           { prop: "paymentMethod", type: "PaymentMethod", description: "brand, last4, expires, email and an optional billedTo. The summary follows changes." },
           { prop: "invoices", type: "Invoice[]", description: "id, date, description, amount, status and an optional PDF href." },
           { prop: "currency", type: "string", default: '"USD"', description: "ISO 4217 code for prices and amounts." },
-          { prop: "pricingHref", type: "string", default: '"/live/pricing"', description: "Target of “Compare plans”." },
+          { prop: "pricingHref", type: "string | null", default: '"/live/pricing"', description: "Target of “Compare plans”. Pass null to leave the link out when the page already compares plans." },
           { prop: "changePlanHref", type: "string", description: "Makes “Change plan” a link, such as \"#change-plan\", for pages that already list the plans. Without it the button opens the change-plan dialog." },
           { prop: "nextCharge", type: "number", description: "Amount shown as the next charge on renewsOn. Defaults to the current plan’s price." },
           { prop: "onPlanChange", type: "(plan) => void | Promise<void>", description: "Called when a new plan is confirmed. Throw to keep the dialog open. Upgrades show at once; downgrades start at renewal, so the panel keeps the current plan." },

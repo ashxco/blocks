@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, CircleAlertIcon, RotateCcwIcon, ThumbsUpIcon } from "lucide-react"
+import { CircleAlertIcon, HeartIcon, RotateCcwIcon, ThumbsUpIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Bubble, BubbleContent, BubbleGroup, BubbleReactions } from "@/components/ui/bubble"
@@ -131,7 +131,7 @@ export default function BubbleDocs() {
       <Example
         title="Reactions"
         layout="stack"
-        description="BubbleReactions sits on the bubble’s edge, cut out from it with a ring in the canvas colour."
+        description="BubbleReactions sits on the bubble’s edge, cut out from it with a ring in the canvas colour. Reactions are for people’s responses; put delivery status such as Seen in the MessageFooter."
         code={`<Bubble variant="secondary" className="mb-4">
   <BubbleContent>…</BubbleContent>
   <BubbleReactions>
@@ -148,13 +148,20 @@ export default function BubbleDocs() {
               <span className="sr-only">people reacted with thumbs up</span>
             </BubbleReactions>
           </Bubble>
-          <Bubble align="end">
-            <BubbleContent>Nice work. Let’s write up what happened tomorrow.</BubbleContent>
-            <BubbleReactions align="start">
-              <CheckIcon aria-hidden="true" />
-              <span className="sr-only">Seen by Mateo</span>
-            </BubbleReactions>
-          </Bubble>
+          <Message align="end">
+            <MessageContent>
+              <Bubble align="end">
+                <BubbleContent>Nice work. Let’s write up what happened tomorrow.</BubbleContent>
+                <BubbleReactions align="start">
+                  <HeartIcon aria-hidden="true" />
+                  <span>2</span>
+                  <span className="sr-only">people reacted with a heart</span>
+                </BubbleReactions>
+              </Bubble>
+              {/* Delivery status is not a reaction: it goes in the footer. */}
+              <MessageFooter className="pt-1">Seen by Mateo</MessageFooter>
+            </MessageContent>
+          </Message>
         </div>
       </Example>
 

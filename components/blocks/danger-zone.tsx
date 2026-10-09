@@ -209,10 +209,10 @@ function DangerConfirm({
       >
         {action.actionLabel}
       </AlertDialogTrigger>
-      <AlertDialogContent className="max-w-[calc(100%-2rem)] sm:max-w-(--dialog-width)">
+      <AlertDialogContent>
         <form onSubmit={handleSubmit} className="contents">
           <AlertDialogHeader>
-            <AlertDialogMedia className={destructive ? "bg-destructive-subtle text-destructive" : undefined}>
+            <AlertDialogMedia variant={destructive ? "destructive" : "default"}>
               <TriangleAlertIcon aria-hidden="true" />
             </AlertDialogMedia>
             <AlertDialogTitle>{action.confirmTitle}</AlertDialogTitle>

@@ -14,6 +14,12 @@ import { ScopedPortal } from "@/lib/portal-container"
  *   <NavigationMenuLink className={navigationMenuTriggerStyle()} render={<Link href="/pricing" />}>
  *     Pricing
  *   </NavigationMenuLink>
+ *
+ * This module is deliberately not "use client". It holds no hooks or state:
+ * every part renders a Base UI client component or ScopedPortal, and those
+ * travel from a server component as client references. So a server component
+ * can render the menu and also call navigationMenuTriggerStyle(), which a
+ * "use client" module would turn into a client reference it cannot call.
  */
 function NavigationMenu({
   align = "start",

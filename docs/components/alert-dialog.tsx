@@ -24,8 +24,11 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 type Stage = HTMLDivElement | null
 
-/** Inside a stage, the dialog fits the stage rather than the viewport. */
-const inStage = "max-h-[calc(100%-2rem)]"
+/**
+ * Inside a stage, the dialog fits the stage rather than the viewport, and the
+ * wheel carries on to the page once the dialog has nothing left to scroll.
+ */
+const inStage = "max-h-[calc(100%-2rem)] overscroll-auto"
 
 /**
  * The previews show each alert dialog already open, in place on the page.
@@ -52,6 +55,8 @@ function PreviewRoot({
 /**
  * The stage the dialog opens into. contain-layout makes it the containing
  * block for the fixed overlay and popup; isolate keeps them under the site header.
+ * The overlay keeps its tint but not its blur, which in a stage this small only
+ * smears the page into grey.
  */
 function DialogStage({
   title,
@@ -66,7 +71,7 @@ function DialogStage({
 }) {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout">
+    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout [&_[data-slot=alert-dialog-overlay]]:backdrop-blur-none">
       <div className="grid content-start gap-8 p-6 sm:p-12">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="grid gap-1">
@@ -160,7 +165,7 @@ function DeleteBranchDialog({ container }: { container: Stage }) {
       <AlertDialogTrigger render={<Button variant="outline" />}>Delete preview branch</AlertDialogTrigger>
       <AlertDialogContent container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
-          <AlertDialogMedia className="bg-destructive-subtle text-destructive">
+          <AlertDialogMedia variant="destructive">
             <Trash2Icon />
           </AlertDialogMedia>
           <AlertDialogTitle>Delete the preview branch?</AlertDialogTitle>
@@ -293,7 +298,7 @@ function TypeToConfirmDialog({ container }: { container: Stage }) {
       <AlertDialogTrigger render={<Button variant="destructive" />}>Delete project</AlertDialogTrigger>
       <AlertDialogContent container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
-          <AlertDialogMedia className="bg-destructive-subtle text-destructive">
+          <AlertDialogMedia variant="destructive">
             <Trash2Icon />
           </AlertDialogMedia>
           <AlertDialogTitle>Delete {project}?</AlertDialogTitle>
@@ -360,10 +365,10 @@ export default function AlertDialogDocs() {
       <Example
         title="Destructive"
         layout="full"
-        description="Add a tinted media tile and use the destructive button for actions that delete data or can’t be undone."
+        description="Add a destructive media tile and use the destructive button for actions that delete data or can’t be undone."
         code={`<AlertDialogContent>
   <AlertDialogHeader>
-    <AlertDialogMedia className="bg-destructive-subtle text-destructive">
+    <AlertDialogMedia variant="destructive">
       <Trash2Icon />
     </AlertDialogMedia>
     <AlertDialogTitle>Delete the preview branch?</AlertDialogTitle>
@@ -383,7 +388,7 @@ export default function AlertDialogDocs() {
       <Example
         title="Small"
         layout="full"
-        description="size=“sm” centres a short question and gives both answers equal width. Good for sign-out and leave prompts."
+        description={`size="sm" narrows the dialog to --dialog-width-sm, centres a short question and gives both answers equal width. Good for sign-out and leave prompts.`}
         code={`<AlertDialogContent size="sm">…</AlertDialogContent>`}
       >
         <DialogStage title="Sessions" meta="4 devices signed in" rows={accountRows}>
@@ -437,10 +442,10 @@ export default function AlertDialogDocs() {
         rows={[
           { prop: "open", type: "boolean", description: "Controlled open state. Pair with onOpenChange." },
           { prop: "onOpenChange", type: "(open: boolean) => void", description: "Called when the dialog opens or closes. Ignore it while a request is pending." },
-          { prop: "size", type: '"default" | "sm"', default: '"default"', description: "On AlertDialogContent. sm centres the content and puts both buttons side by side." },
+          { prop: "size", type: '"default" | "sm"', default: '"default"', description: "On AlertDialogContent. Maximum width: --dialog-width, or --dialog-width-sm for sm, which also centres the content and puts both buttons side by side." },
           { prop: "variant", type: "Button variant", default: '"default"', description: "On AlertDialogAction, a Button that does not close the dialog by itself. Use \"destructive\" for actions that delete data." },
           { prop: "variant (cancel)", type: "Button variant", default: '"outline"', description: "On AlertDialogCancel, which always closes the dialog." },
-          { prop: "className", type: "string", description: "On AlertDialogMedia. Tint the tile, e.g. bg-destructive-subtle text-destructive." },
+          { prop: "variant (media)", type: '"default" | "destructive"', default: '"default"', description: "On AlertDialogMedia. The default tile is bg-muted with a hairline border; destructive tints it with bg-destructive-subtle and drops the border." },
           { prop: "render", type: "ReactElement", description: "On AlertDialogTrigger. Render as a Button: render={<Button variant=\"outline\" />}." },
         ]}
       />

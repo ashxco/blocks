@@ -9,7 +9,7 @@ export default function ComparisonDocs() {
       <Example
         title="Default"
         layout="full"
-        description="Your product on a dark emphasis panel with success checks, beside the alternative on a tinted card with muted crosses. Stacks in narrow slots."
+        description="Your product on a dark emphasis panel with green checks, beside the alternative on the canvas with muted crosses. Stacks in narrow slots."
         code={`<Comparison />`}
       >
         <Comparison />
@@ -73,8 +73,8 @@ export default function ComparisonDocs() {
         rows={[
           { prop: "title", type: "ReactNode | null", default: '"Why teams switch to Lumen."', description: "Centred section heading. Pass null to render the cards alone." },
           { prop: "description", type: "ReactNode", description: "Supporting text under the heading." },
-          { prop: "us", type: "{ name: ReactNode; items: string[] }", default: "Lumen, five rows", description: "Your side: a dark emphasis panel with success checks. For a wordmark name, use its panel tone." },
-          { prop: "them", type: "{ name: ReactNode; items: string[] }", default: '"Typical hosted platform", five rows', description: "The alternative: tinted card and muted crosses." },
+          { prop: "us", type: "{ name: ReactNode; items: string[] }", default: "Lumen, five rows", description: "Your side: a dark emphasis panel with green checks. For a wordmark name, use its panel tone." },
+          { prop: "them", type: "{ name: ReactNode; items: string[] }", default: '"Typical hosted platform", five rows', description: "The alternative: canvas-coloured card and muted crosses." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section spacing." },
           { prop: "className", type: "string", description: "Classes for the section." },
         ]}

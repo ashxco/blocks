@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   ArrowRightIcon,
   BookOpenIcon,
+  BracesIcon,
   DatabaseIcon,
   GitBranchIcon,
   GlobeIcon,
@@ -15,6 +16,7 @@ import {
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
+import { Kern } from "@/components/ui/kern"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -45,7 +47,7 @@ const product = [
 const developers = [
   { title: "Documentation", description: "Guides for every framework Lumen builds.", icon: BookOpenIcon },
   { title: "CLI", description: "Deploy, tail logs and roll back from a terminal.", icon: TerminalIcon },
-  { title: "API reference", description: "Automate projects, domains and teams.", icon: BookOpenIcon },
+  { title: "API reference", description: "Automate projects, domains and teams.", icon: BracesIcon },
 ]
 
 function PanelLink({
@@ -73,8 +75,9 @@ function PanelLink({
 type Stage = HTMLElement | null
 
 /**
- * The examples show a panel already open, portalled into the example so it
- * follows the example's theme and stays under the site header. The open
+ * The examples show a panel already open, portalled into an isolated stage
+ * in the example so it follows the example's theme and scrolls under the site
+ * header. The open
  * panel stays up while people click elsewhere on the page; moving the
  * pointer off the bar or pressing Escape closes it as usual.
  *
@@ -138,7 +141,7 @@ function SiteNav({ container }: { container: Stage }) {
         </NavigationMenuItem>
         <NavigationMenuItem value="developers">
           <NavigationMenuTrigger>Developers</NavigationMenuTrigger>
-          <NavigationMenuContent className="w-[min(24rem,calc(100cqw-4rem))]">
+          <NavigationMenuContent className="w-[min(var(--popover-width-lg),calc(100cqw-4rem))]">
             <ul className="grid gap-1">
               {developers.map((item) => (
                 <li key={item.title}>
@@ -166,7 +169,7 @@ function SiteNav({ container }: { container: Stage }) {
 function SiteNavDemo() {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className="relative">
+    <div ref={setContainer} className="relative isolate">
       <header className="flex h-(--header-height) items-center justify-between gap-6 border-b px-gutter">
         <div className="flex items-center gap-8">
           <a
@@ -187,8 +190,11 @@ function SiteNavDemo() {
           <MobileNav />
         </div>
       </header>
-      <div className="grid gap-4 px-gutter py-16">
-        <h3 className="max-w-prose text-h2">Push to deploy. Everything else is handled.</h3>
+      {/* From md the Product panel is open on load: the copy starts below it, so the panel never covers it. */}
+      <div className="grid gap-4 px-gutter py-16 md:pt-88">
+        <h3 className="max-w-prose text-h2">
+          <Kern>Push to deploy. Everything else is handled.</Kern>
+        </h3>
         <p className="max-w-prose text-lead text-copy">
           Open Product or Developers in the bar above. Panels open on hover and on click, and close with Escape.
         </p>
@@ -201,12 +207,12 @@ function DevelopersNav() {
   const [container, setContainer] = React.useState<Stage>(null)
   const shown = useShownPanel("developers", container)
   return (
-    <div ref={setContainer} className="relative flex w-full justify-center self-start">
+    <div ref={setContainer} className="relative isolate flex w-full justify-center self-start">
       <NavigationMenu {...shown}>
         <NavigationMenuList>
           <NavigationMenuItem value="developers">
             <NavigationMenuTrigger>Developers</NavigationMenuTrigger>
-            <NavigationMenuContent className="w-[min(24rem,calc(100cqw-4rem))]">
+            <NavigationMenuContent className="w-[min(var(--popover-width-lg),calc(100cqw-4rem))]">
               <ul className="grid gap-1">
                 {developers.map((item) => (
                   <li key={item.title}>
@@ -289,7 +295,6 @@ export default function NavigationMenuDocs() {
         title="Site navigation"
         description="Triggers open crisp panels on bg-popover with a hairline border. Move along the bar and the panel resizes and slides to the next item. Below md, a menu button opens the same links in a sheet."
         layout="full"
-        minHeight="min-h-[30rem]"
         code={`<NavigationMenu>
   <NavigationMenuList>
     <NavigationMenuItem>
@@ -321,8 +326,9 @@ export default function NavigationMenuDocs() {
       <Example
         title="Single list"
         description="A short panel of links with an icon tile, a title and one line of description."
-        minHeight="min-h-80"
-        code={`<NavigationMenuContent className="w-96">
+        layout="stack"
+        minHeight="min-h-96"
+        code={`<NavigationMenuContent className="w-(--popover-width-lg)">
   <ul className="grid gap-1">
     <li>
       <NavigationMenuLink href="/docs/cli">

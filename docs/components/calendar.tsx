@@ -5,7 +5,7 @@ import { addDays, differenceInCalendarDays, format, isSameDay, startOfMonth, sub
 import { CalendarIcon } from "lucide-react"
 import type { DateRange } from "react-day-picker"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, tokenPx } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -94,71 +94,168 @@ function formatRange(range: DateRange | undefined) {
   return `${format(range.from, "MMM d")} – ${format(range.to, "MMM d, yyyy")}`
 }
 
-const wideQuery = "(min-width: 64rem)"
+/**
+ * How the range panel is laid out: presets beside two months, presets beside
+ * one month, or presets in a block above one month.
+ */
+type PanelLayout = "two-months" | "one-month" | "stacked"
 
-/** True on screens wide enough for two months beside the presets. */
-function useWideScreen() {
-  return React.useSyncExternalStore(
-    (onChange) => {
-      const query = window.matchMedia(wideQuery)
-      query.addEventListener("change", onChange)
-      return () => query.removeEventListener("change", onChange)
-    },
-    () => window.matchMedia(wideQuery).matches,
-    () => true
+/**
+ * The panel layout that fits the room the example has. The room is measured,
+ * not the window, because the docs sidebar takes part of the window. The
+ * widths add up the panel's parts: the 10rem presets column, the calendar's
+ * 0.75rem padding on each side, 7 --calendar-cell-size cells per month and
+ * the 2rem gap between months, plus the inset that lines the panel up with
+ * the trigger (--card-padding-sm and the card's hairline) and four hairlines.
+ */
+function usePanelLayout(ref: React.RefObject<HTMLElement | null>): PanelLayout {
+  const [layout, setLayout] = React.useState<PanelLayout>("two-months")
+
+  React.useEffect(() => {
+    const room = ref.current?.parentElement
+    if (!room) return
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+    const cell = (tokenPx("--calendar-cell-size") || 40) / 16
+    const inset = (tokenPx("--card-padding-sm") || 16) / 16
+    const hairlines = 4
+    const twoMonths = (10 + 1.5 + 14 * cell + 2 + inset) * rem + hairlines
+    const oneMonth = (10 + 1.5 + 7 * cell + inset) * rem + hairlines
+    const observer = new ResizeObserver(([entry]) => {
+      const width = entry.contentRect.width
+      setLayout(width >= twoMonths ? "two-months" : width >= oneMonth ? "one-month" : "stacked")
+    })
+    observer.observe(room)
+    return () => observer.disconnect()
+  }, [ref])
+
+  return layout
+}
+
+/** Classes for the element that holds a RangePanel. */
+const panelDirection = (layout: PanelLayout) => (layout === "stacked" ? "flex-col" : "flex-row")
+
+/**
+ * The body of the range popover: presets beside one or two months, or above
+ * one month when the room is narrow. One month opens on the end of the range,
+ * so the latest days and today stay in view.
+ */
+function RangePanel({
+  range,
+  onRangeChange,
+  layout,
+}: {
+  range: DateRange | undefined
+  onRangeChange: (range: DateRange | undefined) => void
+  layout: PanelLayout
+}) {
+  const twoMonths = layout === "two-months"
+  return (
+    <>
+      <div
+        className={cn(
+          "shrink-0 gap-0.5 p-2",
+          layout === "stacked" ? "grid grid-cols-2 border-b" : "flex w-40 flex-col border-e"
+        )}
+      >
+        {presets.map((preset) => {
+          const from = subDays(today, preset.days - 1)
+          const active = Boolean(range?.from && range.to && isSameDay(range.from, from) && isSameDay(range.to, today))
+          return (
+            <Button
+              key={preset.label}
+              variant="ghost"
+              size="sm"
+              aria-pressed={active}
+              className={cn(
+                "justify-start rounded-(--overlay-item-radius) px-2.5 font-medium",
+                active && "bg-accent font-semibold text-accent-foreground"
+              )}
+              onClick={() => onRangeChange({ from, to: today })}
+            >
+              {preset.label}
+            </Button>
+          )
+        })}
+      </div>
+      <Calendar
+        // A new month count opens on its own default month.
+        key={twoMonths ? "two-months" : "one-month"}
+        mode="range"
+        numberOfMonths={twoMonths ? 2 : 1}
+        today={today}
+        selected={range}
+        onSelect={onRangeChange}
+        defaultMonth={twoMonths ? subDays(startOfMonth(today), 1) : (range?.to ?? range?.from ?? today)}
+        disabled={{ after: today }}
+        endMonth={today}
+        className="bg-transparent"
+      />
+    </>
   )
 }
 
+/**
+ * A log card with a range button. A picture of the open popover sits under
+ * the button, drawn with the same parts, so readers see the presets and the
+ * months without opening it. It is hidden from assistive technology and
+ * steps aside while the real popover, which opens in the same place, shows.
+ */
 function LogRangePicker() {
-  const wide = useWideScreen()
+  const rootRef = React.useRef<HTMLDivElement>(null)
+  const layout = usePanelLayout(rootRef)
+  const cardRef = React.useRef<HTMLDivElement>(null)
+  const triggerRef = React.useRef<HTMLButtonElement>(null)
+  const [open, setOpen] = React.useState(false)
+  // The real popover opens clear of the card, exactly where the picture sits:
+  // under the trigger's end edge, or from the card's start edge when stacked.
+  const [offset, setOffset] = React.useState({ side: 8, align: 0 })
   const [range, setRange] = React.useState<DateRange | undefined>({ from: subDays(today, 6), to: today })
 
+  function handleOpenChange(next: boolean) {
+    const card = cardRef.current?.getBoundingClientRect()
+    const trigger = triggerRef.current?.getBoundingClientRect()
+    if (next && card && trigger) setOffset({ side: card.bottom - trigger.bottom + 8, align: card.left - trigger.left })
+    setOpen(next)
+  }
+
   return (
-    <Card size="sm" className="w-full max-w-2xl flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4">
-      <CardHeader className="min-w-48 flex-1 gap-1">
-        <CardTitle>Function logs</CardTitle>
-        <CardDescription>acme-web · Production</CardDescription>
-      </CardHeader>
-      <Popover>
-        <PopoverTrigger render={<Button variant="outline" className="ps-4" />}>
-          <CalendarIcon data-icon="inline-start" />
-          <span className="tabular">{formatRange(range)}</span>
-        </PopoverTrigger>
-        <PopoverContent align="end" className="w-auto max-w-[calc(100vw-2rem)] flex-row gap-0 overflow-hidden p-0">
-          <div className="hidden w-40 shrink-0 flex-col gap-0.5 border-e p-2 sm:flex">
-            {presets.map((preset) => {
-              const from = subDays(today, preset.days - 1)
-              const active = Boolean(range?.from && range.to && isSameDay(range.from, from) && isSameDay(range.to, today))
-              return (
-                <Button
-                  key={preset.label}
-                  variant="ghost"
-                  size="sm"
-                  aria-pressed={active}
-                  className={cn(
-                    "justify-start rounded-(--overlay-item-radius) px-2.5 font-medium",
-                    active && "bg-accent font-semibold text-accent-foreground"
-                  )}
-                  onClick={() => setRange({ from, to: today })}
-                >
-                  {preset.label}
-                </Button>
-              )
-            })}
-          </div>
-          <Calendar
-            mode="range"
-            numberOfMonths={wide ? 2 : 1}
-            today={today}
-            selected={range}
-            onSelect={setRange}
-            defaultMonth={wide ? subDays(startOfMonth(today), 1) : range?.from}
-            disabled={{ after: today }}
-            endMonth={today}
-          />
-        </PopoverContent>
-      </Popover>
-    </Card>
+    <div ref={rootRef} className="grid w-fit max-w-full gap-2">
+      <Card ref={cardRef} size="sm" className="w-full flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4">
+        <CardHeader className="min-w-48 flex-1 gap-1">
+          <CardTitle>Function logs</CardTitle>
+          <CardDescription>acme-web · Production</CardDescription>
+        </CardHeader>
+        <Popover open={open} onOpenChange={handleOpenChange}>
+          <PopoverTrigger ref={triggerRef} render={<Button variant="outline" className="ps-4" />}>
+            <CalendarIcon data-icon="inline-start" />
+            <span className="tabular">{formatRange(range)}</span>
+          </PopoverTrigger>
+          <PopoverContent
+            align={layout === "stacked" ? "start" : "end"}
+            alignOffset={layout === "stacked" ? offset.align : 0}
+            sideOffset={offset.side}
+            className={cn("w-auto max-w-[calc(100vw-2rem)] gap-0 overflow-hidden p-0", panelDirection(layout))}
+          >
+            <RangePanel range={range} onRangeChange={setRange} layout={layout} />
+          </PopoverContent>
+        </Popover>
+      </Card>
+      <div
+        aria-hidden="true"
+        inert
+        className={cn(
+          "flex max-w-full overflow-hidden rounded-(--overlay-radius) border border-popover-border bg-popover text-sm text-popover-foreground",
+          panelDirection(layout),
+          // Beside the trigger's end edge, as the popover opens; full width when stacked.
+          layout === "stacked"
+            ? "justify-self-stretch"
+            : "justify-self-end me-[calc(var(--card-padding-sm)+var(--border-width-hairline))]",
+          open && "invisible"
+        )}
+      >
+        <RangePanel range={range} onRangeChange={setRange} layout={layout} />
+      </div>
+    </div>
   )
 }
 
@@ -225,7 +322,7 @@ export default function CalendarDocs() {
 
       <Example
         title="Date range picker"
-        description="A calendar in a popover, with presets for the ranges people pick most and the current one marked. Two months show on wide screens, one on small ones. The button shows the range in plain words."
+        description="A calendar in a popover, with presets for the ranges people pick most and the current one marked. Two months show when the popover has room, one when it doesn’t, and in narrow spaces the presets move above the month. The button shows the range in plain words; the open popover is drawn under the card."
         surface="subtle"
         code={`<Popover>
   <PopoverTrigger render={<Button variant="outline" />}>
@@ -249,7 +346,7 @@ export default function CalendarDocs() {
     </div>
     <Calendar
       mode="range"
-      numberOfMonths={wide ? 2 : 1}
+      numberOfMonths={roomForTwo ? 2 : 1}
       selected={range}
       onSelect={setRange}
       disabled={{ after: today }}

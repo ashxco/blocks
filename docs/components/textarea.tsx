@@ -45,6 +45,7 @@ function RollbackForm() {
   const [reason, setReason] = React.useState("")
   const [error, setError] = React.useState<string | null>(null)
   const [done, setDone] = React.useState(false)
+  const reasonRef = React.useRef<HTMLTextAreaElement>(null)
 
   if (done) {
     return (
@@ -78,6 +79,7 @@ function RollbackForm() {
           e.preventDefault()
           if (reason.trim().length < 10) {
             setError("Add a short reason, at least 10 characters, so the team knows what went wrong.")
+            reasonRef.current?.focus()
             return
           }
           setError(null)
@@ -102,6 +104,7 @@ function RollbackForm() {
           <Field data-invalid={Boolean(error)}>
             <FieldLabel htmlFor={`${id}-reason`}>Reason</FieldLabel>
             <Textarea
+              ref={reasonRef}
               id={`${id}-reason`}
               value={reason}
               onChange={(e) => {
@@ -226,7 +229,19 @@ const [text, setText] = React.useState("")
         title="Roll back production"
         description="A required reason before a risky action. Submit an empty reason to see the error."
         surface="subtle"
-        code={`<Card className="w-full max-w-md">
+        code={`const reasonRef = React.useRef<HTMLTextAreaElement>(null)
+
+function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault()
+  if (reason.trim().length < 10) {
+    setError("Add a short reason, at least 10 characters, so the team knows what went wrong.")
+    reasonRef.current?.focus()
+    return
+  }
+  rollBack(reason)
+}
+
+<Card className="w-full max-w-md">
   <form noValidate onSubmit={onSubmit} className="contents">
     <CardHeader>
       <CardTitle>Roll back production</CardTitle>
@@ -245,6 +260,7 @@ const [text, setText] = React.useState("")
       <Field data-invalid={!!error}>
         <FieldLabel htmlFor="reason">Reason</FieldLabel>
         <Textarea
+          ref={reasonRef}
           id="reason"
           value={reason}
           onChange={(e) => setReason(e.target.value)}

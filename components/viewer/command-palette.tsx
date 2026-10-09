@@ -63,7 +63,8 @@ export function CommandPalette({
       description="Jump to a foundation, component, molecule or template."
       className="sm:max-w-144"
     >
-      <CommandInput placeholder="Search components, molecules, templates…" />
+      {/* Short enough for a phone, and covers every section and action. */}
+      <CommandInput placeholder="Search Blocks…" />
       <CommandList className="max-h-[min(26rem,60dvh)]">
         <CommandEmpty>No results. Try “button”, “pricing” or “color”.</CommandEmpty>
         {navSections.map((section) => {

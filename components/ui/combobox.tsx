@@ -18,7 +18,7 @@ import { CheckIcon, ChevronDownIcon, SearchIcon, XIcon } from "lucide-react"
  *   <Combobox items={frameworks}>
  *     <ComboboxInput placeholder="Search frameworks" />
  *     <ComboboxContent>
- *       <ComboboxEmpty>No frameworks found.</ComboboxEmpty>
+ *       <ComboboxEmpty>No frameworks match. Try Next.js or Astro.</ComboboxEmpty>
  *       <ComboboxList>
  *         {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
  *       </ComboboxList>
@@ -47,6 +47,8 @@ const comboboxStyles = {
   ),
   itemIndicator: "pointer-events-none absolute end-2.5 flex size-4 items-center justify-center",
   separator: "-mx-(--overlay-padding) my-(--overlay-padding) h-px bg-border",
+  /** The borderless search row that ComboboxInput becomes inside the popup. */
+  search: "flex h-(--control-height-md) shrink-0 items-center gap-2.5 border-b border-border ps-3.5 pe-2",
 } as const
 
 function ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props) {
@@ -129,7 +131,7 @@ function ComboboxInput({
         "has-disabled:pointer-events-none has-disabled:opacity-50",
         inPopup
           ? // Inside the popup: a borderless search row above the list.
-            "h-(--control-height-md) shrink-0 gap-2.5 border-b border-border ps-3.5 pe-2"
+            comboboxStyles.search
           : [
               "h-(--control-height-md) gap-1 rounded-(--control-radius) border border-input bg-muted ps-(--control-padding-x) pe-2",
               "transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
@@ -286,7 +288,7 @@ function ComboboxEmpty({ className, ...props }: ComboboxPrimitive.Empty.Props) {
     <ComboboxPrimitive.Empty
       data-slot="combobox-empty"
       className={cn(
-        "px-4 py-8 text-center text-sm text-muted-foreground empty:p-0",
+        "px-4 py-8 text-center text-sm text-balance text-muted-foreground empty:p-0",
         className
       )}
       {...props}

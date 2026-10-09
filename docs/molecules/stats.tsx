@@ -59,7 +59,7 @@ export default function StatsDocs() {
         description="The band lays out from its own width. Beside an article it drops to two columns."
         code={`<Stats contained={false} stats={[...two stats]} />`}
       >
-        <div className="max-w-prose p-6 sm:p-10">
+        <div className="max-w-prose p-6 @2xl:p-10">
           <Stats
             contained={false}
             stats={[

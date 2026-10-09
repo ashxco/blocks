@@ -2,20 +2,29 @@
 
 import * as React from "react"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, useReturnFocus } from "@/docs/kit"
+import { appNav } from "@/components/blocks/app-shell/nav"
+import { AppTopBarSlice } from "@/components/blocks/app-shell/top-bar"
 import { Notifications } from "@/components/blocks/notifications"
 import { UserMenu } from "@/components/blocks/user-menu"
 
-/** A slice of the app top bar, so the trigger reads in the place it lives. */
-function TopBarSlice({ children }: { children: React.ReactNode }) {
+/**
+ * A top bar with the account menu already open under the avatar. The menu
+ * portals into this stage, so it follows the example's theme and stays in
+ * place as the page scrolls; clicking elsewhere closes it.
+ */
+function OpenStage() {
+  const [stage, setStage] = React.useState<HTMLDivElement | null>(null)
+
+  // The menu opens on load and takes focus; hand it back to the page.
+  useReturnFocus(stage)
+
   return (
-    <div className="flex h-(--header-height-sm) w-full max-w-xl items-center gap-3 rounded-(--card-radius) border bg-background pr-2 pl-5">
-      <span className="text-label text-muted-foreground">Acme Inc.</span>
-      <span aria-hidden="true" className="text-label text-muted-foreground">
-        /
-      </span>
-      <span className="text-label text-foreground">Overview</span>
-      <div className="ml-auto flex items-center gap-1">{children}</div>
+    <div ref={setStage} className="relative min-h-128 w-full max-w-3xl">
+      <AppTopBarSlice>
+        <Notifications />
+        <UserMenu defaultOpen container={stage} />
+      </AppTopBarSlice>
     </div>
   )
 }
@@ -25,32 +34,35 @@ export default function UserMenuDocs() {
     <Examples>
       <Example
         title="Avatar"
-        description="For top bars. Opens account links, a theme switch and sign out. The theme switch changes this site’s theme too."
-        minHeight="min-h-56"
+        description="For top bars. Opens account links, a theme switch and sign out; the theme switch changes this site’s theme too. Shown open; click the avatar to close it."
         code={`<UserMenu user={{ name: "Maya Chen", email: "maya@acme.dev" }} />`}
       >
-        <TopBarSlice>
-          <Notifications />
-          <UserMenu />
-        </TopBarSlice>
+        <OpenStage />
       </Example>
 
       <Example
         title="With name and email"
-        description="For the foot of a sidebar, where there is room to say who is signed in."
-        layout="full"
-        surface="subtle"
+        description="For the foot of a sidebar, where there is room to say who is signed in. The menu opens upwards, over the navigation."
         code={`<UserMenu variant="full" side="top" align="start" />`}
       >
-        <div className="flex min-h-72 items-end p-6">
-          <div className="w-64 rounded-lg border border-border bg-sidebar p-2">
-            <UserMenu
-              variant="full"
-              side="top"
-              align="start"
-              user={{ name: "Daniel Okafor", email: "daniel@acme.dev" }}
-            />
-          </div>
+        {/* A sidebar column, so the trigger sits where it lives: at the foot, under the navigation. */}
+        <div className="flex h-96 w-(--sidebar-width) max-w-full flex-col justify-between rounded-(--card-radius) border bg-sidebar p-2">
+          <ul aria-hidden="true" className="grid gap-0.5">
+            {appNav.map((item, index) => (
+              <li
+                key={item.href}
+                className={
+                  index === 0
+                    ? "flex h-(--control-height-sm) items-center gap-3 rounded-(--control-radius) bg-sidebar-accent px-2.5 text-label text-foreground"
+                    : "flex h-(--control-height-sm) items-center gap-3 rounded-(--control-radius) px-2.5 text-label text-muted-foreground"
+                }
+              >
+                <item.icon aria-hidden="true" className="size-4" />
+                {item.title}
+              </li>
+            ))}
+          </ul>
+          <UserMenu variant="full" side="top" align="start" />
         </div>
       </Example>
 
@@ -99,6 +111,18 @@ export default function UserMenuDocs() {
             type: "string",
             default: '"/live/sign-in"',
             description: "Where sign out leads.",
+          },
+          {
+            prop: "defaultOpen",
+            type: "boolean",
+            default: "false",
+            description: "Start with the menu open, for a preview of the open state. The menu is then non-modal.",
+          },
+          {
+            prop: "container",
+            type: "HTMLElement | null",
+            description:
+              "Portal the menu into this element instead of <body>, e.g. a preview stage. It then keeps to its side of the trigger, inside the element. null waits until the element exists.",
           },
           {
             prop: "className",

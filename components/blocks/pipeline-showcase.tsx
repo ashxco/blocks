@@ -44,7 +44,7 @@ const defaultSteps: PipelineStep[] = [
       "→ Received push to main (a41c9e2)",
       "→ Detected Next.js 16 on Node 22",
       "→ Using lumen.toml from the repository root",
-      "✓ Queued build on fra-1",
+      "✓ Queued build on fra1",
     ],
   },
   {
@@ -65,11 +65,11 @@ const defaultSteps: PipelineStep[] = [
     description: "The new version starts beside the old one on a private network.",
     meta: "6.1s",
     lines: [
-      "→ Pushing image to fra-1 and iad-1",
+      "→ Pushing image to fra1 and iad1",
       "→ Starting 2 replicas in each region",
       "→ Waiting for GET /healthz",
-      "→ fra-1: 2 of 2 healthy",
-      "→ iad-1: 2 of 2 healthy",
+      "→ fra1: 2 of 2 healthy",
+      "→ iad1: 2 of 2 healthy",
       "✓ a41c9e2 ready beside a3f7d10",
     ],
   },
@@ -140,9 +140,10 @@ function useInView(ref: React.RefObject<HTMLElement | null>) {
 export function PipelineShowcase({
   title = (
     <>
-      One push. Five steps.
+      {/* No-break spaces keep each phrase whole when the title wraps on phones. */}
+      One{"\u00a0"}push. Five{"\u00a0"}steps.
       <br />
-      Zero config.
+      Zero{"\u00a0"}config.
     </>
   ),
   description = "Follow a commit from git push to live traffic. Every step streams to your terminal and to the dashboard as it happens.",
@@ -178,8 +179,9 @@ export function PipelineShowcase({
   const current = steps[Math.min(active, count - 1)]
   if (!current) return null
 
-  // The terminal sizes to its content. Shorter steps are padded with blank
-  // rows up to the longest one, so the window keeps one height as it advances.
+  // Stacked under the steps, the terminal sizes to its content. Shorter steps
+  // are padded with blank rows up to the longest one, so the window keeps one
+  // height as it advances.
   const rows = Math.max(...steps.map((step) => step.lines.length))
   const lines = [...current.lines, ...Array.from({ length: rows - current.lines.length }, () => "")]
 
@@ -305,8 +307,14 @@ export function PipelineShowcase({
               ) : null}
             </div>
 
-            <div role="tabpanel" id={panelId} aria-labelledby={tabId(active)} className="min-w-0 self-start">
-              <CodeWindow wrap title={windowTitle} lines={lines} />
+            {/* Beside the steps, the terminal runs the full height of the list and the pause button. */}
+            <div
+              role="tabpanel"
+              id={panelId}
+              aria-labelledby={tabId(active)}
+              className="min-w-0 self-start @narrow/pipeline:flex @narrow/pipeline:flex-col @narrow/pipeline:self-stretch"
+            >
+              <CodeWindow wrap title={windowTitle} lines={lines} className="@narrow/pipeline:flex-1" />
             </div>
           </div>
         </div>

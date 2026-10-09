@@ -12,7 +12,7 @@ export default function DataTableDocs() {
         layout="full"
         code={`<DataTable rows={projects} pageSize={8} />`}
       >
-        <div className="p-6 md:p-10">
+        <div className="p-6 @prose:p-10">
           <DataTable />
         </div>
       </Example>
@@ -24,7 +24,7 @@ export default function DataTableDocs() {
         surface="subtle"
         code={`<DataTable density="compact" pageSize={5} hiddenColumns={["framework", "region"]} />`}
       >
-        <div className="p-6 md:p-10">
+        <div className="p-6 @prose:p-10">
           <DataTable
             density="compact"
             pageSize={5}
@@ -44,7 +44,7 @@ export default function DataTableDocs() {
   emptyAction={{ label: "Import repository", href: "/live/onboarding", icon: FolderGit2Icon }}
 />`}
       >
-        <div className="p-6 md:p-10">
+        <div className="p-6 @prose:p-10">
           <DataTable rows={[]} />
         </div>
       </Example>

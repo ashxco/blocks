@@ -40,9 +40,9 @@ const failures: Failure[] = [
 ]
 
 const statusLabels: Record<ProjectStatus, { label: string; dot: string }> = {
-  ready: { label: "Ready", dot: "bg-success" },
-  building: { label: "Building", dot: "bg-warning" },
-  failed: { label: "Failed", dot: "bg-destructive" },
+  ready: { label: "Ready", dot: "bg-panel-success" },
+  building: { label: "Building", dot: "bg-panel-warning" },
+  failed: { label: "Failed", dot: "bg-panel-destructive" },
   paused: { label: "Paused", dot: "bg-panel-muted" },
 }
 
@@ -52,8 +52,8 @@ const order: ProjectStatus[] = ["ready", "building", "failed", "paused"]
  * Dark panel above the projects table: the deployments that failed, with a
  * redeploy for each, and how many projects are in each status.
  *
- * Status colours sit in `dark` scopes, so they take the dark theme's lighter
- * values and read the same on the panel in both themes.
+ * Status colours use the panel-* tokens (panel-success, panel-warning,
+ * panel-destructive), which read on bg-panel in both themes.
  */
 export function ProjectHealth({ projects }: { projects: ProjectRow[] }) {
   const [queued, setQueued] = React.useState<Set<string>>(() => new Set())
@@ -99,7 +99,7 @@ export function ProjectHealth({ projects }: { projects: ProjectRow[] }) {
                   <div className="flex min-w-0 gap-3">
                     <CircleXIcon
                       aria-hidden="true"
-                      className="dark mt-0.5 size-4 shrink-0 text-destructive"
+                      className="mt-0.5 size-4 shrink-0 text-panel-destructive"
                     />
                     <div className="grid min-w-0 gap-1.5">
                       <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
@@ -155,7 +155,7 @@ export function ProjectHealth({ projects }: { projects: ProjectRow[] }) {
                 key={status}
                 className="grid content-between gap-4 bg-panel px-(--panel-padding-sm) py-6 @min-[60rem]/health:py-(--panel-padding-sm)"
               >
-                <dt className="dark flex items-center gap-2 text-caption text-panel-muted">
+                <dt className="flex items-center gap-2 text-caption text-panel-muted">
                   <span
                     aria-hidden="true"
                     className={`size-2 rounded-full ${statusLabels[status].dot}`}

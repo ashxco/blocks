@@ -76,7 +76,7 @@ export interface MembersListProps {
   planName?: string
   workspaceName?: string
   title?: React.ReactNode
-  /** Defaults to seat usage, e.g. "6 of 10 seats used on Pro." */
+  /** Defaults to seat usage, e.g. "8 of 10 seats used on Pro." Pending invites hold a seat. */
   description?: React.ReactNode
   /** Heading level of the title. */
   as?: "h2" | "h3"
@@ -94,13 +94,16 @@ export interface MembersListProps {
   className?: string
 }
 
+/** Acme Inc. as the Team template shows it: six members and two pending invites, so 8 of 10 seats. */
 const defaultMembers: Member[] = [
   { id: "m1", name: "Maya Chen", email: "maya@acme.dev", role: "owner", meta: "Active now", you: true },
   { id: "m2", name: "Daniel Okafor", email: "daniel@acme.dev", role: "admin", meta: "Active 20\u00a0minutes ago" },
   { id: "m3", name: "Priya Shah", email: "priya@acme.dev", role: "developer", meta: "Active 2\u00a0hours ago" },
   { id: "m4", name: "Leo Martins", email: "leo@acme.dev", role: "developer", meta: "Active yesterday" },
-  { id: "m5", name: "Nina Petrova", email: "nina@acme.dev", role: "viewer", meta: "Active last week" },
-  { id: "m6", email: "tomas@acme.dev", role: "developer", status: "invited", meta: "Invited 2\u00a0days ago" },
+  { id: "m5", name: "Sam Rivera", email: "sam@acme.dev", role: "developer", meta: "Joined 2\u00a0hours ago" },
+  { id: "m6", name: "Nina Petrova", email: "nina@acme.dev", role: "viewer", meta: "Active last week" },
+  { id: "m7", email: "tomas@acme.dev", role: "developer", status: "invited", meta: "Invited 2\u00a0days ago" },
+  { id: "m8", email: "ines@acme.dev", role: "viewer", status: "invited", meta: "Invited 6\u00a0days ago" },
 ]
 
 function initials(member: Member) {
@@ -212,7 +215,7 @@ export function MembersList({
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Filter by name, email or role"
+            placeholder="Filter members"
             aria-label="Filter members"
           />
         </InputGroup>
@@ -237,7 +240,7 @@ export function MembersList({
       </CardContent>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent className="max-w-[calc(100%-2rem)] sm:max-w-(--dialog-width)">
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
               {invited
@@ -294,10 +297,15 @@ function MemberRow({
           {member.you ? <Badge variant="secondary">You</Badge> : null}
           {invited ? <Badge variant="outline">Invited</Badge> : null}
         </div>
-        <p className="truncate text-caption text-muted-foreground">
-          {member.name ? member.email : null}
-          {member.name && member.meta ? <span aria-hidden="true"> · </span> : null}
-          {member.meta}
+        {/* In narrow rows the email and the activity stack, so neither is cut short. */}
+        <p className="grid text-caption text-muted-foreground @prose:flex @prose:gap-1">
+          {member.name ? <span className="min-w-0 truncate">{member.email}</span> : null}
+          {member.name && member.meta ? (
+            <span aria-hidden="true" className="hidden @prose:inline">
+              ·
+            </span>
+          ) : null}
+          {member.meta ? <span className="min-w-0 truncate">{member.meta}</span> : null}
         </p>
       </div>
 

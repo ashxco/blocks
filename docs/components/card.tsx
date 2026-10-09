@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 const projects = [
   { name: "lumen-web", domain: "lumen.app", branch: "main", status: "Ready", updated: "2m ago" },
@@ -37,6 +38,30 @@ function StatusBadge({ status }: { status: keyof typeof statusVariant }) {
     </Badge>
   )
 }
+
+const variantCards = [
+  {
+    variant: "default",
+    title: "Requests",
+    description: "All projects, last 24 hours.",
+    value: "2.4M",
+    meta: "Up 12% on yesterday",
+  },
+  {
+    variant: "subtle",
+    title: "P95 latency",
+    description: "lumen-web, last 24 hours.",
+    value: "84 ms",
+    meta: "Inside the 200 ms target",
+  },
+  {
+    variant: "panel",
+    title: "Uptime",
+    description: "Every region, this quarter.",
+    value: "99.99%",
+    meta: "4 minutes of downtime",
+  },
+] as const
 
 export default function CardDocs() {
   return (
@@ -128,37 +153,31 @@ export default function CardDocs() {
 <Card variant="subtle">…</Card>
 <Card variant="panel">…</Card>`}
       >
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle>Default</CardTitle>
-              <CardDescription>bg-card with a hairline border.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-extrabold text-foreground tabular">2.4M</p>
-              <p className="text-caption text-muted-foreground">Requests today</p>
-            </CardContent>
-          </Card>
-          <Card variant="subtle">
-            <CardHeader>
-              <CardTitle>Subtle</CardTitle>
-              <CardDescription>A tinted fill that steps back.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-extrabold text-foreground tabular">84 ms</p>
-              <p className="text-caption text-muted-foreground">P95 latency</p>
-            </CardContent>
-          </Card>
-          <Card variant="panel">
-            <CardHeader>
-              <CardTitle>Panel</CardTitle>
-              <CardDescription>Dark in both themes.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-extrabold text-panel-foreground tabular">99.99%</p>
-              <p className="text-caption text-panel-muted">Uptime this quarter</p>
-            </CardContent>
-          </Card>
+        <div className="grid gap-x-4 gap-y-6 md:grid-cols-3">
+          {variantCards.map((card) => (
+            <figure key={card.variant} className="grid content-start gap-3">
+              <Card variant={card.variant}>
+                <CardHeader>
+                  <CardTitle>{card.title}</CardTitle>
+                  <CardDescription>{card.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p
+                    className={cn(
+                      "text-3xl font-extrabold tabular",
+                      card.variant === "panel" ? "text-panel-foreground" : "text-foreground"
+                    )}
+                  >
+                    {card.value}
+                  </p>
+                  <p className={cn("text-caption", card.variant === "panel" ? "text-panel-muted" : "text-muted-foreground")}>
+                    {card.meta}
+                  </p>
+                </CardContent>
+              </Card>
+              <figcaption className="font-mono text-code text-muted-foreground">variant=&quot;{card.variant}&quot;</figcaption>
+            </figure>
+          ))}
         </div>
       </Example>
 
@@ -260,7 +279,7 @@ export default function CardDocs() {
 
       <ApiTable
         rows={[
-          { prop: "variant", type: '"default" | "subtle" | "panel"', default: '"default"', description: "Card: white card, tinted card, or dark emphasis panel." },
+          { prop: "variant", type: '"default" | "subtle" | "panel"', default: '"default"', description: "Card: bg-card on the canvas, a tinted fill that recedes, or the dark emphasis panel." },
           { prop: "size", type: '"default" | "sm"', default: '"default"', description: "Card: padding from --card-padding or --card-padding-sm, and the gap between sections." },
           { prop: "className", type: "string", description: "CardHeader: add border-b to make the header an edge-to-edge band." },
           { prop: "children", type: "ReactNode", description: "CardAction: buttons or badges at the top right of the header." },

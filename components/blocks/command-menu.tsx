@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button"
 import {
   Command,
   CommandEmpty,
+  CommandFooter,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -45,9 +46,10 @@ export interface CommandMenuProps {
   /** Open and close with Cmd+K or Ctrl+K. Turn off when a page has more than one menu. */
   hotkey?: boolean
   /**
-   * "auto" is a search field from the md breakpoint and an icon below it;
-   * "search" and "icon" force one; "none" renders no trigger, for when you
-   * open the menu yourself (see CommandMenuButton).
+   * "auto" is a search field when its container (the nearest @container,
+   * such as the top bar) is at least 44rem wide and an icon below that, as
+   * in AppShell; "search" and "icon" force one; "none" renders no trigger,
+   * for when you open the menu yourself (see CommandMenuButton).
    */
   trigger?: "auto" | "search" | "icon" | "none"
   /** Placeholder for the search input. */
@@ -222,12 +224,12 @@ export function CommandMenu({
         <>
           <CommandMenuButton
             onClick={() => setOpen(true)}
-            className={cn("hidden @3xl:inline-flex", className)}
+            className={cn("hidden @min-[44rem]:inline-flex", className)}
           />
           <CommandMenuButton
             variant="icon"
             onClick={() => setOpen(true)}
-            className={cn("@3xl:hidden", className)}
+            className={cn("@min-[44rem]:hidden", className)}
           />
         </>
       ) : null}
@@ -242,7 +244,7 @@ export function CommandMenu({
       <Dialog open={open} onOpenChange={(next) => setOpen(next)}>
         <DialogContent
           showCloseButton={false}
-          className="top-[16vh] max-w-[calc(100%-2rem)] translate-y-0 gap-0 overflow-hidden p-0 sm:max-w-(--dialog-width)"
+          className="top-[16vh] translate-y-0 gap-0 overflow-hidden p-0"
         >
           <DialogTitle className="sr-only">Command menu</DialogTitle>
           <DialogDescription className="sr-only">
@@ -353,23 +355,23 @@ function CommandPalette({
           ))}
         </CommandGroup>
       </CommandList>
-      <div className="flex items-center gap-4 border-t border-border px-4 py-2.5 text-caption text-muted-foreground">
-        <span className="flex items-center gap-1.5">
+      <CommandFooter>
+        <span>
           <Kbd>↑</Kbd>
           <Kbd>↓</Kbd>
           Move
         </span>
-        <span className="flex items-center gap-1.5">
+        <span>
           <Kbd>↵</Kbd>
           Open
         </span>
         {dialog ? (
-          <span className="ml-auto flex items-center gap-1.5">
+          <span className="ml-auto">
             <Kbd>Esc</Kbd>
             Close
           </span>
         ) : null}
-      </div>
+      </CommandFooter>
     </Command>
   )
 }

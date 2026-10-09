@@ -13,6 +13,7 @@ import { slugify } from "@/components/viewer/nav"
 import { useElementSize } from "@/components/viewer/scaled-frame"
 import { Segmented } from "@/components/viewer/segmented"
 import { themeScope, useSiteTheme, type SiteTheme } from "@/components/viewer/site-theme"
+import { thumbnailExample } from "@/components/viewer/thumbnail-example"
 import { TokenText } from "@/components/viewer/token-text"
 
 export { themeScope, useHydrated, useSiteTheme } from "@/components/viewer/site-theme"
@@ -29,12 +30,22 @@ export interface ExampleProps {
    * - center: centred, wrapping row (default)
    * - stack: left-aligned column
    * - full: no padding, children fill the canvas (molecules, sections)
+   *
+   * The canvas is a container that includes the center and stack padding, so
+   * container queries and cqw units in an example see about 5rem more than
+   * its content gets. An example that switches layout at an exact width
+   * should wrap itself in its own @container (see docs/components/table.tsx).
    */
   layout?: "center" | "stack" | "full"
   /** Canvas surface. Use "panel" to preview components that sit on dark panels. */
   surface?: "default" | "subtle" | "panel"
   /** Minimum canvas height, as a Tailwind class (e.g. "min-h-96"). */
   minHeight?: string
+  /**
+   * Use this example as the module's thumbnail on the index pages instead of
+   * the first one. Set it on a direct child of <Examples>.
+   */
+  thumbnail?: boolean
   children: React.ReactNode
 }
 
@@ -46,7 +57,7 @@ type CanvasTheme = SiteTheme
 
 /**
  * Set by EntryThumbnail (components/viewer/entry-thumbnail.tsx) to the size
- * of a thumbnail tile. Inside it, <Examples> renders only its first example
+ * of a thumbnail tile. Inside it, <Examples> renders only its thumbnail example
  * and <Example> renders only its canvas, scaled into the tile.
  */
 export const ExampleThumbnailContext = React.createContext<ExampleThumbnailSize | null>(null)
@@ -59,11 +70,13 @@ export interface ExampleThumbnailSize {
   viewport: { full: number; other: number }
 }
 
-/** The client half of <Examples> (docs/kit.tsx): the list, or only the first example in a thumbnail. */
+/** The client half of <Examples> (docs/kit.tsx): the list, or only the thumbnail example in a thumbnail. */
 export function ExamplesList({ children }: { children: React.ReactNode }) {
   const thumbnail = React.useContext(ExampleThumbnailContext)
-  if (thumbnail) return <>{React.Children.toArray(children)[0] ?? null}</>
-  return <div className="grid gap-16 sm:gap-20">{children}</div>
+  if (thumbnail) return <>{thumbnailExample(children)}</>
+  // One column that never grows past the page: an example wider than its
+  // canvas is clipped by the canvas, never by the window.
+  return <div className="grid grid-cols-[minmax(0,1fr)] gap-16 sm:gap-20">{children}</div>
 }
 
 /*
@@ -71,8 +84,13 @@ export function ExamplesList({ children }: { children: React.ReactNode }) {
  *
  * Full-width examples (sections, app screens) fill the tile's width. When a
  * section is short for the tile, it steps down to a narrower viewport (its
- * tablet layout), which is taller and larger, then sits centred. Content that
- * fills the canvas (a dialog stage, a sheet) stretches to every edge.
+ * tablet layout), which is taller and larger, then sits centred.
+ *
+ * A stage (a page with a dialog, sheet or drawer pinned open inside it: a
+ * root with layout containment that fills the height it is given) has no
+ * height of its own to fit. It lays out at STAGE_WIDTH and is sized to the
+ * tile exactly, so its popup reads at the size of the neighbouring tiles
+ * instead of shrinking to fit a desktop-wide page.
  *
  * Other examples (a button row, a single input, a card) are framed like a
  * camera: the box around the content is zoomed to fit the tile with a margin,
@@ -81,7 +99,12 @@ export function ExamplesList({ children }: { children: React.ReactNode }) {
  */
 const FULL_FILL = 0.6
 const FULL_WIDTHS = [1024, 768]
-const ZOOM_MAX = 1.25
+const STAGE_WIDTH = 640
+/*
+ * A narrow zoom band keeps neighbouring tiles at nearly the same type size: a
+ * small control is not blown up next to a form drawn at its natural scale.
+ */
+const ZOOM_MAX = 1.1
 const ZOOM_MIN = 0.7
 const MARGIN_X = 0.1
 const MARGIN_Y = 0.12
@@ -134,6 +157,35 @@ function contentBox(container: HTMLElement): Box | null {
   visit(container)
   if (!Number.isFinite(left)) return null
   return { left, top, width: right - left, height: bottom - top }
+}
+
+/**
+ * Whether the example is a stage: its only laid-out root has layout
+ * containment (which docs stages use to hold fixed popups inside them) and
+ * stretches to the full height it is given. A frame with a height of its own,
+ * such as a scrolling page preview, is laid out like any other section.
+ */
+function isStage(container: HTMLElement, height: number) {
+  const roots: HTMLElement[] = []
+  const visit = (parent: Element) => {
+    for (const child of parent.children) {
+      if (!(child instanceof HTMLElement)) continue
+      const style = getComputedStyle(child)
+      if (style.display === "contents") visit(child)
+      else if (style.display !== "none" && style.position !== "fixed" && style.position !== "absolute") roots.push(child)
+    }
+  }
+  visit(container)
+  if (roots.length !== 1) return false
+  const root = roots[0]
+  const style = getComputedStyle(root)
+  if (!/\b(?:layout|content|strict)\b/.test(style.contain)) return false
+  // Stretched to the height given, or held taller than it by its own minimum.
+  const minHeight = parseFloat(style.minHeight) || 0
+  return (
+    Math.abs(root.offsetHeight - height) < 1 ||
+    (root.offsetHeight > height && Math.abs(root.offsetHeight - minHeight) < 1)
+  )
 }
 
 /** Zooms a content box to fit a viewport of width × height, with a margin. */
@@ -209,13 +261,15 @@ function ExampleThumbnail({
   const full = layout === "full"
   const widths = full ? fullWidths(size.viewport.full) : [size.viewport.other]
 
-  // Which of the widths a full-width example uses. Starts from the widest
-  // again whenever the tile changes size.
+  // Which of the widths a full-width example uses, or whether it is a stage.
+  // Starts from the widest again whenever the tile changes size.
   const sizeKey = `${size.width}:${size.height}:${widths.join(",")}`
-  const [step, setStep] = React.useState({ key: sizeKey, index: 0, final: false })
-  const current = step.key === sizeKey ? step : { key: sizeKey, index: 0, final: false }
+  const initial = { key: sizeKey, index: 0, final: false, stage: false }
+  const [step, setStep] = React.useState(initial)
+  const current = step.key === sizeKey ? step : initial
   const index = Math.min(current.index, widths.length - 1)
-  const virtualWidth = widths[index]
+  const stage = full && current.stage
+  const virtualWidth = stage ? Math.min(STAGE_WIDTH, widths[widths.length - 1]) : widths[index]
   const scale = size.width / virtualWidth
   const virtualHeight = size.height / scale
 
@@ -229,12 +283,16 @@ function ExampleThumbnail({
     if (!box || box.width === 0 || box.height === 0) return
     if (full) {
       if (current.final) return
+      if (isStage(el, virtualHeight)) {
+        setStep({ key: sizeKey, index, final: true, stage: true })
+        return
+      }
       const fill = (box.height * scale) / size.height
       if (fill > 1 && index > 0) {
         // The narrower layout no longer fits: keep the last one that did.
-        setStep({ key: sizeKey, index: index - 1, final: true })
+        setStep({ key: sizeKey, index: index - 1, final: true, stage: false })
       } else if (fill < FULL_FILL && index < widths.length - 1) {
-        setStep({ key: sizeKey, index: index + 1, final: false })
+        setStep({ key: sizeKey, index: index + 1, final: false, stage: false })
       }
       return
     }
@@ -269,7 +327,10 @@ function ExampleThumbnail({
             "relative",
             // One row at least as tall as the tile: a section shorter than
             // that sits centred, and h-full content stretches to every edge.
-            full && "grid min-h-full w-full grid-rows-1 items-center",
+            full && !stage && "grid min-h-full w-full grid-rows-1 items-center",
+            // A stage is exactly the tile, whatever its own minimum height:
+            // its popup stays inside, and a long page or panel is clipped.
+            stage && "grid h-full w-full grid-rows-1 *:h-full! *:min-h-0!",
             layout === "center" && "flex h-full flex-wrap content-center items-center justify-center gap-4 p-10",
             layout === "stack" && "grid h-full content-center gap-4 p-10"
           )}
@@ -344,7 +405,7 @@ export function Example({
   }
 
   return (
-    <section data-slot="example" id={id} className="grid scroll-mt-24 gap-5">
+    <section data-slot="example" id={id} className="grid scroll-mt-24 grid-cols-[minmax(0,1fr)] gap-5">
       <header className="grid gap-2">
         <h2 className="text-h3">{title}</h2>
         {description ? (
@@ -401,7 +462,10 @@ export function Example({
               data-surface={surface}
               data-device={layout === "full" ? device : undefined}
               className={cn(
-                "text-copy transition-colors duration-(--duration-base)",
+                "text-copy",
+                // Fades only when the reader switches this example's theme,
+                // never while the page itself is loading or changing theme.
+                chosenTheme !== null && "transition-colors duration-(--duration-base)",
                 constrained ? "bg-subtle px-3 py-6 sm:px-6 sm:py-10" : canvasSurface(surface)
               )}
             >

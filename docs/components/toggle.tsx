@@ -56,7 +56,7 @@ function LogViewer() {
         {logLines.map((line) => (
           <p key={line.time} className={wrap ? "break-words whitespace-pre-wrap" : "whitespace-pre"}>
             {timestamps ? <span className="mr-3 opacity-50">{line.time}</span> : null}
-            <span className={line.level === "warn" ? "text-warning" : "opacity-50"}>
+            <span className={line.level === "warn" ? "text-panel-warning" : "opacity-50"}>
               {line.level.toUpperCase()}
             </span>{" "}
             {line.text}
@@ -126,7 +126,7 @@ export default function ToggleDocs() {
 
       <Example
         title="Sizes"
-        description="Heights match buttons of the same size, so toggles and buttons line up in one row. Shown off; a pressed toggle turns ink."
+        description="Heights match buttons of the same size, so toggles and buttons line up in one row. All six are shown unpressed; a pressed toggle turns ink."
         code={`<Toggle size="sm" variant="outline">
   <BellIcon data-icon="inline-start" />
   Watch

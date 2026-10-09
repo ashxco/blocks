@@ -10,7 +10,8 @@ import { ScopedPortal } from "@/lib/portal-container"
  * Blocks dropdown menu. bg-popover with a crisp 1px border, --overlay-radius
  * and --overlay-padding, no shadow. Items are --overlay-item-height tall with
  * --overlay-item-radius; icons are muted until the item is highlighted.
- * Destructive items use text-destructive. Shortcuts are quiet mono text.
+ * Destructive items use text-destructive. Shortcuts are quiet, widely
+ * tracked sans text, like Kbd.
  *
  * Context menu and menubar share these styles through `menuStyles`.
  *
@@ -56,8 +57,9 @@ const menuStyles = {
   indicator:
     "pointer-events-none absolute right-2.5 flex size-4 items-center justify-center",
   separator: "-mx-(--overlay-padding) my-(--overlay-padding) h-px bg-border",
+  // Sans like Kbd, so ⌘ and ⇧ draw at full size; the wide tracking spaces the keys apart.
   shortcut:
-    "ml-auto pl-6 font-mono text-xs font-normal tracking-normal text-muted-foreground",
+    "ml-auto pl-6 font-sans text-xs font-medium tracking-widest text-muted-foreground",
 } as const
 
 /**

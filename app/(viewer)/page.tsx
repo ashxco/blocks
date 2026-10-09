@@ -170,7 +170,8 @@ export default function Overview() {
             underneath change.
           </p>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 md:gap-5">
+        {/* Side by side from lg: below that the cards need the full width. */}
+        <div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
           {(
             [
               { scope: "light", label: "Light" },

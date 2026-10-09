@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, tokenPx } from "@/docs/kit"
 import { Card } from "@/components/ui/card"
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
 import {
@@ -10,13 +10,6 @@ import {
   NativeSelectOptGroup,
   NativeSelectOption,
 } from "@/components/ui/native-select"
-import { tokens } from "@/design-system/generated/tokens"
-
-/** A dimension token in px, read from the generated tokens so the copy follows the system. */
-function tokenPx(cssVar: string) {
-  const value = tokens.find((token) => token.cssVar === cssVar)?.value
-  return typeof value === "string" && value.endsWith("rem") ? `${parseFloat(value) * 16}px` : String(value ?? "")
-}
 
 type Level = "all" | "info" | "warn" | "error"
 
@@ -95,9 +88,9 @@ function LogFilter() {
 }
 
 const sizes = [
-  { size: "sm", label: "Small", height: tokenPx("--control-height-sm") },
-  { size: "default", label: "Medium", height: tokenPx("--control-height-md") },
-  { size: "lg", label: "Large", height: tokenPx("--control-height-lg") },
+  { size: "sm", label: "Small", height: `${tokenPx("--control-height-sm")}px` },
+  { size: "default", label: "Medium", height: `${tokenPx("--control-height-md")}px` },
+  { size: "lg", label: "Large", height: `${tokenPx("--control-height-lg")}px` },
 ] as const
 
 export default function NativeSelectDocs() {
@@ -111,7 +104,7 @@ export default function NativeSelectDocs() {
   <FieldLabel htmlFor="region">Region</FieldLabel>
   <NativeSelect id="region" defaultValue="iad1">
     <NativeSelectOption value="fra1">Frankfurt (fra1)</NativeSelectOption>
-    <NativeSelectOption value="iad1">Washington, D.C. (iad1)</NativeSelectOption>
+    <NativeSelectOption value="iad1">Virginia (iad1)</NativeSelectOption>
     <NativeSelectOption value="sfo1">San Francisco (sfo1)</NativeSelectOption>
     <NativeSelectOption value="sin1">Singapore (sin1)</NativeSelectOption>
     <NativeSelectOption value="syd1">Sydney (syd1)</NativeSelectOption>
@@ -122,7 +115,7 @@ export default function NativeSelectDocs() {
           <FieldLabel htmlFor="native-region">Region</FieldLabel>
           <NativeSelect id="native-region" defaultValue="iad1">
             <NativeSelectOption value="fra1">Frankfurt (fra1)</NativeSelectOption>
-            <NativeSelectOption value="iad1">Washington, D.C. (iad1)</NativeSelectOption>
+            <NativeSelectOption value="iad1">Virginia (iad1)</NativeSelectOption>
             <NativeSelectOption value="sfo1">San Francisco (sfo1)</NativeSelectOption>
             <NativeSelectOption value="sin1">Singapore (sin1)</NativeSelectOption>
             <NativeSelectOption value="syd1">Sydney (syd1)</NativeSelectOption>

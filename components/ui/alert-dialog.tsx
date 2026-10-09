@@ -114,16 +114,29 @@ function AlertDialogFooter({
   )
 }
 
-/** An icon tile above the title. Tint it for the situation, e.g. bg-destructive-subtle text-destructive. */
+const alertDialogMediaVariants = {
+  // A hairline edge, like EmptyMedia's icon tile: bg-muted alone barely shows on bg-popover.
+  default: "border-border bg-muted text-foreground",
+  // The tint is the edge, so the border steps back.
+  destructive: "border-transparent bg-destructive-subtle text-destructive",
+} as const
+
+/**
+ * An icon tile above the title. variant="destructive" tints it for an action
+ * that cannot be undone.
+ */
 function AlertDialogMedia({
   className,
+  variant = "default",
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & { variant?: keyof typeof alertDialogMediaVariants }) {
   return (
     <div
       data-slot="alert-dialog-media"
+      data-variant={variant}
       className={cn(
-        "mb-2 inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-muted text-foreground",
+        "mb-2 inline-flex size-12 shrink-0 items-center justify-center rounded-full border",
+        alertDialogMediaVariants[variant],
         "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5",
         className
       )}

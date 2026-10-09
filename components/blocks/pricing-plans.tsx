@@ -68,7 +68,7 @@ export const defaultPlans: PricingPlan[] = [
     price: { monthly: 39, yearly: 31 },
     features: [
       "Everything in Starter",
-      "Up to 10 team members",
+      "Up to 10 members, with roles and audit log",
       "Hourly backups with point-in-time restore",
       "Logs kept for 30 days",
       "Priority support",
@@ -83,7 +83,7 @@ export const defaultPlans: PricingPlan[] = [
     price: { monthly: 99, yearly: 79 },
     features: [
       "Unlimited team members",
-      "SAML single sign-on and audit log",
+      "SAML single sign-on",
       "Dedicated build machines",
       "99.99% uptime SLA",
       "Shared Slack channel",
@@ -243,9 +243,8 @@ function PlanCard({
         layout.card,
         featured
           ? [
-              // The emphasis panel in both themes. In dark mode its hairline edge keeps
-              // it apart from the page without a heavier frame.
-              "border-panel bg-panel text-panel-foreground dark:border-panel-foreground/30",
+              // The emphasis panel, raised above the cards in both themes.
+              "border-panel bg-panel text-panel-foreground",
               layout.raised,
             ]
           : "bg-card text-card-foreground"

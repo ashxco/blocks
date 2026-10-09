@@ -34,6 +34,25 @@ export interface ChangelogEntryProps {
   className?: string
 }
 
+/**
+ * Inline code in release notes: commands, flags, config keys and file names.
+ * A token never breaks across lines, so `--since 30d` stays one pill on a
+ * phone; keep each one short (under about 30 characters).
+ */
+export function ChangelogCode({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <code
+      data-slot="changelog-code"
+      className={cn(
+        "rounded-xs bg-muted box-decoration-clone px-1 font-mono text-code whitespace-nowrap text-foreground",
+        className
+      )}
+    >
+      {children}
+    </code>
+  )
+}
+
 /* Defaults match the Lumen changelog template, so docs and pages tell one story. */
 const defaultEntry = {
   date: "Oct 6, 2026",
@@ -46,7 +65,10 @@ const defaultEntry = {
   mediaTint: "violet" as const,
   items: [
     "Branches are ready in under two seconds, whatever the size of the database",
-    "Seed scripts run after branching when you set preview.seed in lumen.toml",
+    <>
+      Seed scripts run after branching when you set <ChangelogCode>preview.seed</ChangelogCode> in{" "}
+      <ChangelogCode>lumen.toml</ChangelogCode>
+    </>,
     "Fixed preview URLs returning 404 for a few seconds after a force push",
   ],
 }
@@ -141,11 +163,20 @@ export const defaultChangelog: ChangelogEntryProps[] = [
     dateTime: "2026-09-24",
     version: "v2.11.0",
     title: "Live logs in your terminal",
-    description:
-      "lumen logs now streams from every replica at once, with filters for level, route and status code. Leave it running through a deploy and the stream moves to the new version on its own.",
+    description: (
+      <>
+        <ChangelogCode>lumen logs</ChangelogCode> now streams from every replica at once, with filters for level, route
+        and status code. Leave it running through a deploy and the stream moves to the new version on its own.
+      </>
+    ),
     items: [
-      "Filter with --level error, --route /api or --status 5xx",
-      "Search the last 30 days with --since 30d on Pro and Scale",
+      <>
+        Filter with <ChangelogCode>--level error</ChangelogCode>, <ChangelogCode>--route /api</ChangelogCode> or{" "}
+        <ChangelogCode>--status 5xx</ChangelogCode>
+      </>,
+      <>
+        Search the last 30 days with <ChangelogCode>--since 30d</ChangelogCode> on Pro and Scale
+      </>,
       "Timestamps now use your local time zone",
     ],
   },

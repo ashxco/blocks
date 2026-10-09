@@ -63,12 +63,14 @@ type Stage = HTMLDivElement | null
 /**
  * The stage an example's sheet opens into, so the page shows the sheet
  * itself. contain-layout makes the stage the containing block for the fixed
- * overlay and panel, and isolate keeps them under the site header.
+ * overlay and panel, and isolate keeps them under the site header. The overlay
+ * keeps its tint but not its blur, which in a stage this small only smears the
+ * page into grey.
  */
 function SheetStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className={cn("relative isolate h-full min-h-176 w-full overflow-hidden contain-layout", className)}>
+    <div ref={setContainer} className={cn("relative isolate h-full min-h-176 w-full overflow-hidden contain-layout [&_[data-slot=sheet-overlay]]:backdrop-blur-none", className)}>
       <DeploymentsPage action={children(container)} />
     </div>
   )
@@ -76,6 +78,9 @@ function SheetStage({ className, children }: { className?: string; children: (co
 
 /** Open in place on the docs page: no focus move, no scroll lock, no dismissal on outside clicks. */
 const inlineSheet = { defaultOpen: true, modal: false, disablePointerDismissal: true } as const
+
+/** SheetBody in place on the page: the wheel carries on to the page once the body has nothing left to scroll. */
+const inlineBody = "overscroll-auto"
 
 const deployments = [
   { commit: "Add usage-based billing page", branch: "main", hash: "8f2c1a9", time: "4m ago" },
@@ -127,7 +132,7 @@ function DeploymentSheet({ container }: { container: Stage }) {
           <SheetTitle>Deployment 8f2c1a9</SheetTitle>
           <SheetDescription>“Add usage-based billing page” by Priya Raman, 4 minutes ago.</SheetDescription>
         </SheetHeader>
-        <SheetBody>
+        <SheetBody className={inlineBody}>
           <dl className="grid divide-y rounded-(--card-radius) border">
             {details.map((row) => (
               <div key={row.label} className="flex items-center justify-between gap-4 px-4 py-3">
@@ -204,7 +209,7 @@ function SidesDemo() {
                 <SheetTitle>Notifications</SheetTitle>
                 <SheetDescription>Choose what Lumen emails you about.</SheetDescription>
               </SheetHeader>
-              <SheetBody>
+              <SheetBody className={inlineBody}>
                 <div className="grid gap-4">
                   {["Failed deployments", "Domain and certificate changes", "Weekly usage summary"].map((label) => (
                     <label key={label} className="flex items-center justify-between gap-4 text-sm font-medium text-foreground">
@@ -232,7 +237,7 @@ function BuildSettingsSheet({ container }: { container: Stage }) {
             <SheetTitle>Build settings</SheetTitle>
             <SheetDescription>Changes apply to the next deployment of lumen-web.</SheetDescription>
           </SheetHeader>
-          <SheetBody>
+          <SheetBody className={inlineBody}>
             <Field>
               <FieldLabel htmlFor="sheet-build">Build command</FieldLabel>
               <Input id="sheet-build" defaultValue="npm run build" className="font-mono" />
@@ -267,7 +272,7 @@ export default function SheetDocs() {
       <Example
         title="Details panel"
         layout="full"
-        description="A sheet keeps the list behind it in view. Use SheetBody for the scrolling middle and SheetFooter for actions pinned to the bottom edge."
+        description="A sheet opens at the edge rather than over the middle of the page, so people keep their place in the list behind it. Use SheetBody for the scrolling middle and SheetFooter for actions pinned to the bottom edge."
         code={`<SheetContent>
   <SheetHeader>
     <SheetTitle>Deployment 8f2c1a9</SheetTitle>
@@ -304,7 +309,7 @@ export default function SheetDocs() {
       <Example
         title="Floating"
         layout="full"
-        description="variant=“floating” insets the sheet from the viewport and rounds it with --dialog-radius. It reads as a layer over the app rather than part of its frame."
+        description={`variant="floating" insets the sheet from the viewport and rounds it with --dialog-radius. It reads as a layer over the app rather than part of its frame.`}
         code={`<SheetContent variant="floating">…</SheetContent>`}
       >
         <SheetStage className="min-h-136">
@@ -316,7 +321,7 @@ export default function SheetDocs() {
                   <SheetTitle>Preview comments</SheetTitle>
                   <SheetDescription>3 open threads on feat-billing.lumen.app</SheetDescription>
                 </SheetHeader>
-                <SheetBody>
+                <SheetBody className={inlineBody}>
                   {[
                     { name: "Mateo Ortiz", text: "The plan cards jump when the toggle switches to yearly." },
                     { name: "Priya Raman", text: "Can we show the usage meter above the invoices table?" },

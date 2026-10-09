@@ -63,7 +63,7 @@ export default function PipelineShowcaseDocs() {
               meta: "2.3s",
               lines: [
                 "$ lumen rollback a41c9e2",
-                "→ a41c9e2 is still warm on fra-1 and iad-1",
+                "→ a41c9e2 is still warm on fra1 and iad1",
                 "→ Shifting traffic 0% → 100%",
                 "✓ Rolled back in 2.3s",
               ],

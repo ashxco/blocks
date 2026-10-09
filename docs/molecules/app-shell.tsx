@@ -27,7 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       <Example
         title="With a page"
-        description="Children render in a wide container with comfortable padding. Collapse the sidebar to icons with the toggle, the rail or Cmd+B; switch this canvas to the phone width to see it fold to a rail."
+        description="Children render in a wide container with comfortable padding. Collapse the sidebar to icons with the toggle, the rail or Cmd+B; switch this canvas to the tablet width to see it fold to a rail, or to the phone width, where the toggle opens it as a sheet."
         layout="full"
         code={`<AppShell activeHref="/live/app/projects">
   <div className="grid gap-8">
@@ -97,7 +97,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             type: "boolean",
             default: "false",
             description:
-              "Contain the shell in its parent instead of the viewport, for docs and previews. Set the height with className (default h-176).",
+              "Contain the shell in its parent instead of the viewport, for docs and previews. The layout then follows the parent’s width: icons below 48rem, the phone sheet below 40rem. Set the height with className (default h-176).",
           },
           {
             prop: "hotkey",

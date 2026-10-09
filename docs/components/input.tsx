@@ -3,19 +3,12 @@
 import * as React from "react"
 import { CheckIcon, GlobeIcon } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, tokenPx } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { tokens } from "@/design-system/generated/tokens"
 import { cn } from "@/lib/utils"
-
-/** A dimension token in px, read from the generated tokens so the copy follows the system. */
-function tokenPx(cssVar: string) {
-  const value = tokens.find((token) => token.cssVar === cssVar)?.value
-  return typeof value === "string" && value.endsWith("rem") ? `${parseFloat(value) * 16}px` : String(value ?? "")
-}
 
 const domainPattern = /^(?!-)[a-z0-9-]+(\.[a-z0-9-]+)+$/
 
@@ -87,9 +80,9 @@ function AddDomain() {
 }
 
 const sizes = [
-  { size: "sm", label: "Small", height: tokenPx("--control-height-sm") },
-  { size: "default", label: "Medium", height: tokenPx("--control-height-md") },
-  { size: "lg", label: "Large", height: tokenPx("--control-height-lg") },
+  { size: "sm", label: "Small", height: `${tokenPx("--control-height-sm")}px` },
+  { size: "default", label: "Medium", height: `${tokenPx("--control-height-md")}px` },
+  { size: "lg", label: "Large", height: `${tokenPx("--control-height-lg")}px` },
 ] as const
 
 /** One cell of the States example: a real field, with the state it shows named underneath. */
@@ -236,8 +229,8 @@ export default function InputDocs() {
 </Field>
 
 <Field>
-  <FieldLabel htmlFor="env-file">Environment file</FieldLabel>
-  <Input id="env-file" type="file" accept=".env,text/plain" />
+  <FieldLabel htmlFor="webhook">Webhook URL</FieldLabel>
+  <Input id="webhook" type="url" inputMode="url" autoComplete="url" placeholder="https://hooks.acme.dev/deploys" />
 </Field>`}
       >
         <div className="grid w-full max-w-2xl gap-6 @xl:grid-cols-2">
@@ -254,8 +247,8 @@ export default function InputDocs() {
             <Input id="input-number" type="number" min={1} max={20} defaultValue={4} className="max-w-24 tabular" />
           </Field>
           <Field>
-            <FieldLabel htmlFor="input-file">Environment file</FieldLabel>
-            <Input id="input-file" type="file" accept=".env,text/plain" />
+            <FieldLabel htmlFor="input-url">Webhook URL</FieldLabel>
+            <Input id="input-url" type="url" inputMode="url" autoComplete="url" placeholder="https://hooks.acme.dev/deploys" />
           </Field>
         </div>
       </Example>

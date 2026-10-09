@@ -34,7 +34,7 @@ export default function LogoCloudDocs() {
         description="Inside dark panels, use the panel tone so the marks stay legible but quiet."
         code={`<LogoCloud tone="panel" contained={false} items={[…]} />`}
       >
-        <div className="p-8 sm:p-12">
+        <div className="p-8 @2xl:p-12">
           <LogoCloud
             tone="panel"
             contained={false}

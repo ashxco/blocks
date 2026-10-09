@@ -152,7 +152,7 @@ function PromiseDemo() {
                 .catch(() => {})
             }
           >
-            Rotate key (fails)
+            Rotate API key
           </Button>
         </>
       }
@@ -236,7 +236,7 @@ toast.add({
 
       <Example
         title="Loading and promises"
-        description="Pass a promise to show a loading toast that turns into success or error when it settles."
+        description="Pass a promise to show a loading toast that turns into success or error when it settles. In the demo, Redeploy succeeds and Rotate API key times out."
         code={`toast.promise(redeploy(), {
   loading: { title: "Redeploying lumen-web", description: "Building from main" },
   success: { title: "Redeploy complete", description: "Live in 3 regions." },

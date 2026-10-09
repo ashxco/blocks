@@ -10,6 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { cn } from "@/lib/utils"
 import { slugify } from "@/components/viewer/nav"
 
 export interface DocHeaderProps {
@@ -21,6 +22,8 @@ export interface DocHeaderProps {
   description: string
   /** Optional actions or meta shown under the description. */
   children?: React.ReactNode
+  /** Extra classes, e.g. a tighter bottom padding above a preview. */
+  className?: string
 }
 
 const sectionLinks: Record<string, string> = {
@@ -37,7 +40,7 @@ const sectionLinks: Record<string, string> = {
  * on phones the trail collapses to a link back to the parent. The viewer may
  * restyle it but must keep these props.
  */
-export function DocHeader({ section, group, title, description, children }: DocHeaderProps) {
+export function DocHeader({ section, group, title, description, children, className }: DocHeaderProps) {
   const sectionHref = sectionLinks[section]
   const isSectionIndex = section === title && !group
   const crumbs: { label: string; href: string }[] = [
@@ -48,7 +51,12 @@ export function DocHeader({ section, group, title, description, children }: DocH
   const parent = crumbs[crumbs.length - 1]
 
   return (
-    <header data-slot="doc-header" className="grid gap-6 border-b pb-10 sm:pb-12">
+    // One column that never grows past the page: a long row of related links
+    // scrolls inside its own line instead of widening the header.
+    <header
+      data-slot="doc-header"
+      className={cn("grid grid-cols-[minmax(0,1fr)] gap-6 border-b pb-10 sm:pb-12", className)}
+    >
       <div className="grid gap-3">
         {isSectionIndex ? null : (
           <Breadcrumb aria-label="Breadcrumb">
@@ -80,7 +88,7 @@ export function DocHeader({ section, group, title, description, children }: DocH
         <h1 className="max-w-narrow text-h1">{title}</h1>
       </div>
       <p className="max-w-prose text-lead text-copy">{description}</p>
-      {children ? <div className="flex flex-wrap items-center gap-3">{children}</div> : null}
+      {children ? <div className="flex min-w-0 flex-wrap items-center gap-3">{children}</div> : null}
     </header>
   )
 }

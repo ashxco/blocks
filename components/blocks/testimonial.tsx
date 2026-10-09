@@ -2,6 +2,7 @@ import * as React from "react"
 import { QuoteIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Kern } from "@/components/ui/kern"
 import { cn } from "@/lib/utils"
 
 export interface TestimonialAuthor {
@@ -16,9 +17,9 @@ export interface TestimonialAuthor {
 }
 
 export interface TestimonialMetric {
-  /** The headline number, e.g. "4×". */
+  /** The headline number, e.g. "40s". */
   value: string
-  /** What the number measures, e.g. "faster releases". */
+  /** What the number measures, e.g. "from merge to live". */
   label: string
 }
 
@@ -90,9 +91,9 @@ const defaultAuthor: TestimonialAuthor = {
  * the result they got as a headline number.
  */
 export function Testimonial({
-  quote = "We moved twelve services to Lumen in a week. Releases that took an afternoon now go out in four minutes, and nobody on the team has touched a server config since.",
+  quote = "We moved twelve services to Lumen in a week. Deploys that took an afternoon now go live in under a minute, and nobody on the team has touched a server config since.",
   author = defaultAuthor,
-  metric = { value: "4×", label: "faster releases" },
+  metric = { value: "40s", label: "from merge to live" },
   tone = "subtle",
   contained = true,
   className,
@@ -103,7 +104,9 @@ export function Testimonial({
       <figure className={cn("@container/quote m-0", t.frame)}>
         <QuoteIcon aria-hidden="true" className={cn("size-8", t.icon)} strokeWidth={2.25} />
         <blockquote className="mt-8 @narrow/quote:mt-10">
-          <p className={cn("max-w-narrow text-h3 @narrow/quote:text-4xl", t.quote)}>{quote}</p>
+          <p className={cn("max-w-narrow text-h3 @narrow/quote:text-4xl", t.quote)}>
+            <Kern>{quote}</Kern>
+          </p>
         </blockquote>
         <figcaption className={cn("flex flex-wrap items-center justify-between gap-x-10 gap-y-8", t.caption)}>
           <div className="flex items-center gap-4">

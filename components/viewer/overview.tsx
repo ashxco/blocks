@@ -59,7 +59,8 @@ export function EntryTile({
         inert
         aria-hidden="true"
         className={cn(
-          "relative grid min-h-72 place-items-center overflow-hidden lg:min-h-112",
+          // A definite single column: the miniature sizes to the tile, never to its content.
+          "relative grid min-h-72 grid-cols-[minmax(0,1fr)] place-items-center overflow-hidden lg:min-h-112",
           panel ? "bg-panel" : "bg-subtle"
         )}
       >
@@ -145,7 +146,7 @@ export function FoundationsMiniature() {
 
 export function ComponentsMiniature() {
   return (
-    <div className="grid w-full max-w-80 gap-4 rounded-(--card-radius) border bg-background p-5 sm:max-w-96 sm:p-6">
+    <div className="grid w-full max-w-80 grid-cols-[minmax(0,1fr)] gap-4 rounded-(--card-radius) border bg-background p-5 sm:max-w-96 sm:p-6">
       <div className="flex items-center justify-between gap-3">
         <span className="text-title text-foreground">Deploy settings</span>
         <Badge variant="success">Live</Badge>
@@ -173,7 +174,7 @@ const bars = ["h-5", "h-8", "h-6", "h-11", "h-9", "h-14", "h-12", "h-16", "h-[4.
 
 export function MoleculesMiniature() {
   return (
-    <div className="grid w-full max-w-96 min-w-0 gap-3">
+    <div className="grid w-full max-w-96 min-w-0 grid-cols-[minmax(0,1fr)] gap-3">
       <div className="grid gap-4 rounded-(--card-radius) border bg-background p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="grid gap-1">
@@ -182,11 +183,13 @@ export function MoleculesMiniature() {
           </div>
           <Badge variant="success">+12%</Badge>
         </div>
+        {/* Past weeks in a neutral that reads on the card in both themes; only
+            this week takes the series colour. */}
         <div className="flex h-20 items-end gap-1.5">
           {bars.map((h, i) => (
             <span
               key={h}
-              className={cn("flex-1 rounded-t-xs", h, i === bars.length - 1 ? "bg-chart-1" : "bg-chart-1/25")}
+              className={cn("flex-1 rounded-t-xs", h, i === bars.length - 1 ? "bg-chart-1" : "bg-muted-foreground/40")}
             />
           ))}
         </div>
@@ -195,8 +198,9 @@ export function MoleculesMiniature() {
         <Avatar size="sm">
           <AvatarFallback>MC</AvatarFallback>
         </Avatar>
-        <span className="min-w-0 flex-1 truncate text-label font-medium text-copy">
-          <span className="font-semibold text-foreground">Maya Chen</span> deployed to production
+        {/* Short enough for a phone; it wraps rather than cuts off below sm. */}
+        <span className="min-w-0 flex-1 text-label font-medium text-copy sm:truncate">
+          <span className="font-semibold text-foreground">Maya Chen</span> deployed main
         </span>
         <span className="text-caption text-muted-foreground">2m</span>
       </div>

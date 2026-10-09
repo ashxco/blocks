@@ -4,7 +4,7 @@ import Link from "next/link"
 import { ArrowRightIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
-import { ChangelogEntry, ChangelogTimeline } from "@/components/blocks/changelog-entry"
+import { ChangelogCode, ChangelogEntry, ChangelogTimeline } from "@/components/blocks/changelog-entry"
 import { CodeWindow } from "@/components/blocks/code-window"
 import { Button } from "@/components/ui/button"
 
@@ -26,7 +26,7 @@ export default function ChangelogEntryDocs() {
         description="An entry on its own, with the built-in preview environment card in a tint. Pass media={true} for that card, or your own image or component."
         code={`<ChangelogEntry />`}
       >
-        <div className="p-6 sm:p-10">
+        <div className="p-6 @2xl:p-10">
           <ChangelogEntry latest />
         </div>
       </Example>
@@ -35,7 +35,7 @@ export default function ChangelogEntryDocs() {
         title="Custom media and a link"
         layout="full"
         surface="subtle"
-        description="Any component can fill the media slot, such as a terminal for a CLI release. Children render under the list."
+        description="Any component can fill the media slot, such as a terminal for a CLI release. Children render under the list. Wrap commands, flags and file names in ChangelogCode."
         code={`<ChangelogEntry
   date="Mar 4, 2026"
   dateTime="2026-03-04"
@@ -44,14 +44,14 @@ export default function ChangelogEntryDocs() {
   description="…"
   mediaTint="mint"
   media={<CodeWindow lines={[…]} />}
-  items={[…]}
+  items={[<><ChangelogCode>lumen open</ChangelogCode> jumps to the project dashboard</>, …]}
 >
   <Button variant="link" nativeButton={false} render={<Link href="/live/blog/post" />}>
     Read the release notes
   </Button>
 </ChangelogEntry>`}
       >
-        <div className="p-6 sm:p-10">
+        <div className="p-6 @2xl:p-10">
           <ChangelogEntry
             date="Mar 4, 2026"
             dateTime="2026-03-04"
@@ -60,7 +60,7 @@ export default function ChangelogEntryDocs() {
             description="A rewrite of the CLI in Go. It starts in under 50 ms, streams build logs as they happen and works offline for everything that doesn’t need the API."
             mediaTint="mint"
             media={
-              <div className="p-6 sm:p-10">
+              <div className="p-6 @2xl:p-10">
                 <CodeWindow
                   wrap
                   title="~/acme"
@@ -73,7 +73,12 @@ export default function ChangelogEntryDocs() {
                 />
               </div>
             }
-            items={["lumen open jumps to the project dashboard", "Shell completions for zsh, bash and fish"]}
+            items={[
+              <>
+                <ChangelogCode>lumen open</ChangelogCode> jumps to the project dashboard
+              </>,
+              "Shell completions for zsh, bash and fish",
+            ]}
           >
             <Button variant="link" nativeButton={false} render={<Link href="/live/blog/post" />}>
               Read the release notes
@@ -110,6 +115,14 @@ export default function ChangelogEntryDocs() {
           { prop: "latest", type: "boolean", default: "false", description: "Brand dot on the rail for the newest release." },
           { prop: "as", type: '"h2" | "h3"', default: '"h2"', description: "Heading level of the title." },
           { prop: "children", type: "ReactNode", description: "Extra content under the list, such as a link." },
+        ]}
+      />
+
+      <ApiTable
+        title="ChangelogCode"
+        rows={[
+          { prop: "children", type: "ReactNode", description: "A command, flag, config key or file name inside release notes, set in mono on a muted chip." },
+          { prop: "className", type: "string", description: "Classes for the code element." },
         ]}
       />
 
