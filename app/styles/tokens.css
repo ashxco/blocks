@@ -16,7 +16,6 @@
   --radius-*: initial;
   --ease-*: initial;
   --blur-*: initial;
-  --container-*: initial;
   --breakpoint-*: initial;
   --font-heading: var(--font-sans);
   --default-transition-duration: var(--duration-fast);
@@ -28,6 +27,10 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
+  --text-hero: clamp(4rem, 1.5rem + 9vw, 10rem);
+  --text-hero--line-height: 0.9;
+  --text-hero--letter-spacing: -0.055em;
+  --text-hero--font-weight: 800;
   --text-display: clamp(2.75rem, 1.55rem + 4.6vw, 5rem);
   --text-display--line-height: 1;
   --text-display--letter-spacing: -0.045em;
@@ -199,6 +202,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-panel-brand: var(--panel-brand);
 }
 
 :root {
@@ -212,6 +216,7 @@
   --bk-ink-300: oklch(0.82 0.008 286);
   --bk-ink-400: oklch(0.68 0.01 286);
   --bk-ink-500: oklch(0.56 0.012 286);
+  --bk-ink-550: oklch(0.505 0.012 286);
   --bk-ink-600: oklch(0.45 0.012 286);
   --bk-ink-700: oklch(0.36 0.012 286);
   --bk-ink-800: oklch(0.27 0.012 286);
@@ -279,7 +284,7 @@
   --background: var(--bk-ink-0);
   --foreground: var(--bk-ink-950);
   --copy: var(--bk-ink-600);
-  --muted-foreground: var(--bk-ink-500);
+  --muted-foreground: var(--bk-ink-550);
   --subtle: var(--bk-ink-50);
   --card: var(--bk-ink-0);
   --card-foreground: var(--bk-ink-950);
@@ -327,7 +332,7 @@
   --chart-1: var(--bk-violet-600);
   --chart-2: var(--bk-sky-500);
   --chart-3: var(--bk-green-500);
-  --chart-4: var(--bk-amber-500);
+  --chart-4: var(--bk-amber-400);
   --chart-5: var(--bk-ink-400);
   --sidebar: var(--bk-ink-25);
   --sidebar-foreground: var(--bk-ink-950);
@@ -337,10 +342,11 @@
   --sidebar-accent-foreground: var(--bk-ink-950);
   --sidebar-border: var(--bk-ink-150);
   --sidebar-ring: var(--bk-violet-600);
+  --panel-brand: var(--bk-violet-400);
 
   /* Layout and motion */
-  --border-hairline: 1px;
-  --border-strong: 2px;
+  --border-width-hairline: 1px;
+  --border-width-strong: 2px;
   --focus-width: 2px;
   --focus-offset: 2px;
   --duration-instant: 80ms;
@@ -365,6 +371,7 @@
   --control-height-sm: 2.25rem;
   --control-height-md: 2.75rem;
   --control-height-lg: 3rem;
+  --control-height-xs: 2rem;
   --control-padding-x: 0.875rem;
   --control-radius: var(--radius-md);
   --card-radius: var(--radius-lg);
@@ -372,6 +379,7 @@
   --card-padding-sm: 1rem;
   --panel-radius: var(--radius-2xl);
   --panel-padding: clamp(1.5rem, 0.5rem + 5vw, 5rem);
+  --panel-padding-sm: clamp(1.5rem, 1rem + 2vw, 2.5rem);
   --overlay-radius: var(--radius-md);
   --overlay-item-radius: var(--radius-sm);
   --overlay-padding: 0.375rem;
@@ -388,20 +396,31 @@
   --tabs-height: 2.75rem;
   --switch-width: 2.5rem;
   --switch-height: 1.5rem;
+  --switch-width-sm: 2rem;
+  --switch-height-sm: 1.25rem;
   --table-row-height: 3.25rem;
+  --table-row-height-sm: 2.75rem;
   --header-height: 4.5rem;
+  --header-height-sm: 3.5rem;
   --sidebar-width: 16rem;
   --sidebar-width-icon: 3.5rem;
+  --sidebar-width-mobile: 18rem;
+  --selection-size: 1.125rem;
+  --otp-slot-width: 2.75rem;
+  --calendar-cell-size: 2.5rem;
+  --sheet-width: 28rem;
+  --scrollbar-size: 0.625rem;
 }
 
 .dark {
+  color-scheme: dark;
   /* Semantic colours (dark) */
   --background: var(--bk-ink-1000);
   --foreground: var(--bk-ink-25);
   --copy: var(--bk-ink-300);
   --muted-foreground: var(--bk-ink-400);
   --subtle: var(--bk-ink-950);
-  --card: var(--bk-ink-900);
+  --card: var(--bk-ink-950);
   --card-foreground: var(--bk-ink-25);
   --popover: var(--bk-ink-900);
   --popover-foreground: var(--bk-ink-25);
@@ -414,19 +433,19 @@
   --accent-foreground: var(--bk-ink-25);
   --brand: var(--bk-violet-400);
   --brand-foreground: var(--bk-ink-1000);
-  --brand-subtle: var(--bk-violet-950);
+  --brand-subtle: oklch(0.27 0.06 283);
   --brand-subtle-foreground: var(--bk-violet-200);
   --destructive: var(--bk-red-400);
   --destructive-foreground: var(--bk-ink-1000);
-  --destructive-subtle: var(--bk-red-950);
+  --destructive-subtle: oklch(0.26 0.045 25);
   --success: var(--bk-green-400);
   --success-foreground: var(--bk-ink-1000);
-  --success-subtle: var(--bk-green-950);
+  --success-subtle: oklch(0.26 0.035 152);
   --warning: var(--bk-amber-400);
   --warning-foreground: var(--bk-ink-1000);
-  --warning-subtle: var(--bk-amber-950);
+  --warning-subtle: oklch(0.27 0.04 72);
   --info: var(--bk-sky-400);
-  --info-subtle: var(--bk-sky-950);
+  --info-subtle: oklch(0.26 0.035 235);
   --border: oklch(1 0 0 / 0.09);
   --border-strong: oklch(1 0 0 / 0.16);
   --input: oklch(1 0 0 / 0.14);
@@ -439,15 +458,15 @@
   --panel-border: oklch(1 0 0 / 0.1);
   --terminal: var(--bk-ink-1000);
   --terminal-foreground: var(--bk-ink-150);
-  --tint-violet: var(--bk-violet-950);
-  --tint-mint: var(--bk-green-950);
-  --tint-sand: var(--bk-amber-950);
-  --tint-sky: var(--bk-sky-950);
-  --tint-rose: var(--bk-red-950);
+  --tint-violet: oklch(0.3 0.05 283);
+  --tint-mint: oklch(0.3 0.04 152);
+  --tint-sand: oklch(0.31 0.035 72);
+  --tint-sky: oklch(0.3 0.035 235);
+  --tint-rose: oklch(0.3 0.04 25);
   --chart-1: var(--bk-violet-400);
-  --chart-2: var(--bk-sky-400);
-  --chart-3: var(--bk-green-400);
-  --chart-4: var(--bk-amber-400);
+  --chart-2: var(--bk-sky-300);
+  --chart-3: var(--bk-green-500);
+  --chart-4: var(--bk-amber-200);
   --chart-5: var(--bk-ink-500);
   --sidebar: var(--bk-ink-950);
   --sidebar-foreground: var(--bk-ink-25);
@@ -457,4 +476,72 @@
   --sidebar-accent-foreground: var(--bk-ink-25);
   --sidebar-border: oklch(1 0 0 / 0.09);
   --sidebar-ring: var(--bk-violet-400);
+  --panel-brand: var(--bk-violet-400);
+}
+
+/* Force the light theme on a subtree, even inside .dark. */
+.light {
+  color-scheme: light;
+  --background: var(--bk-ink-0);
+  --foreground: var(--bk-ink-950);
+  --copy: var(--bk-ink-600);
+  --muted-foreground: var(--bk-ink-550);
+  --subtle: var(--bk-ink-50);
+  --card: var(--bk-ink-0);
+  --card-foreground: var(--bk-ink-950);
+  --popover: var(--bk-ink-0);
+  --popover-foreground: var(--bk-ink-950);
+  --primary: var(--bk-ink-950);
+  --primary-foreground: var(--bk-ink-0);
+  --secondary: var(--bk-ink-100);
+  --secondary-foreground: var(--bk-ink-950);
+  --muted: var(--bk-ink-50);
+  --accent: var(--bk-ink-100);
+  --accent-foreground: var(--bk-ink-950);
+  --brand: var(--bk-violet-600);
+  --brand-foreground: var(--bk-ink-0);
+  --brand-subtle: var(--bk-violet-50);
+  --brand-subtle-foreground: var(--bk-violet-700);
+  --destructive: var(--bk-red-600);
+  --destructive-foreground: var(--bk-ink-0);
+  --destructive-subtle: var(--bk-red-50);
+  --success: var(--bk-green-600);
+  --success-foreground: var(--bk-ink-0);
+  --success-subtle: var(--bk-green-50);
+  --warning: var(--bk-amber-600);
+  --warning-foreground: var(--bk-ink-0);
+  --warning-subtle: var(--bk-amber-50);
+  --info: var(--bk-sky-600);
+  --info-subtle: var(--bk-sky-50);
+  --border: var(--bk-ink-150);
+  --border-strong: var(--bk-ink-200);
+  --input: var(--bk-ink-200);
+  --ring: var(--bk-violet-600);
+  --overlay: oklch(0.135 0.008 286 / 0.4);
+  --panel: var(--bk-ink-900);
+  --panel-foreground: var(--bk-ink-0);
+  --panel-muted: oklch(1 0 0 / 0.64);
+  --panel-raised: var(--bk-ink-850);
+  --panel-border: oklch(1 0 0 / 0.09);
+  --terminal: var(--bk-ink-1000);
+  --terminal-foreground: var(--bk-ink-150);
+  --tint-violet: var(--bk-violet-100);
+  --tint-mint: var(--bk-green-100);
+  --tint-sand: var(--bk-amber-100);
+  --tint-sky: var(--bk-sky-100);
+  --tint-rose: var(--bk-red-100);
+  --chart-1: var(--bk-violet-600);
+  --chart-2: var(--bk-sky-500);
+  --chart-3: var(--bk-green-500);
+  --chart-4: var(--bk-amber-400);
+  --chart-5: var(--bk-ink-400);
+  --sidebar: var(--bk-ink-25);
+  --sidebar-foreground: var(--bk-ink-950);
+  --sidebar-primary: var(--bk-ink-950);
+  --sidebar-primary-foreground: var(--bk-ink-0);
+  --sidebar-accent: var(--bk-ink-100);
+  --sidebar-accent-foreground: var(--bk-ink-950);
+  --sidebar-border: var(--bk-ink-150);
+  --sidebar-ring: var(--bk-violet-600);
+  --panel-brand: var(--bk-violet-400);
 }

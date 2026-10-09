@@ -6,7 +6,7 @@ import { ArrowUpRightIcon, MonitorIcon, MoonIcon, RotateCwIcon, SmartphoneIcon, 
 
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 import { useSiteTheme } from "@/components/viewer/example-canvas"
 import { useElementSize } from "@/components/viewer/scaled-frame"
 import { Segmented } from "@/components/viewer/segmented"

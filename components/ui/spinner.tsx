@@ -1,4 +1,4 @@
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks spinner. A thin ring with a quarter arc, drawn in currentColor so it

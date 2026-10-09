@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /** Measures an element's content box and keeps it up to date. */
 export function useElementSize<T extends HTMLElement>() {

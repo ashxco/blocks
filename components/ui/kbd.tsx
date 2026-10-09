@@ -1,4 +1,4 @@
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks keyboard key. Mono glyphs on a muted keycap with a hairline border.

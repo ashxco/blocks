@@ -1,7 +1,7 @@
 "use client"
 
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks switch. The track is sized by --switch-width and --switch-height,

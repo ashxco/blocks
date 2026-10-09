@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Drawer as DrawerPrimitive } from "@base-ui/react/drawer"
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks drawer. A touch-first panel with swipe to dismiss and snap points

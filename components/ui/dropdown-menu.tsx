@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
 import { CheckIcon, ChevronRightIcon } from "lucide-react"
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks dropdown menu. bg-popover with a crisp 1px border, --overlay-radius

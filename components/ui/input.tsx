@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Input as InputPrimitive } from "@base-ui/react/input"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks input. A filled control: `bg-muted` with a hairline `border-input`

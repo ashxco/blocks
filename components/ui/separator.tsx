@@ -2,7 +2,7 @@
 
 import { Separator as SeparatorPrimitive } from "@base-ui/react/separator"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks separator. A 1px hairline, never a shadow or a fade.

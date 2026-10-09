@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /** The Blocks mark: four blocks, one of them violet. */
 export function BlocksMark({ className }: { className?: string }) {

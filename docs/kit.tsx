@@ -12,7 +12,7 @@
 import * as React from "react"
 import { CheckIcon, PenLineIcon, XIcon } from "lucide-react"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /**
  * One example on a preview canvas, with Preview and Code tabs, a copy button,

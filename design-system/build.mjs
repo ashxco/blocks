@@ -71,10 +71,17 @@ function describe(t) {
       if (head === "motion" && rest[0] === "ease") return { tier: "layout", group: "easing", cssVar: `--ease-${join(rest.slice(1))}`, scope: "theme", utility: `ease-${join(rest.slice(1))}` }
       if (head === "motion") return { tier: "layout", group: "duration", cssVar: `--duration-${join(rest.slice(1))}`, scope: "root", utility: `duration-(--duration-${join(rest.slice(1))})` }
       if (head === "blur") return { tier: "layout", group: "blur", cssVar: `--blur-${join(rest)}`, scope: "theme", utility: `backdrop-blur-${join(rest)}` }
+      if (head === "border") return { tier: "layout", group: "border-width", cssVar: `--border-width-${join(rest)}`, scope: "root", utility: `border-(length:--border-width-${join(rest)})` }
+      if (head === "focus") return { tier: "layout", group: "focus", cssVar: `--focus-${join(rest)}`, scope: "root", utility: "focus-visible:focus-ring" }
+      if (head === "z") return { tier: "layout", group: "z-index", cssVar: `--z-${join(rest)}`, scope: "root", utility: `z-(--z-${join(rest)})` }
       return { tier: "layout", group: head, cssVar: `--${join(p)}`, scope: "root" }
     }
-    case "components":
-      return { tier: "component", group: p[1], cssVar: `--${join(p.slice(1))}`, scope: "root", utility: `h-(--${join(p.slice(1))})` }
+    case "components": {
+      const name = join(p.slice(1))
+      const prop = p.slice(2).join("-")
+      const prefix = /radius/.test(prop) ? "rounded" : /padding-x/.test(prop) ? "px" : /padding/.test(prop) ? "p" : /width/.test(prop) ? "w" : /size/.test(prop) ? "size" : "h"
+      return { tier: "component", group: p[1], cssVar: `--${name}`, scope: "root", utility: `${prefix}-(--${name})` }
+    }
   }
   throw new Error(`No naming rule for token ${p.join(".")} in ${t.filePath}`)
 }
@@ -161,7 +168,6 @@ const css = `/*
   --radius-*: initial;
   --ease-*: initial;
   --blur-*: initial;
-  --container-*: initial;
   --breakpoint-*: initial;
   --font-heading: var(--font-sans);
   --default-transition-duration: var(--duration-fast);
@@ -194,8 +200,15 @@ ${rootLines.component.join("\n")}
 }
 
 .dark {
+  color-scheme: dark;
   /* Semantic colours (dark) */
 ${darkLines.join("\n")}
+}
+
+/* Force the light theme on a subtree, even inside .dark. */
+.light {
+  color-scheme: light;
+${rootLines.semantic.join("\n")}
 }
 `
 
@@ -244,6 +257,9 @@ export interface DesignToken {
 export const tokens: DesignToken[] = ${JSON.stringify(list.map((t) => JSON.parse(JSON.stringify(t))), null, 2)}
 
 export const tokensByTier = (tier: TokenTier) => tokens.filter((t) => t.tier === tier)
+
+/** Type role names (text-<role> utilities). Used by cn() so roles merge as font sizes. */
+export const typeRoles = ${JSON.stringify(all.filter((t) => t.meta.tier === "typography" && t.meta.group === "roles").map((t) => t.path[1]))} as const
 `
 
 await mkdir(path.join(root, "app/styles"), { recursive: true })

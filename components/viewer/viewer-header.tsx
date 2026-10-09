@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { ArrowUpRightIcon, SearchIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 import { CommandPalette } from "@/components/viewer/command-palette"
 import { MobileMenu } from "@/components/viewer/mobile-menu"
 import { navSections, sectionForPath } from "@/components/viewer/nav"

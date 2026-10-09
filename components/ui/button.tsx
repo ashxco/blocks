@@ -1,6 +1,6 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks button. Pill-shaped, flat, no shadow. Sizes and radius come from

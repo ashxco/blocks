@@ -2,7 +2,7 @@ import { NavigationMenu as NavigationMenuPrimitive } from "@base-ui/react/naviga
 import { cva } from "class-variance-authority"
 import { ChevronDownIcon } from "lucide-react"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks navigation menu. Pill triggers in the label role; dropdown panels

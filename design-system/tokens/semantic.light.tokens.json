@@ -14,7 +14,7 @@
       "$description": "Paragraph and long-form text."
     },
     "muted-foreground": {
-      "$value": "{color.ink.500}",
+      "$value": "{color.ink.550}",
       "$description": "Meta text, captions, placeholders and inactive icons."
     },
     "subtle": {
@@ -209,7 +209,7 @@
         "$description": "Data series 3."
       },
       "4": {
-        "$value": "{color.amber.500}",
+        "$value": "{color.amber.400}",
         "$description": "Data series 4."
       },
       "5": {
@@ -250,6 +250,10 @@
         "$value": "{color.violet.600}",
         "$description": "Sidebar focus outline."
       }
+    },
+    "panel-brand": {
+      "$value": "{color.violet.400}",
+      "$description": "Brand accent on dark panels: links, active indicators and highlights inside bg-panel."
     }
   }
 }

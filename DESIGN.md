@@ -47,7 +47,7 @@ Never edit the generated files. Only the design-system owner edits token sources
 | `destructive`, `success`, `warning`, `info` (+ `-subtle`, `-foreground`) | `text-success`, `bg-success-subtle` | Status |
 | `border`, `border-strong`, `input`, `ring` | `border-border-strong`, `outline-ring` | Lines and focus |
 | `overlay` | `bg-overlay` | Dialog and sheet backdrop |
-| `panel`, `panel-foreground`, `panel-muted`, `panel-raised`, `panel-border` | `bg-panel`, `text-panel-muted` | Dark emphasis surfaces; stay dark in both themes |
+| `panel`, `panel-foreground`, `panel-muted`, `panel-raised`, `panel-border`, `panel-brand` | `bg-panel`, `text-panel-muted`, `text-panel-brand` | Dark emphasis surfaces; stay dark in both themes. Use `panel-brand` (not `brand`) for accents on panels |
 | `terminal`, `terminal-foreground` | `bg-terminal` | Code and terminal windows |
 | `tint-violet`, `tint-mint`, `tint-sand`, `tint-sky`, `tint-rose` | `bg-tint-sky` | Flat decorative fills for covers, avatars, placeholders |
 | `chart-1` … `chart-5` | `fill-chart-1`, `var(--chart-1)` | Data series |
@@ -55,7 +55,9 @@ Never edit the generated files. Only the design-system owner edits token sources
 
 Opacity modifiers work on every colour: `bg-primary/85`, `border-panel-foreground/60`.
 
-3. **Component tokens** (`--button-height-md`, `--control-radius`, `--card-padding`, `--overlay-radius`, `--dialog-width`, `--header-height`, `--sidebar-width`, …). Read them with Tailwind's variable syntax: `h-(--button-height-md)`, `rounded-(--control-radius)`, `p-(--card-padding)`.
+Themes: `.dark` on any element switches its subtree to dark values; `.light` forces light values, even inside `.dark`. Pages and previews accept `?theme=dark|light`, which forces the theme without saving it.
+
+3. **Component tokens** (`--button-height-md`, `--control-height-xs|sm|md|lg`, `--control-radius`, `--selection-size`, `--switch-width(-sm)`, `--otp-slot-width`, `--calendar-cell-size`, `--card-padding(-sm)`, `--panel-padding(-sm)`, `--overlay-radius`, `--dialog-width`, `--sheet-width`, `--table-row-height(-sm)`, `--header-height(-sm)`, `--sidebar-width(-icon|-mobile)`, `--scrollbar-size`, …). The full list is on the viewer's Tokens page. Read them with Tailwind's variable syntax: `h-(--button-height-md)`, `rounded-(--control-radius)`, `p-(--card-padding)`.
 
 ### Typography
 
@@ -65,6 +67,7 @@ Type **roles** set size, line height, tracking and weight in one utility:
 
 | Utility | Use |
 |---|---|
+| `text-hero` | Oversized showcase statement (800), for the viewer overview and similar |
 | `text-display` | Hero headline, one per page (800) |
 | `text-h1` | Inner page title (800) |
 | `text-h2` | Section heading (800) |
@@ -82,11 +85,12 @@ The size scale `text-xs` … `text-7xl` also exists for dense UI. Available weig
 ### Space, shape, layout, motion
 
 - Spacing unit `--spacing` (0.25rem): `p-4`, `gap-6`. Named: `px-gutter` (page side padding), `py-section` (section rhythm), `py-section-sm`, `gap-stack`.
-- Containers: `container-page`, `container-wide`, `container-narrow` utilities (centred, with gutters), or `max-w-prose|narrow|page|wide`.
+- Containers: `container-page`, `container-wide`, `container-narrow` utilities (centred, with gutters), or `max-w-narrow|page|wide`. Tailwind's container scale (`max-w-xs` … `max-w-7xl`, `@sm:` … `@7xl:`) is available, plus `@prose:` (42rem), `@narrow:`, `@page:` and `@wide:` container queries. Note that `max-w-prose` is Tailwind's fixed 65ch.
 - Radius: `rounded-xs` (6px), `sm` (8), `md` (12: controls, menus), `lg` (18: cards), `xl` (22: dialogs), `2xl` (28: panels), `3xl`, `4xl`, `full`.
 - Motion: durations `duration-(--duration-fast|base|slow|slower)`, easings `ease-standard|out|in|in-out`. Everything respects `prefers-reduced-motion` (globals.css). Keep motion subtle: fades, small translates, height reveals.
+- Borders: `--border-width-hairline` (1px), `--border-width-strong` (2px).
 - Z: `z-(--z-header)`, `z-(--z-overlay)`, `z-(--z-toast)`.
-- Breakpoints: `sm` 40rem, `md` 48rem, `lg` 64rem, `xl` 80rem, `2xl` 96rem. Use container queries (`@container`, `@md:`) for components that live in variable-width slots.
+- Breakpoints: `sm` 40rem, `md` 48rem, `lg` 64rem, `xl` 80rem, `2xl` 96rem. Use container queries (`@container`, `@md:`, `@prose:`) for components that live in variable-width slots.
 
 ## Components (components/ui)
 

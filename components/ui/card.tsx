@@ -1,7 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks card. Flat: a hairline border, --card-radius corners and

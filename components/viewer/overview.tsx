@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Switch } from "@/components/ui/switch"
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /* -------------------------------------------------------------------------- */
 /* Entry tile                                                                  */

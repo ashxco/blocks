@@ -2,7 +2,7 @@ import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion"
 import { cva, type VariantProps } from "class-variance-authority"
 import { PlusIcon } from "lucide-react"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks accordion. Hairline-separated rows with bold titles. The plus in a

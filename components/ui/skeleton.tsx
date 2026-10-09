@@ -1,4 +1,4 @@
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks skeleton. A flat muted shape that pulses gently while content

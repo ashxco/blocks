@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowRightIcon, ArrowUpRightIcon, BoldIcon, BracesIcon, DropletIcon, PanelsTopLeftIcon, SquareIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 import {
   ComponentsMiniature,
   DeployCard,

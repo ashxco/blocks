@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { Collapsible } from "@base-ui/react/collapsible"
 import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 import { navSections, sectionForPath, type NavGroup, type NavSection } from "@/components/viewer/nav"
 
 function matches(query: string, ...fields: (string | undefined)[]) {

@@ -1,4 +1,4 @@
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks aspect ratio. Holds media at a fixed ratio (width / height) so the

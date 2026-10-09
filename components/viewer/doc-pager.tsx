@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 import type { PagerLink } from "@/components/viewer/nav"
 
 /** Previous and next pages inside the same group, at the foot of a doc page. */

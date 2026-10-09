@@ -1,7 +1,7 @@
 "use client"
 
 import { PreviewCard as PreviewCardPrimitive } from "@base-ui/react/preview-card"
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks hover card. A preview that opens on hover or keyboard focus, after a
