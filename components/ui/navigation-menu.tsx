@@ -3,6 +3,7 @@ import { cva } from "class-variance-authority"
 import { ChevronDownIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { ScopedPortal } from "@/lib/portal-container"
 
 /**
  * Blocks navigation menu. Pill triggers in the label role; dropdown panels
@@ -139,7 +140,7 @@ function NavigationMenuPositioner({
   container?: NavigationMenuPrimitive.Portal.Props["container"]
 }) {
   return (
-    <NavigationMenuPrimitive.Portal container={container}>
+    <ScopedPortal portal={NavigationMenuPrimitive.Portal} container={container}>
       <NavigationMenuPrimitive.Positioner
         side={side}
         sideOffset={sideOffset}
@@ -158,7 +159,7 @@ function NavigationMenuPositioner({
           data-slot="navigation-menu-popup"
           className={cn(
             "relative h-(--popup-height) w-(--popup-width) origin-(--transform-origin) overflow-hidden",
-            "rounded-(--overlay-radius) border border-input bg-popover text-popover-foreground outline-none",
+            "rounded-(--overlay-radius) border border-popover-border bg-popover text-popover-foreground outline-none",
             "transition-[opacity,scale,width,height] duration-(--duration-base) ease-out",
             "data-starting-style:scale-98 data-starting-style:opacity-0 data-ending-style:scale-98 data-ending-style:opacity-0"
           )}
@@ -169,7 +170,7 @@ function NavigationMenuPositioner({
           />
         </NavigationMenuPrimitive.Popup>
       </NavigationMenuPrimitive.Positioner>
-    </NavigationMenuPrimitive.Portal>
+    </ScopedPortal>
   )
 }
 
@@ -205,7 +206,7 @@ function NavigationMenuIndicator({
       )}
       {...props}
     >
-      <div className="relative top-[60%] size-2 rotate-45 rounded-tl-xs border-t border-l border-border bg-popover" />
+      <div className="relative top-[60%] size-2 rotate-45 rounded-tl-xs border-t border-l border-popover-border bg-popover" />
     </NavigationMenuPrimitive.Icon>
   )
 }

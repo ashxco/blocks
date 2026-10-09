@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover"
 import { cn } from "@/lib/utils"
+import { ScopedPortal } from "@/lib/portal-container"
 
 /**
  * Blocks popover. Rich content anchored to a trigger: bg-popover, a crisp
@@ -42,7 +43,7 @@ function PopoverContent({
     container?: PopoverPrimitive.Portal.Props["container"]
   }) {
   return (
-    <PopoverPrimitive.Portal container={container}>
+    <ScopedPortal portal={PopoverPrimitive.Portal} container={container}>
       <PopoverPrimitive.Positioner
         align={align}
         alignOffset={alignOffset}
@@ -55,8 +56,8 @@ function PopoverContent({
         <PopoverPrimitive.Popup
           data-slot="popover-content"
           className={cn(
-            "flex w-72 max-w-(--available-width) origin-(--transform-origin) flex-col gap-4",
-            "rounded-(--overlay-radius) border border-input bg-popover p-(--card-padding-sm) text-sm text-popover-foreground outline-none",
+            "flex w-(--popover-width) max-w-(--available-width) origin-(--transform-origin) flex-col gap-4",
+            "rounded-(--overlay-radius) border border-popover-border bg-popover p-(--card-padding-sm) text-sm text-popover-foreground outline-none",
             "transition-[opacity,scale] duration-(--duration-base) ease-out",
             "data-starting-style:scale-98 data-starting-style:opacity-0",
             "data-ending-style:scale-98 data-ending-style:opacity-0 data-ending-style:duration-(--duration-fast) data-ending-style:ease-in",
@@ -66,7 +67,7 @@ function PopoverContent({
           {...props}
         />
       </PopoverPrimitive.Positioner>
-    </PopoverPrimitive.Portal>
+    </ScopedPortal>
   )
 }
 

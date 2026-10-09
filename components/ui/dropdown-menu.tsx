@@ -4,6 +4,7 @@ import * as React from "react"
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
 import { CheckIcon, ChevronRightIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ScopedPortal } from "@/lib/portal-container"
 
 /**
  * Blocks dropdown menu. bg-popover with a crisp 1px border, --overlay-radius
@@ -33,8 +34,8 @@ const itemBase = [
 const menuStyles = {
   positioner: "isolate z-(--z-overlay) outline-none",
   popup: cn(
-    "max-h-(--available-height) min-w-[max(var(--anchor-width),--spacing(48))] origin-(--transform-origin) overflow-x-hidden overflow-y-auto overscroll-contain",
-    "rounded-(--overlay-radius) border border-input bg-popover p-(--overlay-padding) text-popover-foreground outline-none",
+    "max-h-(--available-height) min-w-[max(var(--anchor-width),var(--menu-min-width))] origin-(--transform-origin) overflow-x-hidden overflow-y-auto overscroll-contain",
+    "rounded-(--overlay-radius) border border-popover-border bg-popover p-(--overlay-padding) text-popover-foreground outline-none",
     "transition-[opacity,scale] duration-(--duration-base) ease-out",
     "data-starting-style:scale-98 data-starting-style:opacity-0",
     "data-ending-style:scale-98 data-ending-style:opacity-0 data-ending-style:duration-(--duration-fast) data-ending-style:ease-in",
@@ -71,7 +72,7 @@ function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
 }
 
 function DropdownMenuPortal({ ...props }: MenuPrimitive.Portal.Props) {
-  return <MenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
+  return <ScopedPortal portal={MenuPrimitive.Portal} data-slot="dropdown-menu-portal" {...props} />
 }
 
 function DropdownMenuTrigger({ ...props }: MenuPrimitive.Trigger.Props) {
@@ -97,7 +98,7 @@ function DropdownMenuContent({
     container?: MenuPrimitive.Portal.Props["container"]
   }) {
   return (
-    <MenuPrimitive.Portal container={container}>
+    <ScopedPortal portal={MenuPrimitive.Portal} container={container}>
       <MenuPrimitive.Positioner
         className={menuStyles.positioner}
         align={align}
@@ -113,7 +114,7 @@ function DropdownMenuContent({
           {...props}
         />
       </MenuPrimitive.Positioner>
-    </MenuPrimitive.Portal>
+    </ScopedPortal>
   )
 }
 
@@ -194,7 +195,7 @@ function DropdownMenuSubContent({
   return (
     <DropdownMenuContent
       data-slot="dropdown-menu-sub-content"
-      className={cn("min-w-48", className)}
+      className={cn("min-w-(--menu-min-width)", className)}
       align={align}
       alignOffset={alignOffset}
       side={side}

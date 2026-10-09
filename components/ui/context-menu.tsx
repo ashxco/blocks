@@ -4,6 +4,7 @@ import * as React from "react"
 import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu"
 import { CheckIcon, ChevronRightIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ScopedPortal } from "@/lib/portal-container"
 
 import { menuStyles, submenuOffsets } from "@/components/ui/dropdown-menu"
 
@@ -20,7 +21,7 @@ function ContextMenu({ ...props }: ContextMenuPrimitive.Root.Props) {
 
 function ContextMenuPortal({ ...props }: ContextMenuPrimitive.Portal.Props) {
   return (
-    <ContextMenuPrimitive.Portal data-slot="context-menu-portal" {...props} />
+    <ScopedPortal portal={ContextMenuPrimitive.Portal} data-slot="context-menu-portal" {...props} />
   )
 }
 
@@ -43,14 +44,18 @@ function ContextMenuContent({
   alignOffset = 4,
   side = "right",
   sideOffset = 0,
+  container,
   ...props
 }: ContextMenuPrimitive.Popup.Props &
   Pick<
     ContextMenuPrimitive.Positioner.Props,
     "align" | "alignOffset" | "side" | "sideOffset"
-  >) {
+  > & {
+    /** Element to portal into instead of <body>, e.g. a preview stage. */
+    container?: ContextMenuPrimitive.Portal.Props["container"]
+  }) {
   return (
-    <ContextMenuPrimitive.Portal>
+    <ScopedPortal portal={ContextMenuPrimitive.Portal} container={container}>
       <ContextMenuPrimitive.Positioner
         className={menuStyles.positioner}
         align={align}
@@ -60,11 +65,11 @@ function ContextMenuContent({
       >
         <ContextMenuPrimitive.Popup
           data-slot="context-menu-content"
-          className={cn(menuStyles.popup, "min-w-48", className)}
+          className={cn(menuStyles.popup, "min-w-(--menu-min-width)", className)}
           {...props}
         />
       </ContextMenuPrimitive.Positioner>
-    </ContextMenuPrimitive.Portal>
+    </ScopedPortal>
   )
 }
 

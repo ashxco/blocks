@@ -5,6 +5,7 @@ import { MoonIcon, SunIcon } from "lucide-react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
+import { PortalScope } from "@/lib/portal-container"
 import { CodeBlock } from "@/components/viewer/code-block"
 import { CopyButton } from "@/components/viewer/copy-button"
 import { deviceOrder, devices, type Device } from "@/components/viewer/devices"
@@ -38,60 +39,6 @@ export interface ExampleProps {
 }
 
 type CanvasTheme = SiteTheme
-
-/* -------------------------------------------------------------------------- */
-/* Overlays opened from a themed example                                      */
-/* -------------------------------------------------------------------------- */
-
-/*
- * Menus, dialogs and popovers portal to <body>, outside the example, so they
- * would ignore an example's own light or dark choice. While any example has a
- * theme of its own, this watches for Base UI portal nodes and gives each one
- * the theme of the example the visitor last pointed at, focused or typed in.
- * Nested overlays render inside their parent's portal node and inherit it.
- */
-const interactionEvents = ["pointerdown", "pointerover", "focusin", "keydown"] as const
-let scopedExamples = 0
-let lastScope: string | null = null
-let portalObserver: MutationObserver | null = null
-
-function trackScope(event: Event) {
-  const target = event.target
-  if (!(target instanceof Element)) return
-  // Moving around inside an open overlay keeps the scope it opened with.
-  if (target.closest("[data-base-ui-portal]")) return
-  lastScope = target.closest<HTMLElement>("[data-example-scope]")?.dataset.exampleScope ?? null
-}
-
-function themePortals(records: MutationRecord[]) {
-  if (!lastScope) return
-  for (const record of records) {
-    for (const node of record.addedNodes) {
-      if (!(node instanceof HTMLElement) || !node.hasAttribute("data-base-ui-portal")) continue
-      // The app-wide toaster is not part of any example.
-      if (node.dataset.slot === "toast-portal") continue
-      node.classList.remove("light", "dark")
-      node.classList.add(lastScope)
-    }
-  }
-}
-
-function retainPortalTheming() {
-  scopedExamples += 1
-  if (scopedExamples > 1) return
-  for (const type of interactionEvents) document.addEventListener(type, trackScope, true)
-  portalObserver = new MutationObserver(themePortals)
-  portalObserver.observe(document.body, { childList: true })
-}
-
-function releasePortalTheming() {
-  scopedExamples -= 1
-  if (scopedExamples > 0) return
-  for (const type of interactionEvents) document.removeEventListener(type, trackScope, true)
-  portalObserver?.disconnect()
-  portalObserver = null
-  lastScope = null
-}
 
 /* -------------------------------------------------------------------------- */
 /* Thumbnails                                                                  */
@@ -388,12 +335,6 @@ export function Example({
   const scale = virtualWidth && stage ? Math.min(1, stage.width / virtualWidth) : 1
   const id = slugify(title)
 
-  React.useEffect(() => {
-    if (!scope) return
-    retainPortalTheming()
-    return releasePortalTheming
-  }, [scope])
-
   if (thumbnail) {
     return (
       <ExampleThumbnail layout={layout} surface={surface} size={thumbnail}>
@@ -502,7 +443,9 @@ export function Example({
                       minHeight
                     )}
                   >
-                    {children}
+                    {/* Menus, dialogs and popovers opened here portal into a
+                        body-level element with the example's theme. */}
+                    <PortalScope className={scope}>{children}</PortalScope>
                   </div>
                 </div>
               </div>

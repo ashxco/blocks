@@ -3,6 +3,7 @@
 import * as React from "react"
 import { AlertDialog as AlertDialogPrimitive } from "@base-ui/react/alert-dialog"
 import { cn } from "@/lib/utils"
+import { ScopedPortal } from "@/lib/portal-container"
 
 import { Button } from "@/components/ui/button"
 
@@ -24,7 +25,7 @@ function AlertDialogTrigger({ ...props }: AlertDialogPrimitive.Trigger.Props) {
 
 function AlertDialogPortal({ ...props }: AlertDialogPrimitive.Portal.Props) {
   return (
-    <AlertDialogPrimitive.Portal data-slot="alert-dialog-portal" {...props} />
+    <ScopedPortal portal={AlertDialogPrimitive.Portal} data-slot="alert-dialog-portal" {...props} />
   )
 }
 
@@ -66,7 +67,7 @@ function AlertDialogContent({
         className={cn(
           "group/alert-dialog-content fixed top-1/2 left-1/2 z-(--z-overlay) grid w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6",
           "max-h-[calc(100dvh-2rem)] max-w-(--dialog-width) overflow-y-auto overscroll-contain",
-          "data-[size=sm]:max-w-[calc(var(--dialog-width)*0.75)]",
+          "data-[size=sm]:max-w-(--dialog-width-sm)",
           "rounded-(--dialog-radius) border bg-popover p-(--dialog-padding) text-body text-popover-foreground outline-none",
           "transition-[opacity,scale] duration-(--duration-base) ease-out",
           "data-starting-style:scale-98 data-starting-style:opacity-0",

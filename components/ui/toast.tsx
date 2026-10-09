@@ -32,7 +32,7 @@ const toast = ToastPrimitive.createToastManager()
 /** Shared by the live toast and ToastCard, so both look the same. */
 const toastStyles = {
   surface:
-    "rounded-(--card-radius) border border-input bg-popover text-popover-foreground",
+    "rounded-(--card-radius) border border-popover-border bg-popover text-popover-foreground",
   content: "flex items-start gap-3 py-3.5 pr-3 pl-4",
   text: "flex min-w-0 flex-1 flex-col gap-0.5 py-px",
   title: "text-sm leading-snug font-bold tracking-tight text-foreground",
@@ -55,7 +55,7 @@ function ToastViewport({ className, ...props }: ToastPrimitive.Viewport.Props) {
     <ToastPrimitive.Viewport
       data-slot="toast-viewport"
       className={cn(
-        "pointer-events-none fixed inset-x-4 bottom-4 z-(--z-toast) mx-auto w-auto outline-none sm:right-6 sm:bottom-6 sm:left-auto sm:mx-0 sm:w-96",
+        "pointer-events-none fixed inset-x-4 bottom-4 z-(--z-toast) mx-auto w-auto outline-none sm:right-6 sm:bottom-6 sm:left-auto sm:mx-0 sm:w-(--toast-width)",
         className
       )}
       {...props}

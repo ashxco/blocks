@@ -93,7 +93,7 @@ function MenubarContent({
       align={align}
       alignOffset={alignOffset}
       sideOffset={sideOffset}
-      className={cn("min-w-56", className)}
+      className={cn("min-w-(--menu-min-width-lg)", className)}
       {...props}
     />
   )

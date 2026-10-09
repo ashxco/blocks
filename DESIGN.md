@@ -46,8 +46,10 @@ Never edit the generated files. Only the design-system owner edits token sources
 | `brand`, `brand-subtle` (+ `-foreground`) | `text-brand`, `bg-brand-subtle` | Violet accent |
 | `destructive`, `success`, `warning`, `info` (+ `-subtle`, `-foreground`) | `text-success`, `bg-success-subtle` | Status |
 | `border`, `border-strong`, `input`, `ring` | `border-border-strong`, `outline-ring` | Lines and focus |
+| `popover-border` | `border-popover-border` | Edge of anchored overlays: menus, popovers, selects, hover cards, toasts, chart tooltips |
 | `overlay` | `bg-overlay` | Dialog and sheet backdrop |
 | `panel`, `panel-foreground`, `panel-muted`, `panel-raised`, `panel-border`, `panel-brand` | `bg-panel`, `text-panel-muted`, `text-panel-brand` | Dark emphasis surfaces; stay dark in both themes. Use `panel-brand` (not `brand`) for accents on panels |
+| `panel-success`, `panel-warning`, `panel-destructive` | `text-panel-success`, `bg-panel-warning` | Status on panels: dots, checks, failed states. Use these, not `success` or a `.dark` scope, inside `bg-panel` |
 | `terminal`, `terminal-foreground` | `bg-terminal` | Code and terminal windows |
 | `tint-violet`, `tint-mint`, `tint-sand`, `tint-sky`, `tint-rose` | `bg-tint-sky` | Flat decorative fills for covers, avatars, placeholders |
 | `chart-1` … `chart-5` | `fill-chart-1`, `var(--chart-1)` | Data series |
@@ -55,9 +57,13 @@ Never edit the generated files. Only the design-system owner edits token sources
 
 Opacity modifiers work on every colour: `bg-primary/85`, `border-panel-foreground/60`.
 
-Themes: `.dark` on any element switches its subtree to dark values; `.light` forces light values, even inside `.dark`. Pages and previews accept `?theme=dark|light`, which forces the theme without saving it.
+Dark mode keeps one ladder, darkest to lightest: canvas (`background`), `card`, `subtle`, `muted` and `popover`, `secondary`, then `panel` and `panel-raised`. A panel is lighter than everything around it in dark mode, so it still reads as the emphasis surface; `terminal` sits a step above the canvas so code windows stay visible on it.
 
-3. **Component tokens** (`--button-height-md`, `--control-height-xs|sm|md|lg`, `--control-radius`, `--selection-size`, `--switch-width(-sm)`, `--otp-slot-width`, `--calendar-cell-size`, `--card-padding(-sm)`, `--panel-padding(-sm)`, `--overlay-radius`, `--dialog-width`, `--sheet-width`, `--table-row-height(-sm)`, `--header-height(-sm)`, `--sidebar-width(-icon|-mobile)`, `--scrollbar-size`, …). The full list is on the viewer's Tokens page. Read them with Tailwind's variable syntax: `h-(--button-height-md)`, `rounded-(--control-radius)`, `p-(--card-padding)`.
+Themes: `.dark` on any element switches its subtree to dark values; `.light` forces light values, even inside `.dark`. `dark:` utilities follow the nearest scope the same way. Pages and previews accept `?theme=dark|light`, which forces the theme before first paint without saving it.
+
+Overlays portal to `<body>`, outside any scope. Wrap a region whose theme differs from the page in `<PortalScope className="dark">` (`@/lib/portal-container`) and every menu, popover, select, tooltip, dialog or sheet opened inside renders with that theme. An overlay's own `container` prop still wins, and nested overlays follow their parent.
+
+3. **Component tokens** (`--button-height-md`, `--control-height-xs|sm|md|lg`, `--control-radius`, `--selection-size`, `--switch-width(-sm)`, `--otp-slot-width`, `--calendar-cell-size`, `--card-padding(-sm)`, `--panel-padding(-sm)`, `--overlay-radius`, `--popover-width(-sm|-lg)`, `--hover-card-width`, `--menu-min-width(-lg)`, `--tooltip-max-width`, `--toast-width`, `--dialog-width(-sm|-lg)`, `--command-input-height|item-height|footer-height`, `--sheet-width`, `--table-row-height(-sm)`, `--header-height(-sm)`, `--sidebar-width(-icon|-mobile)`, `--scrollbar-size`, …). The full list is on the viewer's Tokens page. Read them with Tailwind's variable syntax: `h-(--button-height-md)`, `rounded-(--control-radius)`, `p-(--card-padding)`.
 
 ### Typography
 
@@ -99,7 +105,8 @@ shadcn/ui components on **Base UI** primitives (`@base-ui/react`), restyled to B
 - Compose with the **render prop**, not `asChild`: `<Button nativeButton={false} render={<Link href="/pricing" />}>Pricing</Button>`. Set `nativeButton={false}` whenever a Button renders a non-button element. Triggers work the same way: `<DialogTrigger render={<Button variant="outline" />}>Open</DialogTrigger>`.
 - Merge classes with `cn` from `@/lib/utils`.
 - Keep `data-slot` attributes; add `data-variant` / `data-size` where useful.
-- Overlays (menus, popovers, selects, dialogs, sheets, tooltips): `bg-popover`, 1px `border`, `rounded-(--overlay-radius)` (dialogs `rounded-(--dialog-radius)`), no shadow, enter/exit with fade and a 4px slide or 98% scale using `--duration-base` and `ease-out`.
+- Overlays (menus, popovers, selects, dialogs, sheets, tooltips): `bg-popover`, 1px `border` (`border-popover-border` on anchored overlays, plain `border` on dialogs and sheets), `rounded-(--overlay-radius)` (dialogs `rounded-(--dialog-radius)`), no shadow, enter/exit with fade and a 4px slide or 98% scale using `--duration-base` and `ease-out`. Widths come from tokens: `w-(--popover-width)`, `min-w-(--menu-min-width)`, `max-w-(--tooltip-max-width)`, `max-w-(--dialog-width-sm)`.
+- Overlay portals: every wrapper renders its Base UI Portal through `ScopedPortal` (`@/lib/portal-container`), which resolves the container from the `container` prop, then the nearest `PortalScope` or `PortalContainerProvider`, then Base UI's default. Content components that portal take a `container` prop for pinning into a preview stage.
 - Controls (input, select, textarea, combobox, OTP): `h-(--control-height-md)`, `rounded-(--control-radius)`, `bg-muted` fill with `border-input`; on focus `border-ring` plus `focus-ring` outline; invalid uses `border-destructive`.
 - Selection controls (checkbox, radio, switch, slider): ink when on (`bg-primary`), brand only for focus.
 - Tabs: underline style by default (ink 2px indicator), plus a segmented variant.
@@ -129,3 +136,11 @@ npm run check
 ```
 
 Runs the token build, TypeScript and the design-system lint (`scripts/lint-ds.mjs`), which rejects raw colours, gradients, shadows, Tailwind's default palette, light or italic type and `asChild`.
+
+Screenshots for review:
+
+```bash
+node scripts/shot.mjs <url> <out.png> [width=1440] [height=2400] [light|dark] [wait=15000]
+```
+
+It captures in real time once the page has hydrated and gone quiet; `wait` (or `SHOT_WAIT`) is the most it waits, in milliseconds. Widths under 600 are emulated as a phone at that exact width.

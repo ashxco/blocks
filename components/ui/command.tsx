@@ -101,7 +101,7 @@ function CommandInput({
     <div
       data-slot="command-input-wrapper"
       className={cn(
-        "group/command-input flex h-14 shrink-0 items-center gap-3 border-b border-border px-4",
+        "group/command-input flex h-(--command-input-height) shrink-0 items-center gap-3 border-b border-border px-4",
         "in-data-[slot=popover-content]:h-(--control-height-md) in-data-[slot=popover-content]:gap-2.5 in-data-[slot=popover-content]:px-3.5"
       )}
     >
@@ -201,7 +201,7 @@ function CommandItem({
       data-slot="command-item"
       className={cn(
         "group/command-item relative flex min-h-(--overlay-item-height) cursor-default items-center gap-3 rounded-(--overlay-item-radius) px-2.5 py-1.5 text-sm text-foreground outline-none select-none",
-        "in-data-[slot=dialog-content]:min-h-10 in-data-[slot=dialog-content]:px-3",
+        "in-data-[slot=dialog-content]:min-h-(--command-item-height) in-data-[slot=dialog-content]:px-3",
         "transition-colors duration-(--duration-instant) ease-standard",
         "data-selected:bg-accent data-selected:text-accent-foreground",
         "data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50",
@@ -245,7 +245,7 @@ function CommandFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="command-footer"
       className={cn(
-        "flex h-11 shrink-0 items-center gap-4 border-t border-border px-4 text-caption text-muted-foreground",
+        "flex h-(--command-footer-height) shrink-0 items-center gap-4 border-t border-border px-4 text-caption text-muted-foreground",
         "[&>span]:flex [&>span]:items-center [&>span]:gap-1.5",
         className
       )}

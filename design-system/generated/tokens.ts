@@ -121,6 +121,14 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.36 0.012 286)"
   },
   {
+    "name": "color.ink.750",
+    "cssVar": "--bk-ink-750",
+    "tier": "primitive",
+    "group": "ink",
+    "type": "color",
+    "value": "oklch(0.315 0.012 286)"
+  },
+  {
     "name": "color.ink.800",
     "cssVar": "--bk-ink-800",
     "tier": "primitive",
@@ -143,6 +151,14 @@ export const tokens: DesignToken[] = [
     "group": "ink",
     "type": "color",
     "value": "oklch(0.175 0.012 286)"
+  },
+  {
+    "name": "color.ink.925",
+    "cssVar": "--bk-ink-925",
+    "tier": "primitive",
+    "group": "ink",
+    "type": "color",
+    "value": "oklch(0.158 0.01 286)"
   },
   {
     "name": "color.ink.950",
@@ -612,7 +628,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.1 0.006 286)",
       "ref": "color.ink.1000"
     },
-    "utility": "bg-background · text-background · border-background",
+    "utility": "bg-background",
     "description": "Page canvas."
   },
   {
@@ -627,7 +643,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.985 0.002 286)",
       "ref": "color.ink.25"
     },
-    "utility": "bg-foreground · text-foreground · border-foreground",
+    "utility": "text-foreground",
     "description": "Headings and primary text. Always full strength."
   },
   {
@@ -642,7 +658,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.82 0.008 286)",
       "ref": "color.ink.300"
     },
-    "utility": "bg-copy · text-copy · border-copy",
+    "utility": "text-copy",
     "description": "Paragraph and long-form text."
   },
   {
@@ -657,7 +673,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.68 0.01 286)",
       "ref": "color.ink.400"
     },
-    "utility": "bg-muted-foreground · text-muted-foreground · border-muted-foreground",
+    "utility": "text-muted-foreground",
     "description": "Meta text, captions, placeholders and inactive icons."
   },
   {
@@ -669,10 +685,10 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.975 0.003 286)",
     "ref": "color.ink.50",
     "dark": {
-      "value": "oklch(0.135 0.008 286)",
-      "ref": "color.ink.950"
+      "value": "oklch(0.158 0.01 286)",
+      "ref": "color.ink.925"
     },
-    "utility": "bg-subtle · text-subtle · border-subtle",
+    "utility": "bg-subtle",
     "description": "Tinted section background, used to separate page bands."
   },
   {
@@ -687,7 +703,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.135 0.008 286)",
       "ref": "color.ink.950"
     },
-    "utility": "bg-card · text-card · border-card",
+    "utility": "bg-card",
     "description": "Card and tile surface."
   },
   {
@@ -702,7 +718,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.985 0.002 286)",
       "ref": "color.ink.25"
     },
-    "utility": "bg-card-foreground · text-card-foreground · border-card-foreground",
+    "utility": "text-card-foreground",
     "description": "Text on cards."
   },
   {
@@ -717,7 +733,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.175 0.012 286)",
       "ref": "color.ink.900"
     },
-    "utility": "bg-popover · text-popover · border-popover",
+    "utility": "bg-popover",
     "description": "Menus, popovers, tooltips and dialogs."
   },
   {
@@ -732,7 +748,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.985 0.002 286)",
       "ref": "color.ink.25"
     },
-    "utility": "bg-popover-foreground · text-popover-foreground · border-popover-foreground",
+    "utility": "text-popover-foreground",
     "description": "Text in overlays."
   },
   {
@@ -747,7 +763,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(1 0 0)",
       "ref": "color.ink.0"
     },
-    "utility": "bg-primary · text-primary · border-primary",
+    "utility": "bg-primary",
     "description": "Primary actions. Buttons are ink, not brand."
   },
   {
@@ -762,7 +778,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.135 0.008 286)",
       "ref": "color.ink.950"
     },
-    "utility": "bg-primary-foreground · text-primary-foreground · border-primary-foreground",
+    "utility": "text-primary-foreground",
     "description": "Text on primary actions."
   },
   {
@@ -777,7 +793,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.215 0.012 286)",
       "ref": "color.ink.850"
     },
-    "utility": "bg-secondary · text-secondary · border-secondary",
+    "utility": "bg-secondary",
     "description": "Secondary buttons and filled controls."
   },
   {
@@ -792,7 +808,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.985 0.002 286)",
       "ref": "color.ink.25"
     },
-    "utility": "bg-secondary-foreground · text-secondary-foreground · border-secondary-foreground",
+    "utility": "text-secondary-foreground",
     "description": "Text on secondary surfaces."
   },
   {
@@ -807,7 +823,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.175 0.012 286)",
       "ref": "color.ink.900"
     },
-    "utility": "bg-muted · text-muted · border-muted",
+    "utility": "bg-muted",
     "description": "Input fills, code chips and quiet fills."
   },
   {
@@ -822,7 +838,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.215 0.012 286)",
       "ref": "color.ink.850"
     },
-    "utility": "bg-accent · text-accent · border-accent",
+    "utility": "bg-accent",
     "description": "Hover and selected rows in menus and lists."
   },
   {
@@ -837,7 +853,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.985 0.002 286)",
       "ref": "color.ink.25"
     },
-    "utility": "bg-accent-foreground · text-accent-foreground · border-accent-foreground",
+    "utility": "text-accent-foreground",
     "description": "Text on hovered or selected rows."
   },
   {
@@ -852,7 +868,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.187 283)",
       "ref": "color.violet.400"
     },
-    "utility": "bg-brand · text-brand · border-brand",
+    "utility": "text-brand · bg-brand",
     "description": "Brand violet. Links, focus, active indicators and highlights."
   },
   {
@@ -867,7 +883,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.1 0.006 286)",
       "ref": "color.ink.1000"
     },
-    "utility": "bg-brand-foreground · text-brand-foreground · border-brand-foreground",
+    "utility": "text-brand-foreground",
     "description": "Text on brand fills."
   },
   {
@@ -879,9 +895,9 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.97 0.026 283)",
     "ref": "color.violet.50",
     "dark": {
-      "value": "oklch(0.27 0.06 283)"
+      "value": "oklch(0.25 0.05 283)"
     },
-    "utility": "bg-brand-subtle · text-brand-subtle · border-brand-subtle",
+    "utility": "bg-brand-subtle",
     "description": "Quiet brand fill."
   },
   {
@@ -896,7 +912,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.885 0.095 283)",
       "ref": "color.violet.200"
     },
-    "utility": "bg-brand-subtle-foreground · text-brand-subtle-foreground · border-brand-subtle-foreground",
+    "utility": "text-brand-subtle-foreground",
     "description": "Text on quiet brand fills."
   },
   {
@@ -911,7 +927,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.178 25)",
       "ref": "color.red.400"
     },
-    "utility": "bg-destructive · text-destructive · border-destructive",
+    "utility": "text-destructive · bg-destructive",
     "description": "Destructive actions and errors."
   },
   {
@@ -926,7 +942,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.1 0.006 286)",
       "ref": "color.ink.1000"
     },
-    "utility": "bg-destructive-foreground · text-destructive-foreground · border-destructive-foreground",
+    "utility": "text-destructive-foreground",
     "description": "Text on destructive fills."
   },
   {
@@ -940,7 +956,7 @@ export const tokens: DesignToken[] = [
     "dark": {
       "value": "oklch(0.26 0.045 25)"
     },
-    "utility": "bg-destructive-subtle · text-destructive-subtle · border-destructive-subtle",
+    "utility": "bg-destructive-subtle",
     "description": "Quiet error fill."
   },
   {
@@ -955,7 +971,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.139 152)",
       "ref": "color.green.400"
     },
-    "utility": "bg-success · text-success · border-success",
+    "utility": "text-success · bg-success",
     "description": "Success and positive change."
   },
   {
@@ -970,7 +986,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.1 0.006 286)",
       "ref": "color.ink.1000"
     },
-    "utility": "bg-success-foreground · text-success-foreground · border-success-foreground",
+    "utility": "text-success-foreground",
     "description": "Text on success fills."
   },
   {
@@ -984,7 +1000,7 @@ export const tokens: DesignToken[] = [
     "dark": {
       "value": "oklch(0.26 0.035 152)"
     },
-    "utility": "bg-success-subtle · text-success-subtle · border-success-subtle",
+    "utility": "bg-success-subtle",
     "description": "Quiet success fill."
   },
   {
@@ -999,7 +1015,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.135 72)",
       "ref": "color.amber.400"
     },
-    "utility": "bg-warning · text-warning · border-warning",
+    "utility": "text-warning · bg-warning",
     "description": "Warnings and pending states."
   },
   {
@@ -1014,7 +1030,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.1 0.006 286)",
       "ref": "color.ink.1000"
     },
-    "utility": "bg-warning-foreground · text-warning-foreground · border-warning-foreground",
+    "utility": "text-warning-foreground",
     "description": "Text on warning fills."
   },
   {
@@ -1028,7 +1044,7 @@ export const tokens: DesignToken[] = [
     "dark": {
       "value": "oklch(0.27 0.04 72)"
     },
-    "utility": "bg-warning-subtle · text-warning-subtle · border-warning-subtle",
+    "utility": "bg-warning-subtle",
     "description": "Quiet warning fill."
   },
   {
@@ -1043,7 +1059,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.113 235)",
       "ref": "color.sky.400"
     },
-    "utility": "bg-info · text-info · border-info",
+    "utility": "text-info · bg-info",
     "description": "Informational states."
   },
   {
@@ -1057,7 +1073,7 @@ export const tokens: DesignToken[] = [
     "dark": {
       "value": "oklch(0.26 0.035 235)"
     },
-    "utility": "bg-info-subtle · text-info-subtle · border-info-subtle",
+    "utility": "bg-info-subtle",
     "description": "Quiet informational fill."
   },
   {
@@ -1071,7 +1087,7 @@ export const tokens: DesignToken[] = [
     "dark": {
       "value": "oklch(1 0 0 / 0.09)"
     },
-    "utility": "bg-border · text-border · border-border",
+    "utility": "border-border",
     "description": "Hairline dividers and component outlines."
   },
   {
@@ -1085,7 +1101,7 @@ export const tokens: DesignToken[] = [
     "dark": {
       "value": "oklch(1 0 0 / 0.16)"
     },
-    "utility": "bg-border-strong · text-border-strong · border-border-strong",
+    "utility": "border-border-strong",
     "description": "Emphasised outlines: inputs, outline buttons, selected cards."
   },
   {
@@ -1099,8 +1115,22 @@ export const tokens: DesignToken[] = [
     "dark": {
       "value": "oklch(1 0 0 / 0.14)"
     },
-    "utility": "bg-input · text-input · border-input",
+    "utility": "border-input",
     "description": "Form control borders."
+  },
+  {
+    "name": "color.popover-border",
+    "cssVar": "--popover-border",
+    "tier": "semantic",
+    "group": "lines & focus",
+    "type": "color",
+    "value": "oklch(0.9 0.006 286)",
+    "ref": "color.ink.200",
+    "dark": {
+      "value": "oklch(1 0 0 / 0.14)"
+    },
+    "utility": "border-popover-border",
+    "description": "Edge of menus, popovers, selects, hover cards, toasts and chart tooltips: anchored overlays that float over content without a shadow."
   },
   {
     "name": "color.ring",
@@ -1114,7 +1144,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.187 283)",
       "ref": "color.violet.400"
     },
-    "utility": "bg-ring · text-ring · border-ring",
+    "utility": "outline-ring · focus-visible:focus-ring",
     "description": "Focus outline."
   },
   {
@@ -1123,11 +1153,11 @@ export const tokens: DesignToken[] = [
     "tier": "semantic",
     "group": "lines & focus",
     "type": "color",
-    "value": "oklch(0.135 0.008 286 / 0.4)",
+    "value": "oklch(0.135 0.008 286 / 0.28)",
     "dark": {
       "value": "oklch(0 0 0 / 0.6)"
     },
-    "utility": "bg-overlay · text-overlay · border-overlay",
+    "utility": "bg-overlay",
     "description": "Backdrop behind dialogs and sheets."
   },
   {
@@ -1139,11 +1169,11 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.175 0.012 286)",
     "ref": "color.ink.900",
     "dark": {
-      "value": "oklch(0.215 0.012 286)",
-      "ref": "color.ink.850"
+      "value": "oklch(0.27 0.012 286)",
+      "ref": "color.ink.800"
     },
-    "utility": "bg-panel · text-panel · border-panel",
-    "description": "Dark emphasis surface for feature bands, CTAs and code. Stays dark in both themes."
+    "utility": "bg-panel",
+    "description": "Dark emphasis surface for feature bands, CTAs and code. Stays dark in both themes, and in dark mode sits clearly above the canvas and cards."
   },
   {
     "name": "color.panel-foreground",
@@ -1157,7 +1187,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(1 0 0)",
       "ref": "color.ink.0"
     },
-    "utility": "bg-panel-foreground · text-panel-foreground · border-panel-foreground",
+    "utility": "text-panel-foreground",
     "description": "Headings and text on panels."
   },
   {
@@ -1170,7 +1200,7 @@ export const tokens: DesignToken[] = [
     "dark": {
       "value": "oklch(1 0 0 / 0.64)"
     },
-    "utility": "bg-panel-muted · text-panel-muted · border-panel-muted",
+    "utility": "text-panel-muted",
     "description": "Secondary text on panels."
   },
   {
@@ -1182,10 +1212,10 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.215 0.012 286)",
     "ref": "color.ink.850",
     "dark": {
-      "value": "oklch(0.27 0.012 286)",
-      "ref": "color.ink.800"
+      "value": "oklch(0.315 0.012 286)",
+      "ref": "color.ink.750"
     },
-    "utility": "bg-panel-raised · text-panel-raised · border-panel-raised",
+    "utility": "bg-panel-raised",
     "description": "Raised element inside a panel: selected tabs, inner cards."
   },
   {
@@ -1196,9 +1226,9 @@ export const tokens: DesignToken[] = [
     "type": "color",
     "value": "oklch(1 0 0 / 0.09)",
     "dark": {
-      "value": "oklch(1 0 0 / 0.1)"
+      "value": "oklch(1 0 0 / 0.12)"
     },
-    "utility": "bg-panel-border · text-panel-border · border-panel-border",
+    "utility": "border-panel-border",
     "description": "Hairlines on panels."
   },
   {
@@ -1210,10 +1240,10 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.1 0.006 286)",
     "ref": "color.ink.1000",
     "dark": {
-      "value": "oklch(0.1 0.006 286)",
-      "ref": "color.ink.1000"
+      "value": "oklch(0.135 0.008 286)",
+      "ref": "color.ink.950"
     },
-    "utility": "bg-terminal · text-terminal · border-terminal",
+    "utility": "bg-terminal",
     "description": "Terminal and code block background."
   },
   {
@@ -1228,7 +1258,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.93 0.005 286)",
       "ref": "color.ink.150"
     },
-    "utility": "bg-terminal-foreground · text-terminal-foreground · border-terminal-foreground",
+    "utility": "text-terminal-foreground",
     "description": "Text in terminals and code blocks."
   },
   {
@@ -1240,9 +1270,9 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.94 0.052 283)",
     "ref": "color.violet.100",
     "dark": {
-      "value": "oklch(0.3 0.05 283)"
+      "value": "oklch(0.245 0.03 283)"
     },
-    "utility": "bg-tint-violet · text-tint-violet · border-tint-violet",
+    "utility": "bg-tint-violet",
     "description": "Decorative fill for covers and avatars."
   },
   {
@@ -1254,9 +1284,9 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.94 0.038 152)",
     "ref": "color.green.100",
     "dark": {
-      "value": "oklch(0.3 0.04 152)"
+      "value": "oklch(0.245 0.018 152)"
     },
-    "utility": "bg-tint-mint · text-tint-mint · border-tint-mint",
+    "utility": "bg-tint-mint",
     "description": "Decorative fill for covers and avatars."
   },
   {
@@ -1268,9 +1298,9 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.94 0.037 72)",
     "ref": "color.amber.100",
     "dark": {
-      "value": "oklch(0.31 0.035 72)"
+      "value": "oklch(0.25 0.016 72)"
     },
-    "utility": "bg-tint-sand · text-tint-sand · border-tint-sand",
+    "utility": "bg-tint-sand",
     "description": "Decorative fill for covers and avatars."
   },
   {
@@ -1282,9 +1312,9 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.94 0.031 235)",
     "ref": "color.sky.100",
     "dark": {
-      "value": "oklch(0.3 0.035 235)"
+      "value": "oklch(0.245 0.022 235)"
     },
-    "utility": "bg-tint-sky · text-tint-sky · border-tint-sky",
+    "utility": "bg-tint-sky",
     "description": "Decorative fill for covers and avatars."
   },
   {
@@ -1296,9 +1326,9 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.94 0.049 25)",
     "ref": "color.red.100",
     "dark": {
-      "value": "oklch(0.3 0.04 25)"
+      "value": "oklch(0.245 0.02 25)"
     },
-    "utility": "bg-tint-rose · text-tint-rose · border-tint-rose",
+    "utility": "bg-tint-rose",
     "description": "Decorative fill for covers and avatars."
   },
   {
@@ -1313,7 +1343,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.187 283)",
       "ref": "color.violet.400"
     },
-    "utility": "bg-chart-1 · text-chart-1 · border-chart-1",
+    "utility": "fill-chart-1 · stroke-chart-1 · var(--chart-1)",
     "description": "Data series 1."
   },
   {
@@ -1328,7 +1358,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.805 0.088 235)",
       "ref": "color.sky.300"
     },
-    "utility": "bg-chart-2 · text-chart-2 · border-chart-2",
+    "utility": "fill-chart-2 · stroke-chart-2 · var(--chart-2)",
     "description": "Data series 2."
   },
   {
@@ -1343,7 +1373,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.62 0.155 152)",
       "ref": "color.green.500"
     },
-    "utility": "bg-chart-3 · text-chart-3 · border-chart-3",
+    "utility": "fill-chart-3 · stroke-chart-3 · var(--chart-3)",
     "description": "Data series 3."
   },
   {
@@ -1358,7 +1388,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.885 0.068 72)",
       "ref": "color.amber.200"
     },
-    "utility": "bg-chart-4 · text-chart-4 · border-chart-4",
+    "utility": "fill-chart-4 · stroke-chart-4 · var(--chart-4)",
     "description": "Data series 4."
   },
   {
@@ -1373,7 +1403,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.56 0.012 286)",
       "ref": "color.ink.500"
     },
-    "utility": "bg-chart-5 · text-chart-5 · border-chart-5",
+    "utility": "fill-chart-5 · stroke-chart-5 · var(--chart-5)",
     "description": "Data series 5 and comparison baselines."
   },
   {
@@ -1388,7 +1418,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.135 0.008 286)",
       "ref": "color.ink.950"
     },
-    "utility": "bg-sidebar · text-sidebar · border-sidebar",
+    "utility": "bg-sidebar",
     "description": "App sidebar surface."
   },
   {
@@ -1403,7 +1433,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.985 0.002 286)",
       "ref": "color.ink.25"
     },
-    "utility": "bg-sidebar-foreground · text-sidebar-foreground · border-sidebar-foreground",
+    "utility": "text-sidebar-foreground",
     "description": "Sidebar text."
   },
   {
@@ -1418,7 +1448,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(1 0 0)",
       "ref": "color.ink.0"
     },
-    "utility": "bg-sidebar-primary · text-sidebar-primary · border-sidebar-primary",
+    "utility": "bg-sidebar-primary",
     "description": "Active sidebar item fill."
   },
   {
@@ -1433,7 +1463,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.135 0.008 286)",
       "ref": "color.ink.950"
     },
-    "utility": "bg-sidebar-primary-foreground · text-sidebar-primary-foreground · border-sidebar-primary-foreground",
+    "utility": "text-sidebar-primary-foreground",
     "description": "Active sidebar item text."
   },
   {
@@ -1448,7 +1478,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.215 0.012 286)",
       "ref": "color.ink.850"
     },
-    "utility": "bg-sidebar-accent · text-sidebar-accent · border-sidebar-accent",
+    "utility": "bg-sidebar-accent",
     "description": "Hovered sidebar item."
   },
   {
@@ -1463,7 +1493,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.985 0.002 286)",
       "ref": "color.ink.25"
     },
-    "utility": "bg-sidebar-accent-foreground · text-sidebar-accent-foreground · border-sidebar-accent-foreground",
+    "utility": "text-sidebar-accent-foreground",
     "description": "Hovered sidebar item text."
   },
   {
@@ -1477,7 +1507,7 @@ export const tokens: DesignToken[] = [
     "dark": {
       "value": "oklch(1 0 0 / 0.09)"
     },
-    "utility": "bg-sidebar-border · text-sidebar-border · border-sidebar-border",
+    "utility": "border-sidebar-border",
     "description": "Sidebar dividers."
   },
   {
@@ -1492,7 +1522,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.187 283)",
       "ref": "color.violet.400"
     },
-    "utility": "bg-sidebar-ring · text-sidebar-ring · border-sidebar-ring",
+    "utility": "outline-sidebar-ring · focus-visible:focus-ring",
     "description": "Sidebar focus outline."
   },
   {
@@ -1507,8 +1537,53 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.187 283)",
       "ref": "color.violet.400"
     },
-    "utility": "bg-panel-brand · text-panel-brand · border-panel-brand",
+    "utility": "text-panel-brand · bg-panel-brand",
     "description": "Brand accent on dark panels: links, active indicators and highlights inside bg-panel."
+  },
+  {
+    "name": "color.panel-success",
+    "cssVar": "--panel-success",
+    "tier": "semantic",
+    "group": "panel",
+    "type": "color",
+    "value": "oklch(0.71 0.139 152)",
+    "ref": "color.green.400",
+    "dark": {
+      "value": "oklch(0.71 0.139 152)",
+      "ref": "color.green.400"
+    },
+    "utility": "text-panel-success · bg-panel-success",
+    "description": "Success accent on dark panels: status dots, checks and positive change inside bg-panel."
+  },
+  {
+    "name": "color.panel-warning",
+    "cssVar": "--panel-warning",
+    "tier": "semantic",
+    "group": "panel",
+    "type": "color",
+    "value": "oklch(0.71 0.135 72)",
+    "ref": "color.amber.400",
+    "dark": {
+      "value": "oklch(0.71 0.135 72)",
+      "ref": "color.amber.400"
+    },
+    "utility": "text-panel-warning · bg-panel-warning",
+    "description": "Warning accent on dark panels: pending and degraded states inside bg-panel."
+  },
+  {
+    "name": "color.panel-destructive",
+    "cssVar": "--panel-destructive",
+    "tier": "semantic",
+    "group": "panel",
+    "type": "color",
+    "value": "oklch(0.71 0.178 25)",
+    "ref": "color.red.400",
+    "dark": {
+      "value": "oklch(0.71 0.178 25)",
+      "ref": "color.red.400"
+    },
+    "utility": "text-panel-destructive · bg-panel-destructive",
+    "description": "Error accent on dark panels: failed states and negative change inside bg-panel."
   },
   {
     "name": "font.family.sans",
@@ -2087,7 +2162,7 @@ export const tokens: DesignToken[] = [
     "group": "spacing",
     "type": "dimension",
     "value": "clamp(1rem, 0.6rem + 1.6vw, 1.5rem)",
-    "utility": "p-gutter · gap-gutter",
+    "utility": "px-gutter",
     "description": "Page side padding. Use px-gutter."
   },
   {
@@ -2097,7 +2172,7 @@ export const tokens: DesignToken[] = [
     "group": "spacing",
     "type": "dimension",
     "value": "clamp(4.5rem, 3rem + 5vw, 7rem)",
-    "utility": "p-section · gap-section",
+    "utility": "py-section",
     "description": "Vertical rhythm between page sections. Use py-section."
   },
   {
@@ -2107,7 +2182,7 @@ export const tokens: DesignToken[] = [
     "group": "spacing",
     "type": "dimension",
     "value": "clamp(3rem, 2.2rem + 3vw, 4.5rem)",
-    "utility": "p-section-sm · gap-section-sm",
+    "utility": "py-section-sm",
     "description": "Tighter section rhythm. Use py-section-sm."
   },
   {
@@ -2117,7 +2192,7 @@ export const tokens: DesignToken[] = [
     "group": "spacing",
     "type": "dimension",
     "value": "1.5rem",
-    "utility": "p-stack · gap-stack",
+    "utility": "gap-stack",
     "description": "Default gap between stacked blocks inside a section."
   },
   {
@@ -2217,8 +2292,8 @@ export const tokens: DesignToken[] = [
     "group": "container",
     "type": "dimension",
     "value": "42rem",
-    "utility": "max-w-prose",
-    "description": "Long-form reading width. Use max-w-prose."
+    "utility": "max-w-(--container-prose) · @prose:",
+    "description": "Long-form reading width. Use max-w-(--container-prose) or @prose:; max-w-prose is Tailwind's fixed 65ch."
   },
   {
     "name": "container.narrow",
@@ -2227,7 +2302,7 @@ export const tokens: DesignToken[] = [
     "group": "container",
     "type": "dimension",
     "value": "52rem",
-    "utility": "max-w-narrow",
+    "utility": "max-w-narrow · @narrow:",
     "description": "Focused content: forms, FAQs. Use max-w-narrow."
   },
   {
@@ -2237,7 +2312,7 @@ export const tokens: DesignToken[] = [
     "group": "container",
     "type": "dimension",
     "value": "75rem",
-    "utility": "max-w-page",
+    "utility": "max-w-page · @page:",
     "description": "Default page width. Use max-w-page."
   },
   {
@@ -2247,7 +2322,7 @@ export const tokens: DesignToken[] = [
     "group": "container",
     "type": "dimension",
     "value": "85rem",
-    "utility": "max-w-wide",
+    "utility": "max-w-wide · @wide:",
     "description": "Wide layouts and app shells. Use max-w-wide."
   },
   {
@@ -2302,7 +2377,7 @@ export const tokens: DesignToken[] = [
     "group": "border-width",
     "type": "dimension",
     "value": "1px",
-    "utility": "border-(length:--border-width-hairline)",
+    "utility": "border",
     "description": "Default divider and outline width."
   },
   {
@@ -2721,6 +2796,116 @@ export const tokens: DesignToken[] = [
     "utility": "h-(--overlay-item-height)"
   },
   {
+    "name": "component.popover.width-sm",
+    "cssVar": "--popover-width-sm",
+    "tier": "component",
+    "group": "popover",
+    "type": "dimension",
+    "value": "14rem",
+    "utility": "w-(--popover-width-sm)",
+    "description": "Narrow popovers: a short form or a picker."
+  },
+  {
+    "name": "component.popover.width",
+    "cssVar": "--popover-width",
+    "tier": "component",
+    "group": "popover",
+    "type": "dimension",
+    "value": "18rem",
+    "utility": "w-(--popover-width)",
+    "description": "Default popover width."
+  },
+  {
+    "name": "component.popover.width-lg",
+    "cssVar": "--popover-width-lg",
+    "tier": "component",
+    "group": "popover",
+    "type": "dimension",
+    "value": "24rem",
+    "utility": "w-(--popover-width-lg)",
+    "description": "Wide popovers: notification lists, share panels."
+  },
+  {
+    "name": "component.hover-card.width",
+    "cssVar": "--hover-card-width",
+    "tier": "component",
+    "group": "hover-card",
+    "type": "dimension",
+    "value": "18rem",
+    "utility": "w-(--hover-card-width)",
+    "description": "Hover card width."
+  },
+  {
+    "name": "component.menu.min-width",
+    "cssVar": "--menu-min-width",
+    "tier": "component",
+    "group": "menu",
+    "type": "dimension",
+    "value": "12rem",
+    "utility": "min-w-(--menu-min-width)",
+    "description": "Dropdown, context and sub menus. Menus also grow to their trigger width."
+  },
+  {
+    "name": "component.menu.min-width-lg",
+    "cssVar": "--menu-min-width-lg",
+    "tier": "component",
+    "group": "menu",
+    "type": "dimension",
+    "value": "14rem",
+    "utility": "min-w-(--menu-min-width-lg)",
+    "description": "Menubar menus and combobox lists."
+  },
+  {
+    "name": "component.tooltip.max-width",
+    "cssVar": "--tooltip-max-width",
+    "tier": "component",
+    "group": "tooltip",
+    "type": "dimension",
+    "value": "16rem",
+    "utility": "max-w-(--tooltip-max-width)",
+    "description": "Tooltips wrap beyond this width."
+  },
+  {
+    "name": "component.toast.width",
+    "cssVar": "--toast-width",
+    "tier": "component",
+    "group": "toast",
+    "type": "dimension",
+    "value": "24rem",
+    "utility": "w-(--toast-width)",
+    "description": "Toast width from sm up; full width minus the gutter below."
+  },
+  {
+    "name": "component.command.input-height",
+    "cssVar": "--command-input-height",
+    "tier": "component",
+    "group": "command",
+    "type": "dimension",
+    "value": "3.5rem",
+    "utility": "h-(--command-input-height)",
+    "description": "Search row of the command dialog."
+  },
+  {
+    "name": "component.command.item-height",
+    "cssVar": "--command-item-height",
+    "tier": "component",
+    "group": "command",
+    "type": "dimension",
+    "value": "2.5rem",
+    "utility": "h-(--command-item-height)",
+    "description": "Result rows in the command dialog."
+  },
+  {
+    "name": "component.command.footer-height",
+    "cssVar": "--command-footer-height",
+    "tier": "component",
+    "group": "command",
+    "type": "dimension",
+    "value": "2.75rem",
+    "utility": "h-(--command-footer-height)",
+    "description": "Key-hint footer of the command dialog."
+  },
+  {
     "name": "component.dialog.radius",
     "cssVar": "--dialog-radius",
     "tier": "component",
@@ -2747,6 +2932,27 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "32rem",
     "utility": "w-(--dialog-width)"
+  },
+  {
+    "name": "component.dialog.width-sm",
+    "cssVar": "--dialog-width-sm",
+    "tier": "component",
+    "group": "dialog",
+    "type": "dimension",
+    "value": "24rem",
+    "utility": "w-(--dialog-width-sm)",
+    "description": "Small dialogs: confirmations."
+  },
+  {
+    "name": "component.dialog.width-lg",
+    "cssVar": "--dialog-width-lg",
+    "tier": "component",
+    "group": "dialog",
+    "type": "dimension",
+    "value": "42rem",
+    "ref": "container.prose",
+    "utility": "w-(--dialog-width-lg)",
+    "description": "Large dialogs: forms and long content."
   },
   {
     "name": "component.badge.height",

@@ -23,7 +23,7 @@ import type { TooltipValueType } from "recharts"
 // Theme names a config can set colours for. Per-theme colours resolve with
 // light-dark(), which follows the nearest .light or .dark scope (both set
 // color-scheme), so a .light subtree on a dark page gets its light colours.
-const THEMES = { light: "", dark: "" } as const
+type ChartTheme = "light" | "dark"
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const
 type TooltipNameType = number | string
@@ -35,7 +35,7 @@ export type ChartConfig = Record<
     icon?: React.ComponentType
   } & (
     | { color?: string; theme?: never }
-    | { color?: never; theme: Record<keyof typeof THEMES, string> }
+    | { color?: never; theme: Record<ChartTheme, string> }
   )
 >
 
@@ -240,7 +240,7 @@ function ChartTooltipContent({
     <div
       data-slot="chart-tooltip"
       className={cn(
-        "grid min-w-36 items-start gap-2 rounded-(--overlay-radius) border border-input bg-popover px-3 py-2.5 text-xs text-popover-foreground tabular-nums",
+        "grid min-w-36 items-start gap-2 rounded-(--overlay-radius) border border-popover-border bg-popover px-3 py-2.5 text-xs text-popover-foreground tabular-nums",
         "animate-in duration-(--duration-fast) ease-out fade-in-0",
         className
       )}
