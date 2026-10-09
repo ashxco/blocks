@@ -1,0 +1,78 @@
+{
+  "spacing": {
+    "$type": "dimension",
+    "$description": "Tailwind's spacing unit. Every p-*, m-*, gap-* and size-* utility is a multiple of it.",
+    "$value": "0.25rem"
+  },
+  "space": {
+    "$type": "dimension",
+    "gutter": { "$value": "clamp(1rem, 0.6rem + 1.6vw, 1.5rem)", "$description": "Page side padding. Use px-gutter." },
+    "section": { "$value": "clamp(4.5rem, 3rem + 5vw, 7rem)", "$description": "Vertical rhythm between page sections. Use py-section." },
+    "section-sm": { "$value": "clamp(3rem, 2.2rem + 3vw, 4.5rem)", "$description": "Tighter section rhythm. Use py-section-sm." },
+    "stack": { "$value": "1.5rem", "$description": "Default gap between stacked blocks inside a section." }
+  },
+  "radius": {
+    "$type": "dimension",
+    "xs": { "$value": "0.375rem", "$description": "Chips, kbd and tiny controls." },
+    "sm": { "$value": "0.5rem", "$description": "Menu items and small controls." },
+    "md": { "$value": "0.75rem", "$description": "Inputs, menus, popovers." },
+    "lg": { "$value": "1.125rem", "$description": "Cards and tiles." },
+    "xl": { "$value": "1.375rem", "$description": "Dialogs and large cards." },
+    "2xl": { "$value": "1.75rem", "$description": "Panels and feature bands." },
+    "3xl": { "$value": "2rem", "$description": "Hero media." },
+    "4xl": { "$value": "2.5rem", "$description": "Oversized media frames." },
+    "full": { "$value": "9999px", "$description": "Buttons, pills and avatars." }
+  },
+  "container": {
+    "$type": "dimension",
+    "prose": { "$value": "42rem", "$description": "Long-form reading width. Use max-w-prose." },
+    "narrow": { "$value": "52rem", "$description": "Focused content: forms, FAQs. Use max-w-narrow." },
+    "page": { "$value": "75rem", "$description": "Default page width. Use max-w-page." },
+    "wide": { "$value": "85rem", "$description": "Wide layouts and app shells. Use max-w-wide." }
+  },
+  "breakpoint": {
+    "$type": "dimension",
+    "sm": { "$value": "40rem" },
+    "md": { "$value": "48rem" },
+    "lg": { "$value": "64rem" },
+    "xl": { "$value": "80rem" },
+    "2xl": { "$value": "96rem" }
+  },
+  "border": {
+    "$type": "dimension",
+    "hairline": { "$value": "1px", "$description": "Default divider and outline width." },
+    "strong": { "$value": "2px", "$description": "Selected and emphasised outlines." }
+  },
+  "focus": {
+    "$type": "dimension",
+    "width": { "$value": "2px", "$description": "Focus outline width." },
+    "offset": { "$value": "2px", "$description": "Gap between element and focus outline." }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": { "$value": "80ms", "$description": "Press feedback." },
+      "fast": { "$value": "140ms", "$description": "Hover and colour changes." },
+      "base": { "$value": "220ms", "$description": "Menus, popovers, tabs." },
+      "slow": { "$value": "360ms", "$description": "Dialogs, sheets, page sections." },
+      "slower": { "$value": "560ms", "$description": "Large reveals and view transitions." }
+    },
+    "ease": {
+      "$type": "cubicBezier",
+      "standard": { "$value": [0.2, 0, 0, 1], "$description": "Default for most transitions." },
+      "out": { "$value": [0.16, 1, 0.3, 1], "$description": "Entering elements: decelerates into place." },
+      "in": { "$value": [0.4, 0, 1, 1], "$description": "Exiting elements." },
+      "in-out": { "$value": [0.65, 0, 0.35, 1], "$description": "Elements moving on screen." }
+    }
+  },
+  "blur": {
+    "$type": "dimension",
+    "glass": { "$value": "16px", "$description": "Backdrop blur for the sticky header and overlays. The only blur in the system." }
+  },
+  "z": {
+    "$type": "number",
+    "header": { "$value": 40, "$description": "Sticky site header." },
+    "overlay": { "$value": 50, "$description": "Dialogs, sheets, menus." },
+    "toast": { "$value": 60, "$description": "Toasts." }
+  }
+}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing · Lumen</title>
+<meta name="description" content="Placeholder description for the pricing page.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="site-header" data-header>
+  <div class="bar">
+    <a class="brand" href="index.html"><span class="mark" aria-hidden="true"><i></i></span>Lumen</a>
+    <nav class="nav-links" aria-label="Main"><a href="features.html">Features</a><a href="pricing.html" aria-current="page">Pricing</a><a href="changelog.html">Changelog</a><a href="blog.html">Blog</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
+    <div class="nav-actions"><a href="#" class="nav-quiet">Log in</a><a href="#" class="btn btn-dark btn-sm">Get started</a>
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" data-menu><span></span><span></span></button></div>
+  </div>
+  <div class="overlay" hidden data-sheet>
+    <nav class="overlay-links" aria-label="Mobile"><a href="features.html">Features</a><a href="pricing.html" aria-current="page">Pricing</a><a href="changelog.html">Changelog</a><a href="blog.html">Blog</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
+    <div class="overlay-actions"><a href="#" class="btn btn-dark btn-block">Get started <svg class="i i-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a href="#" class="btn btn-outline btn-block">Log in</a></div>
+  </div>
+</header>
+<main>
+<section class="page-hero container center">
+  
+  <h1 class="display display-md">Simple pricing that<br>scales with you.</h1>
+  <p class="lead">Every plan includes builds, HTTPS and unlimited projects. No per-seat fees.</p>
+  <div class="toggle" role="group" aria-label="Billing period"><button type="button" class="on" data-billing="monthly" aria-pressed="true">Monthly</button><button type="button" data-billing="yearly" aria-pressed="false">Yearly <em>save 20%</em></button></div>
+</section>
+<section class="container"><div class="plans"><article class="plan">
+  <div class="plan-top"><h3>Hobby</h3></div>
+  <p class="plan-desc">Side projects and experiments.</p>
+  <p class="price"><span class="amt" data-monthly="$5" data-yearly="$4">$5</span><span class="per">per month</span></p>
+  <a href="#" class="btn btn-dark btn-block">Start with Hobby</a>
+  <ul class="plan-feats"><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>1 vCPU · 2 GB RAM</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>50 GB disk</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Unlimited projects</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Community support</li></ul>
+</article><article class="plan">
+  <div class="plan-top"><h3>Starter</h3></div>
+  <p class="plan-desc">Your first real app in production.</p>
+  <p class="price"><span class="amt" data-monthly="$20" data-yearly="$16">$20</span><span class="per">per month</span></p>
+  <a href="#" class="btn btn-dark btn-block">Start with Starter</a>
+  <ul class="plan-feats"><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>2 vCPU · 8 GB RAM</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>120 GB disk</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Daily backups</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Email support</li></ul>
+</article><article class="plan plan-pop">
+  <div class="plan-top"><h3>Pro</h3></div>
+  <p class="plan-desc">Production apps that need room to grow.</p>
+  <p class="price"><span class="amt" data-monthly="$39" data-yearly="$32">$39</span><span class="per">per month</span></p>
+  <a href="#" class="btn btn-light btn-block">Start with Pro</a>
+  <ul class="plan-feats"><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>4 vCPU · 16 GB RAM</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>250 GB disk</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Hourly backups</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Priority support</li></ul>
+</article><article class="plan">
+  <div class="plan-top"><h3>Scale</h3></div>
+  <p class="plan-desc">Teams running serious traffic.</p>
+  <p class="price"><span class="amt" data-monthly="$99" data-yearly="$82">$99</span><span class="per">per month</span></p>
+  <a href="#" class="btn btn-dark btn-block">Start with Scale</a>
+  <ul class="plan-feats"><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>8 vCPU · 32 GB RAM</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>600 GB disk</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>SSO and audit log</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Shared Slack channel</li></ul>
+</article></div>
+  <div class="enterprise"><span class="ent-icon"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><div><h3>Enterprise and self-hosted</h3><p>Placeholder copy for custom contracts, SLAs and on-premise support.</p></div><a href="contact.html" class="btn btn-outline">Talk to sales <svg class="i i-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+</section>
+<section class="section container">
+  <h2 class="h3">Compare plans</h2>
+  <div class="table-wrap"><table class="matrix"><thead><tr><th></th><th>Hobby</th><th>Starter</th><th>Pro</th><th>Scale</th></tr></thead><tbody><tr><th scope="row">Projects</th><td>Unlimited</td><td>Unlimited</td><td>Unlimited</td><td>Unlimited</td></tr><tr><th scope="row">Team members</th><td>1</td><td>3</td><td>10</td><td>Unlimited</td></tr><tr><th scope="row">Preview environments</th><td><span class="nil">—</span></td><td><span class="yes"><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></td><td><span class="yes"><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></td><td><span class="yes"><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></td></tr><tr><th scope="row">Custom domains</th><td>1</td><td>5</td><td>Unlimited</td><td>Unlimited</td></tr><tr><th scope="row">Backups</th><td>Weekly</td><td>Daily</td><td>Hourly</td><td>Hourly</td></tr><tr><th scope="row">SSO</th><td><span class="nil">—</span></td><td><span class="nil">—</span></td><td><span class="nil">—</span></td><td><span class="yes"><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></td></tr><tr><th scope="row">Support</th><td>Community</td><td>Email</td><td>Priority</td><td>Slack</td></tr></tbody></table></div>
+</section>
+<section class="section container faq-split">
+  <div class="faq-side"><h2 class="h2">Questions,<br>answered.</h2><p>Can’t find what you need? <a href="contact.html">Contact us</a>.</p></div>
+  <div class="faq"><details><summary>Can I self-host for free?<svg class="i i-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Yes. Placeholder answer explaining the free open-source edition and what paid plans add.</p></details><details><summary>What counts as a server?<svg class="i i-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Placeholder answer defining the billing unit in one or two plain sentences.</p></details><details><summary>Do you charge per seat?<svg class="i i-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>No. Invite your whole team on any plan.</p></details><details><summary>Can I change plans later?<svg class="i i-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Upgrade or downgrade any time. Changes are prorated to the day.</p></details><details><summary>Do you offer discounts?<svg class="i i-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Placeholder answer about startup, education and open-source programmes.</p></details></div>
+</section>
+<section class="section container">
+  <div class="cta-band">
+    <div class="cta-copy"><h2 class="h2 on-dark">Start on Hobby. Upgrade any time.</h2><p class="lead on-dark-soft">Your projects, domains and data move with you between plans.</p>
+      <div class="btn-row"><a href="#" class="btn btn-light">Get started <svg class="i i-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a href="#" class="btn btn-outline-dark">Book a demo</a></div></div>
+    <div class="cta-side">
+      <p class="cta-label">Or install the CLI</p><div class="install"><span class="prompt">$</span><code>npm i -g lumen</code><button type="button" class="copy" data-copy="npm i -g lumen" aria-label="Copy command"><svg class="i i-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+      <ul class="cta-list"><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Free plan, no card</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Cloud or self-hosted</li><li><svg class="i i-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Apache 2.0 licence</li></ul>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div class="footer-news"><a class="brand" href="index.html"><span class="mark" aria-hidden="true"><i></i></span>Lumen</a><p>Product news once a month. No spam, unsubscribe any time.</p>
+      <form class="inline-form" data-fake-form><label class="sr" for="f-email">Email</label><input id="f-email" type="email" placeholder="you@company.com" required><button class="btn btn-dark btn-sm" type="submit">Subscribe</button><span class="form-done" hidden>Subscribed.</span></form></div>
+    <div class="footer-cols"><div><h4>Product</h4><ul><li><a href="features.html">Features</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="#">Roadmap</a></li></ul></div><div><h4>Developers</h4><ul><li><a href="#">Docs</a></li><li><a href="#">API</a></li><li><a href="#">CLI</a></li><li><a href="#">Status</a></li></ul></div><div><h4>Company</h4><ul><li><a href="about.html">About</a></li><li><a href="blog.html">Blog</a></li><li><a href="#">Careers</a></li><li><a href="contact.html">Contact</a></li></ul></div></div>
+  </div>
+  <div class="container footer-bottom"><span>© 2026 Lumen, Inc.</span><span class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Security</a></span><span class="status"><i></i>All systems normal</span></div>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

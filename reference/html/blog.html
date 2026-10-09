@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog · Lumen</title>
+<meta name="description" content="Placeholder description for the blog page.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="site-header" data-header>
+  <div class="bar">
+    <a class="brand" href="index.html"><span class="mark" aria-hidden="true"><i></i></span>Lumen</a>
+    <nav class="nav-links" aria-label="Main"><a href="features.html">Features</a><a href="pricing.html">Pricing</a><a href="changelog.html">Changelog</a><a href="blog.html" aria-current="page">Blog</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
+    <div class="nav-actions"><a href="#" class="nav-quiet">Log in</a><a href="#" class="btn btn-dark btn-sm">Get started</a>
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" data-menu><span></span><span></span></button></div>
+  </div>
+  <div class="overlay" hidden data-sheet>
+    <nav class="overlay-links" aria-label="Mobile"><a href="features.html">Features</a><a href="pricing.html">Pricing</a><a href="changelog.html">Changelog</a><a href="blog.html" aria-current="page">Blog</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
+    <div class="overlay-actions"><a href="#" class="btn btn-dark btn-block">Get started <svg class="i i-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a href="#" class="btn btn-outline btn-block">Log in</a></div>
+  </div>
+</header>
+<main>
+<section class="page-hero container split-hero">
+  <div><h1 class="display display-md">Notes from<br>the team.</h1></div>
+  <p class="lead">Engineering deep dives, product news and guides for shipping faster.</p>
+</section>
+<section class="container blog-top">
+  <a class="featured" href="blog-post.html"><div class="cover g4"></div><div class="featured-copy"><span class="post-cat">Engineering</span><h2>How we cut build times by 70%</h2><p>Placeholder excerpt that sets up the story in about two lines.</p><span class="post-meta">Sep 30, 2026 · 8 min read</span></div></a>
+  <aside class="latest-list"><h3 class="mini-title">Latest</h3><a class="latest" href="blog-post.html"><span class="post-cat">Product</span><b>Introducing preview environments</b><span class="post-meta">Sep 22, 2026</span></a><a class="latest" href="blog-post.html"><span class="post-cat">Guides</span><b>Self-hosting on a $5 server</b><span class="post-meta">Sep 12, 2026</span></a><a class="latest" href="blog-post.html"><span class="post-cat">Company</span><b>We raised our seed round</b><span class="post-meta">Aug 28, 2026</span></a></aside>
+</section>
+<section class="section container">
+  <div class="chips" role="group" aria-label="Filter posts"><button type="button" class="chip on" data-filter="All">All</button><button type="button" class="chip" data-filter="Engineering">Engineering</button><button type="button" class="chip" data-filter="Product">Product</button><button type="button" class="chip" data-filter="Guides">Guides</button><button type="button" class="chip" data-filter="Company">Company</button></div>
+  <div class="posts"><a class="post" href="blog-post.html" data-cat="Product"><div class="cover g2"></div><h3>Introducing preview environments</h3><p>Placeholder excerpt for a product announcement.</p><span class="post-meta">Sep 22, 2026 · 4 min</span></a><a class="post" href="blog-post.html" data-cat="Guides"><div class="cover g3"></div><h3>Self-hosting on a $5 server</h3><p>Placeholder excerpt for a step-by-step tutorial.</p><span class="post-meta">Sep 12, 2026 · 12 min</span></a><a class="post" href="blog-post.html" data-cat="Company"><div class="cover g4"></div><h3>We raised our seed round</h3><p>Placeholder excerpt for company news.</p><span class="post-meta">Aug 28, 2026 · 3 min</span></a><a class="post" href="blog-post.html" data-cat="Engineering"><div class="cover g5"></div><h3>Zero-downtime deploys, explained</h3><p>Placeholder excerpt for a technical deep dive.</p><span class="post-meta">Aug 14, 2026 · 10 min</span></a><a class="post" href="blog-post.html" data-cat="Guides"><div class="cover g6"></div><h3>Moving off a hosted platform</h3><p>Placeholder excerpt for a migration guide.</p><span class="post-meta">Aug 2, 2026 · 7 min</span></a><a class="post" href="blog-post.html" data-cat="Product"><div class="cover g1"></div><h3>The new desktop app</h3><p>Placeholder excerpt for a launch post.</p><span class="post-meta">Jul 20, 2026 · 5 min</span></a></div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div class="footer-news"><a class="brand" href="index.html"><span class="mark" aria-hidden="true"><i></i></span>Lumen</a><p>Product news once a month. No spam, unsubscribe any time.</p>
+      <form class="inline-form" data-fake-form><label class="sr" for="f-email">Email</label><input id="f-email" type="email" placeholder="you@company.com" required><button class="btn btn-dark btn-sm" type="submit">Subscribe</button><span class="form-done" hidden>Subscribed.</span></form></div>
+    <div class="footer-cols"><div><h4>Product</h4><ul><li><a href="features.html">Features</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="#">Roadmap</a></li></ul></div><div><h4>Developers</h4><ul><li><a href="#">Docs</a></li><li><a href="#">API</a></li><li><a href="#">CLI</a></li><li><a href="#">Status</a></li></ul></div><div><h4>Company</h4><ul><li><a href="about.html">About</a></li><li><a href="blog.html">Blog</a></li><li><a href="#">Careers</a></li><li><a href="contact.html">Contact</a></li></ul></div></div>
+  </div>
+  <div class="container footer-bottom"><span>© 2026 Lumen, Inc.</span><span class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Security</a></span><span class="status"><i></i>All systems normal</span></div>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
