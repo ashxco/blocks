@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowUpRightIcon } from "lucide-react"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 import { groupDescriptions, slugify } from "@/components/viewer/nav"
 import type { RegistryEntry } from "@/lib/registry"
 

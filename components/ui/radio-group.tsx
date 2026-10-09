@@ -2,7 +2,7 @@
 
 import { Radio as RadioPrimitive } from "@base-ui/react/radio"
 import { RadioGroup as RadioGroupPrimitive } from "@base-ui/react/radio-group"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks radio group. Items are hairline circles that fill with ink and show

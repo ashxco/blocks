@@ -5,7 +5,7 @@ import { Tabs } from "@base-ui/react/tabs"
 import { MonitorIcon, MoonIcon, SmartphoneIcon, SunIcon, TabletIcon } from "lucide-react"
 import { useTheme } from "next-themes"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 import { CopyButton } from "@/components/viewer/copy-button"
 import { slugify } from "@/components/viewer/nav"
 import { Segmented } from "@/components/viewer/segmented"

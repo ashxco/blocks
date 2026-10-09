@@ -97,6 +97,14 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.56 0.012 286)"
   },
   {
+    "name": "color.ink.550",
+    "cssVar": "--bk-ink-550",
+    "tier": "primitive",
+    "group": "ink",
+    "type": "color",
+    "value": "oklch(0.505 0.012 286)"
+  },
+  {
     "name": "color.ink.600",
     "cssVar": "--bk-ink-600",
     "tier": "primitive",
@@ -643,8 +651,8 @@ export const tokens: DesignToken[] = [
     "tier": "semantic",
     "group": "surface & text",
     "type": "color",
-    "value": "oklch(0.56 0.012 286)",
-    "ref": "color.ink.500",
+    "value": "oklch(0.505 0.012 286)",
+    "ref": "color.ink.550",
     "dark": {
       "value": "oklch(0.68 0.01 286)",
       "ref": "color.ink.400"
@@ -676,8 +684,8 @@ export const tokens: DesignToken[] = [
     "value": "oklch(1 0 0)",
     "ref": "color.ink.0",
     "dark": {
-      "value": "oklch(0.175 0.012 286)",
-      "ref": "color.ink.900"
+      "value": "oklch(0.135 0.008 286)",
+      "ref": "color.ink.950"
     },
     "utility": "bg-card · text-card · border-card",
     "description": "Card and tile surface."
@@ -871,8 +879,7 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.97 0.026 283)",
     "ref": "color.violet.50",
     "dark": {
-      "value": "oklch(0.235 0.112 283)",
-      "ref": "color.violet.950"
+      "value": "oklch(0.27 0.06 283)"
     },
     "utility": "bg-brand-subtle · text-brand-subtle · border-brand-subtle",
     "description": "Quiet brand fill."
@@ -931,8 +938,7 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.97 0.025 25)",
     "ref": "color.red.50",
     "dark": {
-      "value": "oklch(0.235 0.107 25)",
-      "ref": "color.red.950"
+      "value": "oklch(0.26 0.045 25)"
     },
     "utility": "bg-destructive-subtle · text-destructive-subtle · border-destructive-subtle",
     "description": "Quiet error fill."
@@ -976,8 +982,7 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.97 0.019 152)",
     "ref": "color.green.50",
     "dark": {
-      "value": "oklch(0.235 0.083 152)",
-      "ref": "color.green.950"
+      "value": "oklch(0.26 0.035 152)"
     },
     "utility": "bg-success-subtle · text-success-subtle · border-success-subtle",
     "description": "Quiet success fill."
@@ -1021,8 +1026,7 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.97 0.019 72)",
     "ref": "color.amber.50",
     "dark": {
-      "value": "oklch(0.235 0.081 72)",
-      "ref": "color.amber.950"
+      "value": "oklch(0.27 0.04 72)"
     },
     "utility": "bg-warning-subtle · text-warning-subtle · border-warning-subtle",
     "description": "Quiet warning fill."
@@ -1051,8 +1055,7 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.97 0.016 235)",
     "ref": "color.sky.50",
     "dark": {
-      "value": "oklch(0.235 0.068 235)",
-      "ref": "color.sky.950"
+      "value": "oklch(0.26 0.035 235)"
     },
     "utility": "bg-info-subtle · text-info-subtle · border-info-subtle",
     "description": "Quiet informational fill."
@@ -1237,8 +1240,7 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.94 0.052 283)",
     "ref": "color.violet.100",
     "dark": {
-      "value": "oklch(0.235 0.112 283)",
-      "ref": "color.violet.950"
+      "value": "oklch(0.3 0.05 283)"
     },
     "utility": "bg-tint-violet · text-tint-violet · border-tint-violet",
     "description": "Decorative fill for covers and avatars."
@@ -1252,8 +1254,7 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.94 0.038 152)",
     "ref": "color.green.100",
     "dark": {
-      "value": "oklch(0.235 0.083 152)",
-      "ref": "color.green.950"
+      "value": "oklch(0.3 0.04 152)"
     },
     "utility": "bg-tint-mint · text-tint-mint · border-tint-mint",
     "description": "Decorative fill for covers and avatars."
@@ -1267,8 +1268,7 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.94 0.037 72)",
     "ref": "color.amber.100",
     "dark": {
-      "value": "oklch(0.235 0.081 72)",
-      "ref": "color.amber.950"
+      "value": "oklch(0.31 0.035 72)"
     },
     "utility": "bg-tint-sand · text-tint-sand · border-tint-sand",
     "description": "Decorative fill for covers and avatars."
@@ -1282,8 +1282,7 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.94 0.031 235)",
     "ref": "color.sky.100",
     "dark": {
-      "value": "oklch(0.235 0.068 235)",
-      "ref": "color.sky.950"
+      "value": "oklch(0.3 0.035 235)"
     },
     "utility": "bg-tint-sky · text-tint-sky · border-tint-sky",
     "description": "Decorative fill for covers and avatars."
@@ -1297,8 +1296,7 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.94 0.049 25)",
     "ref": "color.red.100",
     "dark": {
-      "value": "oklch(0.235 0.107 25)",
-      "ref": "color.red.950"
+      "value": "oklch(0.3 0.04 25)"
     },
     "utility": "bg-tint-rose · text-tint-rose · border-tint-rose",
     "description": "Decorative fill for covers and avatars."
@@ -1327,8 +1325,8 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.62 0.126 235)",
     "ref": "color.sky.500",
     "dark": {
-      "value": "oklch(0.71 0.113 235)",
-      "ref": "color.sky.400"
+      "value": "oklch(0.805 0.088 235)",
+      "ref": "color.sky.300"
     },
     "utility": "bg-chart-2 · text-chart-2 · border-chart-2",
     "description": "Data series 2."
@@ -1342,8 +1340,8 @@ export const tokens: DesignToken[] = [
     "value": "oklch(0.62 0.155 152)",
     "ref": "color.green.500",
     "dark": {
-      "value": "oklch(0.71 0.139 152)",
-      "ref": "color.green.400"
+      "value": "oklch(0.62 0.155 152)",
+      "ref": "color.green.500"
     },
     "utility": "bg-chart-3 · text-chart-3 · border-chart-3",
     "description": "Data series 3."
@@ -1354,11 +1352,11 @@ export const tokens: DesignToken[] = [
     "tier": "semantic",
     "group": "chart",
     "type": "color",
-    "value": "oklch(0.62 0.15 72)",
-    "ref": "color.amber.500",
+    "value": "oklch(0.71 0.135 72)",
+    "ref": "color.amber.400",
     "dark": {
-      "value": "oklch(0.71 0.135 72)",
-      "ref": "color.amber.400"
+      "value": "oklch(0.885 0.068 72)",
+      "ref": "color.amber.200"
     },
     "utility": "bg-chart-4 · text-chart-4 · border-chart-4",
     "description": "Data series 4."
@@ -1498,6 +1496,21 @@ export const tokens: DesignToken[] = [
     "description": "Sidebar focus outline."
   },
   {
+    "name": "color.panel-brand",
+    "cssVar": "--panel-brand",
+    "tier": "semantic",
+    "group": "panel",
+    "type": "color",
+    "value": "oklch(0.71 0.187 283)",
+    "ref": "color.violet.400",
+    "dark": {
+      "value": "oklch(0.71 0.187 283)",
+      "ref": "color.violet.400"
+    },
+    "utility": "bg-panel-brand · text-panel-brand · border-panel-brand",
+    "description": "Brand accent on dark panels: links, active indicators and highlights inside bg-panel."
+  },
+  {
     "name": "font.family.sans",
     "cssVar": "--font-sans",
     "tier": "primitive",
@@ -1572,6 +1585,27 @@ export const tokens: DesignToken[] = [
     "type": "fontWeight",
     "value": 800,
     "utility": "font-extrabold"
+  },
+  {
+    "name": "type.hero",
+    "cssVar": "--text-hero",
+    "tier": "typography",
+    "group": "roles",
+    "type": "typography",
+    "value": {
+      "fontFamily": [
+        "var(--font-jakarta)",
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif"
+      ],
+      "fontSize": "clamp(4rem, 1.5rem + 9vw, 10rem)",
+      "fontWeight": 800,
+      "letterSpacing": "-0.055em",
+      "lineHeight": "0.9"
+    },
+    "utility": "text-hero",
+    "description": "Oversized statement for showcase pages such as the design-system overview."
   },
   {
     "name": "type.display",
@@ -2263,20 +2297,22 @@ export const tokens: DesignToken[] = [
   },
   {
     "name": "border.hairline",
-    "cssVar": "--border-hairline",
+    "cssVar": "--border-width-hairline",
     "tier": "layout",
-    "group": "border",
+    "group": "border-width",
     "type": "dimension",
     "value": "1px",
+    "utility": "border-(length:--border-width-hairline)",
     "description": "Default divider and outline width."
   },
   {
     "name": "border.strong",
-    "cssVar": "--border-strong",
+    "cssVar": "--border-width-strong",
     "tier": "layout",
-    "group": "border",
+    "group": "border-width",
     "type": "dimension",
     "value": "2px",
+    "utility": "border-(length:--border-width-strong)",
     "description": "Selected and emphasised outlines."
   },
   {
@@ -2286,6 +2322,7 @@ export const tokens: DesignToken[] = [
     "group": "focus",
     "type": "dimension",
     "value": "2px",
+    "utility": "focus-visible:focus-ring",
     "description": "Focus outline width."
   },
   {
@@ -2295,6 +2332,7 @@ export const tokens: DesignToken[] = [
     "group": "focus",
     "type": "dimension",
     "value": "2px",
+    "utility": "focus-visible:focus-ring",
     "description": "Gap between element and focus outline."
   },
   {
@@ -2421,27 +2459,30 @@ export const tokens: DesignToken[] = [
     "name": "z.header",
     "cssVar": "--z-header",
     "tier": "layout",
-    "group": "z",
+    "group": "z-index",
     "type": "number",
     "value": 40,
+    "utility": "z-(--z-header)",
     "description": "Sticky site header."
   },
   {
     "name": "z.overlay",
     "cssVar": "--z-overlay",
     "tier": "layout",
-    "group": "z",
+    "group": "z-index",
     "type": "number",
     "value": 50,
+    "utility": "z-(--z-overlay)",
     "description": "Dialogs, sheets, menus."
   },
   {
     "name": "z.toast",
     "cssVar": "--z-toast",
     "tier": "layout",
-    "group": "z",
+    "group": "z-index",
     "type": "number",
     "value": 60,
+    "utility": "z-(--z-toast)",
     "description": "Toasts."
   },
   {
@@ -2487,7 +2528,7 @@ export const tokens: DesignToken[] = [
     "group": "button",
     "type": "dimension",
     "value": "0.625rem",
-    "utility": "h-(--button-padding-x-xs)"
+    "utility": "px-(--button-padding-x-xs)"
   },
   {
     "name": "component.button.padding-x.sm",
@@ -2496,7 +2537,7 @@ export const tokens: DesignToken[] = [
     "group": "button",
     "type": "dimension",
     "value": "0.875rem",
-    "utility": "h-(--button-padding-x-sm)"
+    "utility": "px-(--button-padding-x-sm)"
   },
   {
     "name": "component.button.padding-x.md",
@@ -2505,7 +2546,7 @@ export const tokens: DesignToken[] = [
     "group": "button",
     "type": "dimension",
     "value": "1.25rem",
-    "utility": "h-(--button-padding-x-md)"
+    "utility": "px-(--button-padding-x-md)"
   },
   {
     "name": "component.button.padding-x.lg",
@@ -2514,7 +2555,7 @@ export const tokens: DesignToken[] = [
     "group": "button",
     "type": "dimension",
     "value": "1.5rem",
-    "utility": "h-(--button-padding-x-lg)"
+    "utility": "px-(--button-padding-x-lg)"
   },
   {
     "name": "component.button.radius",
@@ -2524,7 +2565,7 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "9999px",
     "ref": "radius.full",
-    "utility": "h-(--button-radius)",
+    "utility": "rounded-(--button-radius)",
     "description": "Buttons are pills."
   },
   {
@@ -2555,13 +2596,22 @@ export const tokens: DesignToken[] = [
     "utility": "h-(--control-height-lg)"
   },
   {
+    "name": "component.control.height.xs",
+    "cssVar": "--control-height-xs",
+    "tier": "component",
+    "group": "control",
+    "type": "dimension",
+    "value": "2rem",
+    "utility": "h-(--control-height-xs)"
+  },
+  {
     "name": "component.control.padding-x",
     "cssVar": "--control-padding-x",
     "tier": "component",
     "group": "control",
     "type": "dimension",
     "value": "0.875rem",
-    "utility": "h-(--control-padding-x)"
+    "utility": "px-(--control-padding-x)"
   },
   {
     "name": "component.control.radius",
@@ -2571,7 +2621,7 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "0.75rem",
     "ref": "radius.md",
-    "utility": "h-(--control-radius)",
+    "utility": "rounded-(--control-radius)",
     "description": "Inputs, selects, textareas, comboboxes."
   },
   {
@@ -2582,7 +2632,7 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "1.125rem",
     "ref": "radius.lg",
-    "utility": "h-(--card-radius)"
+    "utility": "rounded-(--card-radius)"
   },
   {
     "name": "component.card.padding",
@@ -2591,7 +2641,7 @@ export const tokens: DesignToken[] = [
     "group": "card",
     "type": "dimension",
     "value": "1.5rem",
-    "utility": "h-(--card-padding)"
+    "utility": "p-(--card-padding)"
   },
   {
     "name": "component.card.padding-sm",
@@ -2600,7 +2650,7 @@ export const tokens: DesignToken[] = [
     "group": "card",
     "type": "dimension",
     "value": "1rem",
-    "utility": "h-(--card-padding-sm)"
+    "utility": "p-(--card-padding-sm)"
   },
   {
     "name": "component.panel.radius",
@@ -2610,7 +2660,7 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "1.75rem",
     "ref": "radius.2xl",
-    "utility": "h-(--panel-radius)"
+    "utility": "rounded-(--panel-radius)"
   },
   {
     "name": "component.panel.padding",
@@ -2619,7 +2669,17 @@ export const tokens: DesignToken[] = [
     "group": "panel",
     "type": "dimension",
     "value": "clamp(1.5rem, 0.5rem + 5vw, 5rem)",
-    "utility": "h-(--panel-padding)"
+    "utility": "p-(--panel-padding)"
+  },
+  {
+    "name": "component.panel.padding-sm",
+    "cssVar": "--panel-padding-sm",
+    "tier": "component",
+    "group": "panel",
+    "type": "dimension",
+    "value": "clamp(1.5rem, 1rem + 2vw, 2.5rem)",
+    "utility": "p-(--panel-padding-sm)",
+    "description": "Panels inside app UI and narrow layouts."
   },
   {
     "name": "component.overlay.radius",
@@ -2629,7 +2689,7 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "0.75rem",
     "ref": "radius.md",
-    "utility": "h-(--overlay-radius)",
+    "utility": "rounded-(--overlay-radius)",
     "description": "Menus, popovers, selects, hover cards."
   },
   {
@@ -2640,7 +2700,7 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "0.5rem",
     "ref": "radius.sm",
-    "utility": "h-(--overlay-item-radius)"
+    "utility": "rounded-(--overlay-item-radius)"
   },
   {
     "name": "component.overlay.padding",
@@ -2649,7 +2709,7 @@ export const tokens: DesignToken[] = [
     "group": "overlay",
     "type": "dimension",
     "value": "0.375rem",
-    "utility": "h-(--overlay-padding)"
+    "utility": "p-(--overlay-padding)"
   },
   {
     "name": "component.overlay.item-height",
@@ -2668,7 +2728,7 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "1.375rem",
     "ref": "radius.xl",
-    "utility": "h-(--dialog-radius)"
+    "utility": "rounded-(--dialog-radius)"
   },
   {
     "name": "component.dialog.padding",
@@ -2677,7 +2737,7 @@ export const tokens: DesignToken[] = [
     "group": "dialog",
     "type": "dimension",
     "value": "1.75rem",
-    "utility": "h-(--dialog-padding)"
+    "utility": "p-(--dialog-padding)"
   },
   {
     "name": "component.dialog.width",
@@ -2686,7 +2746,7 @@ export const tokens: DesignToken[] = [
     "group": "dialog",
     "type": "dimension",
     "value": "32rem",
-    "utility": "h-(--dialog-width)"
+    "utility": "w-(--dialog-width)"
   },
   {
     "name": "component.badge.height",
@@ -2705,7 +2765,7 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "9999px",
     "ref": "radius.full",
-    "utility": "h-(--badge-radius)"
+    "utility": "rounded-(--badge-radius)"
   },
   {
     "name": "component.avatar.size.sm",
@@ -2714,7 +2774,7 @@ export const tokens: DesignToken[] = [
     "group": "avatar",
     "type": "dimension",
     "value": "1.75rem",
-    "utility": "h-(--avatar-size-sm)"
+    "utility": "size-(--avatar-size-sm)"
   },
   {
     "name": "component.avatar.size.md",
@@ -2723,7 +2783,7 @@ export const tokens: DesignToken[] = [
     "group": "avatar",
     "type": "dimension",
     "value": "2.25rem",
-    "utility": "h-(--avatar-size-md)"
+    "utility": "size-(--avatar-size-md)"
   },
   {
     "name": "component.avatar.size.lg",
@@ -2732,7 +2792,7 @@ export const tokens: DesignToken[] = [
     "group": "avatar",
     "type": "dimension",
     "value": "3rem",
-    "utility": "h-(--avatar-size-lg)"
+    "utility": "size-(--avatar-size-lg)"
   },
   {
     "name": "component.avatar.size.xl",
@@ -2741,7 +2801,7 @@ export const tokens: DesignToken[] = [
     "group": "avatar",
     "type": "dimension",
     "value": "4.5rem",
-    "utility": "h-(--avatar-size-xl)"
+    "utility": "size-(--avatar-size-xl)"
   },
   {
     "name": "component.tabs.height",
@@ -2759,7 +2819,7 @@ export const tokens: DesignToken[] = [
     "group": "switch",
     "type": "dimension",
     "value": "2.5rem",
-    "utility": "h-(--switch-width)"
+    "utility": "w-(--switch-width)"
   },
   {
     "name": "component.switch.height",
@@ -2771,6 +2831,24 @@ export const tokens: DesignToken[] = [
     "utility": "h-(--switch-height)"
   },
   {
+    "name": "component.switch.width-sm",
+    "cssVar": "--switch-width-sm",
+    "tier": "component",
+    "group": "switch",
+    "type": "dimension",
+    "value": "2rem",
+    "utility": "w-(--switch-width-sm)"
+  },
+  {
+    "name": "component.switch.height-sm",
+    "cssVar": "--switch-height-sm",
+    "tier": "component",
+    "group": "switch",
+    "type": "dimension",
+    "value": "1.25rem",
+    "utility": "h-(--switch-height-sm)"
+  },
+  {
     "name": "component.table.row-height",
     "cssVar": "--table-row-height",
     "tier": "component",
@@ -2778,6 +2856,15 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "3.25rem",
     "utility": "h-(--table-row-height)"
+  },
+  {
+    "name": "component.table.row-height-sm",
+    "cssVar": "--table-row-height-sm",
+    "tier": "component",
+    "group": "table",
+    "type": "dimension",
+    "value": "2.75rem",
+    "utility": "h-(--table-row-height-sm)"
   },
   {
     "name": "component.header.height",
@@ -2790,13 +2877,23 @@ export const tokens: DesignToken[] = [
     "description": "Site header and app top bar."
   },
   {
+    "name": "component.header.height-sm",
+    "cssVar": "--header-height-sm",
+    "tier": "component",
+    "group": "header",
+    "type": "dimension",
+    "value": "3.5rem",
+    "utility": "h-(--header-height-sm)",
+    "description": "Slim bars: the viewer and dense app chrome."
+  },
+  {
     "name": "component.sidebar.width",
     "cssVar": "--sidebar-width",
     "tier": "component",
     "group": "sidebar",
     "type": "dimension",
     "value": "16rem",
-    "utility": "h-(--sidebar-width)"
+    "utility": "w-(--sidebar-width)"
   },
   {
     "name": "component.sidebar.width-icon",
@@ -2805,8 +2902,67 @@ export const tokens: DesignToken[] = [
     "group": "sidebar",
     "type": "dimension",
     "value": "3.5rem",
-    "utility": "h-(--sidebar-width-icon)"
+    "utility": "w-(--sidebar-width-icon)"
+  },
+  {
+    "name": "component.sidebar.width-mobile",
+    "cssVar": "--sidebar-width-mobile",
+    "tier": "component",
+    "group": "sidebar",
+    "type": "dimension",
+    "value": "18rem",
+    "utility": "w-(--sidebar-width-mobile)"
+  },
+  {
+    "name": "component.selection.size",
+    "cssVar": "--selection-size",
+    "tier": "component",
+    "group": "selection",
+    "type": "dimension",
+    "value": "1.125rem",
+    "utility": "size-(--selection-size)",
+    "description": "Checkbox and radio size."
+  },
+  {
+    "name": "component.otp.slot-width",
+    "cssVar": "--otp-slot-width",
+    "tier": "component",
+    "group": "otp",
+    "type": "dimension",
+    "value": "2.75rem",
+    "utility": "w-(--otp-slot-width)"
+  },
+  {
+    "name": "component.calendar.cell-size",
+    "cssVar": "--calendar-cell-size",
+    "tier": "component",
+    "group": "calendar",
+    "type": "dimension",
+    "value": "2.5rem",
+    "utility": "size-(--calendar-cell-size)"
+  },
+  {
+    "name": "component.sheet.width",
+    "cssVar": "--sheet-width",
+    "tier": "component",
+    "group": "sheet",
+    "type": "dimension",
+    "value": "28rem",
+    "utility": "w-(--sheet-width)",
+    "description": "Side sheet and drawer width."
+  },
+  {
+    "name": "component.scrollbar.size",
+    "cssVar": "--scrollbar-size",
+    "tier": "component",
+    "group": "scrollbar",
+    "type": "dimension",
+    "value": "0.625rem",
+    "utility": "size-(--scrollbar-size)"
   }
 ]
 
 export const tokensByTier = (tier: TokenTier) => tokens.filter((t) => t.tier === tier)
+
+/** Type role names (text-<role> utilities). Used by cn() so roles merge as font sizes. */
+export const typeRoles = ["hero","display","h1","h2","h3","h4","title","lead","body","label","caption","code"] as const

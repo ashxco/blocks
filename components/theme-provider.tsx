@@ -7,16 +7,18 @@ function ThemeProvider({
   children,
   ...props
 }: React.ComponentProps<typeof NextThemesProvider>) {
+  const forcedTheme = useThemeFromQuery()
+
   return (
     <NextThemesProvider
       attribute="class"
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange
+      forcedTheme={forcedTheme}
       {...props}
     >
       <ThemeHotkey />
-      <ThemeFromQuery />
       {children}
     </NextThemesProvider>
   )
@@ -69,16 +71,22 @@ function ThemeHotkey() {
   return null
 }
 
-/** Lets screenshots and template previews pick a theme with ?theme=dark|light. */
-function ThemeFromQuery() {
-  const { setTheme } = useTheme()
+/**
+ * Lets screenshots and template previews force a theme with ?theme=dark|light.
+ * The theme is forced, not saved, so a preview never changes the visitor's
+ * own theme or other open tabs.
+ */
+function useThemeFromQuery() {
+  const [theme, setTheme] = React.useState<"light" | "dark" | undefined>()
 
   React.useEffect(() => {
-    const theme = new URLSearchParams(window.location.search).get("theme")
-    if (theme === "dark" || theme === "light") setTheme(theme)
-  }, [setTheme])
+    const value = new URLSearchParams(window.location.search).get("theme")
+    // Reading the URL is only possible after hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (value === "dark" || value === "light") setTheme(value)
+  }, [])
 
-  return null
+  return theme
 }
 
 export { ThemeProvider }

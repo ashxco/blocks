@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Toggle as TogglePrimitive } from "@base-ui/react/toggle"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Blocks toggle. A pill that turns ink when pressed, like every selection

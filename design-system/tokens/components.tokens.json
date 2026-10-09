@@ -4,79 +4,246 @@
     "button": {
       "height": {
         "$type": "dimension",
-        "xs": { "$value": "1.75rem" },
-        "sm": { "$value": "2.25rem" },
-        "md": { "$value": "2.75rem" },
-        "lg": { "$value": "3rem" }
+        "xs": {
+          "$value": "1.75rem"
+        },
+        "sm": {
+          "$value": "2.25rem"
+        },
+        "md": {
+          "$value": "2.75rem"
+        },
+        "lg": {
+          "$value": "3rem"
+        }
       },
       "padding-x": {
         "$type": "dimension",
-        "xs": { "$value": "0.625rem" },
-        "sm": { "$value": "0.875rem" },
-        "md": { "$value": "1.25rem" },
-        "lg": { "$value": "1.5rem" }
+        "xs": {
+          "$value": "0.625rem"
+        },
+        "sm": {
+          "$value": "0.875rem"
+        },
+        "md": {
+          "$value": "1.25rem"
+        },
+        "lg": {
+          "$value": "1.5rem"
+        }
       },
-      "radius": { "$type": "dimension", "$value": "{radius.full}", "$description": "Buttons are pills." }
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.full}",
+        "$description": "Buttons are pills."
+      }
     },
     "control": {
       "height": {
         "$type": "dimension",
-        "sm": { "$value": "2.25rem" },
-        "md": { "$value": "2.75rem" },
-        "lg": { "$value": "3rem" }
+        "sm": {
+          "$value": "2.25rem"
+        },
+        "md": {
+          "$value": "2.75rem"
+        },
+        "lg": {
+          "$value": "3rem"
+        },
+        "xs": {
+          "$value": "2rem"
+        }
       },
-      "padding-x": { "$type": "dimension", "$value": "0.875rem" },
-      "radius": { "$type": "dimension", "$value": "{radius.md}", "$description": "Inputs, selects, textareas, comboboxes." }
+      "padding-x": {
+        "$type": "dimension",
+        "$value": "0.875rem"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.md}",
+        "$description": "Inputs, selects, textareas, comboboxes."
+      }
     },
     "card": {
-      "radius": { "$type": "dimension", "$value": "{radius.lg}" },
-      "padding": { "$type": "dimension", "$value": "1.5rem" },
-      "padding-sm": { "$type": "dimension", "$value": "1rem" }
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.lg}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "1.5rem"
+      },
+      "padding-sm": {
+        "$type": "dimension",
+        "$value": "1rem"
+      }
     },
     "panel": {
-      "radius": { "$type": "dimension", "$value": "{radius.2xl}" },
-      "padding": { "$type": "dimension", "$value": "clamp(1.5rem, 0.5rem + 5vw, 5rem)" }
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.2xl}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "clamp(1.5rem, 0.5rem + 5vw, 5rem)"
+      },
+      "padding-sm": {
+        "$type": "dimension",
+        "$value": "clamp(1.5rem, 1rem + 2vw, 2.5rem)",
+        "$description": "Panels inside app UI and narrow layouts."
+      }
     },
     "overlay": {
-      "radius": { "$type": "dimension", "$value": "{radius.md}", "$description": "Menus, popovers, selects, hover cards." },
-      "item-radius": { "$type": "dimension", "$value": "{radius.sm}" },
-      "padding": { "$type": "dimension", "$value": "0.375rem" },
-      "item-height": { "$type": "dimension", "$value": "2.25rem" }
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.md}",
+        "$description": "Menus, popovers, selects, hover cards."
+      },
+      "item-radius": {
+        "$type": "dimension",
+        "$value": "{radius.sm}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "0.375rem"
+      },
+      "item-height": {
+        "$type": "dimension",
+        "$value": "2.25rem"
+      }
     },
     "dialog": {
-      "radius": { "$type": "dimension", "$value": "{radius.xl}" },
-      "padding": { "$type": "dimension", "$value": "1.75rem" },
-      "width": { "$type": "dimension", "$value": "32rem" }
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.xl}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "1.75rem"
+      },
+      "width": {
+        "$type": "dimension",
+        "$value": "32rem"
+      }
     },
     "badge": {
-      "height": { "$type": "dimension", "$value": "1.5rem" },
-      "radius": { "$type": "dimension", "$value": "{radius.full}" }
+      "height": {
+        "$type": "dimension",
+        "$value": "1.5rem"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.full}"
+      }
     },
     "avatar": {
       "size": {
         "$type": "dimension",
-        "sm": { "$value": "1.75rem" },
-        "md": { "$value": "2.25rem" },
-        "lg": { "$value": "3rem" },
-        "xl": { "$value": "4.5rem" }
+        "sm": {
+          "$value": "1.75rem"
+        },
+        "md": {
+          "$value": "2.25rem"
+        },
+        "lg": {
+          "$value": "3rem"
+        },
+        "xl": {
+          "$value": "4.5rem"
+        }
       }
     },
     "tabs": {
-      "height": { "$type": "dimension", "$value": "2.75rem" }
+      "height": {
+        "$type": "dimension",
+        "$value": "2.75rem"
+      }
     },
     "switch": {
-      "width": { "$type": "dimension", "$value": "2.5rem" },
-      "height": { "$type": "dimension", "$value": "1.5rem" }
+      "width": {
+        "$type": "dimension",
+        "$value": "2.5rem"
+      },
+      "height": {
+        "$type": "dimension",
+        "$value": "1.5rem"
+      },
+      "width-sm": {
+        "$type": "dimension",
+        "$value": "2rem"
+      },
+      "height-sm": {
+        "$type": "dimension",
+        "$value": "1.25rem"
+      }
     },
     "table": {
-      "row-height": { "$type": "dimension", "$value": "3.25rem" }
+      "row-height": {
+        "$type": "dimension",
+        "$value": "3.25rem"
+      },
+      "row-height-sm": {
+        "$type": "dimension",
+        "$value": "2.75rem"
+      }
     },
     "header": {
-      "height": { "$type": "dimension", "$value": "4.5rem", "$description": "Site header and app top bar." }
+      "height": {
+        "$type": "dimension",
+        "$value": "4.5rem",
+        "$description": "Site header and app top bar."
+      },
+      "height-sm": {
+        "$type": "dimension",
+        "$value": "3.5rem",
+        "$description": "Slim bars: the viewer and dense app chrome."
+      }
     },
     "sidebar": {
-      "width": { "$type": "dimension", "$value": "16rem" },
-      "width-icon": { "$type": "dimension", "$value": "3.5rem" }
+      "width": {
+        "$type": "dimension",
+        "$value": "16rem"
+      },
+      "width-icon": {
+        "$type": "dimension",
+        "$value": "3.5rem"
+      },
+      "width-mobile": {
+        "$type": "dimension",
+        "$value": "18rem"
+      }
+    },
+    "selection": {
+      "size": {
+        "$type": "dimension",
+        "$value": "1.125rem",
+        "$description": "Checkbox and radio size."
+      }
+    },
+    "otp": {
+      "slot-width": {
+        "$type": "dimension",
+        "$value": "2.75rem"
+      }
+    },
+    "calendar": {
+      "cell-size": {
+        "$type": "dimension",
+        "$value": "2.5rem"
+      }
+    },
+    "sheet": {
+      "width": {
+        "$type": "dimension",
+        "$value": "28rem",
+        "$description": "Side sheet and drawer width."
+      }
+    },
+    "scrollbar": {
+      "size": {
+        "$type": "dimension",
+        "$value": "0.625rem"
+      }
     }
   }
 }

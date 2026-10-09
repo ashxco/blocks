@@ -7,7 +7,7 @@ import { Dialog } from "@base-ui/react/dialog"
 import { ArrowUpRightIcon, MenuIcon, XIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 import { SidebarNav } from "@/components/viewer/sidebar-nav"
 import { ThemeToggle } from "@/components/viewer/theme-toggle"
 import { Wordmark } from "@/components/viewer/wordmark"

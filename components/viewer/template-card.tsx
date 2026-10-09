@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowUpRightIcon } from "lucide-react"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 import { ScaledFrame } from "@/components/viewer/scaled-frame"
 import type { TemplateEntry } from "@/lib/registry"
 

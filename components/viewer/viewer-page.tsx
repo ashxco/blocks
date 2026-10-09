@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 /**
  * Vertical rhythm for a viewer page's blocks (header, content, pager). The

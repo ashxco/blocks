@@ -3,7 +3,7 @@
 import * as React from "react"
 import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu"
 import { CheckIcon, ChevronRightIcon } from "lucide-react"
-import { cn } from "@/components/viewer/cn"
+import { cn } from "@/lib/utils"
 
 import { menuStyles, submenuOffsets } from "@/components/ui/dropdown-menu"
 
