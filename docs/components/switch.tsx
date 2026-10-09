@@ -3,9 +3,28 @@
 import * as React from "react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Field, FieldContent, FieldDescription, FieldLabel } from "@/components/ui/field"
-import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { tokens } from "@/design-system/generated/tokens"
+
+/** A dimension token as a px number, read from the generated tokens so the copy follows the system. */
+function tokenPx(cssVar: string) {
+  const value = tokens.find((token) => token.cssVar === cssVar)?.value
+  return typeof value === "string" && value.endsWith("rem") ? parseFloat(value) * 16 : Number.NaN
+}
+
+const switchSizes = {
+  sm: `${tokenPx("--switch-width-sm")} × ${tokenPx("--switch-height-sm")}px`,
+  default: `${tokenPx("--switch-width")} × ${tokenPx("--switch-height")}px`,
+}
 
 const gitSettings = [
   {
@@ -41,14 +60,14 @@ function GitSettings() {
   const [lastChange, setLastChange] = React.useState<string | null>(null)
 
   return (
-    <section aria-labelledby="sw-git-title" className="w-full max-w-144 rounded-(--card-radius) border bg-card">
-      <div className="grid gap-1 p-(--card-padding) pb-2">
-        <h3 id="sw-git-title" className="text-h4">
-          Git
-        </h3>
-        <p className="text-body text-copy">Changes apply immediately to acme-web.</p>
-      </div>
-      <div className="divide-y px-(--card-padding)">
+    <Card className="w-full max-w-2xl">
+      <CardHeader>
+        <CardTitle>Git</CardTitle>
+        <CardDescription className="text-pretty">
+          Changes apply immediately to <span className="whitespace-nowrap">acme-web</span>.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="-my-5 divide-y">
         {gitSettings.map((s) => (
           <Field key={s.id} orientation="horizontal" className="py-5">
             <FieldContent>
@@ -66,62 +85,77 @@ function GitSettings() {
             />
           </Field>
         ))}
-      </div>
-      <p className="border-t px-(--card-padding) py-3.5 text-caption text-muted-foreground" aria-live="polite">
-        {lastChange ? `Saved. ${lastChange}` : "All changes save automatically."}
-      </p>
-    </section>
+      </CardContent>
+      <CardFooter>
+        <p className="text-caption text-muted-foreground" aria-live="polite">
+          {lastChange ? `Saved. ${lastChange}` : "All changes save automatically."}
+        </p>
+      </CardFooter>
+    </Card>
   )
 }
+
+const panelSettings = [
+  { id: "sw-panel-protect", label: "Password protection", description: "Visitors enter a shared password first.", on: true },
+  { id: "sw-panel-index", label: "Search indexing", description: "Let search engines list this preview.", on: false },
+]
 
 export default function SwitchDocs() {
   return (
     <Examples>
       <Example
         title="Default"
-        description="Sized by --switch-width and --switch-height. The track is ink when on; the thumb slides and stretches while pressed."
-        code={`<div className="flex items-center gap-3">
+        layout="stack"
+        description="Sized by --switch-width and --switch-height. The label comes first and the switch trails it; the track is ink when on and the thumb slides and stretches while pressed."
+        code={`<Field orientation="horizontal" className="justify-between">
+  <FieldLabel htmlFor="deploy-on-push">Deploy on push</FieldLabel>
   <Switch id="deploy-on-push" defaultChecked />
-  <Label htmlFor="deploy-on-push">Deploy on push</Label>
-</div>`}
+</Field>`}
       >
-        <div className="flex items-center gap-3">
+        <Field orientation="horizontal" className="max-w-sm justify-between">
+          <FieldLabel htmlFor="sw-default">Deploy on push</FieldLabel>
           <Switch id="sw-default" defaultChecked />
-          <Label htmlFor="sw-default" className="font-medium">
-            Deploy on push
-          </Label>
-        </div>
+        </Field>
       </Example>
 
       <Example
         title="Sizes"
-        description="Small fits dense rows, such as table cells and toolbars."
-        code={`<Switch size="sm" />
-<Switch />`}
+        layout="stack"
+        description="Small fits dense rows, such as table cells and toolbars. Default suits settings lists and forms."
+        code={`<Field orientation="horizontal" className="justify-between">
+  <FieldLabel htmlFor="small">Small</FieldLabel>
+  <Switch id="small" size="sm" defaultChecked />
+</Field>
+<Field orientation="horizontal" className="justify-between">
+  <FieldLabel htmlFor="default">Default</FieldLabel>
+  <Switch id="default" defaultChecked />
+</Field>`}
       >
-        <div className="flex items-center gap-3">
-          <Switch id="sw-small" size="sm" defaultChecked />
-          <Label htmlFor="sw-small" className="font-medium">
-            Small
-          </Label>
-        </div>
-        <div className="flex items-center gap-3">
-          <Switch id="sw-medium" defaultChecked />
-          <Label htmlFor="sw-medium" className="font-medium">
-            Default
-          </Label>
+        <div className="grid w-full max-w-sm gap-5">
+          <Field orientation="horizontal" className="justify-between">
+            <FieldLabel htmlFor="sw-small">
+              Small <span className="font-normal text-muted-foreground">{switchSizes.sm}</span>
+            </FieldLabel>
+            <Switch id="sw-small" size="sm" defaultChecked />
+          </Field>
+          <Field orientation="horizontal" className="justify-between">
+            <FieldLabel htmlFor="sw-medium">
+              Default <span className="font-normal text-muted-foreground">{switchSizes.default}</span>
+            </FieldLabel>
+            <Switch id="sw-medium" defaultChecked />
+          </Field>
         </div>
       </Example>
 
       <Example
         title="States"
         description="Off, on and both disabled. Disabled switches keep their position so people can still read the setting."
-        code={`<Switch />
-<Switch defaultChecked />
-<Switch disabled />
-<Switch disabled defaultChecked />`}
+        code={`<Switch aria-label="Off" />
+<Switch aria-label="On" defaultChecked />
+<Switch aria-label="Disabled" disabled />
+<Switch aria-label="Disabled on" disabled defaultChecked />`}
       >
-        <div className="grid grid-cols-2 gap-x-12 gap-y-6 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-12 gap-y-6 @lg:grid-cols-4">
           {[
             { label: "Off", props: {} },
             { label: "On", props: { defaultChecked: true } },
@@ -143,12 +177,12 @@ export default function SwitchDocs() {
         code={`<Field orientation="horizontal">
   <FieldContent>
     <FieldLabel htmlFor="previews">Preview deployments</FieldLabel>
-    <FieldDescription>Pull requests get their own URL.</FieldDescription>
+    <FieldDescription>Pull requests get their own URL, updated on every commit.</FieldDescription>
   </FieldContent>
   <Switch id="previews" defaultChecked />
 </Field>`}
       >
-        <div className="w-full max-w-112">
+        <div className="w-full max-w-md">
           <Field orientation="horizontal">
             <FieldContent>
               <FieldLabel htmlFor="sw-desc">Preview deployments</FieldLabel>
@@ -162,6 +196,7 @@ export default function SwitchDocs() {
       <Example
         title="Settings list"
         description="Switches save as they change, so the list needs no save button. Confirm the change in a live region."
+        surface="subtle"
         code={`<Field orientation="horizontal">
   <FieldContent>
     <FieldLabel htmlFor="push">Deploy on push</FieldLabel>
@@ -173,6 +208,34 @@ export default function SwitchDocs() {
         <GitSettings />
       </Example>
 
+      <Example
+        title="On a panel"
+        surface="panel"
+        layout="stack"
+        description="On dark panels, use the inverse variant: the track turns light when on and the thumb takes the panel colour, in both themes."
+        code={`<Field orientation="horizontal">
+  <FieldContent>
+    <FieldLabel htmlFor="protect" className="text-panel-foreground">Password protection</FieldLabel>
+    <FieldDescription className="text-panel-muted">Visitors enter a shared password first.</FieldDescription>
+  </FieldContent>
+  <Switch id="protect" variant="inverse" defaultChecked />
+</Field>`}
+      >
+        <div className="grid w-full max-w-md gap-6">
+          {panelSettings.map((setting) => (
+            <Field key={setting.id} orientation="horizontal">
+              <FieldContent>
+                <FieldLabel htmlFor={setting.id} className="text-panel-foreground">
+                  {setting.label}
+                </FieldLabel>
+                <FieldDescription className="text-panel-muted">{setting.description}</FieldDescription>
+              </FieldContent>
+              <Switch id={setting.id} variant="inverse" defaultChecked={setting.on} />
+            </Field>
+          ))}
+        </div>
+      </Example>
+
       <Guidelines
         do={[
           "Use a switch for a setting that takes effect immediately.",
@@ -182,7 +245,7 @@ export default function SwitchDocs() {
         dont={[
           "Don’t use a switch inside a form that is saved with a button. Use a checkbox.",
           "Don’t add On and Off text next to the track.",
-          "Don’t put a switch on a dark panel; the ink track disappears there.",
+          "Don’t use the default variant on a dark panel. Use inverse so the track keeps its contrast.",
         ]}
       />
 
@@ -190,7 +253,8 @@ export default function SwitchDocs() {
         rows={[
           { prop: "checked / defaultChecked", type: "boolean", description: "Controlled or initial state." },
           { prop: "onCheckedChange", type: "(checked: boolean) => void", description: "Called when the switch is turned on or off." },
-          { prop: "size", type: '"sm" | "default"', default: '"default"', description: "Default uses --switch-width and --switch-height; small is 32 × 20px." },
+          { prop: "size", type: '"sm" | "default"', default: '"default"', description: "Default uses --switch-width and --switch-height; small uses --switch-width-sm and --switch-height-sm." },
+          { prop: "variant", type: '"default" | "inverse"', default: '"default"', description: "Inverse keeps contrast on dark panels: a light track when on and a panel-coloured thumb." },
           { prop: "disabled", type: "boolean", default: "false", description: "Dims the switch and blocks interaction." },
           { prop: "name / value", type: "string", description: "Submitted with the form when on." },
           { prop: "aria-invalid", type: "boolean", description: "Destructive border around the track." },

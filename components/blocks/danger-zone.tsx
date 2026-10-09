@@ -48,6 +48,10 @@ export interface DangerAction {
 export interface DangerZoneProps {
   /** Name people type to confirm. Also used in the default copy. */
   projectName?: string
+  /**
+   * Heading inside the card. Pass null when the page already titles the zone,
+   * for example in the left column of a settings layout; the header is left out.
+   */
   title?: React.ReactNode
   description?: React.ReactNode
   /** Actions, most disruptive last. Defaults to pause, purge previews and delete. */
@@ -100,7 +104,7 @@ export function defaultDangerActions(projectName: string): DangerAction[] {
 }
 
 export function DangerZone({
-  projectName = "halcyon-web",
+  projectName = "web",
   title = "Danger zone",
   description = "These actions affect production. Some of them can’t be undone.",
   actions,
@@ -110,25 +114,28 @@ export function DangerZone({
 }: DangerZoneProps) {
   const id = React.useId()
   const items = actions ?? defaultDangerActions(projectName)
+  const hasHeader = title !== null
 
   return (
     <section
       data-slot="danger-zone"
-      aria-labelledby={`${id}-title`}
+      aria-labelledby={hasHeader ? `${id}-title` : undefined}
       className={cn(
-        "@container overflow-hidden rounded-(--card-radius) border border-destructive/30 bg-card",
+        "@container overflow-hidden rounded-(--card-radius) border border-destructive/35 bg-card",
         className
       )}
     >
-      <header className="flex items-start gap-3 border-b border-destructive/20 bg-destructive-subtle/60 px-(--card-padding) py-5">
-        <TriangleAlertIcon className="mt-1 size-5 shrink-0 text-destructive" aria-hidden="true" />
-        <div className="grid gap-1">
-          <Heading id={`${id}-title`} className="text-h4 text-foreground">
-            {title}
-          </Heading>
-          {description ? <p className="text-sm text-copy">{description}</p> : null}
-        </div>
-      </header>
+      {hasHeader ? (
+        <header className="flex items-start gap-3 border-b border-destructive/20 px-(--card-padding) py-5">
+          <TriangleAlertIcon className="mt-1 size-5 shrink-0 text-destructive" aria-hidden="true" />
+          <div className="grid gap-1">
+            <Heading id={`${id}-title`} className="text-h4 text-foreground">
+              {title}
+            </Heading>
+            {description ? <p className="text-sm text-copy">{description}</p> : null}
+          </div>
+        </header>
+      ) : null}
       <ul className="divide-y divide-destructive/15">
         {items.map((action) => (
           <li

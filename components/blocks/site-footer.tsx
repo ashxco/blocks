@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 import { NewsletterForm } from "@/components/blocks/newsletter-form"
-import { Wordmark } from "@/components/blocks/site-header/wordmark"
+import { Wordmark } from "@/components/blocks/wordmark"
 import { cn } from "@/lib/utils"
 
 export interface SiteFooterColumn {
@@ -13,15 +13,25 @@ export interface SiteFooterProps {
   className?: string
   /** Link columns. Three or four read best. */
   columns?: SiteFooterColumn[]
+  /**
+   * Show the newsletter sign-up beside the wordmark. Turn it off on pages that
+   * already have their own sign-up, so a page never asks twice.
+   */
+  newsletter?: boolean
 }
 
+/**
+ * The long tail: pages people look for once they know the product. The header
+ * already links Features, Pricing, Changelog, Blog, About and Contact, so the
+ * footer doesn't repeat them.
+ */
 export const siteFooterColumns: SiteFooterColumn[] = [
   {
     title: "Product",
     links: [
-      { label: "Features", href: "/live/features" },
-      { label: "Pricing", href: "/live/pricing" },
-      { label: "Changelog", href: "/live/changelog" },
+      { label: "Integrations", href: "#" },
+      { label: "Self-hosting", href: "#" },
+      { label: "Security", href: "#" },
       { label: "Dashboard", href: "/live/app" },
     ],
   },
@@ -31,16 +41,16 @@ export const siteFooterColumns: SiteFooterColumn[] = [
       { label: "Documentation", href: "#" },
       { label: "CLI reference", href: "#" },
       { label: "API", href: "#" },
-      { label: "Status", href: "#" },
+      { label: "Examples", href: "#" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About", href: "/live/about" },
-      { label: "Blog", href: "/live/blog" },
-      { label: "Careers", href: "#" },
-      { label: "Contact", href: "/live/contact" },
+      { label: "Careers", href: "/live/about#careers" },
+      { label: "Customers", href: "#" },
+      { label: "Press", href: "#" },
+      { label: "Brand assets", href: "#" },
     ],
   },
 ]
@@ -48,7 +58,7 @@ export const siteFooterColumns: SiteFooterColumn[] = [
 const legal = [
   { label: "Privacy", href: "#" },
   { label: "Terms", href: "#" },
-  { label: "Security", href: "#" },
+  { label: "Data processing", href: "#" },
 ]
 
 const footerLink =
@@ -60,14 +70,22 @@ const legalLink =
  * Site footer: wordmark and newsletter sign-up, link columns, and a bottom row
  * with legal links and system status.
  */
-export function SiteFooter({ className, columns = siteFooterColumns }: SiteFooterProps) {
+export function SiteFooter({ className, columns = siteFooterColumns, newsletter = true }: SiteFooterProps) {
   return (
     <footer data-slot="site-footer" className={cn("@container border-t", className)}>
       <div className="container-page grid gap-14 py-section-sm @page:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] @page:gap-20">
         <div className="grid content-start gap-5">
           <Wordmark />
-          <p className="max-w-80 text-copy">Release notes and product news, once a month. Unsubscribe any time.</p>
-          <NewsletterForm className="mt-1" />
+          {newsletter ? (
+            <>
+              <p className="max-w-80 text-copy">Release notes, once a month. Unsubscribe any time.</p>
+              <NewsletterForm label="Email address for release notes" className="mt-1" />
+            </>
+          ) : (
+            <p className="max-w-80 text-copy">
+              Build, ship and run your apps on our cloud or on servers you own.
+            </p>
+          )}
         </div>
 
         <nav

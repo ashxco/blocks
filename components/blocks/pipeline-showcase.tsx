@@ -6,6 +6,7 @@ import { PauseIcon, PlayIcon } from "lucide-react"
 import { CodeWindow } from "@/components/blocks/code-window"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { Kern } from "@/components/ui/kern"
 
 export interface PipelineStep {
   title: string
@@ -90,10 +91,10 @@ const defaultSteps: PipelineStep[] = [
     meta: "live",
     lines: [
       "$ lumen logs --tail",
-      "12:04:01  GET   /              200    8ms",
-      "12:04:01  GET   /pricing       200   11ms",
-      "12:04:02  POST  /api/login     200   41ms",
-      "12:04:03  GET   /api/projects  200   23ms",
+      "GET  /             200  8ms",
+      "GET  /pricing      200 11ms",
+      "POST /api/login    200 41ms",
+      "GET  /api/projects 200 23ms",
       "✓ p95 112ms, error rate 0.0%",
     ],
   },
@@ -177,6 +178,11 @@ export function PipelineShowcase({
   const current = steps[Math.min(active, count - 1)]
   if (!current) return null
 
+  // The terminal sizes to its content. Shorter steps are padded with blank
+  // rows up to the longest one, so the window keeps one height as it advances.
+  const rows = Math.max(...steps.map((step) => step.lines.length))
+  const lines = [...current.lines, ...Array.from({ length: rows - current.lines.length }, () => "")]
+
   function select(index: number, focus = false) {
     setActive(index)
     setUserPlaying(false)
@@ -209,10 +215,82 @@ export function PipelineShowcase({
     >
       <div className="@container/pipeline rounded-(--panel-radius) bg-panel p-(--panel-padding) text-panel-foreground">
         <div className="mx-auto max-w-page">
+          {/* The same split as SectionHeading: title left, lead right, sharing a baseline. */}
           <div className="mb-12 grid gap-6 @narrow/pipeline:mb-16 @narrow/pipeline:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] @narrow/pipeline:items-end @narrow/pipeline:gap-16">
-            {title ? <h2 className="max-w-narrow text-h2 text-panel-foreground">{title}</h2> : null}
-            <div className="grid justify-items-start gap-6 @narrow/pipeline:pb-1.5">
-              {description ? <p className="max-w-prose text-lead text-panel-muted">{description}</p> : null}
+            {title ? (
+              <h2 className="max-w-narrow text-h2 text-panel-foreground">
+                <Kern>{title}</Kern>
+              </h2>
+            ) : null}
+            {description ? (
+              <p className="max-w-prose text-lead text-panel-muted @narrow/pipeline:pb-1.5">{description}</p>
+            ) : null}
+          </div>
+
+          <div
+            className="grid gap-6 @narrow/pipeline:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] @narrow/pipeline:gap-10"
+            onPointerEnter={() => setHovered(true)}
+            onPointerLeave={() => setHovered(false)}
+          >
+            <div className="grid content-start justify-items-start gap-6">
+              <div
+                role="tablist"
+                aria-orientation="vertical"
+                aria-label="Pipeline steps"
+                className="grid w-full content-start gap-1"
+                onFocus={() => setUserPlaying(false)}
+              >
+                {steps.map((step, i) => {
+                  const selected = i === active
+                  return (
+                    <button
+                      key={step.title}
+                      ref={(node) => {
+                        tabRefs.current[i] = node
+                      }}
+                      type="button"
+                      role="tab"
+                      id={tabId(i)}
+                      aria-selected={selected}
+                      aria-controls={panelId}
+                      aria-labelledby={`${tabId(i)}-title`}
+                      aria-describedby={`${tabId(i)}-desc`}
+                      tabIndex={selected ? 0 : -1}
+                      onClick={() => select(i)}
+                      onKeyDown={(e) => onKeyDown(e, i)}
+                      className={cn(
+                        "grid w-full rounded-r-sm border-l-(length:--border-width-strong) px-5 py-4 text-left outline-none",
+                        "transition-colors duration-(--duration-base) ease-standard focus-visible:focus-ring",
+                        selected
+                          ? "border-l-panel-brand bg-panel-raised"
+                          : "border-l-panel-border hover:bg-panel-raised/50"
+                      )}
+                    >
+                      <span className="flex items-baseline justify-between gap-4">
+                        <span id={`${tabId(i)}-title`} className="text-title text-panel-foreground">
+                          {step.title}
+                        </span>
+                        {step.meta ? (
+                          <span className="font-mono text-caption text-panel-muted tabular">{step.meta}</span>
+                        ) : null}
+                      </span>
+                      <span
+                        className={cn(
+                          "grid transition-[grid-template-rows,opacity] duration-(--duration-slow) ease-out",
+                          selected ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                        )}
+                      >
+                        <span className="overflow-hidden">
+                          <span id={`${tabId(i)}-desc`} className="block pt-1.5 text-sm text-panel-muted">
+                            {step.description}
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+
               {count > 1 ? (
                 <Button
                   type="button"
@@ -226,73 +304,9 @@ export function PipelineShowcase({
                 </Button>
               ) : null}
             </div>
-          </div>
 
-          <div
-            className="grid gap-6 @narrow/pipeline:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] @narrow/pipeline:gap-10"
-            onPointerEnter={() => setHovered(true)}
-            onPointerLeave={() => setHovered(false)}
-          >
-            <div
-              role="tablist"
-              aria-orientation="vertical"
-              aria-label="Pipeline steps"
-              className="grid content-start gap-1"
-              onFocus={() => setUserPlaying(false)}
-            >
-              {steps.map((step, i) => {
-                const selected = i === active
-                return (
-                  <button
-                    key={step.title}
-                    ref={(node) => {
-                      tabRefs.current[i] = node
-                    }}
-                    type="button"
-                    role="tab"
-                    id={tabId(i)}
-                    aria-selected={selected}
-                    aria-controls={panelId}
-                    aria-labelledby={`${tabId(i)}-title`}
-                    aria-describedby={`${tabId(i)}-desc`}
-                    tabIndex={selected ? 0 : -1}
-                    onClick={() => select(i)}
-                    onKeyDown={(e) => onKeyDown(e, i)}
-                    className={cn(
-                      "grid w-full rounded-r-sm border-l-2 px-5 py-4 text-left outline-none",
-                      "transition-colors duration-(--duration-base) ease-standard focus-visible:focus-ring",
-                      selected
-                        ? "border-l-brand bg-panel-raised"
-                        : "border-l-panel-border hover:bg-panel-raised/50"
-                    )}
-                  >
-                    <span className="flex items-baseline justify-between gap-4">
-                      <span id={`${tabId(i)}-title`} className="text-title text-panel-foreground">
-                        {step.title}
-                      </span>
-                      {step.meta ? (
-                        <span className="font-mono text-caption text-panel-muted tabular">{step.meta}</span>
-                      ) : null}
-                    </span>
-                    <span
-                      className={cn(
-                        "grid transition-[grid-template-rows,opacity] duration-(--duration-slow) ease-out",
-                        selected ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                      )}
-                    >
-                      <span className="overflow-hidden">
-                        <span id={`${tabId(i)}-desc`} className="block pt-1.5 text-sm text-panel-muted">
-                          {step.description}
-                        </span>
-                      </span>
-                    </span>
-                  </button>
-                )
-              })}
-            </div>
-
-            <div role="tabpanel" id={panelId} aria-labelledby={tabId(active)} className="min-w-0">
-              <CodeWindow title={windowTitle} lines={current.lines} className="h-full min-h-64" />
+            <div role="tabpanel" id={panelId} aria-labelledby={tabId(active)} className="min-w-0 self-start">
+              <CodeWindow wrap title={windowTitle} lines={lines} />
             </div>
           </div>
         </div>

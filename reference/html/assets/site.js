@@ -27,7 +27,7 @@
 
   // Copy-to-clipboard buttons
   $$("[data-copy]").forEach((btn) => btn.addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(btn.dataset.copy); } catch (e) { /* clipboard unavailable */ }
+    try { await navigator.clipboard.writeText(btn.dataset.copy); } catch { /* clipboard unavailable */ }
     btn.classList.add("done");
     setTimeout(() => btn.classList.remove("done"), 1200);
   }));

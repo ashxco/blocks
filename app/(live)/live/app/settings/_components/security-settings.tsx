@@ -6,12 +6,14 @@ import {
   KeyRoundIcon,
   LaptopIcon,
   MonitorIcon,
+  ShieldCheckIcon,
   SmartphoneIcon,
   TerminalIcon,
   type LucideIcon,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { PASSWORD_MIN } from "@/components/blocks/auth-form"
 import { SettingsSection } from "@/components/blocks/settings-section"
 import {
   AlertDialog,
@@ -33,6 +35,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
 import {
   Item,
   ItemActions,
@@ -45,11 +48,13 @@ import {
 import { toast } from "@/components/ui/toast"
 
 import { INITIAL_RECOVERY_CODES, RecoveryCodesDialog } from "./recovery-codes-dialog"
-import { SwitchRow } from "./switch-row"
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-/* Item lists: rows line up with the card text; in narrow cards the actions drop under the text. */
+/*
+ * Item lists: rows line up with the card text; in narrow cards the actions drop under the text.
+ * Titles use the label role, like the SwitchRow settings on the other tabs, so every settings row shares one size.
+ */
 const itemList = "@container/items -my-3.5"
 const itemActions = "@max-[28rem]/items:basis-full @max-[28rem]/items:pl-14"
 
@@ -84,9 +89,11 @@ function PasswordSection() {
   return (
     <SettingsSection
       title="Password"
-      description="Use at least 12 characters. A few unrelated words make a strong password that’s easy to type."
+      description={`Use at least ${PASSWORD_MIN} characters. A few unrelated words make a strong password that’s easy to type.`}
       footerNote="Last changed on June 2, 2026."
       saveLabel="Update password"
+      successTitle="Password updated"
+      successDescription="Use it the next time you sign in. Your other sessions stay signed in."
       onSave={async () => {
         await wait(700)
         setCurrent("")
@@ -119,13 +126,13 @@ function PasswordSection() {
               name="newPassword"
               type="password"
               autoComplete="new-password"
-              minLength={12}
+              minLength={PASSWORD_MIN}
               value={next}
               onChange={(e) => setNext(e.target.value)}
               aria-describedby={`${id}-new-hint`}
               required
             />
-            <FieldDescription id={`${id}-new-hint`}>At least 12 characters.</FieldDescription>
+            <FieldDescription id={`${id}-new-hint`}>At least {PASSWORD_MIN} characters.</FieldDescription>
           </Field>
 
           <Field data-invalid={mismatch || undefined}>
@@ -162,6 +169,7 @@ const passkeys = [
 ]
 
 function TwoStepSection() {
+  const requireId = React.useId()
   const [authenticator, setAuthenticator] = React.useState(true)
   const [confirmOff, setConfirmOff] = React.useState(false)
   const [codes, setCodes] = React.useState(INITIAL_RECOVERY_CODES)
@@ -191,7 +199,7 @@ function TwoStepSection() {
               <SmartphoneIcon aria-hidden="true" />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>
+              <ItemTitle className="text-label">
                 Authenticator app
                 {authenticator ? <Badge variant="success">On</Badge> : <Badge variant="outline">Off</Badge>}
               </ItemTitle>
@@ -219,7 +227,7 @@ function TwoStepSection() {
               <FingerprintIcon aria-hidden="true" />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>
+              <ItemTitle className="text-label">
                 Passkeys
                 <Badge variant="secondary">{passkeys.length}</Badge>
               </ItemTitle>
@@ -255,7 +263,7 @@ function TwoStepSection() {
               <KeyRoundIcon aria-hidden="true" />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Recovery codes</ItemTitle>
+              <ItemTitle className="text-label">Recovery codes</ItemTitle>
               <ItemDescription className="line-clamp-none">
                 {unused} of {codes.length} codes left. Each one signs you in once if you lose your phone and keys.
               </ItemDescription>
@@ -264,21 +272,34 @@ function TwoStepSection() {
               <RecoveryCodesDialog codes={codes} onRegenerate={setCodes} />
             </ItemActions>
           </Item>
-        </ItemGroup>
 
-        <div className="border-t pt-6">
-          <SwitchRow
-            label="Require two-step verification in Acme Inc."
-            description="Members without it are asked to set it up the next time they sign in. Only owners and admins can change this."
-            defaultChecked={false}
-            onCheckedChange={(on) =>
-              toast.add({
-                title: on ? "Two-step verification is now required" : "Two-step verification is optional again",
-                description: on ? "4 members will be asked to set it up at their next sign-in." : undefined,
-              })
-            }
-          />
-        </div>
+          {/* A workspace policy, but the same row shape as the methods above: icon tile, title, control. */}
+          <Item role="listitem">
+            <ItemMedia variant="icon">
+              <ShieldCheckIcon aria-hidden="true" />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle className="text-label" id={`${requireId}-title`}>Require it in Acme Inc.</ItemTitle>
+              <ItemDescription id={`${requireId}-description`} className="line-clamp-none">
+                Members without two-step verification set it up the next time they sign in. Only owners and admins
+                can change this.
+              </ItemDescription>
+            </ItemContent>
+            <ItemActions className={cn(itemActions, "self-start")}>
+              <Switch
+                aria-labelledby={`${requireId}-title`}
+                aria-describedby={`${requireId}-description`}
+                defaultChecked={false}
+                onCheckedChange={(on) =>
+                  toast.add({
+                    title: on ? "Two-step verification is now required" : "Two-step verification is optional again",
+                    description: on ? "4 members will be asked to set it up at their next sign-in." : undefined,
+                  })
+                }
+              />
+            </ItemActions>
+          </Item>
+        </ItemGroup>
       </div>
 
       <AlertDialog open={confirmOff} onOpenChange={setConfirmOff}>
@@ -392,7 +413,7 @@ function SessionsSection() {
                 <session.icon aria-hidden="true" />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>
+                <ItemTitle className="text-label">
                   {session.device}
                   {session.current ? <Badge variant="brand">This device</Badge> : null}
                 </ItemTitle>

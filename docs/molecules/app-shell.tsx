@@ -22,21 +22,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return <AppShell>{children}</AppShell>
 }`}
       >
-        <AppShell preview hotkey={false} />
+        <AppShell preview hotkey={false} activeHref="/live/app" />
       </Example>
 
       <Example
         title="With a page"
         description="Children render in a wide container with comfortable padding. Collapse the sidebar to icons with the toggle, the rail or Cmd+B; switch this canvas to the phone width to see it fold to a rail."
         layout="full"
-        code={`<AppShell>
+        code={`<AppShell activeHref="/live/app/projects">
   <div className="grid gap-8">
     <PageHeader title="Projects" description="…" actions={<Button>New project</Button>} />
     <DataTable />
   </div>
 </AppShell>`}
       >
-        <AppShell preview hotkey={false} title="Projects" className="h-200">
+        <AppShell
+          preview
+          hotkey={false}
+          title="Projects"
+          activeHref="/live/app/projects"
+          className="h-200"
+        >
           <div className="grid gap-8">
             <PageHeader
               title="Projects"
@@ -79,6 +85,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             type: "string",
             description:
               "Title in the top bar. Defaults to the navigation item that matches the URL.",
+          },
+          {
+            prop: "activeHref",
+            type: "string",
+            description:
+              "Navigation item to highlight, by href. Defaults to the item that matches the URL; in previews, to the item named by title, then the first.",
           },
           {
             prop: "preview",

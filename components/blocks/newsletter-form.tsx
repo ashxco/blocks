@@ -20,10 +20,19 @@ export interface NewsletterFormProps {
   successMessage?: (email: string) => React.ReactNode
   /** Use "panel" on dark panels. */
   tone?: "default" | "panel"
+  /** Initial email address. */
+  defaultValue?: string
+  /**
+   * Initial state, for docs and screenshots: "invalid" shows the format
+   * message, "error" the request failure, "success" the confirmation.
+   */
+  defaultStatus?: NewsletterFormStatus
   className?: string
 }
 
-type Status = "idle" | "submitting" | "success" | "invalid" | "error"
+export type NewsletterFormStatus = "idle" | "invalid" | "error" | "success"
+
+type Status = NewsletterFormStatus | "submitting"
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -44,13 +53,15 @@ export function NewsletterForm({
   onSubscribe,
   successMessage = defaultSuccess,
   tone = "default",
+  defaultValue = "",
+  defaultStatus = "idle",
   className,
 }: NewsletterFormProps) {
   const panel = tone === "panel"
   const id = React.useId()
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [email, setEmail] = React.useState("")
-  const [status, setStatus] = React.useState<Status>("idle")
+  const [email, setEmail] = React.useState(defaultValue)
+  const [status, setStatus] = React.useState<Status>(defaultStatus)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()

@@ -5,14 +5,14 @@ import { cn } from "@/lib/utils"
 export interface SparklineProps {
   /** Values in order, oldest first. Twelve points read well at this size. */
   data: number[]
-  /** Draw a flat 10% wash under the line. */
+  /** Draw a flat 6% wash under the line. */
   fill?: boolean
   className?: string
 }
 
 /**
  * A tiny trend line. It takes its colour from `currentColor`, so set a text
- * colour token on it (text-brand, text-panel-foreground, text-chart-2...).
+ * colour token on it (text-muted-foreground, text-panel-muted, text-chart-1...).
  */
 export function Sparkline({ data, fill = true, className }: SparklineProps) {
   const width = 100
@@ -46,7 +46,7 @@ export function Sparkline({ data, fill = true, className }: SparklineProps) {
       focusable="false"
       className={cn("block overflow-visible", className)}
     >
-      {fill ? <path d={area} className="fill-current opacity-10" /> : null}
+      {fill ? <path d={area} className="fill-current opacity-6" /> : null}
       <path
         d={line}
         fill="none"

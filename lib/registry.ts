@@ -19,10 +19,10 @@ export interface TemplateEntry extends RegistryEntry {
 }
 
 export const foundations: RegistryEntry[] = [
-  { slug: "colors", title: "Color", group: "Foundations", description: "Primitive scales in OKLCH and the semantic roles that map them to light and dark themes." },
+  { slug: "colors", title: "Colour", group: "Foundations", description: "Primitive scales in OKLCH and the semantic roles that map them to light and dark themes." },
   { slug: "typography", title: "Typography", group: "Foundations", description: "Plus Jakarta Sans and Geist Mono, type roles from display to caption, and the size scale." },
   { slug: "spacing", title: "Spacing & layout", group: "Foundations", description: "The 4px spacing unit, page gutters, section rhythm, containers and breakpoints." },
-  { slug: "radius", title: "Shape", group: "Foundations", description: "Corner radius scale from chips to panels, and borders instead of shadows." },
+  { slug: "shape", title: "Shape", group: "Foundations", description: "Corner radius scale from chips to panels, and borders instead of shadows." },
   { slug: "motion", title: "Motion", group: "Foundations", description: "Durations and easing curves, with reduced-motion behaviour." },
   { slug: "iconography", title: "Iconography", group: "Foundations", description: "Lucide icons: sizes, stroke and how they pair with text." },
   { slug: "tokens", title: "All tokens", group: "Foundations", description: "Every design token with its CSS variable, Tailwind utility and value in both themes." },
@@ -32,15 +32,15 @@ export const componentGroups = ["Actions", "Forms", "Overlays", "Navigation", "D
 
 export const components: RegistryEntry[] = [
   // Actions
-  { slug: "button", title: "Button", group: "Actions", description: "Pill-shaped actions in primary, secondary, outline, ghost, link and destructive variants." },
+  { slug: "button", title: "Button", group: "Actions", description: "Pill-shaped actions in primary, secondary, outline, ghost, link, brand, inverse and destructive variants." },
   { slug: "button-group", title: "Button group", group: "Actions", description: "Related buttons joined into one control." },
-  { slug: "toggle", title: "Toggle", group: "Actions", description: "A two-state button." },
+  { slug: "toggle", title: "Toggle", group: "Actions", description: "A button that stays pressed or unpressed, for formatting and view options in toolbars." },
   { slug: "toggle-group", title: "Toggle group", group: "Actions", description: "A set of toggles where one or many can be on." },
   // Forms
-  { slug: "input", title: "Input", group: "Forms", description: "Single-line text entry." },
+  { slug: "input", title: "Input", group: "Forms", description: "Single-line text field on a muted fill, in three sizes, with focus, invalid and disabled states." },
   { slug: "input-group", title: "Input group", group: "Forms", description: "Inputs with icons, text or buttons attached." },
   { slug: "input-otp", title: "One-time code", group: "Forms", description: "Segmented input for verification codes." },
-  { slug: "textarea", title: "Textarea", group: "Forms", description: "Multi-line text entry." },
+  { slug: "textarea", title: "Textarea", group: "Forms", description: "Multi-line text field that grows with its content, for messages, notes and descriptions." },
   { slug: "label", title: "Label", group: "Forms", description: "Accessible label for a form control." },
   { slug: "field", title: "Field", group: "Forms", description: "Label, control, description and error laid out together." },
   { slug: "checkbox", title: "Checkbox", group: "Forms", description: "Select one or more independent options." },
@@ -104,7 +104,7 @@ export const moleculeGroups = ["Site", "Marketing sections", "Commerce & content
 
 export const molecules: RegistryEntry[] = [
   // Site
-  { slug: "site-header", title: "Site header", group: "Site", description: "Full-width header that blends into the page, turns solid on scroll and opens a full-screen menu on small screens." },
+  { slug: "site-header", title: "Site header", group: "Site", description: "Header that turns solid on scroll, with a full-screen menu on phones." },
   { slug: "site-footer", title: "Site footer", group: "Site", description: "Footer with newsletter sign-up, link columns and status." },
   { slug: "section-heading", title: "Section heading", group: "Site", description: "Split heading: bold title on the left, supporting text on the right." },
   { slug: "logo-cloud", title: "Logo row", group: "Site", description: "A row of supported technologies or customer logos." },
@@ -150,7 +150,7 @@ export const molecules: RegistryEntry[] = [
 
 export const templates: TemplateEntry[] = [
   // Marketing
-  { slug: "home", title: "Home", kind: "marketing", group: "Marketing", href: "/live", description: "Landing page: hero, pipeline, steps, bento, comparison, testimonial and CTA." },
+  { slug: "home", title: "Home", kind: "marketing", group: "Marketing", href: "/live", description: "Landing page: hero, logo row, pipeline, feature bento, comparison, testimonial, open-source band and CTA." },
   { slug: "features", title: "Features", kind: "marketing", group: "Marketing", href: "/live/features", description: "Product tour with feature rows and a capability list." },
   { slug: "pricing", title: "Pricing", kind: "marketing", group: "Marketing", href: "/live/pricing", description: "Plans, comparison table and FAQ." },
   { slug: "changelog", title: "Changelog", kind: "marketing", group: "Marketing", href: "/live/changelog", description: "Releases on a timeline." },

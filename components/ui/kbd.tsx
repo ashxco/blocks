@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils"
 
 /**
- * Blocks keyboard key. Mono glyphs on a muted keycap with a hairline border.
+ * Blocks keyboard key. Semibold sans glyphs (so ⌘ and ⇧ render at full size) on a
+ * muted keycap with a hairline border.
  * Inside tooltips and buttons it inherits the surrounding colour so it reads
  * on ink and on panels.
  */
@@ -11,10 +12,10 @@ function Kbd({ className, ...props }: React.ComponentProps<"kbd">) {
       data-slot="kbd"
       className={cn(
         "pointer-events-none inline-flex h-6 w-fit min-w-6 items-center justify-center gap-0.5 rounded-xs border border-border bg-muted px-1.5",
-        "font-mono text-xs font-medium text-muted-foreground tabular-nums select-none",
+        "font-sans text-xs font-semibold text-muted-foreground tabular-nums select-none",
         "[&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3",
         "in-data-[slot=tooltip-content]:border-current/20 in-data-[slot=tooltip-content]:bg-transparent in-data-[slot=tooltip-content]:text-current",
-        "in-data-[slot=button]:h-5 in-data-[slot=button]:min-w-5 in-data-[slot=button]:border-current/15 in-data-[slot=button]:bg-transparent in-data-[slot=button]:px-1 in-data-[slot=button]:text-current/70",
+        "in-data-[slot=button]:h-5 in-data-[slot=button]:min-w-5 in-data-[slot=button]:border-current/25 in-data-[slot=button]:bg-transparent in-data-[slot=button]:px-1 in-data-[slot=button]:text-current",
         className
       )}
       {...props}

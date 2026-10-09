@@ -130,18 +130,18 @@ export function RequestsCard({
             className="flex flex-1 flex-col gap-px overflow-hidden rounded-t-xs"
             style={{ height: `${Math.min(100, edge + origin)}%` }}
           >
-            <div className="bg-chart-2" style={{ flexGrow: origin }} />
-            <div className="bg-chart-1" style={{ flexGrow: edge }} />
+            <div className="bg-foreground/20" style={{ flexGrow: origin }} />
+            <div className="bg-foreground" style={{ flexGrow: edge }} />
           </div>
         ))}
       </div>
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-caption text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden="true" className="size-2 rounded-full bg-chart-1" />
+          <span aria-hidden="true" className="size-2 rounded-full bg-foreground" />
           Edge cache
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden="true" className="size-2 rounded-full bg-chart-2" />
+          <span aria-hidden="true" className="size-2 rounded-full bg-foreground/20" />
           Origin
         </span>
       </div>

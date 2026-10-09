@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { notFound, permanentRedirect } from "next/navigation"
 
 import { DocPager } from "@/components/viewer/doc-pager"
 import { ColorsFoundation } from "@/components/viewer/foundations/colors"
@@ -21,10 +21,18 @@ const pages: Record<string, FoundationPageComponent> = {
   typography: TypographyFoundation,
   spacing: SpacingFoundation,
   radius: ShapeFoundation,
+  /* Ready for the registry slug to follow the page title. */
+  shape: ShapeFoundation,
   motion: MotionFoundation,
   iconography: IconographyFoundation,
   tokens: TokensFoundation,
 }
+
+/*
+ * Slugs a page used to have. Once the registry renames a page (radius to
+ * shape, to match its title), the old address redirects instead of 404ing.
+ */
+const movedTo: Record<string, string> = { radius: "shape" }
 
 export function generateStaticParams() {
   return foundations.filter((e) => e.slug in pages).map((e) => ({ slug: e.slug }))
@@ -40,12 +48,19 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const { slug } = await params
   const entry = foundations.find((e) => e.slug === slug)
   const Foundation = pages[slug]
-  if (!entry || !Foundation) notFound()
+  if (!entry) {
+    const target = movedTo[slug]
+    if (target && foundations.some((e) => e.slug === target)) permanentRedirect(`/foundations/${target}`)
+    notFound()
+  }
+  if (!Foundation) notFound()
   const { prev, next } = pagerFor(foundations, slug, "/foundations")
+  /* The first page steps back to the Foundations overview rather than leaving half the pager empty. */
+  const back = prev ?? { title: "Overview", href: "/foundations", group: entry.group }
   return (
     <ViewerPage>
       <Foundation title={entry.title} description={entry.description} />
-      <DocPager prev={prev} next={next} />
+      <DocPager prev={back} next={next} />
     </ViewerPage>
   )
 }

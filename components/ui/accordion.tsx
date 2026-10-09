@@ -102,7 +102,7 @@ function AccordionContent({
     >
       <div
         className={cn(
-          "pr-13 pb-5",
+          "pb-5 sm:pr-13",
           "[&_a]:font-semibold [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-brand [&>*:not(:last-child)]:mb-4",
           className
         )}

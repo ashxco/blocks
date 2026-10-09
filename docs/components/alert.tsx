@@ -70,7 +70,7 @@ export default function AlertDocs() {
 
       <Example
         title="With an action"
-        description="Put one action on the right when the fix is a single step."
+        description="Put one action on the right when the fix is a single step. On phones it drops below the text."
         layout="stack"
         code={`<Alert variant="warning">
   <GaugeIcon />
@@ -186,7 +186,7 @@ export default function AlertDocs() {
           { prop: "variant", type: '"default" | "info" | "success" | "warning" | "destructive"', default: '"default"', description: "Tinted fill, border and icon colour." },
           { prop: "AlertTitle", type: "component", description: "Bold one-line summary." },
           { prop: "AlertDescription", type: "component", description: "Details and the fix. Links inside are underlined." },
-          { prop: "AlertAction", type: "component", description: "One action, placed on the right and centred vertically." },
+          { prop: "AlertAction", type: "component", description: "One action. On the right and centred vertically from the sm breakpoint; below the text on phones." },
           { prop: "role", type: "string", default: '"alert"', description: "Announced right away. Set role=\"status\" for messages that are not urgent." },
         ]}
       />

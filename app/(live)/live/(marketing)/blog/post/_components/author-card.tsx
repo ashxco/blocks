@@ -3,6 +3,7 @@ import { ArrowRightIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 export interface AuthorCardProps {
   name: string
@@ -21,7 +22,10 @@ export function AuthorCard({ name, role, initials, bio, href, className }: Autho
   return (
     <section
       aria-label={`About ${name}`}
-      className={`grid gap-6 rounded-(--card-radius) bg-subtle p-(--card-padding) sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-8 sm:p-8 ${className ?? ""}`}
+      className={cn(
+        "grid gap-6 rounded-(--card-radius) bg-subtle p-(--card-padding) sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-8 sm:p-8",
+        className
+      )}
     >
       <Avatar size="xl">
         <AvatarFallback tone="violet">{initials}</AvatarFallback>

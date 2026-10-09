@@ -61,14 +61,17 @@ function DialogContent({
   children,
   showCloseButton = true,
   size = "default",
+  container,
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean
-  /** Maximum width. sm is 3/4 of --dialog-width, lg is the prose container. */
+  /** Maximum width: --dialog-width; sm is three quarters of it, lg is the --container-prose measure. */
   size?: DialogSize
+  /** Element to portal into instead of <body>, e.g. a preview stage. */
+  container?: DialogPrimitive.Portal.Props["container"]
 }) {
   return (
-    <DialogPortal>
+    <DialogPortal container={container}>
       <DialogOverlay />
       <DialogPrimitive.Popup
         data-slot="dialog-content"
@@ -77,7 +80,7 @@ function DialogContent({
         className={cn(
           "group/dialog-content fixed top-1/2 left-1/2 z-(--z-overlay) grid w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6",
           "max-h-[calc(100dvh-2rem)] max-w-(--dialog-width) overflow-y-auto overscroll-contain",
-          "data-[size=sm]:max-w-[calc(var(--dialog-width)*0.75)] data-[size=lg]:max-w-prose",
+          "data-[size=sm]:max-w-[calc(var(--dialog-width)*0.75)] data-[size=lg]:max-w-(--container-prose)",
           "rounded-(--dialog-radius) border bg-popover p-(--dialog-padding) text-body text-popover-foreground outline-none",
           "transition-[opacity,scale] duration-(--duration-base) ease-out",
           "data-starting-style:scale-98 data-starting-style:opacity-0",
@@ -113,7 +116,7 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="dialog-header"
       className={cn(
-        "flex flex-col gap-2 group-data-[closable=true]/dialog-content:pr-8",
+        "flex flex-col gap-2",
         className
       )}
       {...props}
@@ -152,7 +155,12 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn("text-h4 text-foreground", className)}
+      className={cn(
+        // Clear the close button on the title's line only, so the description
+        // below runs the full width of the dialog.
+        "text-h4 text-foreground group-data-[closable=true]/dialog-content:pr-10",
+        className
+      )}
       {...props}
     />
   )

@@ -25,7 +25,7 @@ function RadioGroupItem({ className, ...props }: RadioPrimitive.Root.Props) {
     <RadioPrimitive.Root
       data-slot="radio-group-item"
       className={cn(
-        "group/radio-group-item peer relative inline-flex aspect-square size-4.5 max-w-4.5 min-w-4.5 shrink-0 items-center justify-center rounded-full border border-muted-foreground/75 bg-background",
+        "group/radio-group-item peer relative inline-flex aspect-square size-(--selection-size) max-w-(--selection-size) min-w-(--selection-size) shrink-0 items-center justify-center rounded-full border border-muted-foreground/75 bg-background",
         "outline-none transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
         "after:absolute after:-inset-2.5",
         "data-unchecked:hover:border-foreground",
@@ -33,7 +33,10 @@ function RadioGroupItem({ className, ...props }: RadioPrimitive.Root.Props) {
         "data-checked:border-primary data-checked:bg-primary",
         "group-data-[invalid=true]/field:border-destructive aria-invalid:border-destructive",
         "aria-invalid:aria-checked:border-primary group-data-[invalid=true]/field:aria-checked:border-primary",
-        "data-disabled:cursor-not-allowed data-disabled:opacity-50",
+        // Disabled: an empty circle takes the muted fill and a lighter border,
+        // so it stays visible; a selected circle fades its ink.
+        "data-disabled:cursor-not-allowed data-disabled:data-checked:opacity-50",
+        "data-disabled:data-unchecked:border-muted-foreground/50 data-disabled:data-unchecked:bg-muted",
         "group-has-[>[data-slot=field]]/field-label:focus-visible:outline-none",
         className
       )}

@@ -55,7 +55,7 @@ export default function PricingPage() {
 
       <div id="compare" className="scroll-mt-(--header-height)">
         <PlanMatrix
-          title="Compare every plan"
+          title="Compare every plan."
           description="Limits reset on the first of each month. Every plan includes automatic HTTPS, DDoS protection and unlimited deploys."
         />
       </div>
@@ -80,7 +80,14 @@ export default function PricingPage() {
         description="Connect a repository and get a live URL in under a minute. No card needed to start, and you can switch plans whenever you like."
         primaryAction={{ label: "Start free trial", href: "/live/sign-up" }}
         secondaryAction={{ label: "Talk to sales", href: "/live/contact" }}
-        points={["14-day Pro trial, no card required", "Change or cancel your plan any time", "Preview URL for every branch"]}
+        installLabel="Every trial includes"
+        command={null}
+        points={[
+          "Every Pro feature for 14 days",
+          "10 team members and unlimited projects",
+          "No card until you pick a plan",
+          "Your projects and data carry over",
+        ]}
       />
     </>
   )

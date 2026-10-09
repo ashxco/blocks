@@ -164,7 +164,7 @@ export function PricingPlans({
       <ToggleGroupItem value="yearly" className="group/yearly gap-2 px-5">
         Yearly
         {yearlyNote ? (
-          <span className="text-caption font-semibold text-brand group-data-pressed/yearly:text-primary-foreground/70">
+          <span className="text-caption font-semibold text-muted-foreground group-data-pressed/yearly:text-primary-foreground/70">
             {yearlyNote}
           </span>
         ) : null}
@@ -192,12 +192,12 @@ export function PricingPlans({
         {enterprise ? (
           <div className="flex flex-col gap-6 rounded-(--card-radius) border bg-subtle p-(--card-padding) @prose:flex-row @prose:items-center @prose:justify-between @prose:px-8">
             <div className="flex items-start gap-4">
-              <span className="grid size-11 shrink-0 place-items-center rounded-md border bg-background text-foreground">
+              <span className="grid size-10 shrink-0 place-items-center rounded-md border bg-background text-foreground">
                 <Building2Icon className="size-5" aria-hidden="true" />
               </span>
               <div className="grid gap-1">
                 <h3 className="text-title text-foreground">{enterprise.title}</h3>
-                <p className="max-w-prose text-body text-copy">{enterprise.description}</p>
+                <p className="max-w-prose text-sm text-copy">{enterprise.description}</p>
               </div>
             </div>
             <Button
@@ -237,39 +237,47 @@ function PlanCard({
       data-slot="pricing-plan"
       data-featured={featured || undefined}
       className={cn(
-        "flex flex-col gap-6 rounded-(--card-radius) border p-(--card-padding)",
+        // Four rows on the parent grid (name, price, button, features), so the
+        // same row lines up across every card in a row of plans.
+        "row-span-4 grid grid-rows-subgrid gap-6 rounded-(--card-radius) border p-(--card-padding)",
         layout.card,
         featured
-          ? ["border-panel bg-panel text-panel-foreground dark:border-panel-border dark:bg-panel-raised", layout.raised]
+          ? [
+              // The emphasis panel in both themes. In dark mode its hairline edge keeps
+              // it apart from the page without a heavier frame.
+              "border-panel bg-panel text-panel-foreground dark:border-panel-foreground/30",
+              layout.raised,
+            ]
           : "bg-card text-card-foreground"
       )}
     >
-      <div className="grid gap-2">
+      <div className="grid content-start gap-2">
         <div className="flex items-baseline justify-between gap-3">
-          <h3 className={`text-h4 ${featured ? "text-panel-foreground" : "text-foreground"}`}>{plan.name}</h3>
+          <h3 className={cn("text-h4", featured ? "text-panel-foreground" : "text-foreground")}>{plan.name}</h3>
           {featured && plan.note ? (
             <span className="text-caption font-semibold text-panel-muted">{plan.note}</span>
           ) : null}
         </div>
-        <p className={cn("text-sm @prose:min-h-10", featured ? "text-panel-muted" : "text-copy")}>
+        <p className={cn("text-sm", featured ? "text-panel-muted" : "text-copy")}>
           {plan.description}
         </p>
       </div>
 
-      <div className="grid gap-1">
+      <div className="grid content-start gap-1">
         <p className="flex items-baseline gap-1.5">
           <span
             key={period}
-            className={`text-h2 tabular animate-in duration-(--duration-base) ease-out fade-in-0 slide-in-from-bottom-1 ${
+            className={cn(
+              "text-h2 tabular animate-in duration-(--duration-base) ease-out fade-in-0 slide-in-from-bottom-1",
               featured ? "text-panel-foreground" : "text-foreground"
-            }`}
+            )}
           >
             {currency}
             {amount}
           </span>
-          <span className={`text-label ${featured ? "text-panel-muted" : "text-muted-foreground"}`}>/ month</span>
+          <span className={cn("text-label", featured ? "text-panel-muted" : "text-muted-foreground")}>/ month</span>
         </p>
-        <p className={`text-caption ${featured ? "text-panel-muted" : "text-muted-foreground"}`}>{billedLine}</p>
+        <p className={cn("text-caption", featured ? "text-panel-muted" : "text-muted-foreground")}>{billedLine}</p>
       </div>
 
       <Button
@@ -283,7 +291,7 @@ function PlanCard({
 
       <ul
         className={cn(
-          "grid gap-3 border-t pt-6 text-sm",
+          "grid content-start gap-3 border-t pt-6 text-sm",
           featured ? "border-panel-border text-panel-foreground" : "border-border text-foreground"
         )}
       >

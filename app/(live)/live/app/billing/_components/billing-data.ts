@@ -13,7 +13,7 @@ export const LUMEN_PLANS: LumenPlan[] = [
     price: 5,
     description: "Side projects and experiments.",
     seats: 1,
-    highlights: ["3 projects", "100 GB bandwidth", "1 GB Postgres, weekly backups", "Community support"],
+    highlights: ["3 projects", "500 build minutes", "100 GB bandwidth", "1 GB Postgres, weekly backups", "Community support"],
   },
   {
     id: "starter",
@@ -21,7 +21,7 @@ export const LUMEN_PLANS: LumenPlan[] = [
     price: 20,
     description: "Your first app in production.",
     seats: 3,
-    highlights: ["Unlimited projects", "500 GB bandwidth", "5 custom domains", "Daily backups, email support"],
+    highlights: ["Unlimited projects", "3,000 build minutes", "500 GB bandwidth", "5 custom domains", "Daily backups, email support"],
   },
   {
     id: "pro",
@@ -29,14 +29,14 @@ export const LUMEN_PLANS: LumenPlan[] = [
     price: 39,
     description: "Production apps that need room to grow.",
     seats: 10,
-    highlights: ["1 TB bandwidth", "Unlimited custom domains", "Hourly backups, 30-day logs", "Priority support"],
+    highlights: ["10,000 build minutes", "1 TB bandwidth", "Unlimited custom domains", "Hourly backups, 30-day logs", "Priority support"],
   },
   {
     id: "scale",
     name: "Scale",
     price: 99,
     description: "Teams running serious traffic.",
-    highlights: ["5 TB bandwidth", "SAML single sign-on and audit log", "Dedicated build machines", "99.99% uptime SLA"],
+    highlights: ["Unlimited build minutes", "5 TB bandwidth", "SAML single sign-on and audit log", "Dedicated build machines", "99.99% uptime SLA"],
   },
 ]
 
@@ -51,9 +51,9 @@ export const DAYS_LEFT = 23
 /** People in Acme Inc. plus pending invites, which hold a seat. Matches the team page. */
 export const SEATS_IN_USE = 8
 
-/** Build minutes match the usage panel in the app sidebar. */
+/** Limits match Pro on the pricing page; build minutes match the usage panel in the app sidebar. */
 export const USAGE: UsageMeter[] = [
-  { id: "build-minutes", label: "Build minutes", used: 2400, limit: 3000, unit: "min" },
+  { id: "build-minutes", label: "Build minutes", used: 7240, limit: 10_000, unit: "min" },
   { id: "bandwidth", label: "Bandwidth", used: 412, limit: 1000, unit: "GB" },
   { id: "invocations", label: "Function invocations", used: 3_180_000, limit: 5_000_000 },
   { id: "storage", label: "Database storage", used: 18.6, limit: 50, unit: "GB" },

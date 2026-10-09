@@ -3,6 +3,7 @@
 import * as React from "react"
 import { UserPlusIcon } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -55,6 +56,14 @@ export interface InviteDialogProps {
   className?: string
 }
 
+export type InvitePanelProps = Pick<
+  InviteDialogProps,
+  "workspaceName" | "defaultRole" | "existingEmails" | "onInvite"
+> & {
+  /** Class names for the panel. */
+  className?: string
+}
+
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export function parseEmails(input: string) {
@@ -68,18 +77,27 @@ export function parseEmails(input: string) {
   )
 }
 
-export function InviteDialog({
-  workspaceName = "Halcyon Labs",
-  defaultRole = "developer",
-  existingEmails = [],
+/**
+ * The invite form shared by the dialog and the inline panel: addresses, a
+ * role, validation and the send action. In the dialog the title and Cancel
+ * come from the dialog parts; inline they are a plain heading and a button
+ * that clears the form.
+ */
+function InviteForm({
+  workspaceName,
+  defaultRole,
+  existingEmails,
   onInvite,
-  triggerLabel = "Invite members",
-  triggerVariant = "default",
-  triggerSize = "default",
-  className,
-}: InviteDialogProps) {
+  onSent,
+  onPendingChange,
+  inline = false,
+}: Required<Pick<InviteDialogProps, "workspaceName" | "defaultRole" | "existingEmails">> &
+  Pick<InviteDialogProps, "onInvite"> & {
+    onSent?: () => void
+    onPendingChange?: (pending: boolean) => void
+    inline?: boolean
+  }) {
   const id = React.useId()
-  const [open, setOpen] = React.useState(false)
   const [raw, setRaw] = React.useState("")
   const [role, setRole] = React.useState<AssignableRole>(defaultRole)
   const [error, setError] = React.useState<string | null>(null)
@@ -90,16 +108,15 @@ export function InviteDialog({
   const count = emails.length
   const roleInfo = ASSIGNABLE_ROLES.find((r) => r.value === role)
 
+  function updatePending(next: boolean) {
+    setPending(next)
+    onPendingChange?.(next)
+  }
+
   function resetForm() {
     setRaw("")
     setError(null)
     setRole(defaultRole)
-  }
-
-  function handleOpenChange(next: boolean) {
-    if (pending) return
-    setOpen(next)
-    if (!next) resetForm()
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -120,97 +137,175 @@ export function InviteDialog({
       return
     }
 
-    setPending(true)
+    updatePending(true)
     try {
       await (onInvite ? onInvite(emails, role) : wait(700))
-      setPending(false)
-      setOpen(false)
+      updatePending(false)
       resetForm()
+      onSent?.()
       toast.add({
         title: count === 1 ? "Invite sent" : `${count} invites sent`,
         description: `They’ll get an email with a link to join ${workspaceName}.`,
       })
     } catch {
-      setPending(false)
+      updatePending(false)
       setError("We couldn’t send the invites. Try again in a moment.")
     }
   }
 
+  const title = `Invite people to ${workspaceName}`
+  const description = "Invites expire after 7 days. You can change roles at any time."
+
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <form onSubmit={handleSubmit} noValidate className={inline ? "grid gap-6" : "contents"}>
+      {inline ? (
+        <div className="grid gap-2">
+          <h3 className="text-h4 text-foreground">{title}</h3>
+          <p className="text-body text-copy">{description}</p>
+        </div>
+      ) : (
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
+      )}
+
+      <FieldGroup>
+        <Field data-invalid={Boolean(error)}>
+          <FieldLabel htmlFor={`${id}-emails`}>Email addresses</FieldLabel>
+          <Textarea
+            ref={textareaRef}
+            id={`${id}-emails`}
+            name="emails"
+            rows={3}
+            spellCheck={false}
+            autoCapitalize="none"
+            placeholder="sam@acme.dev, ana@acme.dev"
+            value={raw}
+            onChange={(e) => {
+              setRaw(e.target.value)
+              if (error) setError(null)
+            }}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? `${id}-emails-error` : `${id}-emails-hint`}
+          />
+          {error ? (
+            <FieldError id={`${id}-emails-error`}>{error}</FieldError>
+          ) : (
+            <FieldDescription id={`${id}-emails-hint`}>
+              Separate addresses with commas or new lines.
+            </FieldDescription>
+          )}
+        </Field>
+
+        <Field>
+          <FieldLabel htmlFor={`${id}-role`}>Role</FieldLabel>
+          <Select
+            id={`${id}-role`}
+            items={ROLE_ITEMS}
+            value={role}
+            onValueChange={(value) => value && setRole(value)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {ASSIGNABLE_ROLES.map((r) => (
+                <SelectItem key={r.value} value={r.value}>
+                  {r.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {roleInfo ? <FieldDescription>{roleInfo.description}</FieldDescription> : null}
+        </Field>
+      </FieldGroup>
+
+      <DialogFooter>
+        {inline ? (
+          <Button type="button" variant="outline" disabled={pending || (!raw && !error)} onClick={resetForm}>
+            Clear
+          </Button>
+        ) : (
+          <DialogClose render={<Button variant="outline" />} disabled={pending}>
+            Cancel
+          </DialogClose>
+        )}
+        <Button type="submit" disabled={pending}>
+          {pending ? <Spinner data-icon="inline-start" /> : null}
+          {count > 1 ? `Send ${count} invites` : "Send invite"}
+        </Button>
+      </DialogFooter>
+    </form>
+  )
+}
+
+export function InviteDialog({
+  workspaceName = "Acme Inc.",
+  defaultRole = "developer",
+  existingEmails = [],
+  onInvite,
+  triggerLabel = "Invite members",
+  triggerVariant = "default",
+  triggerSize = "default",
+  className,
+}: InviteDialogProps) {
+  const [open, setOpen] = React.useState(false)
+  const [pending, setPending] = React.useState(false)
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!pending) setOpen(next)
+      }}
+    >
       <DialogTrigger render={<Button variant={triggerVariant} size={triggerSize} className={className} />}>
         <UserPlusIcon data-icon="inline-start" />
         {triggerLabel}
       </DialogTrigger>
       <DialogContent className="sm:max-w-(--dialog-width)">
-        <form onSubmit={handleSubmit} noValidate className="contents">
-          <DialogHeader>
-            <DialogTitle>Invite people to {workspaceName}</DialogTitle>
-            <DialogDescription>Invites expire after 7 days. You can change roles at any time.</DialogDescription>
-          </DialogHeader>
-
-          <FieldGroup>
-            <Field data-invalid={Boolean(error)}>
-              <FieldLabel htmlFor={`${id}-emails`}>Email addresses</FieldLabel>
-              <Textarea
-                ref={textareaRef}
-                id={`${id}-emails`}
-                name="emails"
-                rows={3}
-                spellCheck={false}
-                autoCapitalize="none"
-                placeholder="sam@halcyon.dev, ana@halcyon.dev"
-                value={raw}
-                onChange={(e) => {
-                  setRaw(e.target.value)
-                  if (error) setError(null)
-                }}
-                aria-invalid={Boolean(error)}
-                aria-describedby={error ? `${id}-emails-error` : `${id}-emails-hint`}
-              />
-              {error ? (
-                <FieldError id={`${id}-emails-error`}>{error}</FieldError>
-              ) : (
-                <FieldDescription id={`${id}-emails-hint`}>
-                  Separate addresses with commas or new lines.
-                </FieldDescription>
-              )}
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor={`${id}-role`}>Role</FieldLabel>
-              <Select
-                id={`${id}-role`}
-                items={ROLE_ITEMS}
-                value={role}
-                onValueChange={(value) => value && setRole(value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {ASSIGNABLE_ROLES.map((r) => (
-                    <SelectItem key={r.value} value={r.value}>
-                      {r.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {roleInfo ? <FieldDescription>{roleInfo.description}</FieldDescription> : null}
-            </Field>
-          </FieldGroup>
-
-          <DialogFooter>
-            <DialogClose render={<Button variant="outline" />} disabled={pending}>
-              Cancel
-            </DialogClose>
-            <Button type="submit" disabled={pending}>
-              {pending ? <Spinner data-icon="inline-start" /> : null}
-              {count > 1 ? `Send ${count} invites` : "Send invite"}
-            </Button>
-          </DialogFooter>
-        </form>
+        {/* The form unmounts when the dialog closes, so it opens empty every time. */}
+        <InviteForm
+          workspaceName={workspaceName}
+          defaultRole={defaultRole}
+          existingEmails={existingEmails}
+          onInvite={onInvite}
+          onPendingChange={setPending}
+          onSent={() => setOpen(false)}
+        />
       </DialogContent>
     </Dialog>
+  )
+}
+
+/**
+ * The invite dialog's content on its own surface, without the dialog or a
+ * trigger: for an empty team page, onboarding or a docs preview of the open
+ * state. It clears itself after sending.
+ */
+export function InvitePanel({
+  workspaceName = "Acme Inc.",
+  defaultRole = "developer",
+  existingEmails = [],
+  onInvite,
+  className,
+}: InvitePanelProps) {
+  return (
+    <div
+      data-slot="invite-panel"
+      className={cn(
+        "w-full max-w-(--dialog-width) rounded-(--dialog-radius) border bg-popover p-(--dialog-padding) text-body text-popover-foreground",
+        className
+      )}
+    >
+      <InviteForm
+        workspaceName={workspaceName}
+        defaultRole={defaultRole}
+        existingEmails={existingEmails}
+        onInvite={onInvite}
+        inline
+      />
+    </div>
   )
 }

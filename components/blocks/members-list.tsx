@@ -40,10 +40,19 @@ import {
 import { toast } from "@/components/ui/toast"
 
 import { InviteDialog, type AssignableRole } from "./members-list/invite-dialog"
+import { personTone, type PersonTone } from "./members-list/people"
 import { ASSIGNABLE_ROLES, ROLE_ITEMS, ROLE_LABELS, type MemberRole } from "./members-list/roles"
 
-export { InviteDialog, parseEmails, type InviteDialogProps, type AssignableRole } from "./members-list/invite-dialog"
+export {
+  InviteDialog,
+  InvitePanel,
+  parseEmails,
+  type InviteDialogProps,
+  type InvitePanelProps,
+  type AssignableRole,
+} from "./members-list/invite-dialog"
 export type { MemberRole } from "./members-list/roles"
+export { PEOPLE, personTone, type PersonTone } from "./members-list/people"
 
 export interface Member {
   id: string
@@ -56,6 +65,8 @@ export interface Member {
   meta?: string
   /** Marks the signed-in person. They can’t remove themselves here. */
   you?: boolean
+  /** Avatar fill. Defaults to the person's tint from the shared people list, or one picked from the initials. */
+  tone?: PersonTone
 }
 
 export interface MembersListProps {
@@ -75,16 +86,21 @@ export interface MembersListProps {
   onRemove?: (member: Member) => void
   /** Called with new invites before they appear as pending rows. Throw to keep the dialog open. */
   onInvite?: (emails: string[], role: AssignableRole) => void | Promise<void>
+  /**
+   * Replaces the invite button in the card header. Pass null to leave the
+   * header without one, for pages that invite from their own page header.
+   */
+  inviteAction?: React.ReactNode
   className?: string
 }
 
 const defaultMembers: Member[] = [
-  { id: "m1", name: "Maya Chen", email: "maya@halcyon.dev", role: "owner", meta: "Active now", you: true },
-  { id: "m2", name: "Jonas Weber", email: "jonas@halcyon.dev", role: "admin", meta: "Active 2 hours ago" },
-  { id: "m3", name: "Priya Raman", email: "priya@halcyon.dev", role: "developer", meta: "Active yesterday" },
-  { id: "m4", name: "Leo Martins", email: "leo@halcyon.dev", role: "developer", meta: "Active 3 days ago" },
-  { id: "m5", name: "Amara Okafor", email: "amara@halcyon.dev", role: "viewer", meta: "Active last week" },
-  { id: "m6", email: "sam@halcyon.dev", role: "developer", status: "invited", meta: "Invited 2 days ago" },
+  { id: "m1", name: "Maya Chen", email: "maya@acme.dev", role: "owner", meta: "Active now", you: true },
+  { id: "m2", name: "Daniel Okafor", email: "daniel@acme.dev", role: "admin", meta: "Active 20\u00a0minutes ago" },
+  { id: "m3", name: "Priya Shah", email: "priya@acme.dev", role: "developer", meta: "Active 2\u00a0hours ago" },
+  { id: "m4", name: "Leo Martins", email: "leo@acme.dev", role: "developer", meta: "Active yesterday" },
+  { id: "m5", name: "Nina Petrova", email: "nina@acme.dev", role: "viewer", meta: "Active last week" },
+  { id: "m6", email: "tomas@acme.dev", role: "developer", status: "invited", meta: "Invited 2\u00a0days ago" },
 ]
 
 function initials(member: Member) {
@@ -100,13 +116,14 @@ export function MembersList({
   members: initialMembers = defaultMembers,
   seats = 10,
   planName = "Pro",
-  workspaceName = "Halcyon Labs",
+  workspaceName = "Acme Inc.",
   title = "Members",
   description,
   as: Heading = "h2",
   onRoleChange,
   onRemove,
   onInvite,
+  inviteAction,
   className,
 }: MembersListProps) {
   const [members, setMembers] = React.useState(initialMembers)
@@ -172,14 +189,18 @@ export function MembersList({
         <CardDescription>
           {description ?? `${members.length} of ${seats} seats used on ${planName}.`}
         </CardDescription>
-        <CardAction>
-          <InviteDialog
-            workspaceName={workspaceName}
-            existingEmails={members.map((m) => m.email)}
-            onInvite={invite}
-            triggerSize="sm"
-          />
-        </CardAction>
+        {inviteAction === null ? null : (
+          <CardAction>
+            {inviteAction ?? (
+              <InviteDialog
+                workspaceName={workspaceName}
+                existingEmails={members.map((m) => m.email)}
+                onInvite={invite}
+                triggerSize="sm"
+              />
+            )}
+          </CardAction>
+        )}
       </CardHeader>
 
       <CardContent>
@@ -264,7 +285,7 @@ function MemberRow({
             <MailIcon className="size-4" aria-hidden="true" />
           </AvatarFallback>
         ) : (
-          <AvatarFallback>{initials(member)}</AvatarFallback>
+          <AvatarFallback tone={member.tone ?? personTone(member.name)}>{initials(member)}</AvatarFallback>
         )}
       </Avatar>
       <div className="grid min-w-0 gap-0.5">
@@ -304,7 +325,7 @@ function MemberRow({
           </Select>
         )}
         {invited ? (
-          <Button variant="ghost" size="sm" onClick={() => onResend(member)}>
+          <Button variant="outline" size="sm" onClick={() => onResend(member)}>
             Resend
           </Button>
         ) : null}

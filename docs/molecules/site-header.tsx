@@ -22,7 +22,7 @@ function PageBody({ compact = false }: { compact?: boolean }) {
     <div className="container-page grid gap-10 pt-16 pb-24">
       <div className="grid max-w-narrow gap-6">
         <p className={compact ? "text-h2 text-balance text-foreground" : "text-display text-balance text-foreground"}>
-          Push code. Get a <span className="text-brand">live URL.</span>
+          Push code. Get a <span className="text-brand">live URL</span>.
         </p>
         <p className="max-w-prose text-lead text-copy">
           Lumen builds every commit, gives every branch a preview and ships main to production. Scroll this preview to
@@ -62,11 +62,20 @@ export default function SiteHeaderDocs() {
         title="Mobile menu"
         layout="full"
         surface="subtle"
-        description="Below lg the links fold into a menu button. Its two lines morph into a cross and open a full-screen menu with large links; Escape closes it and the page behind stops scrolling."
+        description="Below lg the links fold into a menu button, and the primary button stays beside it. The two lines morph into a cross and open a full-screen menu with large links; Escape closes it and the page behind stops scrolling. Left: closed. Right: open."
+        code={`// Below lg the bar shows the wordmark, the primary button and the menu button.
+<SiteHeader />
+
+// Open from the start, for documentation and screenshots.
+<SiteHeader defaultOpen />`}
       >
-        <div className="flex justify-center px-4 py-10">
+        <div className="flex flex-wrap justify-center gap-6 px-4 py-10">
           <Frame className="relative h-180 w-full max-w-96 overflow-hidden rounded-(--panel-radius) border bg-background contain-layout">
             <SiteHeader />
+            <PageBody compact />
+          </Frame>
+          <Frame className="relative h-180 w-full max-w-96 overflow-hidden rounded-(--panel-radius) border bg-background contain-layout">
+            <SiteHeader defaultOpen />
             <PageBody compact />
           </Frame>
         </div>
@@ -124,6 +133,8 @@ export default function SiteHeaderDocs() {
         rows={[
           { prop: "links", type: "{ label: string; href: string }[]", default: "Features … Contact", description: "Centre links. The active one is matched against usePathname()." },
           { prop: "solid", type: "boolean", default: "false", description: "Start in the frosted state instead of waiting for scroll." },
+          { prop: "ctaLabel", type: "string", default: '"Start free trial"', description: "Primary button label, in the bar and the mobile menu. Match the hero and closing call to action." },
+          { prop: "defaultOpen", type: "boolean", default: "false", description: "Render with the mobile menu open. For docs and screenshots." },
           { prop: "className", type: "string", description: "Classes for the <header> element." },
         ]}
       />

@@ -11,18 +11,20 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { ActivityFeed } from "@/components/blocks/activity-feed"
-import { ChartCard } from "@/components/blocks/chart-card"
 import { PageHeader } from "@/components/blocks/page-header"
 import { StatCard } from "@/components/blocks/stat-card"
 
-/** Sample overview page shown when AppShell renders without children. */
+/**
+ * Sample overview page shown when AppShell renders without children: the page
+ * header and the metric row. It stays short, so a preview frame ends on a
+ * whole section instead of cutting a card in half.
+ */
 export function AppShellDemo() {
   return (
     <div className="@container/demo grid gap-8">
       <PageHeader
         title="Overview"
-        description="Production health for the 18 projects in Acme Inc."
+        description="Production health for the 12 projects in Acme Inc."
         actions={
           <>
             <Button
@@ -71,13 +73,6 @@ export function AppShellDemo() {
           goodWhen="down"
           icon={TriangleAlertIcon}
           trend={[3, 3, 2, 4, 3, 3, 5, 4, 4, 5, 4, 5]}
-        />
-      </div>
-      <div className="grid gap-4 @min-[68rem]/demo:grid-cols-3">
-        <ChartCard className="@min-[68rem]/demo:col-span-2" />
-        <ActivityFeed
-          limit={4}
-          description="Latest changes across your projects."
         />
       </div>
     </div>

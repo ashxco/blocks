@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils"
 /**
  * Blocks alert. A flat, tinted callout with a hairline border.
  * Layout is a grid: optional icon, title and description, optional action.
+ * The action sits on the right from the sm breakpoint and below the text on
+ * phones, so the message never squeezes into a narrow column.
  *
  *   <Alert variant="warning">
  *     <TriangleAlertIcon />
@@ -17,8 +19,9 @@ const alertVariants = cva(
   [
     "group/alert relative grid w-full items-start gap-x-3 gap-y-1 rounded-(--card-radius) border px-4 py-3.5 text-left text-sm",
     "has-[>svg]:grid-cols-[auto_1fr]",
-    "has-data-[slot=alert-action]:grid-cols-[1fr_auto]",
-    "has-[>svg]:has-data-[slot=alert-action]:grid-cols-[auto_1fr_auto]",
+    // From sm up the action sits on the right; on phones it drops below the text.
+    "sm:has-data-[slot=alert-action]:grid-cols-[1fr_auto]",
+    "sm:has-[>svg]:has-data-[slot=alert-action]:grid-cols-[auto_1fr_auto]",
     "*:[svg]:mt-0.5 *:[svg:not([class*='size-'])]:size-4 has-data-[slot=alert-description]:*:[svg]:row-span-2",
   ],
   {
@@ -92,7 +95,8 @@ function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="alert-action"
       className={cn(
-        "col-[-2/-1] row-start-1 flex items-center gap-2 self-center group-has-data-[slot=alert-description]/alert:row-[1/span_2]",
+        "col-span-full mt-2 flex items-center gap-2 group-has-[>svg]/alert:pl-7",
+        "sm:col-[-2/-1] sm:row-start-1 sm:mt-0 sm:self-center sm:group-has-[>svg]/alert:pl-0 sm:group-has-data-[slot=alert-description]/alert:row-[1/span_2]",
         className
       )}
       {...props}

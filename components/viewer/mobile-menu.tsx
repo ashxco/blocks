@@ -1,18 +1,25 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Dialog } from "@base-ui/react/dialog"
 import { ArrowUpRightIcon, MenuIcon, XIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import {
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { SidebarNav } from "@/components/viewer/sidebar-nav"
 import { ThemeToggle } from "@/components/viewer/theme-toggle"
 import { Wordmark } from "@/components/viewer/wordmark"
 
-/** Full-screen navigation for screens without the sidebar. */
+/** Navigation for screens without the sidebar: the system's own sheet, from the right. */
 export function MobileMenu() {
   const [open, setOpen] = React.useState(false)
   const pathname = usePathname()
@@ -26,50 +33,44 @@ export function MobileMenu() {
   }
 
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger
         render={<Button variant="ghost" size="icon-sm" className="lg:hidden" />}
         aria-label="Open navigation"
       >
         <MenuIcon aria-hidden="true" />
-      </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Popup
-          className={cn(
-            "fixed inset-0 z-(--z-overlay) flex flex-col bg-background text-copy outline-none",
-            "transition-[opacity,translate] duration-(--duration-base) ease-out",
-            "data-[starting-style]:-translate-y-1 data-[starting-style]:opacity-0 data-[ending-style]:-translate-y-1 data-[ending-style]:opacity-0"
-          )}
-        >
-          <Dialog.Title className="sr-only">Navigation</Dialog.Title>
-          <div className="flex h-(--viewer-bar) shrink-0 items-center justify-between gap-4 border-b px-gutter">
-            <Wordmark onClick={close} />
-            <div className="flex items-center gap-1.5">
-              <ThemeToggle />
-              <Dialog.Close
-                render={<Button variant="ghost" size="icon-sm" />}
-                aria-label="Close navigation"
-              >
-                <XIcon aria-hidden="true" />
-              </Dialog.Close>
-            </div>
+      </SheetTrigger>
+      <SheetContent
+        side="right"
+        showCloseButton={false}
+        className="w-(--sidebar-width-mobile) max-w-[calc(100%-3rem)]"
+      >
+        <SheetHeader className="h-(--viewer-bar) flex-row items-center justify-between gap-3 border-b py-0 pr-3">
+          <SheetTitle className="sr-only">Navigation</SheetTitle>
+          <Wordmark onClick={close} />
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <SheetClose render={<Button variant="ghost" size="icon-sm" />} aria-label="Close navigation">
+              <XIcon aria-hidden="true" />
+            </SheetClose>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-gutter pt-6 pb-10">
-            <SidebarNav onNavigate={close} />
-          </div>
-          <div className="shrink-0 border-t px-gutter py-4">
-            <Button
-              size="lg"
-              nativeButton={false}
-              render={<Link href="/live" onClick={close} />}
-              className="w-full"
-            >
-              Open the live templates
-              <ArrowUpRightIcon data-icon="inline-end" />
-            </Button>
-          </div>
-        </Dialog.Popup>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </SheetHeader>
+        <SheetBody className="pt-6">
+          <SidebarNav onNavigate={close} />
+        </SheetBody>
+        <SheetFooter className="sm:flex-col sm:items-stretch">
+          <Button
+            size="lg"
+            nativeButton={false}
+            render={<a href="/live" target="_blank" rel="noopener" onClick={close} />}
+            className="w-full"
+          >
+            Open the live templates
+            <ArrowUpRightIcon data-icon="inline-end" />
+            <span className="sr-only">(opens in a new tab)</span>
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   )
 }

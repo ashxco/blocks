@@ -15,9 +15,11 @@ type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
   size?: "sm" | "default" | "lg"
 }
 
+/* Text sizes follow <Input>: 16px on phones in the default size (so iOS does
+   not zoom on focus), 14px from md. */
 const selectSize = {
-  sm: "h-(--control-height-sm) ps-3 pe-9",
-  default: "h-(--control-height-md) ps-(--control-padding-x) pe-10",
+  sm: "h-(--control-height-sm) ps-3 pe-9 text-sm",
+  default: "h-(--control-height-md) ps-(--control-padding-x) pe-10 text-base md:text-sm",
   lg: "h-(--control-height-lg) ps-4 pe-11 text-base",
 } as const
 
@@ -39,7 +41,9 @@ function NativeSelect({
         data-slot="native-select"
         data-size={size}
         className={cn(
-          "w-full min-w-0 cursor-pointer appearance-none truncate rounded-(--control-radius) border border-input bg-muted text-sm text-foreground dark:scheme-dark",
+          "w-full min-w-0 cursor-pointer appearance-none truncate rounded-(--control-radius) border border-input bg-muted text-foreground dark:scheme-dark",
+          // A disabled empty first option acts as a placeholder: mute it until a value is picked.
+          "has-[option[value='']:checked]:text-muted-foreground",
           "transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard",
           "outline-none hover:border-foreground/25 focus-visible:border-ring focus-visible:focus-ring",
           "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",

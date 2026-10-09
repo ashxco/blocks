@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils"
 export { ReleaseShot } from "@/components/blocks/changelog-entry/release-shot"
 
 export interface ChangelogEntryProps {
-  /** Display date, e.g. "Oct 2, 2026". */
+  /** Display date, e.g. "Oct 6, 2026". */
   date?: string
-  /** Machine-readable date for the <time> element, e.g. "2026-10-02". */
+  /** Machine-readable date for the <time> element, e.g. "2026-10-06". */
   dateTime?: string
   /** Release version, shown in mono. */
   version?: string
@@ -17,8 +17,8 @@ export interface ChangelogEntryProps {
   /** One or two sentences on what changed and why it matters. */
   description?: React.ReactNode
   /**
-   * Screenshot slot. Pass true for the built-in flat sketch, or your own
-   * image or component. It sits in a tinted, rounded frame.
+   * Screenshot slot. Pass true for the built-in preview environment card, or
+   * your own image or component. It sits in a tinted, rounded frame.
    */
   media?: React.ReactNode
   /** Fill behind the screenshot. */
@@ -34,19 +34,20 @@ export interface ChangelogEntryProps {
   className?: string
 }
 
+/* Defaults match the Lumen changelog template, so docs and pages tell one story. */
 const defaultEntry = {
-  date: "Oct 2, 2026",
-  dateTime: "2026-10-02",
-  version: "v2.4.0",
-  title: "Preview environments for every branch",
+  date: "Oct 6, 2026",
+  dateTime: "2026-10-06",
+  version: "v2.12.0",
+  title: "Branch your database with every preview",
   description:
-    "Every branch now gets its own environment with a stable URL, its own variables and a copy of your database. Share it with a reviewer and it stays up until the branch merges.",
+    "Preview environments now get a copy-on-write branch of your Postgres database. Run migrations against real data without touching production. Lumen deletes the branch when the pull request closes.",
   media: true,
   mediaTint: "violet" as const,
   items: [
-    "Preview URLs show a QR code for testing on a phone",
-    "Variables can be scoped to previews only",
-    "Fixed a race when two pushes landed within the same second",
+    "Branches are ready in under two seconds, whatever the size of the database",
+    "Seed scripts run after branching when you set preview.seed in lumen.toml",
+    "Fixed preview URLs returning 404 for a few seconds after a force push",
   ],
 }
 
@@ -81,7 +82,7 @@ export function ChangelogEntry({
         <span
           aria-hidden="true"
           className={cn(
-            "absolute top-1 left-1.5 size-3 -translate-x-1/2 rounded-full border-2 outline-4 outline-background @narrow:top-2.5",
+            "absolute top-1 left-1.5 size-3 -translate-x-1/2 rounded-full border-(length:--border-width-strong) outline-4 outline-background @narrow:top-2.5",
             latest ? "border-brand bg-brand" : "border-foreground bg-background"
           )}
         />
@@ -136,37 +137,41 @@ export function ChangelogEntry({
 export const defaultChangelog: ChangelogEntryProps[] = [
   defaultEntry,
   {
-    date: "Sep 18, 2026",
-    dateTime: "2026-09-18",
-    version: "v2.3.0",
-    title: "Builds up to 3× faster with layer caching",
+    date: "Sep 24, 2026",
+    dateTime: "2026-09-24",
+    version: "v2.11.0",
+    title: "Live logs in your terminal",
     description:
-      "Lumen now caches dependency and build layers across branches, so most pushes skip the install step entirely.",
+      "lumen logs now streams from every replica at once, with filters for level, route and status code. Leave it running through a deploy and the stream moves to the new version on its own.",
     items: [
-      "Shared cache across every branch in a project",
-      "Cache hit rate shown at the top of each build log",
-      "Run lumen build --no-cache to start from a clean slate",
+      "Filter with --level error, --route /api or --status 5xx",
+      "Search the last 30 days with --since 30d on Pro and Scale",
+      "Timestamps now use your local time zone",
     ],
   },
   {
-    date: "Sep 4, 2026",
-    dateTime: "2026-09-04",
-    version: "v2.2.0",
-    title: "Export the audit log",
+    date: "Sep 10, 2026",
+    dateTime: "2026-09-10",
+    version: "v2.10.0",
+    title: "New regions in São Paulo, Mumbai and Sydney",
     description:
-      "Workspace owners can export every action taken in a workspace as CSV or JSON, ready for a compliance review.",
-    items: ["Filter by member, project or action before you export", "Exports include IP address and user agent"],
+      "You can now deploy to 14 regions. Choose regions per project, and Lumen sends each request to the nearest healthy replica.",
+    items: [
+      "Move a project between regions without downtime",
+      "Latency from each region now shows on the metrics page",
+    ],
   },
   {
-    date: "Aug 21, 2026",
-    dateTime: "2026-08-21",
-    version: "v2.1.0",
-    title: "Lumen for Windows",
+    date: "Aug 27, 2026",
+    dateTime: "2026-08-27",
+    version: "v2.9.0",
+    title: "Spending caps and usage alerts",
     description:
-      "The desktop app now runs on Windows 11, with deploy notifications in the system tray and one-click rollbacks.",
-    media: true,
-    mediaTint: "sky",
-    items: ["Signed installer with automatic updates", "Tray alerts when a build fails or a deploy goes live"],
+      "Set a monthly cap on usage charges for each workspace. Owners get an email at 50%, 80% and 100%, and you decide what happens at the cap.",
+    items: [
+      "Caps apply to bandwidth, build minutes and database storage",
+      "Alerts can also post to a Slack channel or a webhook",
+    ],
   },
 ]
 

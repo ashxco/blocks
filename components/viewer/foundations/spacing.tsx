@@ -1,7 +1,19 @@
 import * as React from "react"
 
-import { describeSize, leafName, tokenByName, tokensIn, toPx, toRem, type DesignToken } from "./data"
-import { Code, cx, FoundationPage, Meta, Section } from "./layout"
+import { cn } from "@/lib/utils"
+
+import {
+  describeSize,
+  leafName,
+  tokenByName,
+  tokensIn,
+  toPx,
+  toRem,
+  utilityFor,
+  withoutUsage,
+  type DesignToken,
+} from "./data"
+import { Code, CodeList, FoundationPage, Meta, Section } from "./layout"
 
 const round = (n: number) => Math.round(n * 100) / 100
 
@@ -9,21 +21,24 @@ const round = (n: number) => Math.round(n * 100) / 100
 /* Spacing unit ladder                                                       */
 /* ------------------------------------------------------------------------ */
 
-const ladder: { step: number; use?: string }[] = [
-  { step: 0.5 },
-  { step: 1, use: "Hairline offsets, badge padding" },
-  { step: 1.5, use: "Icon to text in small controls" },
+/* Where a named token sits on a step, the note names it, so the two never disagree. */
+const ladder: { step: number; use: React.ReactNode }[] = [
+  { step: 0.5, use: "Focus offset, icon nudges" },
+  { step: 1, use: "Badge padding, title to caption" },
+  { step: 1.5, use: <>Menu padding (<Code>--overlay-padding</Code>), icon to text in small controls</> },
   { step: 2, use: "Icon to label, tight stacks" },
-  { step: 3, use: "Items in a menu or list" },
-  { step: 4, use: "Control padding, form fields" },
-  { step: 5 },
-  { step: 6, use: "Card padding, grid gaps" },
+  { step: 2.5, use: "Dense row padding, swatch to label" },
+  { step: 3, use: "Menu item padding, gaps between list items" },
+  { step: 3.5, use: <>Input side padding (<Code>--control-padding-x</Code>)</> },
+  { step: 4, use: <>Compact card padding (<Code>--card-padding-sm</Code>), smallest gutter</> },
+  { step: 5, use: "Between form fields, heading to lead" },
+  { step: 6, use: <>Card padding (<Code>--card-padding</Code>), stacked blocks (<Code>gap-stack</Code>)</> },
   { step: 8, use: "Between groups in a card" },
   { step: 10, use: "Between blocks in a section" },
-  { step: 12 },
+  { step: 12, use: "Section heading to content" },
   { step: 16, use: "Between large blocks" },
-  { step: 20 },
-  { step: 24, use: "Hero and panel breathing room" },
+  { step: 20, use: <>Panel padding on wide screens (<Code>--panel-padding</Code> tops out here)</> },
+  { step: 24, use: "Hero spacing" },
 ]
 
 function SpacingLadder() {
@@ -34,17 +49,17 @@ function SpacingLadder() {
       {ladder.map(({ step, use }) => (
         <li
           key={step}
-          className="grid grid-cols-[2.5rem_3.5rem_minmax(0,1fr)] items-center gap-4 border-t py-3 @narrow:grid-cols-[3rem_4rem_8rem_minmax(0,1fr)] @narrow:gap-6"
+          className="grid grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-x-4 border-t py-3 @narrow:grid-cols-[3rem_4rem_8rem_minmax(0,1fr)] @narrow:items-center @narrow:gap-x-6"
         >
-          <span className="font-mono text-label text-foreground tabular">{step}</span>
-          <Meta>{round(step * unitPx)}px</Meta>
-          <span className="flex h-6 items-center">
-            <span
-              className="h-5 bg-foreground"
-              style={{ width: `calc(var(--spacing) * ${step})` }}
-            />
+          <span className="flex h-6 items-center font-mono text-label text-foreground tabular">{step}</span>
+          {/* Small screens: value and bar on one line, usage under them. Wide: four columns. */}
+          <span className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-x-4 gap-y-1 @narrow:contents">
+            <Meta>{round(step * unitPx)}px</Meta>
+            <span className="flex h-6 items-center">
+              <span className="h-5 bg-foreground" style={{ width: `calc(var(--spacing) * ${step})` }} />
+            </span>
+            <span className="col-span-2 text-caption text-copy @narrow:col-span-1">{use}</span>
           </span>
-          <span className="hidden text-caption text-copy @narrow:block">{use}</span>
         </li>
       ))}
     </ol>
@@ -55,35 +70,39 @@ function SpacingLadder() {
 /* Named spacing                                                             */
 /* ------------------------------------------------------------------------ */
 
+/*
+ * Each diagram sits in a stage tall enough for the largest section value, so
+ * the cards line up. Muted, not subtle: inside a card, subtle matches the card
+ * in dark mode.
+ */
+const stage = "grid h-48 content-center rounded-md bg-muted px-4"
+
 function GutterDiagram() {
   return (
-    <div aria-hidden className="flex h-24 overflow-hidden rounded-md border">
-      <span className="bg-tint-violet" style={{ width: "var(--spacing-gutter)" }} />
-      <span className="grid flex-1 content-center gap-2 bg-subtle px-3">
-        <span className="h-2 w-3/4 rounded-full bg-border" />
-        <span className="h-2 w-1/2 rounded-full bg-border" />
-      </span>
-      <span className="bg-tint-violet" style={{ width: "var(--spacing-gutter)" }} />
+    <div aria-hidden className={stage}>
+      <div className="flex h-24 overflow-hidden rounded-sm border bg-background">
+        <span className="bg-tint-violet" style={{ width: "var(--spacing-gutter)" }} />
+        <span className="grid flex-1 content-center gap-2 px-3">
+          <span className="h-2 w-3/4 rounded-full bg-muted" />
+          <span className="h-2 w-1/2 rounded-full bg-muted" />
+        </span>
+        <span className="bg-tint-violet" style={{ width: "var(--spacing-gutter)" }} />
+      </div>
     </div>
   )
 }
 
-function SectionDiagram({ cssVar }: { cssVar: string }) {
+function GapDiagram({ cssVar, block }: { cssVar: string; block: string }) {
   return (
-    <div aria-hidden className="grid overflow-hidden rounded-md border">
-      <span className="h-6 bg-subtle" />
-      <span className="bg-tint-violet" style={{ height: `var(${cssVar})` }} />
-      <span className="h-6 bg-subtle" />
-    </div>
-  )
-}
-
-function StackDiagram() {
-  return (
-    <div aria-hidden className="grid overflow-hidden rounded-md border">
-      <span className="h-10 bg-subtle" />
-      <span className="bg-tint-violet" style={{ height: "var(--spacing-stack)" }} />
-      <span className="h-10 bg-subtle" />
+    <div aria-hidden className={stage}>
+      <div className="grid overflow-hidden rounded-sm border bg-background">
+        <span className={block} />
+        <span
+          className="border-y border-dashed border-border-strong bg-tint-violet"
+          style={{ height: `var(${cssVar})` }}
+        />
+        <span className={block} />
+      </div>
     </div>
   )
 }
@@ -92,8 +111,7 @@ function NamedSpacing() {
   const named = tokensIn("layout", "spacing").filter((t) => t.name !== "spacing")
   const diagram = (t: DesignToken) => {
     if (t.name === "space.gutter") return <GutterDiagram />
-    if (t.name === "space.stack") return <StackDiagram />
-    return <SectionDiagram cssVar={t.cssVar} />
+    return <GapDiagram cssVar={t.cssVar} block={t.name === "space.stack" ? "h-10" : "h-4"} />
   }
   const utility: Record<string, string> = {
     "space.gutter": "px-gutter",
@@ -108,11 +126,13 @@ function NamedSpacing() {
           {diagram(t)}
           <div className="grid gap-1.5">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <h3 className="text-title">{leafName(t.name)}</h3>
+              <h3 className="text-title text-foreground">{leafName(t.name)}</h3>
               <Meta>{describeSize(t.value)}</Meta>
             </div>
             <Code className="text-muted-foreground">{utility[t.name] ?? t.utility}</Code>
-            {t.description ? <p className="text-caption text-copy">{t.description}</p> : null}
+            {withoutUsage(t.description) ? (
+              <p className="text-caption text-copy">{withoutUsage(t.description)}</p>
+            ) : null}
           </div>
         </li>
       ))}
@@ -140,14 +160,14 @@ function BreakpointRuler({ max }: { max: number }) {
         return (
           <span key={b.name} className="absolute bottom-0" style={{ left: `${pct}%` }}>
             <span
-              className={cx(
+              className={cn(
                 "absolute bottom-4 font-mono text-xs font-semibold whitespace-nowrap text-foreground",
                 last ? "right-0" : "-translate-x-1/2"
               )}
             >
               {leafName(b.name)}
             </span>
-            <span className={cx("absolute bottom-0 block h-3 w-px bg-muted-foreground", last && "-translate-x-full")} />
+            <span className={cn("absolute bottom-0 block h-3 w-px bg-muted-foreground", last && "-translate-x-full")} />
           </span>
         )
       })}
@@ -158,11 +178,11 @@ function BreakpointRuler({ max }: { max: number }) {
 function Containers() {
   const max = scaleMax()
   const containers = tokensIn("layout", "container")
-  const utility: Record<string, string> = {
-    prose: "max-w-prose",
-    narrow: "container-narrow · max-w-narrow",
-    page: "container-page · max-w-page",
-    wide: "container-wide · max-w-wide",
+  /* The page-level containers also have a centring utility with gutters. */
+  const centred: Record<string, string> = {
+    narrow: "container-narrow",
+    page: "container-page",
+    wide: "container-wide",
   }
   return (
     <div className="grid gap-8">
@@ -173,17 +193,29 @@ function Containers() {
           const name = leafName(c.name)
           return (
             <li key={c.name} className="grid gap-3">
-              <span className="block h-10 rounded-sm bg-foreground" style={{ width: `${(rem / max) * 100}%` }} />
+              <span
+                aria-hidden
+                className={cn(
+                  "block h-10 rounded-sm border",
+                  name === "page" ? "border-foreground bg-foreground" : "border-border-strong bg-muted"
+                )}
+                style={{ width: `${(rem / max) * 100}%` }}
+              />
               <div className="grid gap-1 @prose:grid-cols-[8rem_minmax(0,1fr)] @prose:gap-6">
                 <div className="flex items-baseline gap-3 @prose:grid @prose:gap-0.5">
-                  <h3 className="text-title">{name}</h3>
+                  <h3 className="text-title text-foreground">{name}</h3>
                   <Meta>
                     {round(rem)}rem · {round(rem * 16)}px
                   </Meta>
                 </div>
                 <div className="grid gap-1">
-                  <Code className="text-muted-foreground">{utility[name] ?? `max-w-${name}`}</Code>
-                  {c.description ? <p className="text-caption text-copy">{c.description}</p> : null}
+                  <CodeList
+                    value={[centred[name], utilityFor(c) ?? `max-w-${name}`].filter(Boolean).join(" · ")}
+                    className="text-muted-foreground"
+                  />
+                  {withoutUsage(c.description) ? (
+                    <p className="text-caption text-copy">{withoutUsage(c.description)}</p>
+                  ) : null}
                 </div>
               </div>
             </li>
@@ -208,20 +240,21 @@ function CurrentBreakpoint() {
   return (
     <p className="flex flex-wrap items-center gap-3 rounded-(--card-radius) border bg-subtle px-5 py-4">
       <span className="text-label text-copy">This window is at</span>
-      <span className={cx(pill, "flex sm:hidden")}>base</span>
-      <span className={cx(pill, "hidden sm:flex md:hidden")}>sm:</span>
-      <span className={cx(pill, "hidden md:flex lg:hidden")}>md:</span>
-      <span className={cx(pill, "hidden lg:flex xl:hidden")}>lg:</span>
-      <span className={cx(pill, "hidden xl:flex 2xl:hidden")}>xl:</span>
-      <span className={cx(pill, "hidden 2xl:flex")}>2xl:</span>
+      <span className={cn(pill, "flex sm:hidden")}>base</span>
+      <span className={cn(pill, "hidden sm:flex md:hidden")}>sm:</span>
+      <span className={cn(pill, "hidden md:flex lg:hidden")}>md:</span>
+      <span className={cn(pill, "hidden lg:flex xl:hidden")}>lg:</span>
+      <span className={cn(pill, "hidden xl:flex 2xl:hidden")}>xl:</span>
+      <span className={cn(pill, "hidden 2xl:flex")}>2xl:</span>
     </p>
   )
 }
 
 function Breakpoints() {
   const breakpoints = tokensIn("layout", "breakpoint")
-  const th = "h-11 px-4 text-left text-caption font-semibold text-muted-foreground @prose:px-5"
-  const td = "h-(--table-row-height) px-4 py-3 align-middle @prose:px-5"
+  const th = "h-(--table-row-height-sm) px-4 text-left text-caption font-semibold text-muted-foreground @prose:px-5"
+  // Baseline, not middle: the mono prefix and the values sit on one line.
+  const td = "h-(--table-row-height) px-4 py-3 align-baseline @prose:px-5"
   return (
     <div className="grid gap-6">
       <CurrentBreakpoint />
@@ -245,11 +278,12 @@ function Breakpoints() {
                     <Code>{name}:</Code>
                   </td>
                   <td className={td}>
-                    <Meta className="text-foreground">
-                      {round(rem)}rem · {round(rem * 16)}px
-                    </Meta>
+                    <span className="flex flex-wrap items-baseline gap-x-2">
+                      <Meta className="text-foreground">{round(rem * 16)}px</Meta>
+                      <Meta>{round(rem)}rem</Meta>
+                    </span>
                   </td>
-                  <td className={cx(td, "text-caption text-copy")}>{deviceHint[name]}</td>
+                  <td className={cn(td, "text-caption text-copy")}>{deviceHint[name]}</td>
                 </tr>
               )
             })}
@@ -273,8 +307,9 @@ export function SpacingFoundation({ title, description }: { title: string; descr
         title="Spacing unit"
         description={
           <>
-            Every padding, margin, gap and size is a multiple of <Code>--spacing</Code> ({describeSize(unit?.value)}).{" "}
-            <Code>p-4</Code> is four units, 16px. Stay on the ladder; there are no in-between values.
+            Padding, margin and gap come from this ladder of <Code>--spacing</Code> ({describeSize(unit?.value)}) multiples:{" "}
+            <Code>p-4</Code> is four units, 16px. Use steps from the ladder; half steps exist only below 16px. Fluid page
+            spacing has its own names, below.
           </>
         }
       >
@@ -292,7 +327,7 @@ export function SpacingFoundation({ title, description }: { title: string; descr
       <Section
         id="containers"
         title="Containers"
-        description="Four widths, drawn to scale against the breakpoints above them. The container utilities centre the column and add gutters; the max-width utilities only cap it."
+        description="Four widths, drawn to scale against the breakpoint ruler; page, in ink, is the default. The container utilities centre the column and add gutters; the max-width utilities only cap it."
       >
         <Containers />
       </Section>

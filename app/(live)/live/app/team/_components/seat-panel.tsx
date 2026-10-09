@@ -28,7 +28,7 @@ export function SeatPanel({ members, invites, seats, planName, className }: Seat
     <section
       aria-labelledby={`${id}-title`}
       className={cn(
-        "grid gap-6 rounded-(--card-radius) border border-panel-border bg-panel p-(--card-padding) text-panel-muted",
+        "grid gap-6 rounded-(--panel-radius) border border-panel-border bg-panel p-(--panel-padding-sm) text-panel-muted",
         className
       )}
     >
@@ -48,7 +48,9 @@ export function SeatPanel({ members, invites, seats, planName, className }: Seat
           value={pct}
           aria-label={`${used} of ${seats} seats used`}
           className={cn(
-            "gap-0 **:data-[slot=progress-track]:bg-panel-raised",
+            // dark: the warning colour takes its dark-theme value, which reads on the panel in both themes.
+            // The track uses a theme-independent tint, so the scope leaves it alone.
+            "dark gap-0 **:data-[slot=progress-track]:bg-panel-foreground/10",
             over
               ? "**:data-[slot=progress-indicator]:bg-warning"
               : "**:data-[slot=progress-indicator]:bg-panel-foreground"
@@ -67,7 +69,7 @@ export function SeatPanel({ members, invites, seats, planName, className }: Seat
         </div>
         <div className="grid gap-1">
           <dt className="text-caption">{over ? "Over" : "Open"}</dt>
-          <dd className={`text-h4 tabular-nums ${over ? "text-warning" : "text-panel-foreground"}`}>
+          <dd className={cn("text-h4 tabular-nums", over ? "dark text-warning" : "text-panel-foreground")}>
             {over || open}
           </dd>
         </div>

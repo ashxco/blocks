@@ -115,10 +115,11 @@ export function CommandPalette({
           <CommandItem
             value="action-live"
             keywords={["live", "templates", "lumen", "site", "preview"]}
-            onSelect={() => run(() => router.push("/live"))}
+            onSelect={() => run(() => window.open("/live", "_blank", "noopener"))}
           >
             <ArrowUpRightIcon aria-hidden="true" className="text-muted-foreground" />
             <span className="text-foreground">Open the live templates</span>
+            <span className="ml-auto hidden shrink-0 text-caption text-muted-foreground sm:inline">New tab</span>
           </CommandItem>
           <CommandItem
             value="action-overview"

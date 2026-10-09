@@ -10,7 +10,7 @@ export default function DangerZoneDocs() {
         title="Project danger zone"
         description="Every action asks for confirmation. Deleting the project unlocks only after its name is typed exactly."
         layout="full"
-        code={`<DangerZone projectName="halcyon-web" />`}
+        code={`<DangerZone projectName="web" />`}
       >
         <div className="p-(--card-padding) sm:p-10">
           <DangerZone />
@@ -23,58 +23,58 @@ export default function DangerZoneDocs() {
         layout="full"
         surface="subtle"
         code={`<DangerZone
-  projectName="halcyon-labs"
+  projectName="acme"
   description="Deleting the workspace removes every project in it."
   actions={[
     {
-      id: "cancel-subscription",
-      title: "Cancel subscription",
-      description: "Move halcyon-labs to Hobby at the end of the billing period.",
-      actionLabel: "Cancel plan",
-      confirmTitle: "Cancel the Pro subscription?",
+      id: "downgrade",
+      title: "Downgrade to Hobby",
+      description: "Move Acme Inc. to Hobby, $5 a month, at the end of the billing period.",
+      actionLabel: "Downgrade",
+      confirmTitle: "Downgrade Acme Inc. to Hobby?",
       confirmDescription: "Pro stays active until November 1, 2026. …",
       tone: "default",
     },
     {
       id: "delete-workspace",
       title: "Delete workspace",
-      description: "Delete halcyon-labs, its 12 projects, domains and billing history.",
+      description: "Delete Acme Inc. with its 12 projects, domains and billing history.",
       actionLabel: "Delete workspace",
-      confirmTitle: "Delete halcyon-labs?",
+      confirmTitle: "Delete Acme Inc.?",
       confirmDescription: "Every project, deployment and domain in this workspace goes with it. You can’t undo this.",
       requireTyping: true,
-      successMessage: "halcyon-labs was deleted.",
+      successMessage: "Acme Inc. was deleted.",
     },
   ]}
 />`}
       >
         <div className="p-(--card-padding) sm:p-10">
           <DangerZone
-            projectName="halcyon-labs"
+            projectName="acme"
             description="Deleting the workspace removes every project in it."
             actions={[
               {
-                id: "cancel-subscription",
-                title: "Cancel subscription",
-                description: "Move halcyon-labs to Hobby at the end of the billing period.",
-                actionLabel: "Cancel plan",
-                confirmTitle: "Cancel the Pro subscription?",
+                id: "downgrade",
+                title: "Downgrade to Hobby",
+                description: "Move Acme Inc. to Hobby, $5 a month, at the end of the billing period.",
+                actionLabel: "Downgrade",
+                confirmTitle: "Downgrade Acme Inc. to Hobby?",
                 confirmDescription:
-                  "Pro stays active until November 1, 2026. After that, projects over the Hobby limits stop deploying.",
-                confirmLabel: "Cancel subscription",
+                  "Pro stays active until November 1, 2026. After that, Hobby allows 3 projects and one seat, so the other projects stop deploying.",
+                confirmLabel: "Downgrade to Hobby",
                 tone: "default",
-                successMessage: "Subscription cancelled. Pro stays active until November 1.",
+                successMessage: "Hobby starts on November 1. Pro stays active until then.",
               },
               {
                 id: "delete-workspace",
                 title: "Delete workspace",
-                description: "Delete halcyon-labs with its 12 projects, domains and billing history.",
+                description: "Delete Acme Inc. with its 12 projects, domains and billing history.",
                 actionLabel: "Delete workspace",
-                confirmTitle: "Delete halcyon-labs?",
+                confirmTitle: "Delete Acme Inc.?",
                 confirmDescription:
                   "Every project, deployment and domain in this workspace goes with it. You can’t undo this.",
                 requireTyping: true,
-                successMessage: "halcyon-labs was deleted.",
+                successMessage: "Acme Inc. was deleted.",
               },
             ]}
           />
@@ -98,8 +98,8 @@ export default function DangerZoneDocs() {
       <ApiTable
         title="DangerZone"
         rows={[
-          { prop: "projectName", type: "string", default: '"halcyon-web"', description: "Name people type to confirm. Also used in the default copy." },
-          { prop: "title", type: "ReactNode", default: '"Danger zone"', description: "Heading." },
+          { prop: "projectName", type: "string", default: '"web"', description: "Name people type to confirm. Also used in the default copy." },
+          { prop: "title", type: "ReactNode | null", default: '"Danger zone"', description: "Heading inside the card. null leaves the header out, for layouts that title the zone themselves." },
           { prop: "description", type: "ReactNode", description: "Line under the heading." },
           { prop: "actions", type: "DangerAction[]", default: "Pause, delete previews, delete project", description: "Rows, most disruptive last." },
           { prop: "onConfirm", type: "(actionId) => void | Promise<void>", description: "Called after confirmation. Throw to keep the dialog open with an error toast." },

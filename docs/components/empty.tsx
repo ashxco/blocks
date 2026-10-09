@@ -28,7 +28,7 @@ export default function EmptyDocs() {
     </EmptyMedia>
     <EmptyTitle>No deployments yet</EmptyTitle>
     <EmptyDescription>
-      Push to any branch of acme/web-app and Lumen builds it here.
+      Push to any branch of lumen-labs/lumen-web and Lumen builds it here.
     </EmptyDescription>
   </EmptyHeader>
   <EmptyContent>
@@ -44,7 +44,7 @@ export default function EmptyDocs() {
             </EmptyMedia>
             <EmptyTitle>No deployments yet</EmptyTitle>
             <EmptyDescription>
-              Push to any branch of acme/web-app and Lumen builds it here, with its own preview URL.
+              Push to any branch of lumen-labs/lumen-web and Lumen builds it here, with its own preview URL.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
@@ -71,7 +71,7 @@ export default function EmptyDocs() {
                 <GlobeIcon />
               </EmptyMedia>
               <EmptyTitle>No custom domains</EmptyTitle>
-              <EmptyDescription>web-app is live at web-app.lumen.app.</EmptyDescription>
+              <EmptyDescription>lumen-web is live at lumen-web.lumen.app.</EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
               <Button size="sm">Add domain</Button>
@@ -84,7 +84,7 @@ export default function EmptyDocs() {
                   <GlobeIcon />
                 </EmptyMedia>
                 <EmptyTitle>No custom domains</EmptyTitle>
-                <EmptyDescription>web-app is live at web-app.lumen.app.</EmptyDescription>
+                <EmptyDescription>lumen-web is live at lumen-web.lumen.app.</EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
                 <Button size="sm" variant="outline">
@@ -139,7 +139,7 @@ export default function EmptyDocs() {
         <Card className="max-w-prose">
           <CardHeader className="border-b">
             <CardTitle>Members</CardTitle>
-            <CardDescription>People who can deploy to Acme Inc.</CardDescription>
+            <CardDescription>People who can deploy to Lumen Labs</CardDescription>
             <CardAction>
               <Button size="sm">Invite</Button>
             </CardAction>
@@ -173,8 +173,8 @@ export default function EmptyDocs() {
 
       <ApiTable
         rows={[
-          { prop: "variant", type: '"default" | "subtle" | "plain"', default: '"default"', description: "Empty: dashed outline, dashed outline on a tint, or no frame." },
-          { prop: "variant", type: '"default" | "icon"', default: '"default"', description: "EmptyMedia: a bare icon or image, or an icon in a muted tile." },
+          { prop: "Empty variant", type: '"default" | "subtle" | "plain"', default: '"default"', description: "Dashed outline, dashed outline on a tint, or no frame." },
+          { prop: "EmptyMedia variant", type: '"default" | "icon"', default: '"default"', description: "A bare icon or image, or an icon in a muted tile." },
           { prop: "children", type: "ReactNode", description: "EmptyContent: actions, laid out in a centred, wrapping row." },
         ]}
       />

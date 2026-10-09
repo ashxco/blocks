@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const { prev, next } = pagerFor(components, slug, "/components")
   return (
     <ViewerPage>
-      <article className="grid gap-14 sm:gap-16">
+      <article className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-14 sm:gap-16">
         <DocHeader section="Components" group={entry.group} title={entry.title} description={entry.description} />
         <Docs />
       </article>

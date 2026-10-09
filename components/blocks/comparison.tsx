@@ -2,6 +2,7 @@ import * as React from "react"
 import { CheckIcon, XIcon } from "lucide-react"
 
 import { SectionHeading } from "@/components/blocks/section-heading"
+import { Wordmark } from "@/components/blocks/wordmark"
 import { cn } from "@/lib/utils"
 
 export interface ComparisonSide {
@@ -14,7 +15,7 @@ export interface ComparisonProps {
   /** Section title. Pass null to render the cards without a heading. */
   title?: React.ReactNode
   description?: React.ReactNode
-  /** Your product: ink border and success checks. */
+  /** Your product: a dark emphasis panel with success checks. */
   us?: ComparisonSide
   /** The alternative: tinted surface and muted crosses. */
   them?: ComparisonSide
@@ -23,23 +24,11 @@ export interface ComparisonProps {
   className?: string
 }
 
-/** The Lumen wordmark used in the "us" card. */
-function LumenMark() {
-  return (
-    <span className="inline-flex items-center gap-2.5">
-      <span aria-hidden="true" className="grid size-7 place-items-center rounded-sm bg-foreground">
-        <span className="size-2.5 rounded-full bg-brand" />
-      </span>
-      Lumen
-    </span>
-  )
-}
-
 const defaultUs: ComparisonSide = {
-  name: <LumenMark />,
+  name: <Wordmark href={null} tone="panel" />,
   items: [
     "Run on your servers or on our cloud",
-    "Flat price per server, no seats",
+    "Flat plans with no per-seat fees",
     "Preview URL for every branch",
     "Logs and metrics included",
     "Leave any time, your apps keep running",
@@ -63,18 +52,21 @@ function ComparisonCard({ side, variant }: { side: ComparisonSide; variant: "us"
     <div
       data-side={variant}
       className={cn(
-        "rounded-(--card-radius) px-6 pt-6 pb-3 @min-[40rem]/compare:px-8 @min-[40rem]/compare:pt-8",
-        us ? "border-2 border-foreground bg-card" : "border bg-subtle"
+        "rounded-(--card-radius) border px-6 pt-6 pb-3 @min-[40rem]/compare:px-8 @min-[40rem]/compare:pt-8",
+        // The other side stays on the canvas colour, so the panel steps clearly forward in both themes.
+        us ? "border-panel bg-panel text-panel-foreground dark:border-panel-foreground/30" : "bg-background"
       )}
     >
-      <h3 className="flex min-h-8 items-center text-h4 text-foreground">{side.name}</h3>
-      <ul className="mt-6 divide-y border-t">
+      <h3 className={cn("flex min-h-8 items-center text-h4", us ? "text-panel-foreground" : "text-foreground")}>
+        {side.name}
+      </h3>
+      <ul className={cn("mt-6 divide-y border-t", us && "divide-panel-border border-panel-border")}>
         {side.items.map((item) => (
           <li
             key={item}
             className={
               us
-                ? "flex items-start gap-3 py-4 text-body font-medium text-foreground"
+                ? "flex items-start gap-3 py-4 text-body font-medium text-panel-foreground"
                 : "flex items-start gap-3 py-4 text-body text-copy"
             }
           >
@@ -100,7 +92,7 @@ function ComparisonCard({ side, variant }: { side: ComparisonSide; variant: "us"
 }
 
 /**
- * Two cards side by side: your product with an ink border and success
+ * Two cards side by side: your product on a dark emphasis panel with success
  * checks, the alternative on a tinted surface with muted crosses. Rows line
  * up when both sides have the same number of items.
  */
@@ -113,9 +105,17 @@ export function Comparison({
   className,
 }: ComparisonProps) {
   return (
-    <section data-slot="comparison" className={cn(contained && "container-page py-section", className)}>
+    <section
+      data-slot="comparison"
+      className={cn("@container/comparison-section", contained && "container-page py-section", className)}
+    >
       {title ? (
-        <SectionHeading align="center" title={title} description={description} className="mb-12 md:mb-16" />
+        <SectionHeading
+          align="center"
+          title={title}
+          description={description}
+          className="mb-12 @3xl/comparison-section:mb-16"
+        />
       ) : null}
       <div className="@container/compare mx-auto max-w-narrow">
         <div className="grid gap-4 @min-[40rem]/compare:grid-cols-2">

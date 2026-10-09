@@ -38,7 +38,8 @@ export const defaultTeam: TeamMember[] = [
   { name: "Sam Cohen", role: "Platform engineer" },
 ]
 
-const rotation: CoverTint[] = ["violet", "mint", "sand", "panel", "sky", "rose", "sand", "violet"]
+/* Neighbours differ across and down in two, three and four columns. */
+const rotation: CoverTint[] = ["violet", "mint", "sand", "panel", "sky", "rose", "mint", "violet"]
 
 function initialsOf(name: string) {
   const parts = name.trim().split(/\s+/)
@@ -74,7 +75,7 @@ export function TeamGrid({
                     tintClass[tint]
                   )}
                 >
-                  <span className={`text-h1 leading-none ${tintInkClass[tint]}`}>
+                  <span className={cn("text-h1 leading-none", tintInkClass[tint])}>
                     {member.initials ?? initialsOf(member.name)}
                   </span>
                 </div>

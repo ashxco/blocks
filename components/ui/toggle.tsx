@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils"
 const toggleVariants = cva(
   [
     "group/toggle relative inline-flex shrink-0 items-center justify-center gap-1.5 rounded-(--button-radius) border border-transparent",
-    "text-sm font-semibold tracking-tight whitespace-nowrap select-none",
+    "text-label whitespace-nowrap select-none",
     "transition-[background-color,border-color,color,translate] duration-(--duration-fast) ease-standard",
     "outline-none focus-visible:focus-ring active:translate-y-px",
     "disabled:pointer-events-none disabled:opacity-50 data-disabled:pointer-events-none data-disabled:opacity-50",
@@ -33,7 +33,7 @@ const toggleVariants = cva(
       size: {
         default:
           "h-(--button-height-md) min-w-(--button-height-md) px-(--button-padding-x-sm) has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
-        sm: "h-(--button-height-sm) min-w-(--button-height-sm) gap-1 px-3 text-xs has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5 [&_svg:not([class*='size-'])]:size-3.5",
+        sm: "h-(--button-height-sm) min-w-(--button-height-sm) gap-1 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-(--button-height-lg) min-w-(--button-height-lg) px-(--button-padding-x-md) has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
       },
     },

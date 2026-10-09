@@ -3,6 +3,8 @@
 import * as React from "react"
 import {
   ActivityIcon,
+  AppWindowIcon,
+  BookOpenIcon,
   CreditCardIcon,
   GlobeIcon,
   KeyRoundIcon,
@@ -12,6 +14,7 @@ import {
   RocketIcon,
   ScrollTextIcon,
   SearchIcon,
+  ServerIcon,
   SunIcon,
   UsersIcon,
 } from "lucide-react"
@@ -38,10 +41,11 @@ const suggestions = [
   { label: "Open runtime logs", icon: ScrollTextIcon, keys: ["G", "L"] },
 ]
 
+/* Each project has its own mark, so names that share a first letter stay apart. */
 const projects = [
-  { label: "acme-storefront", meta: "Deployed 4m ago", tint: "bg-tint-violet" },
-  { label: "acme-api", meta: "Deployed 1h ago", tint: "bg-tint-sky" },
-  { label: "docs-site", meta: "Building", tint: "bg-tint-mint" },
+  { label: "lumen-web", meta: "Deployed 4m ago", tint: "bg-tint-violet", icon: AppWindowIcon },
+  { label: "lumen-api", meta: "Deployed 1h ago", tint: "bg-tint-sky", icon: ServerIcon },
+  { label: "docs", meta: "Building", tint: "bg-tint-mint", icon: BookOpenIcon },
 ]
 
 const settings = [
@@ -52,13 +56,10 @@ const settings = [
   { label: "Billing", icon: CreditCardIcon },
 ]
 
-function ProjectMark({ label, tint }: { label: string; tint: string }) {
+function ProjectMark({ icon: Icon, tint }: { icon: React.ComponentType<{ className?: string }>; tint: string }) {
   return (
-    <span
-      aria-hidden="true"
-      className={`grid size-5 shrink-0 place-items-center rounded-xs text-xs font-bold text-foreground ${tint}`}
-    >
-      {label.charAt(0).toUpperCase()}
+    <span aria-hidden="true" className={`grid size-5 shrink-0 place-items-center rounded-xs text-foreground ${tint}`}>
+      <Icon className="size-3" />
     </span>
   )
 }
@@ -71,9 +72,12 @@ function ProjectMark({ label, tint }: { label: string; tint: string }) {
 function WhenVisible({
   children,
   className,
+  rootMargin = "0px 0px -160px 0px",
 }: {
   children: React.ReactNode
   className?: string
+  /** How far into the viewport the placeholder must be before the example mounts. */
+  rootMargin?: string
 }) {
   const ref = React.useRef<HTMLDivElement>(null)
   const [visible, setVisible] = React.useState(false)
@@ -88,11 +92,11 @@ function WhenVisible({
           observer.disconnect()
         }
       },
-      { rootMargin: "0px 0px -160px 0px" }
+      { rootMargin }
     )
     observer.observe(element)
     return () => observer.disconnect()
-  }, [])
+  }, [rootMargin])
 
   return (
     <div ref={ref} className={className}>
@@ -105,7 +109,7 @@ function WhenVisible({
 function LumenCommands({ onRun }: { onRun: (label: string) => void }) {
   return (
     <>
-      <CommandInput placeholder="Search projects, settings and actions" />
+      <CommandInput placeholder="Search projects and actions" />
       <CommandList>
         <CommandEmpty>No results. Try a project name, or an action such as “deploy”.</CommandEmpty>
         <CommandGroup heading="Suggestions">
@@ -130,7 +134,7 @@ function LumenCommands({ onRun }: { onRun: (label: string) => void }) {
               keywords={["project", project.label]}
               onSelect={() => onRun(`Open ${project.label}`)}
             >
-              <ProjectMark label={project.label} tint={project.tint} />
+              <ProjectMark icon={project.icon} tint={project.tint} />
               <span className="truncate">{project.label}</span>
               <span className="ms-auto shrink-0 text-xs text-muted-foreground">{project.meta}</span>
             </CommandItem>
@@ -196,8 +200,17 @@ function InlinePalette() {
   )
 }
 
+type Stage = HTMLDivElement | null
+
+/**
+ * The palette open in place, in a stage on the page. contain-layout makes the
+ * stage the containing block for the fixed overlay and dialog, and isolate
+ * keeps them under the site header. It is non-modal there, so the page still
+ * scrolls and a click elsewhere leaves it open.
+ */
 function DialogPalette() {
-  const [open, setOpen] = React.useState(false)
+  const [container, setContainer] = React.useState<Stage>(null)
+  const [open, setOpen] = React.useState(true)
   const [last, setLast] = React.useState<string | null>(null)
 
   // ⌘J here, so the example doesn’t clash with this site’s own ⌘K search.
@@ -213,25 +226,31 @@ function DialogPalette() {
   }, [])
 
   return (
-    <div className="grid justify-items-center gap-4">
-      <Button
-        variant="outline"
-        onClick={() => setOpen(true)}
-        className="w-72 justify-between ps-4 pe-2 text-muted-foreground"
-      >
-        <span className="flex items-center gap-2">
-          <SearchIcon />
-          Search Lumen
-        </span>
-        <KbdGroup>
-          <Kbd>⌘</Kbd>
-          <Kbd>J</Kbd>
-        </KbdGroup>
-      </Button>
-      <LastRun label={last} />
+    <div ref={setContainer} className="relative isolate grid min-h-152 w-full content-start overflow-hidden contain-layout">
+      <div className="grid justify-items-center gap-4 p-6 sm:p-12">
+        <Button
+          variant="outline"
+          onClick={() => setOpen(true)}
+          className="w-full max-w-72 justify-between ps-4 pe-2 text-muted-foreground"
+        >
+          <span className="flex items-center gap-2">
+            <SearchIcon />
+            Search Lumen
+          </span>
+          <KbdGroup>
+            <Kbd>⌘</Kbd>
+            <Kbd>J</Kbd>
+          </KbdGroup>
+        </Button>
+        <LastRun label={last} />
+      </div>
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
+        modal={false}
+        disablePointerDismissal
+        container={container}
+        initialFocus={false}
         title="Search Lumen"
         description="Search projects, settings and actions, then press Enter to run one."
       >
@@ -277,7 +296,7 @@ function ThemePicker() {
         <CommandGroup heading="Danger zone">
           <CommandItem value="Delete project" disabled>
             <span>Delete project</span>
-            <CommandShortcut>Owners only</CommandShortcut>
+            <span className="ms-auto text-caption text-muted-foreground">Owners only</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>
@@ -300,7 +319,7 @@ function EmptyState() {
         <CommandGroup heading="Projects">
           {projects.map((project) => (
             <CommandItem key={project.label} value={project.label}>
-              <ProjectMark label={project.label} tint={project.tint} />
+              <ProjectMark icon={project.icon} tint={project.tint} />
               <span>{project.label}</span>
             </CommandItem>
           ))}
@@ -318,7 +337,7 @@ export default function CommandDocs() {
         description="A large search field, grouped results with keyboard hints and a footer that explains the keys. The highlighted row fills with accent."
         surface="subtle"
         code={`<Command loop className="border">
-  <CommandInput placeholder="Search projects, settings and actions" />
+  <CommandInput placeholder="Search projects and actions" />
   <CommandList>
     <CommandEmpty>No results.</CommandEmpty>
     <CommandGroup heading="Suggestions">
@@ -344,7 +363,8 @@ export default function CommandDocs() {
 
       <Example
         title="In a dialog"
-        description="CommandDialog opens the palette in the upper third of the screen. Press ⌘J or Ctrl J, or use the button. In your app, bind ⌘K."
+        layout="full"
+        description="CommandDialog opens the palette in the upper third of the screen. Close this one, then press ⌘J or Ctrl J, or use the button. In your app, bind ⌘K."
         code={`const [open, setOpen] = React.useState(false)
 
 React.useEffect(() => {
@@ -360,12 +380,15 @@ React.useEffect(() => {
 
 <CommandDialog open={open} onOpenChange={setOpen} title="Search Lumen">
   <Command loop>
-    <CommandInput placeholder="Search projects, settings and actions" />
+    <CommandInput placeholder="Search projects and actions" />
     <CommandList>…</CommandList>
   </Command>
 </CommandDialog>`}
       >
-        <DialogPalette />
+        {/* Mounts once the stage reaches the upper half of the screen, so the first result is already in view. */}
+        <WhenVisible className="w-full min-h-152" rootMargin="0px 0px -50% 0px">
+          <DialogPalette />
+        </WhenVisible>
       </Example>
 
       <Example
@@ -377,7 +400,7 @@ React.useEffect(() => {
 </CommandItem>
 <CommandItem disabled>
   <span>Delete project</span>
-  <CommandShortcut>Owners only</CommandShortcut>
+  <span className="ms-auto text-caption text-muted-foreground">Owners only</span>
 </CommandItem>`}
       >
         <WhenVisible className="flex min-h-64 w-full justify-center">

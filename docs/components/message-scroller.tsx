@@ -147,9 +147,9 @@ function AskLumen() {
               id="ask-lumen-scroller"
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="Ask about deploys, domains or usage"
+              placeholder="Ask about your deploys"
               autoComplete="off"
-              className="h-8 min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+              className="h-8 min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground sm:text-sm"
             />
             <Button type="submit" size="icon-sm" aria-label="Send" disabled={!draft.trim() || thinking}>
               <ArrowUpIcon />

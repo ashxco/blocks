@@ -125,7 +125,8 @@ function PaginationEllipsis({
       aria-hidden
       data-slot="pagination-ellipsis"
       className={cn(
-        "flex size-(--button-height-md) items-center justify-center text-muted-foreground [&_svg:not([class*='size-'])]:size-4",
+        // Narrower on phones: the ellipsis is not a tap target, so it gives its width to the links.
+        "flex h-(--button-height-md) w-6 items-center justify-center text-muted-foreground sm:w-(--button-height-md) [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}

@@ -3,6 +3,7 @@ import { ArrowRightIcon, HeadsetIcon, KeyRoundIcon, ServerIcon, ShieldCheckIcon,
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { Kern } from "@/components/ui/kern"
 
 interface EnterprisePoint {
   icon: LucideIcon
@@ -44,7 +45,7 @@ export function EnterpriseStrip({ className }: { className?: string }) {
         <div className="flex flex-col justify-between gap-10 bg-subtle p-8 sm:p-12">
           <div className="grid gap-5">
             <h2 id="enterprise-title" className="text-h2 text-foreground">
-              Lumen for enterprise
+              <Kern>Lumen for enterprise.</Kern>
             </h2>
             <p className="max-w-prose text-lead text-copy">
               Volume pricing and custom terms for teams with strict compliance needs, more than 50 engineers or their
@@ -67,7 +68,7 @@ export function EnterpriseStrip({ className }: { className?: string }) {
             const Icon = point.icon
             return (
               <li key={point.title} className="grid content-start gap-5 bg-background p-8 sm:p-10">
-                <span className="grid size-11 place-items-center rounded-md border bg-background text-foreground">
+                <span className="grid size-10 place-items-center rounded-md border bg-background text-foreground">
                   <Icon aria-hidden="true" className="size-5" />
                 </span>
                 <div className="grid gap-2">

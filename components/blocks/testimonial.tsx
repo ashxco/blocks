@@ -28,7 +28,7 @@ export interface TestimonialProps {
   author?: TestimonialAuthor
   /** The result the customer got. Pass null to hide it. */
   metric?: TestimonialMetric | null
-  /** "subtle" sits on a tinted band, "panel" on a dark panel, "plain" between hairlines. */
+  /** "subtle" sits on a tinted band with a hairline edge, "panel" on a dark panel, "plain" between hairlines. */
   tone?: "subtle" | "panel" | "plain"
   /** Renders its own page container and section spacing. Set to false inside your own layout. */
   contained?: boolean
@@ -45,10 +45,11 @@ const tintClass = {
 
 const tones = {
   subtle: {
-    frame: "rounded-(--panel-radius) bg-subtle p-(--panel-padding)",
-    icon: "text-brand",
+    // The hairline keeps the frame visible in dark mode, where the tint sits close to the page.
+    frame: "rounded-(--panel-radius) border bg-subtle p-(--panel-padding)",
+    icon: "text-foreground",
     quote: "text-foreground",
-    rule: "border-border",
+    caption: "mt-10 border-t border-border pt-8 @narrow/quote:mt-14",
     name: "text-title text-foreground",
     role: "text-caption text-muted-foreground",
     value: "text-h1 text-foreground tabular",
@@ -56,19 +57,20 @@ const tones = {
   },
   panel: {
     frame: "rounded-(--panel-radius) bg-panel p-(--panel-padding) text-panel-foreground",
-    icon: "text-panel-muted",
+    icon: "text-panel-foreground",
     quote: "text-panel-foreground",
-    rule: "border-panel-border",
+    caption: "mt-10 border-t border-panel-border pt-8 @narrow/quote:mt-14",
     name: "text-title text-panel-foreground",
     role: "text-caption text-panel-muted",
     value: "text-h1 text-panel-foreground tabular",
     label: "max-w-28 text-label text-panel-muted",
   },
   plain: {
+    // The frame's own hairlines hold the quote, so the caption needs no rule.
     frame: "border-y py-section-sm",
-    icon: "text-brand",
+    icon: "text-foreground",
     quote: "text-foreground",
-    rule: "border-border",
+    caption: "mt-12 @narrow/quote:mt-16",
     name: "text-title text-foreground",
     role: "text-caption text-muted-foreground",
     value: "text-h1 text-foreground tabular",
@@ -77,9 +79,9 @@ const tones = {
 } as const
 
 const defaultAuthor: TestimonialAuthor = {
-  name: "Priya Shah",
+  name: "Hannah Okoye",
   role: "CTO, Fernhill",
-  initials: "PS",
+  initials: "HO",
   tint: "mint",
 }
 
@@ -101,14 +103,9 @@ export function Testimonial({
       <figure className={cn("@container/quote m-0", t.frame)}>
         <QuoteIcon aria-hidden="true" className={cn("size-8", t.icon)} strokeWidth={2.25} />
         <blockquote className="mt-8 @narrow/quote:mt-10">
-          <p className={`max-w-narrow text-h3 @narrow/quote:text-4xl ${t.quote}`}>{quote}</p>
+          <p className={cn("max-w-narrow text-h3 @narrow/quote:text-4xl", t.quote)}>{quote}</p>
         </blockquote>
-        <figcaption
-          className={cn(
-            "mt-10 flex flex-wrap items-center justify-between gap-x-10 gap-y-8 border-t pt-8 @narrow/quote:mt-14",
-            t.rule
-          )}
-        >
+        <figcaption className={cn("flex flex-wrap items-center justify-between gap-x-10 gap-y-8", t.caption)}>
           <div className="flex items-center gap-4">
             <Avatar className="size-(--avatar-size-lg) after:hidden">
               {author.avatarSrc ? <AvatarImage src={author.avatarSrc} alt="" /> : null}

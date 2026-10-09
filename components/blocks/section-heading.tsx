@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { Kern } from "@/components/ui/kern"
 
 export interface SectionHeadingProps {
   /** The heading. Wrap one word in <span className="text-brand"> to highlight it. */
@@ -45,7 +46,9 @@ export function SectionHeading({
   return (
     <div data-slot="section-heading" data-align={align} className={cn("@container", className)}>
       <div className={layouts[align]}>
-        <Heading className={as === "h1" ? "max-w-narrow text-h1" : "max-w-narrow text-h2"}>{title}</Heading>
+        <Heading className={as === "h1" ? "max-w-narrow text-h1" : "max-w-narrow text-h2"}>
+          <Kern>{title}</Kern>
+        </Heading>
         {hasAside ? (
           <div
             className={
@@ -57,7 +60,9 @@ export function SectionHeading({
             }
           >
             {description != null ? (
-              <p className="max-w-prose text-lead text-copy">{description}</p>
+              <p className={align === "center" ? "max-w-prose text-lead text-balance text-copy" : "max-w-prose text-lead text-copy"}>
+                {description}
+              </p>
             ) : null}
             {children != null ? (
               <div

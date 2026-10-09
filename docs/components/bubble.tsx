@@ -198,10 +198,10 @@ export default function BubbleDocs() {
       <ApiTable
         rows={[
           { prop: "variant", type: '"default" | "secondary" | "muted" | "tinted" | "outline" | "ghost" | "destructive"', default: '"default"', description: "Bubble: fill and text colour of the content." },
-          { prop: "align", type: '"start" | "end"', default: '"start"', description: "Bubble: side to sit on outside a Message. Inside a Message, the Message’s align wins." },
+          { prop: "Bubble align", type: '"start" | "end"', default: '"start"', description: "Side to sit on outside a Message. Inside a Message, the Message’s align wins." },
           { prop: "render", type: "ReactElement", description: "BubbleContent: render as a button or link to make the bubble interactive." },
           { prop: "side", type: '"top" | "bottom"', default: '"bottom"', description: "BubbleReactions: which edge the reactions sit on." },
-          { prop: "align", type: '"start" | "end"', default: '"end"', description: "BubbleReactions: which corner the reactions sit at." },
+          { prop: "BubbleReactions align", type: '"start" | "end"', default: '"end"', description: "Which corner the reactions sit at." },
         ]}
       />
     </Examples>

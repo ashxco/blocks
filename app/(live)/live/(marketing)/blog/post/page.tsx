@@ -18,17 +18,18 @@ import {
 } from "@/components/ui/table"
 
 import { NewsletterBand } from "../_components/newsletter-band"
-import { featuredPost, relatedPosts, withoutCategoryLabel } from "../_data/posts"
+import { featuredPost, relatedPosts } from "../_data/posts"
 import { AuthorCard } from "./_components/author-card"
 import { CopyLinkButton } from "./_components/copy-link-button"
 import { Prose } from "./_components/prose"
 import { PullQuote } from "./_components/pull-quote"
 import { TableOfContents, type TocItem } from "./_components/table-of-contents"
+import { Kern } from "@/components/ui/kern"
 
 export const metadata: Metadata = {
   title: "How we cut build times by 70%",
   description:
-    "Layer caching, a smarter dependency graph and one very slow Docker step: the changes behind Lumen 2.3, with the numbers.",
+    "Layer caching, a smarter dependency graph and one very slow Docker step: the build changes we shipped in September, with the numbers.",
 }
 
 const sections: TocItem[] = [
@@ -77,7 +78,9 @@ export default function BlogPostPage() {
             </div>
 
             <div className="min-w-0 lg:col-span-9 xl:col-span-8">
-              <h1 className="text-h1 text-foreground">{featuredPost.title}</h1>
+              <h1 className="text-h1 text-foreground">
+                <Kern>{featuredPost.title}</Kern>
+              </h1>
               <p className="mt-6 max-w-prose text-lead text-copy">{featuredPost.excerpt}</p>
 
               <div className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-5 border-t pt-6">
@@ -107,11 +110,13 @@ export default function BlogPostPage() {
           </div>
         </header>
 
+        {/* A short, wide cover so the article starts high; its bars are the post's real numbers. */}
         <div className="container-wide mt-12 md:mt-16">
           <PostCover
             pattern={featuredPost.cover?.pattern}
             tint={featuredPost.cover?.tint}
-            className="aspect-16/10 rounded-(--panel-radius) sm:aspect-2/1 lg:aspect-21/9"
+            figures={featuredPost.cover?.figures}
+            className="aspect-16/10 rounded-(--panel-radius) sm:aspect-21/9 lg:aspect-auto lg:h-96"
           />
         </div>
 
@@ -238,23 +243,27 @@ export default function BlogPostPage() {
                   We rolled the changes out to 10% of builds in August, then to everyone on September 16. Across every
                   build in the two weeks that followed:
                 </p>
-                <figure>
-                  <Table variant="card">
+                {/* Fits a phone: below 28rem the Before column folds under After, so Change stays in view. */}
+                <figure className="@container">
+                  <Table variant="card" className="table-fixed">
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Metric</TableHead>
-                        <TableHead className="text-right">Before</TableHead>
-                        <TableHead className="text-right">After</TableHead>
-                        <TableHead className="text-right">Change</TableHead>
+                        <TableHead className="w-2/5 px-3 whitespace-normal @md:px-4">Metric</TableHead>
+                        <TableHead className="hidden px-3 text-right @md:table-cell @md:px-4">Before</TableHead>
+                        <TableHead className="px-3 text-right @md:px-4">After</TableHead>
+                        <TableHead className="px-3 text-right @md:px-4">Change</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {results.map((row) => (
                         <TableRow key={row.metric}>
-                          <TableCell className="font-semibold">{row.metric}</TableCell>
-                          <TableCell className="text-right text-muted-foreground">{row.before}</TableCell>
-                          <TableCell className="text-right">{row.after}</TableCell>
-                          <TableCell className="text-right font-semibold text-success">{row.change}</TableCell>
+                          <TableCell className="px-3 py-3 font-semibold whitespace-normal @md:px-4">{row.metric}</TableCell>
+                          <TableCell className="hidden px-3 text-right text-muted-foreground @md:table-cell @md:px-4">{row.before}</TableCell>
+                          <TableCell className="px-3 py-3 text-right @md:px-4">
+                            {row.after}
+                            <span className="block text-caption text-muted-foreground @md:hidden">from {row.before}</span>
+                          </TableCell>
+                          <TableCell className="px-3 text-right font-semibold text-success @md:px-4">{row.change}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -296,7 +305,7 @@ export default function BlogPostPage() {
 
       <section aria-label="Related posts" className="border-t bg-subtle">
         <PostGrid
-          posts={relatedPosts.map(withoutCategoryLabel)}
+          posts={relatedPosts}
           title="Keep reading"
           viewAll={{ label: "All posts", href: "/live/blog" }}
           filter={false}

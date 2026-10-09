@@ -7,5 +7,5 @@ import { cn } from "@/lib/utils"
  * container and page padding come from the shell (ViewerColumn).
  */
 export function ViewerPage({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn("grid min-w-0 gap-14 sm:gap-16", className)}>{children}</div>
+  return <div className={cn("grid min-w-0 grid-cols-[minmax(0,1fr)] gap-14 sm:gap-16", className)}>{children}</div>
 }

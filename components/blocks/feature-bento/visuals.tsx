@@ -75,25 +75,27 @@ export function Sparkline({
   const area = `${line} L${w} ${h} L0 ${h} Z`
   const [lastX, lastY] = points[points.length - 1]
 
+  // The line stretches to any width, so the end point is a positioned dot
+  // rather than an SVG circle, which would stretch into an ellipse.
   return (
-    <svg
-      aria-hidden="true"
-      viewBox={`0 0 ${w} ${h}`}
-      preserveAspectRatio="none"
-      className={cn("block h-16 w-full overflow-visible", className)}
-    >
-      <path d={area} fill="currentColor" fillOpacity={0.08} />
-      <path
-        d={line}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
+    <div aria-hidden="true" className={cn("relative h-16 w-full", className)}>
+      <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="block size-full overflow-visible">
+        <path d={area} fill="currentColor" fillOpacity={0.08} />
+        <path
+          d={line}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+      <span
+        className="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-current"
+        style={{ left: `${(lastX / w) * 100}%`, top: `${(lastY / h) * 100}%` }}
       />
-      <circle cx={lastX} cy={lastY} r={3.5} fill="currentColor" vectorEffect="non-scaling-stroke" />
-    </svg>
+    </div>
   )
 }
 
@@ -194,7 +196,7 @@ export function MaskedSecrets({
         </span>
         <span className="font-mono">{environment}</span>
       </div>
-      <ul className="grid gap-1.5 px-3 py-2.5 font-mono text-caption">
+      <ul className="grid grid-cols-1 gap-1.5 px-3 py-2.5 font-mono text-caption">
         {names.map((n) => (
           <li key={n} className="flex items-center justify-between gap-3">
             <span className="truncate text-foreground">{n}</span>
@@ -207,69 +209,48 @@ export function MaskedSecrets({
 }
 
 /* -------------------------------------------------------------------------- */
-/* Region map                                                                 */
+/* Edge regions                                                               */
 /* -------------------------------------------------------------------------- */
 
-export interface Region {
+export interface EdgeRegion {
+  /** Region code, e.g. "fra-1". */
   code: string
-  /** Horizontal position, 0 to 100. */
-  x: number
-  /** Vertical position, 0 to 100. */
-  y: number
-  /** Busiest regions get a ring and a label. */
-  hot?: boolean
+  /** City the region serves, shown when the tile is wide enough. */
+  city: string
+  /** Median latency to nearby users, in milliseconds. */
+  latency: number
 }
 
-const defaultRegions: Region[] = [
-  { code: "sea", x: 11, y: 30 },
-  { code: "sfo", x: 12, y: 42 },
-  { code: "dfw", x: 20, y: 48 },
-  { code: "ord", x: 23, y: 36 },
-  { code: "iad", x: 27, y: 40, hot: true },
-  { code: "bog", x: 27, y: 66 },
-  { code: "gru", x: 34, y: 80 },
-  { code: "lhr", x: 46, y: 26 },
-  { code: "cdg", x: 48, y: 33 },
-  { code: "fra", x: 51, y: 28, hot: true },
-  { code: "arn", x: 53, y: 16 },
-  { code: "mad", x: 45, y: 42 },
-  { code: "jnb", x: 55, y: 84 },
-  { code: "dxb", x: 62, y: 50 },
-  { code: "bom", x: 67, y: 56 },
-  { code: "sin", x: 76, y: 68, hot: true },
-  { code: "hkg", x: 79, y: 50 },
-  { code: "icn", x: 82, y: 38 },
-  { code: "hnd", x: 86, y: 41 },
-  { code: "syd", x: 89, y: 86 },
+const defaultRegions: EdgeRegion[] = [
+  { code: "fra-1", city: "Frankfurt", latency: 9 },
+  { code: "iad-1", city: "Virginia", latency: 14 },
+  { code: "sin-1", city: "Singapore", latency: 21 },
+  { code: "gru-1", city: "São Paulo", latency: 27 },
 ]
 
 /**
- * Edge regions as positioned dots over hairline latitude lines. No background
- * pattern: structure comes from borders.
+ * A short list of edge regions with the median latency to nearby users, each
+ * as a thin ink bar. Same rhythm as TrafficShift.
  */
-export function RegionMap({ regions = defaultRegions, className }: { regions?: Region[]; className?: string }) {
+export function EdgeRegions({ regions = defaultRegions, className }: { regions?: EdgeRegion[]; className?: string }) {
+  const slowest = Math.max(1, ...regions.map((r) => r.latency))
   return (
-    <div aria-hidden="true" className={cn("relative h-36 w-full", className)}>
-      <div className="absolute inset-x-0 top-1/4 border-t border-brand/15" />
-      <div className="absolute inset-x-0 top-1/2 border-t border-dashed border-brand/25" />
-      <div className="absolute inset-x-0 top-3/4 border-t border-brand/15" />
-      {regions.map((r) => (
-        <span
-          key={r.code}
-          className="absolute -translate-x-1/2 -translate-y-1/2"
-          style={{ left: `${r.x}%`, top: `${r.y}%` }}
-        >
-          {r.hot ? (
-            <span className="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-brand/40" />
-          ) : null}
-          <span className={r.hot ? "block size-2 rounded-full bg-brand" : "block size-1.5 rounded-full bg-brand/60"} />
-          {r.hot ? (
-            <span className="absolute top-1/2 left-4 -translate-y-1/2 font-mono text-xs font-medium whitespace-nowrap text-brand-subtle-foreground">
-              {r.code}
+    <div aria-hidden="true" className={cn("@container/regions", className)}>
+      <ul className="grid gap-2.5">
+        {regions.map((r) => (
+          <li
+            key={r.code}
+            className="grid grid-cols-[3.5rem_1fr_3rem] items-center gap-3 font-mono text-caption @min-[24rem]/regions:grid-cols-[3.5rem_5.5rem_1fr_3rem]"
+          >
+            <span className="text-foreground">{r.code}</span>
+            <span className="hidden truncate font-sans text-muted-foreground @min-[24rem]/regions:block">{r.city}</span>
+            <span className="h-1.5 overflow-hidden rounded-full bg-foreground/10">
+              <span className="block h-full rounded-full bg-foreground" style={{ width: `${(r.latency / slowest) * 100}%` }} />
             </span>
-          ) : null}
-        </span>
-      ))}
+            <span className="text-right text-muted-foreground tabular">{r.latency} ms</span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

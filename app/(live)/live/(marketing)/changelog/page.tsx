@@ -1,8 +1,12 @@
 import type { Metadata } from "next"
 import type * as React from "react"
+import Link from "next/link"
+import { ArrowRightIcon } from "lucide-react"
 
 import { ChangelogTimeline, ReleaseShot, type ChangelogEntryProps } from "@/components/blocks/changelog-entry"
+import { CtaBand } from "@/components/blocks/cta-band"
 import { NewsletterForm } from "@/components/blocks/newsletter-form"
+import { Button } from "@/components/ui/button"
 
 import { LogsShot, SpendLimitShot } from "./_components/release-media"
 
@@ -107,24 +111,43 @@ export default function ChangelogPage() {
     <>
       <section className="container-page pt-section-sm">
         <div className="grid gap-10 border-b pb-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-end lg:gap-16 lg:pb-20">
-          <h1 className="text-display text-foreground">Changelog</h1>
-
-          <div className="grid gap-7 lg:pb-2">
+          <div className="grid gap-6">
+            <h1 className="text-display text-foreground">Changelog</h1>
             <p className="max-w-prose text-lead text-copy">
               New features, improvements and fixes in Lumen, newest first. We ship most weeks and write up everything
               you would notice.
             </p>
-            <div className="grid gap-3">
-              <NewsletterForm label="Email address for release notes" buttonLabel="Subscribe" />
-              <p className="pl-5 text-caption text-muted-foreground">
-                One email a month with the highlights. Unsubscribe in one click.
-              </p>
-            </div>
+          </div>
+
+          {/* Flush with the right edge on wide screens, under the lead on phones. */}
+          <div className="grid w-full gap-3 lg:max-w-112 lg:justify-self-end lg:pb-2">
+            <NewsletterForm label="Email address for release notes" buttonLabel="Subscribe" />
+            <p className="pl-5 text-caption text-muted-foreground">
+              One email a month with the highlights. Unsubscribe in one click.
+            </p>
           </div>
         </div>
       </section>
 
-      <ChangelogTimeline entries={releases} contained={false} className="container-page pt-16 pb-section lg:pt-24" />
+      <ChangelogTimeline entries={releases} contained={false} className="container-page pt-16 lg:pt-24" />
+
+      {/* Lines up with the entries: past the date column and the rail. */}
+      <div className="container-page pt-16">
+        <div className="@container">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-4 pl-10 @narrow:ml-48">
+            <Button variant="outline" nativeButton={false} render={<Link href="/live/changelog?page=2" />}>
+              Older releases
+              <ArrowRightIcon data-icon="inline-end" />
+            </Button>
+            <p className="text-caption text-muted-foreground">Showing the 5 newest of 94 releases.</p>
+          </div>
+        </div>
+      </div>
+
+      <CtaBand
+        title="Try what shipped this week."
+        description="Every release on this page is live on every plan. Start a 14-day Pro trial and get a preview URL for your first branch in about a minute."
+      />
     </>
   )
 }

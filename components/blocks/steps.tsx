@@ -3,6 +3,7 @@ import { GitBranchIcon, RocketIcon, SlidersHorizontalIcon, TrendingUpIcon } from
 
 import { SectionHeading } from "@/components/blocks/section-heading"
 import { cn } from "@/lib/utils"
+import { Kern } from "@/components/ui/kern"
 
 export interface Step {
   title: string
@@ -47,8 +48,8 @@ const defaultSteps: Step[] = [
 ]
 
 /**
- * How it works, as a row of four cards with icons. Cards are joined by a
- * hairline on wide layouts; there are no step numbers.
+ * How it works, as one strip of up to four steps with icons, joined by
+ * hairlines. Order carries the sequence; there are no step numbers.
  */
 export function Steps({
   title = (
@@ -68,44 +69,37 @@ export function Steps({
 
   const grid = (
     <div className="@container/steps">
+      {/* The 1px gap shows the frame colour through, joining the steps with hairlines. */}
       <ol
         // One column per step on wide layouts, up to four.
         style={{ "--steps-columns": Math.min(Math.max(steps.length, 1), 4) } as React.CSSProperties}
-        className="grid gap-4 @min-[34rem]/steps:grid-cols-2 @min-[60rem]/steps:grid-cols-[repeat(var(--steps-columns),minmax(0,1fr))]"
+        className={cn(
+          "grid gap-px overflow-hidden rounded-(--card-radius) border",
+          "@min-[34rem]/steps:grid-cols-2 @min-[60rem]/steps:grid-cols-[repeat(var(--steps-columns),minmax(0,1fr))]",
+          panel ? "border-panel-border bg-panel-border" : "bg-border"
+        )}
       >
-        {steps.map((step, i) => (
+        {steps.map((step) => (
           <li
             key={step.title}
-            className={
-              panel
-                ? "relative flex flex-col rounded-(--card-radius) border border-panel-border bg-panel-raised p-6 @min-[60rem]/steps:p-7"
-                : "relative flex flex-col rounded-(--card-radius) border bg-card p-6 @min-[60rem]/steps:p-7"
-            }
+            className={cn(
+              // In the two-column range a lone last step spans the row, so no empty cell shows the frame.
+              // Limited to that range: one column per step takes over from 60rem.
+              "flex flex-col p-6 @min-[34rem]/steps:@max-[60rem]/steps:last:odd:col-span-2 @min-[60rem]/steps:p-8",
+              panel ? "bg-panel-raised" : "bg-card"
+            )}
           >
             <span
               aria-hidden="true"
-              className={
-                panel
-                  ? "mb-10 grid size-11 place-items-center rounded-md border border-panel-border text-panel-foreground [&_svg]:size-5"
-                  : "mb-10 grid size-11 place-items-center rounded-md border bg-subtle text-foreground [&_svg]:size-5"
-              }
+              className={cn(
+                "mb-8 grid size-10 place-items-center rounded-md border [&_svg]:size-5 @min-[60rem]/steps:mb-12",
+                panel ? "border-panel-border bg-panel text-panel-foreground" : "bg-background text-foreground"
+              )}
             >
               {step.icon}
             </span>
-            <h3 className={panel ? "text-h4 text-panel-foreground" : "text-h4 text-foreground"}>{step.title}</h3>
-            <p className={panel ? "mt-2 text-body text-panel-muted" : "mt-2 text-body text-copy"}>
-              {step.description}
-            </p>
-            {i < steps.length - 1 && (i + 1) % 4 !== 0 ? (
-              <span
-                aria-hidden="true"
-                className={cn(
-                  // Centred on the icon (padding + half the icon), bridging the 1rem gap and the next card's border.
-                  "absolute top-12.5 left-full hidden h-px w-4.25 @min-[60rem]/steps:block",
-                  panel ? "bg-panel-border" : "bg-border"
-                )}
-              />
-            ) : null}
+            <h3 className={cn("text-h4", panel ? "text-panel-foreground" : "text-foreground")}>{step.title}</h3>
+            <p className={cn("mt-2 text-body", panel ? "text-panel-muted" : "text-copy")}>{step.description}</p>
           </li>
         ))}
       </ol>
@@ -115,11 +109,13 @@ export function Steps({
   const heading = title ? (
     panel ? (
       <div className="mb-12 grid gap-6 @narrow/steps-panel:mb-16 @narrow/steps-panel:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] @narrow/steps-panel:items-end @narrow/steps-panel:gap-16">
-        <h2 className="max-w-narrow text-h2 text-panel-foreground">{title}</h2>
+        <h2 className="max-w-narrow text-h2 text-panel-foreground">
+          <Kern>{title}</Kern>
+        </h2>
         {description ? <p className="max-w-prose text-lead text-panel-muted">{description}</p> : null}
       </div>
     ) : (
-      <SectionHeading title={title} description={description} className="mb-12 md:mb-16" />
+      <SectionHeading title={title} description={description} className="mb-12 @3xl/steps-section:mb-16" />
     )
   ) : null
 
@@ -137,7 +133,11 @@ export function Steps({
   }
 
   return (
-    <section data-slot="steps" data-tone={tone} className={cn(contained && "container-page py-section", className)}>
+    <section
+      data-slot="steps"
+      data-tone={tone}
+      className={cn("@container/steps-section", contained && "container-page py-section", className)}
+    >
       {heading}
       {grid}
     </section>

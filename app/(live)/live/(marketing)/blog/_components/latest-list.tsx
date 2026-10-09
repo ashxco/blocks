@@ -3,6 +3,7 @@ import { ArrowDownIcon } from "lucide-react"
 
 import type { Post } from "@/components/blocks/post-card"
 import { PostCover } from "@/components/blocks/post-card/post-cover"
+import { cn } from "@/lib/utils"
 
 export interface LatestListProps {
   posts: Post[]
@@ -19,7 +20,7 @@ export function LatestList({ posts, archiveHref = "#all-posts", className }: Lat
   return (
     <section
       aria-labelledby="latest-heading"
-      className={`flex min-w-0 flex-col ${className ?? ""}`}
+      className={cn("flex min-w-0 flex-col", className)}
     >
       <div className="flex items-center justify-between gap-4 border-b pb-4">
         <h2 id="latest-heading" className="text-h4 text-foreground">
@@ -51,11 +52,7 @@ export function LatestList({ posts, archiveHref = "#all-posts", className }: Lat
                   {post.date ? <time dateTime={post.dateTime}>{post.date}</time> : null}
                 </p>
               </div>
-              <PostCover
-                pattern={post.cover?.pattern}
-                tint={post.cover?.tint}
-                className="aspect-4/3 rounded-md"
-              />
+              <PostCover size="sm" pattern={post.cover?.pattern} tint={post.cover?.tint} figures={post.cover?.figures} />
             </Link>
           </li>
         ))}

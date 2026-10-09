@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { GitBranchIcon } from "lucide-react"
+import { CheckIcon, GitBranchIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -18,11 +18,14 @@ import {
   ComboboxItem,
   ComboboxLabel,
   ComboboxList,
+  ComboboxSeparator,
   ComboboxTrigger,
   ComboboxValue,
+  comboboxStyles,
   useComboboxAnchor,
 } from "@/components/ui/combobox"
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
+import { cn } from "@/lib/utils"
 
 const frameworks = [
   "Next.js",
@@ -37,34 +40,50 @@ const frameworks = [
   "Gatsby",
 ]
 
-const branches = ["main", "develop", "staging", "release/2.4", "release/2.5", "fix/checkout-timeout"]
+const branches = [
+  "main",
+  "develop",
+  "staging",
+  "release/2.4",
+  "release/2.5",
+  "feat/checkout-redesign",
+  "feat/edge-images",
+  "fix/checkout-timeout",
+  "fix/preview-urls",
+  "chore/upgrade-next",
+  "docs/api-reference",
+  "perf/cold-starts",
+]
 
 const regionGroups = [
   {
     value: "Europe",
     items: [
-      { label: "Frankfurt", value: "fra-1" },
-      { label: "London", value: "lhr-1" },
-      { label: "Stockholm", value: "arn-1" },
+      { label: "Frankfurt (fra1)", value: "fra1" },
+      { label: "London (lhr1)", value: "lhr1" },
+      { label: "Paris (cdg1)", value: "cdg1" },
     ],
   },
   {
     value: "Americas",
     items: [
-      { label: "Washington, D.C.", value: "iad-1" },
-      { label: "San Francisco", value: "sfo-1" },
-      { label: "São Paulo", value: "gru-1" },
+      { label: "Washington, D.C. (iad1)", value: "iad1" },
+      { label: "San Francisco (sfo1)", value: "sfo1" },
+      { label: "São Paulo (gru1)", value: "gru1" },
     ],
   },
   {
     value: "Asia Pacific",
     items: [
-      { label: "Singapore", value: "sin-1" },
-      { label: "Tokyo", value: "hnd-1" },
-      { label: "Sydney", value: "syd-1" },
+      { label: "Singapore (sin1)", value: "sin1" },
+      { label: "Tokyo (hnd1)", value: "hnd1" },
+      { label: "Sydney (syd1)", value: "syd1" },
     ],
   },
 ]
+
+type RegionGroup = (typeof regionGroups)[number]
+type Region = RegionGroup["items"][number]
 
 const teammates = [
   "Maya Chen",
@@ -74,14 +93,19 @@ const teammates = [
   "Aiko Tanaka",
   "Sam Okafor",
   "Lena Novak",
+  "Elena Petrova",
+  "Kwame Mensah",
 ]
 
 const projects = [
-  { label: "acme-storefront", value: "acme-storefront", tint: "bg-tint-violet" },
+  { label: "acme-web", value: "acme-web", tint: "bg-tint-violet" },
   { label: "acme-api", value: "acme-api", tint: "bg-tint-sky" },
-  { label: "docs-site", value: "docs-site", tint: "bg-tint-mint" },
-  { label: "marketing-web", value: "marketing-web", tint: "bg-tint-sand" },
-  { label: "status-page", value: "status-page", tint: "bg-tint-rose" },
+  { label: "acme-docs", value: "acme-docs", tint: "bg-tint-mint" },
+  { label: "acme-dashboard", value: "acme-dashboard", tint: "bg-tint-sand" },
+  { label: "acme-status", value: "acme-status", tint: "bg-tint-rose" },
+  { label: "acme-blog", value: "acme-blog", tint: "bg-tint-sky" },
+  { label: "acme-emails", value: "acme-emails", tint: "bg-tint-mint" },
+  { label: "acme-workers", value: "acme-workers", tint: "bg-tint-sand" },
 ]
 
 type Project = (typeof projects)[number]
@@ -92,7 +116,7 @@ function ProjectMark({ project }: { project: Project }) {
       aria-hidden="true"
       className={`grid size-5 shrink-0 place-items-center rounded-xs text-xs font-bold text-foreground ${project.tint}`}
     >
-      {project.label.charAt(0).toUpperCase()}
+      {project.label.replace(/^acme-/, "").charAt(0).toUpperCase()}
     </span>
   )
 }
@@ -101,7 +125,7 @@ function TeammatePicker() {
   const anchor = useComboboxAnchor()
 
   return (
-    <Field className="w-full max-w-112">
+    <Field className="w-full max-w-md">
       <FieldLabel htmlFor="notify-teammates">Notify on failed deploys</FieldLabel>
       <Combobox items={teammates} multiple defaultValue={["Maya Chen", "Priya Raman"]}>
         <ComboboxChips ref={anchor}>
@@ -171,29 +195,102 @@ function ProjectSwitcher() {
   )
 }
 
+/**
+ * Region search with grouped results. A picture of the open list sits under
+ * the input, drawn with the combobox's own recipes, so readers see the groups
+ * without opening it. It is hidden from assistive technology and steps aside
+ * while the real popup, which opens in the same place, is showing.
+ */
+function RegionPicker() {
+  const [value, setValue] = React.useState<Region | null>(regionGroups[0].items[0])
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <div className="grid w-full max-w-sm gap-1.5">
+      <Field>
+        <FieldLabel htmlFor="combobox-region">Region</FieldLabel>
+        <Combobox
+          items={regionGroups}
+          value={value}
+          onValueChange={(next) => setValue(next as Region | null)}
+          onOpenChange={setOpen}
+        >
+          <ComboboxInput id="combobox-region" placeholder="Search regions" />
+          <ComboboxContent>
+            <ComboboxEmpty>No regions match. Try a city or a code like fra1.</ComboboxEmpty>
+            <ComboboxList className="max-h-96">
+              {(group: RegionGroup, index: number) => (
+                <ComboboxGroup key={group.value} items={group.items}>
+                  {index > 0 ? <ComboboxSeparator /> : null}
+                  <ComboboxLabel>{group.value}</ComboboxLabel>
+                  <ComboboxCollection>
+                    {(region: Region) => (
+                      <ComboboxItem key={region.value} value={region}>
+                        {region.label}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxCollection>
+                </ComboboxGroup>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </Field>
+      <div aria-hidden="true" inert className={cn(comboboxStyles.popup, open && "invisible")}>
+        <div className={cn(comboboxStyles.list, "max-h-none")}>
+          {regionGroups.map((group, index) => (
+            <div key={group.value}>
+              {index > 0 ? <div className={comboboxStyles.separator} /> : null}
+              <div className={comboboxStyles.label}>{group.value}</div>
+              {group.items.map((region) => {
+                const selected = region.value === value?.value
+                return (
+                  <div key={region.value} className={comboboxStyles.item} data-selected={selected ? "" : undefined}>
+                    {region.label}
+                    {selected ? (
+                      <span className={comboboxStyles.itemIndicator}>
+                        <CheckIcon className="size-4 text-foreground" strokeWidth={2.5} />
+                      </span>
+                    ) : null}
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ComboboxDocs() {
   return (
     <Examples>
       <Example
         title="Default"
+        layout="stack"
         description="Type to filter, use the arrow keys to move and Enter to pick. The chevron opens the full list."
-        code={`<Combobox items={frameworks}>
-  <ComboboxInput placeholder="Search frameworks" />
-  <ComboboxContent>
-    <ComboboxEmpty>No frameworks found.</ComboboxEmpty>
-    <ComboboxList>
-      {(item) => (
-        <ComboboxItem key={item} value={item}>
-          {item}
-        </ComboboxItem>
-      )}
-    </ComboboxList>
-  </ComboboxContent>
-</Combobox>`}
+        code={`<Field>
+  <FieldLabel htmlFor="framework">Framework</FieldLabel>
+  <Combobox items={frameworks}>
+    <ComboboxInput id="framework" placeholder="Search frameworks" />
+    <ComboboxContent>
+      <ComboboxEmpty>No frameworks found.</ComboboxEmpty>
+      <ComboboxList>
+        {(item) => (
+          <ComboboxItem key={item} value={item}>
+            {item}
+          </ComboboxItem>
+        )}
+      </ComboboxList>
+    </ComboboxContent>
+  </Combobox>
+</Field>`}
       >
-        <div className="w-64">
+        <Field className="max-w-sm">
+          <FieldLabel htmlFor="combobox-framework">Framework</FieldLabel>
           <Combobox items={frameworks}>
-            <ComboboxInput placeholder="Search frameworks" aria-label="Framework" />
+            <ComboboxInput id="combobox-framework" placeholder="Search frameworks" />
             <ComboboxContent>
               <ComboboxEmpty>No frameworks found.</ComboboxEmpty>
               <ComboboxList>
@@ -205,20 +302,36 @@ export default function ComboboxDocs() {
               </ComboboxList>
             </ComboboxContent>
           </Combobox>
-        </div>
+        </Field>
       </Example>
 
       <Example
         title="Clear button"
+        layout="stack"
         description="Set showClear to swap the chevron for a clear button once a value is picked."
-        code={`<Combobox items={branches} defaultValue="main">
-  <ComboboxInput showClear placeholder="Search branches" />
-  …
-</Combobox>`}
+        code={`<Field>
+  <FieldLabel htmlFor="branch">Production branch</FieldLabel>
+  <Combobox items={branches} defaultValue="main">
+    <ComboboxInput id="branch" showClear placeholder="Search branches">
+      <GitBranchIcon className="order-first me-1.5" />
+    </ComboboxInput>
+    <ComboboxContent>
+      <ComboboxEmpty>No branches match.</ComboboxEmpty>
+      <ComboboxList>
+        {(item) => (
+          <ComboboxItem key={item} value={item}>
+            {item}
+          </ComboboxItem>
+        )}
+      </ComboboxList>
+    </ComboboxContent>
+  </Combobox>
+</Field>`}
       >
-        <div className="w-64">
+        <Field className="max-w-sm">
+          <FieldLabel htmlFor="combobox-branch">Production branch</FieldLabel>
           <Combobox items={branches} defaultValue="main">
-            <ComboboxInput showClear placeholder="Search branches" aria-label="Production branch">
+            <ComboboxInput id="combobox-branch" showClear placeholder="Search branches">
               <GitBranchIcon className="order-first me-1.5" />
             </ComboboxInput>
             <ComboboxContent>
@@ -232,19 +345,21 @@ export default function ComboboxDocs() {
               </ComboboxList>
             </ComboboxContent>
           </Combobox>
-        </div>
+        </Field>
       </Example>
 
       <Example
         title="Groups"
-        description="Pass grouped items and render each group with a label. Empty groups disappear as you type."
+        layout="stack"
+        description="Pass grouped items and render each group with a label, with a separator before every group but the first. Empty groups disappear as you type. The list is drawn open under the input."
         code={`<Combobox items={regionGroups}>
-  <ComboboxInput placeholder="Search regions" />
+  <ComboboxInput id="region" placeholder="Search regions" />
   <ComboboxContent>
-    <ComboboxEmpty>No regions found.</ComboboxEmpty>
+    <ComboboxEmpty>No regions match. Try a city or a code like fra1.</ComboboxEmpty>
     <ComboboxList>
-      {(group) => (
+      {(group, index) => (
         <ComboboxGroup key={group.value} items={group.items}>
+          {index > 0 ? <ComboboxSeparator /> : null}
           <ComboboxLabel>{group.value}</ComboboxLabel>
           <ComboboxCollection>
             {(region) => (
@@ -259,31 +374,7 @@ export default function ComboboxDocs() {
   </ComboboxContent>
 </Combobox>`}
       >
-        <div className="w-64">
-          <Combobox items={regionGroups}>
-            <ComboboxInput placeholder="Search regions" aria-label="Region" />
-            <ComboboxContent>
-              <ComboboxEmpty>No regions found.</ComboboxEmpty>
-              <ComboboxList>
-                {(group: (typeof regionGroups)[number]) => (
-                  <ComboboxGroup key={group.value} items={group.items}>
-                    <ComboboxLabel>{group.value}</ComboboxLabel>
-                    <ComboboxCollection>
-                      {(region: (typeof regionGroups)[number]["items"][number]) => (
-                        <ComboboxItem key={region.value} value={region}>
-                          {region.label}
-                          <span className="ms-auto font-mono text-xs font-normal text-muted-foreground">
-                            {region.value}
-                          </span>
-                        </ComboboxItem>
-                      )}
-                    </ComboboxCollection>
-                  </ComboboxGroup>
-                )}
-              </ComboboxList>
-            </ComboboxContent>
-          </Combobox>
-        </div>
+        <RegionPicker />
       </Example>
 
       <Example
@@ -292,7 +383,7 @@ export default function ComboboxDocs() {
         layout="stack"
         code={`const anchor = useComboboxAnchor()
 
-<Combobox items={teammates} multiple defaultValue={["Maya Chen"]}>
+<Combobox items={teammates} multiple defaultValue={["Maya Chen", "Priya Raman"]}>
   <ComboboxChips ref={anchor}>
     <ComboboxValue>
       {(values) => (
@@ -300,7 +391,7 @@ export default function ComboboxDocs() {
           {values.map((value) => (
             <ComboboxChip key={value}>{value}</ComboboxChip>
           ))}
-          <ComboboxChipsInput placeholder="Add teammates" />
+          <ComboboxChipsInput id="teammates" placeholder={values.length ? "Add more" : "Add teammates"} />
         </>
       )}
     </ComboboxValue>
@@ -320,11 +411,14 @@ export default function ComboboxDocs() {
         title="Search in the popup"
         description="A button shows the current value and the search field lives in the popup. Good for switchers in a toolbar."
         code={`<Combobox items={projects} defaultValue={projects[0]}>
-  <ComboboxTrigger render={<Button variant="outline" className="w-64 justify-between" />}>
+  <ComboboxTrigger
+    render={<Button variant="outline" className="w-64 justify-between ps-3" />}
+    aria-label="Switch project"
+  >
     <ComboboxValue />
   </ComboboxTrigger>
   <ComboboxContent>
-    <ComboboxInput showTrigger={false} placeholder="Find a project" />
+    <ComboboxInput showTrigger={false} placeholder="Find a project" aria-label="Find a project" />
     <ComboboxEmpty>No projects match.</ComboboxEmpty>
     <ComboboxList>
       {(project) => (
@@ -335,7 +429,6 @@ export default function ComboboxDocs() {
     </ComboboxList>
   </ComboboxContent>
 </Combobox>`}
-        minHeight="min-h-96"
       >
         <ProjectSwitcher />
       </Example>
@@ -344,8 +437,34 @@ export default function ComboboxDocs() {
         title="States"
         description="Disabled fields fade and ignore input. Invalid fields take aria-invalid on the input and explain the fix below."
         layout="stack"
+        code={`<Field>
+  <FieldLabel htmlFor="framework">Framework preset</FieldLabel>
+  <Combobox items={frameworks} defaultValue="Next.js" disabled>
+    <ComboboxInput id="framework" disabled />
+    <ComboboxContent>
+      <ComboboxList>
+        {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
+      </ComboboxList>
+    </ComboboxContent>
+  </Combobox>
+  <FieldDescription>Detected from package.json.</FieldDescription>
+</Field>
+
+<Field data-invalid>
+  <FieldLabel htmlFor="branch">Production branch</FieldLabel>
+  <Combobox items={branches}>
+    <ComboboxInput id="branch" placeholder="Search branches" aria-invalid />
+    <ComboboxContent>
+      <ComboboxEmpty>No branches match.</ComboboxEmpty>
+      <ComboboxList>
+        {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
+      </ComboboxList>
+    </ComboboxContent>
+  </Combobox>
+  <FieldError>Choose a branch. Lumen deploys it to production on every push.</FieldError>
+</Field>`}
       >
-        <div className="grid w-full max-w-144 gap-6 sm:grid-cols-2">
+        <div className="grid w-full max-w-2xl gap-6 @xl:grid-cols-2">
           <Field>
             <FieldLabel htmlFor="combobox-disabled">Framework preset</FieldLabel>
             <Combobox items={frameworks} defaultValue="Next.js" disabled>

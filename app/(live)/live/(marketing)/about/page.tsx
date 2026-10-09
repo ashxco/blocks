@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { FoundersStory } from "./_components/founders-story"
 import { TimeZonesPanel } from "./_components/time-zones-panel"
 import { ValuesGrid } from "./_components/values-grid"
+import { Kern } from "@/components/ui/kern"
 
 export const metadata: Metadata = {
   title: "About",
@@ -23,6 +24,12 @@ const stats = [
   { value: "14", label: "People on the team", detail: "Fully remote, six time zones" },
   { value: "38,000", label: "Teams deploying", detail: "From side projects to public companies" },
   { value: "$8M", label: "Seed funding", detail: "Led by Fieldstone Capital" },
+]
+
+const openRoles = [
+  { title: "Senior platform engineer", detail: "Engineering · UTC−5 to UTC+3" },
+  { title: "Product designer", detail: "Design · UTC−3 to UTC+3" },
+  { title: "Support engineer", detail: "Support · UTC+5 to UTC+9" },
 ]
 
 const backers = [
@@ -39,7 +46,9 @@ export default function AboutPage() {
         <div className="grid items-center gap-x-12 gap-y-14 lg:grid-cols-12">
           <div className="grid gap-8 lg:col-span-7">
             <h1 id="about-heading" className="text-display text-foreground">
-              Deploys should be <span className="text-brand">boring</span>.
+              <Kern>
+                Deploys should be <span className="text-brand">boring</span>.
+              </Kern>
             </h1>
             <p className="max-w-prose text-lead text-copy">
               Lumen is a deployment platform built by fourteen engineers and designers who spent a decade on call. We
@@ -69,7 +78,7 @@ export default function AboutPage() {
 
       <TeamGrid
         members={defaultTeam.slice(0, 7)}
-        title="The people behind Lumen"
+        title="The people behind Lumen."
         description="Fourteen of us across six time zones, building Lumen in the open and shipping something every week."
         hiring={{
           title: "Join the team",
@@ -83,11 +92,33 @@ export default function AboutPage() {
       <div id="careers" className="scroll-mt-(--header-height)">
         <CtaBand
           title="We’re hiring."
-          description="We have six open roles in engineering, design and support. Work from anywhere between UTC−7 and UTC+9, with a team week in Lisbon every spring."
-          primaryAction={{ label: "See open roles", href: "/live/contact" }}
+          description="We have six open roles in engineering, design and support. Work from anywhere between UTC−7 and UTC+9, with equity for everyone, five weeks of paid leave and a team week in Lisbon every spring."
+          primaryAction={{ label: "See all six roles", href: "/live/contact" }}
           secondaryAction={{ label: "Ask us a question", href: "/live/contact" }}
-          installLabel="Try what you would be building"
-          points={["Fully remote, six time zones", "Equity for everyone on the team", "Five weeks of paid leave"]}
+          aside={
+            <>
+              <p className="text-label text-panel-foreground">Open now</p>
+              <ul className="-my-1 grid divide-y divide-panel-border">
+                {openRoles.map((role) => (
+                  <li key={role.title}>
+                    <Link
+                      href="/live/contact"
+                      className="group/role -mx-3 flex items-center justify-between gap-4 rounded-md px-3 py-3.5 outline-none transition-colors duration-(--duration-fast) ease-standard hover:bg-panel focus-visible:focus-ring"
+                    >
+                      <span className="grid gap-0.5">
+                        <span className="text-title text-panel-foreground">{role.title}</span>
+                        <span className="text-caption text-panel-muted">{role.detail}</span>
+                      </span>
+                      <ArrowRightIcon
+                        aria-hidden="true"
+                        className="size-4 shrink-0 text-panel-muted transition-[color,translate] duration-(--duration-fast) ease-standard group-hover/role:translate-x-0.5 group-hover/role:text-panel-foreground"
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          }
         />
       </div>
     </>

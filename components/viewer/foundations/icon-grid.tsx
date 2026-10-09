@@ -135,8 +135,8 @@ export function IconGrid() {
     <div className="grid gap-12">
       {iconGroups.map((group) => (
         <div key={group.name} className="grid gap-5">
-          <h3 className="text-h4">{group.name}</h3>
-          <ul className="grid grid-cols-3 gap-px overflow-hidden rounded-(--card-radius) border bg-border @prose:grid-cols-4 @narrow:grid-cols-6">
+          <h3 className="text-h3 text-foreground">{group.name}</h3>
+          <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-(--card-radius) border bg-border @prose:grid-cols-4 @narrow:grid-cols-6">
             {group.icons.map(([name, Icon]) => {
               const done = copied === name
               const label = name.replace(/Icon$/, "")
@@ -146,10 +146,14 @@ export function IconGrid() {
                     type="button"
                     onClick={() => void copy(name)}
                     aria-label={`Copy ${name}`}
-                    className="group/icon grid h-32 w-full place-items-center content-center gap-3 p-3 text-foreground transition-colors duration-(--duration-fast) ease-standard hover:bg-subtle focus-visible:-outline-offset-(--focus-width)"
+                    className="group/icon flex min-h-14 w-full items-center gap-3 px-3 py-2.5 text-left text-foreground transition-colors duration-(--duration-fast) ease-standard hover:bg-subtle focus-visible:-outline-offset-(--focus-width) @prose:grid @prose:h-28 @prose:place-items-center @prose:content-center @prose:text-center"
                   >
-                    {done ? <CheckIcon className="size-6 text-success" /> : <Icon className="size-6" />}
-                    <span className="max-w-full truncate text-caption text-muted-foreground group-hover/icon:text-foreground">
+                    {done ? (
+                      <CheckIcon className="size-5 shrink-0 text-success @prose:size-6" />
+                    ) : (
+                      <Icon className="size-5 shrink-0 @prose:size-6" />
+                    )}
+                    <span className="min-w-0 text-xs break-words text-muted-foreground group-hover/icon:text-foreground @prose:max-w-full">
                       {done ? "Copied" : label}
                     </span>
                   </button>

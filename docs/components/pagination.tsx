@@ -60,7 +60,8 @@ function StatefulPagination({
               <PaginationEllipsis />
             </PaginationItem>
           ) : (
-            <PaginationItem key={p}>
+            // On phones, keep the first, last and current page; neighbours return from sm up.
+            <PaginationItem key={p} className={p !== page && p !== 1 && p !== total ? "max-sm:hidden" : undefined}>
               <PaginationLink href={`#page-${p}`} size={size} isActive={p === page} onClick={go(p)}>
                 {p}
               </PaginationLink>
@@ -228,7 +229,7 @@ export default function PaginationDocs() {
       <ApiTable
         rows={[
           { prop: "isActive", type: "boolean", default: "false", description: "PaginationLink: marks the current page with a solid ink fill and aria-current." },
-          { prop: "size", type: '"icon" | "icon-sm" | "icon-lg" | …', default: '"icon"', description: "PaginationLink: any Button size. Page sizes come from --button-height-*." },
+          { prop: "PaginationLink size", type: '"icon" | "icon-sm" | "icon-lg" | …', default: '"icon"', description: "Any Button size. Page sizes come from --button-height-*." },
           { prop: "href", type: "string", description: "PaginationLink, PaginationPrevious, PaginationNext: the page to go to." },
           { prop: "text", type: "string", default: '"Previous" / "Next"', description: "PaginationPrevious and PaginationNext: the label shown from the sm breakpoint up." },
           { prop: "size", type: '"default" | "sm"', default: '"default"', description: "PaginationPrevious and PaginationNext: match sm with icon-sm page links." },

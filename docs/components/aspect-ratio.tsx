@@ -50,7 +50,8 @@ export default function AspectRatioDocs() {
 </AspectRatio>`}
       >
         <AspectRatio ratio={16 / 9} className="rounded-(--panel-radius) border border-border bg-terminal text-terminal-foreground">
-          <div className="absolute inset-0 grid place-items-center">
+          {/* On a narrow frame the button moves to the top corner, clear of the caption. */}
+          <div className="absolute inset-0 grid place-items-start p-6 @md:place-items-center @md:p-0">
             <Button size="icon-lg" variant="inverse" aria-label="Play the two-minute tour of Lumen">
               <PlayIcon className="translate-x-px fill-current" />
             </Button>

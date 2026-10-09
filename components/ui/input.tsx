@@ -22,7 +22,7 @@ const inputVariants = cva(
     "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",
     "group-data-[invalid=true]/field:border-destructive! group-data-[invalid=true]/field:focus-visible:outline-destructive",
     "disabled:pointer-events-none disabled:opacity-50",
-    "file:mr-3 file:h-7 file:rounded-(--button-radius) file:border-0 file:bg-secondary file:px-3 file:text-xs file:font-semibold file:text-secondary-foreground",
+    "file:mr-3 file:h-(--button-height-xs) file:rounded-(--button-radius) file:border-0 file:bg-secondary file:px-(--button-padding-x-xs) file:text-caption file:font-semibold file:text-secondary-foreground",
   ],
   {
     variants: {

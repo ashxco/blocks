@@ -7,7 +7,9 @@ import { cn } from "@/lib/utils"
 
 /**
  * Blocks breadcrumb. Muted links in the label role, the current page in full
- * ink, and a quiet slash between them.
+ * ink, and a quiet slash between them. The trail stays on one line: when it
+ * runs out of room, the links before the current page shorten with an
+ * ellipsis, so a separator never dangles at the end of a line.
  *
  * Render links with your router:
  *   <BreadcrumbLink render={<Link href="/projects" />}>Projects</BreadcrumbLink>
@@ -28,7 +30,7 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
     <ol
       data-slot="breadcrumb-list"
       className={cn(
-        "flex flex-wrap items-center gap-x-2 gap-y-1 text-label wrap-break-word text-muted-foreground",
+        "flex min-w-0 flex-nowrap items-center gap-x-1 text-label whitespace-nowrap text-muted-foreground sm:gap-x-2",
         className
       )}
       {...props}
@@ -40,21 +42,39 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
   return (
     <li
       data-slot="breadcrumb-item"
-      className={cn("inline-flex min-w-0 items-center gap-1.5", className)}
+      className={cn(
+        "inline-flex min-w-0 items-center gap-1.5",
+        // The current page keeps its full name unless it alone is wider than the trail.
+        "has-data-[slot=breadcrumb-page]:max-w-full has-data-[slot=breadcrumb-page]:shrink-0",
+        className
+      )}
       {...props}
     />
+  )
+}
+
+/** Wraps text in a span that can shorten with an ellipsis; icons stay whole. */
+function truncatable(children: React.ReactNode) {
+  return React.Children.map(children, (child) =>
+    typeof child === "string" || typeof child === "number" ? (
+      <span className="min-w-0 truncate">{child}</span>
+    ) : (
+      child
+    )
   )
 }
 
 function BreadcrumbLink({
   className,
   render,
+  children,
   ...props
 }: useRender.ComponentProps<"a">) {
   return useRender({
     defaultTagName: "a",
     props: mergeProps<"a">(
       {
+        children: truncatable(children),
         className: cn(
           "inline-flex min-w-0 items-center gap-1.5 rounded-xs text-muted-foreground underline-offset-4 outline-none",
           "transition-colors duration-(--duration-fast) ease-standard",
@@ -72,7 +92,11 @@ function BreadcrumbLink({
   })
 }
 
-function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
+function BreadcrumbPage({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="breadcrumb-page"
@@ -84,7 +108,9 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
         className
       )}
       {...props}
-    />
+    >
+      {truncatable(children)}
+    </span>
   )
 }
 
@@ -99,7 +125,7 @@ function BreadcrumbSeparator({
       role="presentation"
       aria-hidden="true"
       className={cn(
-        "inline-flex items-center text-border-strong [&>svg]:size-3.5 [&>svg]:-rotate-12",
+        "inline-flex shrink-0 items-center text-border-strong [&>svg]:size-3.5 [&>svg]:-rotate-12",
         className
       )}
       {...props}

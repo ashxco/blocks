@@ -16,7 +16,7 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        "peer group/checkbox relative inline-flex size-4.5 max-w-4.5 min-w-4.5 shrink-0 items-center justify-center rounded-xs border border-muted-foreground/75 bg-background text-primary-foreground",
+        "peer group/checkbox relative inline-flex size-(--selection-size) max-w-(--selection-size) min-w-(--selection-size) shrink-0 items-center justify-center rounded-xs border border-muted-foreground/75 bg-background text-primary-foreground",
         "outline-none transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
         "after:absolute after:-inset-2.5",
         "data-unchecked:not-data-indeterminate:hover:border-foreground",
@@ -24,7 +24,10 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
         "data-checked:border-primary data-checked:bg-primary data-indeterminate:border-primary data-indeterminate:bg-primary",
         "group-data-[invalid=true]/field:border-destructive aria-invalid:border-destructive",
         "aria-invalid:aria-checked:border-primary group-data-[invalid=true]/field:aria-checked:border-primary",
-        "data-disabled:cursor-not-allowed data-disabled:opacity-50",
+        // Disabled: an empty box takes the muted fill and a lighter border, so
+        // it stays visible; a checked box fades its ink.
+        "data-disabled:cursor-not-allowed data-disabled:data-checked:opacity-50 data-disabled:data-indeterminate:opacity-50",
+        "data-disabled:data-unchecked:not-data-indeterminate:border-muted-foreground/50 data-disabled:data-unchecked:not-data-indeterminate:bg-muted",
         "group-has-[>[data-slot=field]]/field-label:focus-visible:outline-none",
         className
       )}

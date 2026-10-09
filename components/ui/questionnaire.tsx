@@ -7,22 +7,18 @@ import { cn } from "@/lib/utils"
 import { buttonVariants, type Button } from "@/components/ui/button"
 import { CheckIcon } from "lucide-react"
 
-/*
- * Type roles (text-label, text-caption, text-h4…) are applied outside cn():
- * cn reads them as text colours and drops them next to a colour class.
- */
-type ButtonSize = React.ComponentProps<typeof Button>["size"]
-
-function buttonRole(size: ButtonSize) {
-  return size === "xs" ? "text-caption font-semibold" : "text-label"
-}
-
 /**
  * Blocks questionnaire. One question at a time, as a form. Choices are
- * hairline rows that turn ink-edged when picked, with an ink checkbox or
- * radio; letters or numbers can act as keyboard shortcuts. Progress is a
+ * hairline rows that turn ink-edged when picked, with a filled ink checkbox
+ * or radio; letters or numbers can act as keyboard shortcuts. Progress is a
  * row of hairline segments rather than a "Question 2 of 4" label, and the
  * count stays available to screen readers.
+ *
+ * Pass `items` (the item names, with `required` and the choice values) so
+ * the server renders the first question, the progress bar and the buttons.
+ * Without it the primitive only picks a question once the items register
+ * on the client; until then the first item shows, so the page never renders
+ * an empty form.
  */
 function Questionnaire({
   className,
@@ -31,7 +27,12 @@ function Questionnaire({
   return (
     <QuestionnairePrimitive.Root
       data-slot="questionnaire"
-      className={cn("flex w-full min-w-0 flex-col gap-6", className)}
+      className={cn(
+        "flex w-full min-w-0 flex-col gap-6",
+        // Before any item is active, show the first one. Beats the preflight [hidden] rule.
+        "[&:not(:has(>[data-slot=questionnaire-item]:not([hidden])))>[data-slot=questionnaire-item]:first-of-type]:flex!",
+        className
+      )}
       {...props}
     />
   )
@@ -55,12 +56,12 @@ function QuestionnaireProgress({
     <QuestionnairePrimitive.Progress
       data-slot="questionnaire-progress"
       data-variant={variant}
-      className={`${variant === "text" ? "text-caption" : ""} ${cn(
+      className={cn(
         variant === "bar"
-          ? "flex w-full items-center gap-1"
-          : "min-h-[1lh] w-fit min-w-[14ch] font-semibold text-muted-foreground tabular-nums",
+          ? "flex min-h-1 w-full items-center gap-1"
+          : "min-h-[1lh] w-fit min-w-[14ch] text-caption font-semibold text-muted-foreground tabular-nums",
         className
-      )}`}
+      )}
       render={
         render ??
         (variant === "bar"
@@ -120,11 +121,12 @@ function QuestionnaireTitle({
     <QuestionnairePrimitive.Title
       data-slot="questionnaire-title"
       data-size={size}
-      className={`${size === "sm" ? "text-title" : "text-h4"} ${cn(
+      className={cn(
         "mb-1.5 p-0 font-heading text-pretty text-foreground",
+        size === "sm" ? "text-title" : "text-h4",
         "[&:not(:has(~[data-slot=questionnaire-description]))]:mb-4",
         className
-      )}`}
+      )}
       {...props}
     />
   )
@@ -159,14 +161,36 @@ function QuestionnaireChoices({
   )
 }
 
+const subscribeToNothing = () => () => {}
+
+/** False on the server and during hydration, true afterwards. */
+function useHydrated() {
+  return React.useSyncExternalStore(
+    subscribeToNothing,
+    () => true,
+    () => false
+  )
+}
+
 function QuestionnaireChoice({
   children,
   className,
+  checked,
+  defaultChecked,
   ...props
 }: React.ComponentProps<typeof QuestionnairePrimitive.Choice>) {
+  // The primitive registers default answers in a layout effect, which never
+  // runs on the server. Until hydration, render a default answer as checked so
+  // it paints selected from the first frame and without JavaScript.
+  const hydrated = useHydrated()
+  const initialChecked =
+    !hydrated && checked === undefined && defaultChecked ? true : undefined
+
   return (
     <QuestionnairePrimitive.Choice
       data-slot="questionnaire-choice"
+      checked={checked ?? initialChecked}
+      defaultChecked={defaultChecked}
       className={cn(
         "group/questionnaire-choice relative flex min-h-(--control-height-lg) cursor-pointer items-start gap-3 rounded-(--control-radius) border border-border bg-background px-4 py-3 text-start text-sm text-foreground select-none",
         "transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
@@ -187,7 +211,7 @@ function QuestionnaireChoice({
         aria-hidden="true"
         data-slot="questionnaire-choice-indicator"
         className={cn(
-          "pointer-events-none relative mt-px flex size-4.5 shrink-0 items-center justify-center rounded-xs border border-input bg-background text-primary-foreground",
+          "pointer-events-none relative mt-px flex size-(--selection-size) shrink-0 items-center justify-center rounded-xs border border-input bg-background text-primary-foreground",
           "transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
           "group-data-[type=radio]/questionnaire-choice:rounded-full",
           "group-hover/questionnaire-choice:border-foreground/40",
@@ -231,7 +255,7 @@ function QuestionnaireChoiceDescription({
   return (
     <span
       data-slot="questionnaire-choice-description"
-      className={`text-caption ${cn("font-normal text-muted-foreground", className)}`}
+      className={cn("text-caption font-normal text-muted-foreground", className)}
       {...props}
     />
   )
@@ -270,7 +294,7 @@ function QuestionnaireError({
   return (
     <QuestionnairePrimitive.Error
       data-slot="questionnaire-error"
-      className={`text-caption ${cn("font-medium text-destructive", className)}`}
+      className={cn("text-caption font-medium text-destructive", className)}
       {...props}
     />
   )
@@ -305,11 +329,11 @@ function QuestionnairePrevious({
       data-slot="questionnaire-previous"
       data-size={size}
       data-variant={variant}
-      className={`${buttonRole(size)} ${cn(
+      className={cn(
         buttonVariants({ size, variant }),
         "col-start-1 row-start-1 justify-self-start",
         className
-      )}`}
+      )}
       {...props}
     >
       {children ?? "Back"}
@@ -330,11 +354,11 @@ function QuestionnaireSkip({
       data-slot="questionnaire-skip"
       data-size={size}
       data-variant={variant}
-      className={`${buttonRole(size)} ${cn(
+      className={cn(
         buttonVariants({ size, variant }),
         "col-start-2 row-start-1 justify-self-end text-muted-foreground hover:text-foreground",
         className
-      )}`}
+      )}
       {...props}
     >
       {children ?? "Skip"}
@@ -355,11 +379,11 @@ function QuestionnaireNext({
       data-slot="questionnaire-next"
       data-size={size}
       data-variant={variant}
-      className={`${buttonRole(size)} ${cn(
+      className={cn(
         buttonVariants({ size, variant }),
         "col-start-3 row-start-1 justify-self-end",
         className
-      )}`}
+      )}
       {...props}
     >
       {children ?? "Continue"}
@@ -380,11 +404,11 @@ function QuestionnaireSubmit({
       data-slot="questionnaire-submit"
       data-size={size}
       data-variant={variant}
-      className={`${buttonRole(size)} ${cn(
+      className={cn(
         buttonVariants({ size, variant }),
         "col-start-3 row-start-1 justify-self-end",
         className
-      )}`}
+      )}
       {...props}
     >
       {children ?? "Submit"}

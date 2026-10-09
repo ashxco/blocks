@@ -1,31 +1,71 @@
 import * as React from "react"
-import { CircleCheckIcon, ClockIcon, GitBranchIcon, PlusIcon, RocketIcon } from "lucide-react"
+import { CircleCheckIcon, ClockIcon, GitBranchIcon, PlusIcon, RefreshCwIcon, RocketIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Guidelines } from "@/docs/kit"
 
 import { tokenByName, toPx } from "./data"
 import { IconGrid } from "./icon-grid"
-import { Code, FoundationPage, Meta, Section } from "./layout"
+import { Code, DoDont, FoundationPage, Meta, Section } from "./layout"
 
-/* Literal class names so Tailwind generates every size. */
-const sizes: { step: number; className: string; use: string }[] = [
-  { step: 3.5, className: "size-3.5", use: "Meta lines, extra-small buttons and badges." },
-  { step: 4, className: "size-4", use: "The default: buttons, menus, inputs and navigation." },
-  { step: 5, className: "size-5", use: "Large buttons, toolbar actions and app navigation." },
-  { step: 6, className: "size-6", use: "Feature tiles, empty states and headings." },
+/* Each size in the context it is made for. Literal class names so Tailwind generates every size. */
+const sizes: { step: number; className: string; use: string; sample: React.ReactNode }[] = [
+  {
+    step: 3.5,
+    className: "size-3.5",
+    use: "Meta lines, extra-small buttons and badges, with text-caption.",
+    sample: (
+      <span className="inline-flex items-center gap-1.5 text-caption text-muted-foreground">
+        <ClockIcon className="size-3.5" />
+        Deployed 4m ago
+      </span>
+    ),
+  },
+  {
+    step: 4,
+    className: "size-4",
+    use: "The default: buttons, menus, inputs and navigation, with text-label.",
+    sample: (
+      <span className="inline-flex items-center gap-2 text-label text-foreground">
+        <GitBranchIcon className="size-4" />
+        Branches
+      </span>
+    ),
+  },
+  {
+    step: 5,
+    className: "size-5",
+    use: "Large buttons, toolbar actions and app navigation.",
+    sample: (
+      <span className="inline-flex items-center gap-2.5 text-title text-foreground">
+        <RefreshCwIcon className="size-5" />
+        Redeploy
+      </span>
+    ),
+  },
+  {
+    step: 6,
+    className: "size-6",
+    use: "Feature tiles, empty states and headings, with text-h4.",
+    sample: (
+      <span className="inline-flex items-center gap-3 text-h4 text-foreground">
+        <RocketIcon className="size-6" />
+        Deploys
+      </span>
+    ),
+  },
 ]
 
 function Sizes() {
   const unit = toPx(String(tokenByName("spacing")?.value ?? "0.25rem")) ?? 4
   return (
-    <ul className="grid grid-cols-2 gap-6 @narrow:grid-cols-4">
+    <ul className="grid grid-cols-2 gap-x-6 gap-y-10 @narrow:grid-cols-4">
       {sizes.map((s) => (
         <li key={s.className} className="grid content-start gap-4">
-          <div className="grid h-28 place-items-center rounded-(--card-radius) border bg-subtle text-foreground">
-            <RocketIcon className={s.className} />
+          {/* Samples share a bottom line, so the sizes step up side by side. */}
+          <div aria-hidden className="flex h-12 items-end">
+            {s.sample}
           </div>
-          <div className="grid gap-1">
+          <div className="grid gap-1 border-t pt-4">
             <div className="flex items-baseline justify-between gap-3">
               <Code>{s.className}</Code>
               <Meta>{s.step * unit}px</Meta>
@@ -39,7 +79,7 @@ function Sizes() {
 }
 
 const strokes: { width: number; note: string; recommended?: boolean }[] = [
-  { width: 1.5, note: "Too thin beside label text. Only for illustrations at 32px and up." },
+  { width: 1.5, note: "Too thin beside label text; reads as a different icon set." },
   { width: 2, note: "Lucide’s default. Matches the weight of label and body text.", recommended: true },
   { width: 2.5, note: "Too heavy; competes with headings." },
 ]
@@ -78,9 +118,9 @@ function Strokes() {
 function Aligned({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative inline-flex items-center px-6">
-      <span aria-hidden className="absolute top-1/2 left-0 h-px w-3 bg-brand" />
+      <span aria-hidden className="absolute top-1/2 left-0 h-(--border-width-strong) w-4 -translate-y-1/2 rounded-full bg-brand" />
       {children}
-      <span aria-hidden className="absolute top-1/2 right-0 h-px w-3 bg-brand" />
+      <span aria-hidden className="absolute top-1/2 right-0 h-(--border-width-strong) w-4 -translate-y-1/2 rounded-full bg-brand" />
     </div>
   )
 }
@@ -140,7 +180,7 @@ const pairings: { name: string; spec: string; sample: React.ReactNode }[] = [
 
 function Pairings() {
   return (
-    <ul className="grid border-b">
+    <ul className="grid">
       {pairings.map((p) => (
         <li
           key={p.name}
@@ -194,21 +234,26 @@ export function IconographyFoundation({ title, description }: { title: string; d
         title="Icon and text"
         description="Centre icons on the text with items-center and let them inherit the text colour. The violet ticks mark the shared centre line."
       >
-        <div className="grid gap-12">
-          <Pairings />
-          <Guidelines
-            do={[
-              "Let icons inherit currentColor and tint them with text utilities.",
-              "Give icon-only buttons an aria-label that says what happens.",
-              "Pair status icons with a word, so colour is never the only signal.",
-            ]}
-            dont={[
-              "Don’t mix in other icon sets or draw custom icons for things lucide has.",
-              "Don’t change stroke width per instance.",
-              "Don’t place icons above headings as decoration.",
-            ]}
-          />
-        </div>
+        <Pairings />
+      </Section>
+
+      <Section
+        id="principles"
+        title="Principles"
+        description="Icons support words; they rarely replace them. One set, one stroke, and colour that follows the text."
+      >
+        <DoDont
+          do={[
+            "Let icons inherit currentColor and tint them with text utilities.",
+            "Give icon-only buttons an aria-label that says what happens.",
+            "Pair status icons with a word, so colour is never the only signal.",
+          ]}
+          dont={[
+            "Mix in other icon sets or draw custom icons for things lucide has.",
+            "Change stroke width per instance.",
+            "Place icons above headings as decoration.",
+          ]}
+        />
       </Section>
     </FoundationPage>
   )

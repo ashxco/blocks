@@ -4,13 +4,13 @@ import * as React from "react"
 import { UploadIcon } from "lucide-react"
 
 import { DangerZone, type DangerAction } from "@/components/blocks/danger-zone"
+import { personTone } from "@/components/blocks/members-list/people"
+import { WorkspaceUrlInput } from "@/components/blocks/onboarding-steps/workspace-url-input"
 import { SettingsSection } from "@/components/blocks/settings-section"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   Field,
-  FieldContent,
   FieldDescription,
   FieldGroup,
   FieldLabel,
@@ -30,6 +30,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/toast"
+
+import { SwitchRow } from "./switch-row"
 
 const TIME_ZONES = [
   { value: "America/Los_Angeles", label: "Pacific Time, Los Angeles" },
@@ -102,6 +104,8 @@ export function GeneralSettings() {
         description="How teammates see you in deploy logs, comments and invites."
         footerNote="Your profile is visible to everyone in Acme Inc."
         saveLabel="Save profile"
+        successTitle="Profile saved"
+        successDescription="Teammates see your new details in deploy logs, comments and invites."
       >
         <ProfileFields />
       </SettingsSection>
@@ -110,21 +114,26 @@ export function GeneralSettings() {
         title="Workspace"
         description="The workspace name and URL appear in the dashboard, in invites and on every preview link."
         footerNote="Changes apply to every project in Acme Inc."
+        successTitle="Workspace settings saved"
+        successDescription="Every project in Acme Inc. uses them from the next deploy."
       >
         <WorkspaceFields />
       </SettingsSection>
 
       {/* Same columns as SettingsSection, so the zone lines up with the cards above. */}
-      <div className="@container py-10">
+      <section aria-labelledby="danger-zone-title" className="@container py-10">
         <div className="grid gap-6 @narrow:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] @narrow:gap-12 @page:gap-16">
-          <DangerZone
-            projectName={WORKSPACE_SLUG}
-            description="These actions affect every project in Acme Inc. Deleting the workspace can’t be undone."
-            actions={workspaceActions}
-            className="@narrow:col-start-2"
-          />
+          <div className="grid content-start gap-2 @narrow:pt-1">
+            <h2 id="danger-zone-title" className="text-h4 text-foreground">
+              Danger zone
+            </h2>
+            <p className="max-w-prose text-sm text-copy">
+              These actions affect every project in Acme Inc. Deleting the workspace can’t be undone.
+            </p>
+          </div>
+          <DangerZone projectName={WORKSPACE_SLUG} title={null} actions={workspaceActions} />
         </div>
-      </div>
+      </section>
     </div>
   )
 }
@@ -161,7 +170,7 @@ function ProfileFields() {
       <div className="flex flex-wrap items-center gap-5">
         <Avatar size="xl">
           {photo ? <AvatarImage src={photo} alt="" /> : null}
-          <AvatarFallback tone="violet">MC</AvatarFallback>
+          <AvatarFallback tone={personTone("Maya Chen")}>MC</AvatarFallback>
         </Avatar>
         <div className="grid gap-3">
           <div className="grid gap-0.5">
@@ -203,7 +212,9 @@ function ProfileFields() {
             <InputGroupAddon>
               <InputGroupText>@</InputGroupText>
             </InputGroupAddon>
+            {/* pl-0 so the prefix and the value read as one word: @maya. */}
             <InputGroupInput
+              className="pl-0!"
               id={`${id}-username`}
               name="username"
               defaultValue="maya"
@@ -271,22 +282,15 @@ function WorkspaceFields() {
 
       <Field>
         <FieldLabel htmlFor={`${id}-url`}>Workspace URL</FieldLabel>
-        <InputGroup>
-          <InputGroupAddon>
-            <InputGroupText>lumen.app/</InputGroupText>
-          </InputGroupAddon>
-          <InputGroupInput
-            id={`${id}-url`}
-            name="workspaceSlug"
-            defaultValue={WORKSPACE_SLUG}
-            spellCheck={false}
-            autoCapitalize="none"
-            pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-            title="Use lowercase letters and numbers, with single hyphens between words."
-            aria-describedby={`${id}-url-hint`}
-            required
-          />
-        </InputGroup>
+        <WorkspaceUrlInput
+          id={`${id}-url`}
+          name="workspaceSlug"
+          defaultValue={WORKSPACE_SLUG}
+          pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+          title="Use lowercase letters and numbers, with single hyphens between words."
+          aria-describedby={`${id}-url-hint`}
+          required
+        />
         <FieldDescription id={`${id}-url-hint`}>
           Changing the URL breaks bookmarked links. Old links redirect for 30 days.
         </FieldDescription>
@@ -315,15 +319,13 @@ function WorkspaceFields() {
         <FieldDescription>New projects deploy here unless you pick another region.</FieldDescription>
       </Field>
 
-      <Field orientation="horizontal" className="border-t pt-6">
-        <Checkbox id={`${id}-previews`} name="previews" defaultChecked />
-        <FieldContent>
-          <FieldLabel htmlFor={`${id}-previews`}>Preview deployments</FieldLabel>
-          <FieldDescription>
-            Build every pull request on its own URL and post the link as a GitHub comment.
-          </FieldDescription>
-        </FieldContent>
-      </Field>
+      <SwitchRow
+        label="Preview deployments"
+        name="previews"
+        description="Build every pull request on its own URL and post the link as a GitHub comment."
+        defaultChecked
+        className="border-t pt-6"
+      />
     </FieldGroup>
   )
 }

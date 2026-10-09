@@ -21,7 +21,7 @@ const textLink =
 function validate(email: string) {
   const value = email.trim()
   if (!value) return "Enter the email address you sign in with."
-  if (!EMAIL_PATTERN.test(value)) return "Enter an email address like maya@halcyon.dev."
+  if (!EMAIL_PATTERN.test(value)) return "Enter an email address like maya@acme.dev."
   return undefined
 }
 
@@ -77,7 +77,7 @@ export function ResetRequestForm({ signInHref = "/live/sign-in" }: { signInHref?
       <form noValidate onSubmit={handleSubmit} aria-busy={pending} className="mt-8">
         <FieldGroup>
           <Field data-invalid={Boolean(shownError)}>
-            <FieldLabel htmlFor={`${id}-email`}>Email</FieldLabel>
+            <FieldLabel htmlFor={`${id}-email`}>Work email</FieldLabel>
             <Input
               ref={inputRef}
               id={`${id}-email`}
@@ -86,7 +86,7 @@ export function ResetRequestForm({ signInHref = "/live/sign-in" }: { signInHref?
               inputMode="email"
               autoComplete="email"
               spellCheck={false}
-              placeholder="maya@halcyon.dev"
+              placeholder="maya@acme.dev"
               value={email}
               disabled={pending}
               onChange={(event) => setEmail(event.target.value)}

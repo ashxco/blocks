@@ -1,68 +1,79 @@
 import * as React from "react"
+import { DatabaseIcon, GitBranchIcon, GlobeIcon, KeyRoundIcon } from "lucide-react"
 
+import { DeploymentStatusBadge } from "@/components/blocks/hero/product-moment"
 import { cn } from "@/lib/utils"
 
-const rows = [
-  { width: "w-1/3", status: "bg-success" },
-  { width: "w-2/5", status: "bg-success" },
-  { width: "w-1/4", status: "bg-warning" },
-  { width: "w-1/3", status: "bg-success" },
+export interface ReleaseShotRow {
+  /** A lucide icon element, e.g. <DatabaseIcon />. */
+  icon: React.ReactNode
+  label: string
+  /** Shown in mono, e.g. a branch name or URL. */
+  value: string
+  /** Short readout on the right, e.g. "ready in 1.8s". */
+  meta?: string
+}
+
+export interface ReleaseShotProps {
+  /** Git branch the preview was built from. */
+  branch?: string
+  /** Commit and pull request line under the branch. */
+  detail?: string
+  rows?: ReleaseShotRow[]
+  className?: string
+}
+
+const defaultRows: ReleaseShotRow[] = [
+  { icon: <GlobeIcon />, label: "URL", value: "feat-billing.acme.dev", meta: "HTTPS" },
+  { icon: <DatabaseIcon />, label: "Database", value: "preview/feat-billing", meta: "ready in 1.8s" },
+  { icon: <KeyRoundIcon />, label: "Variables", value: "14 inherited", meta: "2 preview only" },
 ]
 
 /**
- * A flat sketch of a Lumen screen, used as the default screenshot in a
- * changelog entry. The window is anchored to the bottom-right corner of its
- * frame, like a cropped product shot. Built from surface tokens, so it
- * follows the theme. Decorative only.
+ * The default screenshot for a changelog entry: a preview environment card
+ * built from real components (branch, status, URL, database branch and
+ * variables). It sits centred in the tinted frame that ChangelogEntry draws.
+ * Decorative only.
  */
-export function ReleaseShot({ className }: { className?: string }) {
+export function ReleaseShot({
+  branch = "feat/billing",
+  detail = "7f02b1d · pull request #482",
+  rows = defaultRows,
+  className,
+}: ReleaseShotProps) {
   return (
-    <div aria-hidden="true" className={cn("@container relative aspect-video w-full overflow-hidden", className)}>
-      <div className="absolute top-1/8 right-0 bottom-0 left-1/12 flex overflow-hidden rounded-tl-lg border-t border-l border-foreground/10 bg-background">
-        {/* Sidebar */}
-        <div className="hidden w-1/5 shrink-0 flex-col gap-2.5 border-r border-foreground/10 bg-subtle p-4 @min-[28rem]:flex">
-          <span className="mb-2 h-2.5 w-1/2 rounded-full bg-foreground" />
-          <span className="h-1.5 w-3/4 rounded-full bg-foreground/15" />
-          <span className="h-1.5 w-2/3 rounded-full bg-foreground/45" />
-          <span className="h-1.5 w-3/4 rounded-full bg-foreground/15" />
-          <span className="h-1.5 w-1/2 rounded-full bg-foreground/15" />
-          <span className="mt-4 h-1.5 w-2/3 rounded-full bg-foreground/15" />
-          <span className="h-1.5 w-1/2 rounded-full bg-foreground/15" />
+    <div aria-hidden="true" className={cn("grid place-items-center p-5 sm:p-10", className)}>
+      <div className="@container/shot w-full max-w-md overflow-hidden rounded-(--card-radius) border bg-card text-card-foreground">
+        <div className="flex items-start justify-between gap-4 p-5">
+          <div className="grid min-w-0 gap-1">
+            <p className="flex min-w-0 items-center gap-2 text-title text-foreground">
+              <GitBranchIcon className="size-4 shrink-0 text-muted-foreground" />
+              <span className="truncate">{branch}</span>
+            </p>
+            <p className="truncate font-mono text-caption text-muted-foreground">{detail}</p>
+          </div>
+          <DeploymentStatusBadge status="ready" />
         </div>
 
-        {/* Main */}
-        <div className="flex min-w-0 flex-1 flex-col gap-4 p-5 @min-[36rem]:p-6">
-          <div className="flex items-center gap-3">
-            <span className="h-3 w-1/4 rounded-full bg-foreground" />
-            <span className="ml-auto h-6 w-16 shrink-0 rounded-full border border-foreground/15" />
-            <span className="h-6 w-20 shrink-0 rounded-full bg-primary" />
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            {["bg-tint-violet", "bg-subtle", "bg-subtle"].map((fill, i) => (
-              <div key={i} className={cn("grid gap-2 rounded-md p-3", fill)}>
-                <span className="h-1.5 w-1/2 rounded-full bg-foreground/25" />
-                <span className="h-3 w-2/3 rounded-full bg-foreground" />
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2 rounded-md border border-foreground/10 px-3 py-2">
-            <span className="size-2 shrink-0 rounded-full bg-brand" />
-            <span className="h-1.5 w-2/5 rounded-full bg-foreground/30" />
-            <span className="ml-auto h-1.5 w-10 rounded-full bg-foreground/15" />
-          </div>
-
-          <div className="grid gap-px overflow-hidden rounded-md border border-foreground/10 bg-foreground/10">
-            {rows.map((row, i) => (
-              <div key={i} className="flex items-center gap-3 bg-background px-3 py-2.5">
-                <span className={cn("size-2 shrink-0 rounded-full", row.status)} />
-                <span className={cn("h-1.5 rounded-full bg-foreground/25", row.width)} />
-                <span className="ml-auto h-1.5 w-8 rounded-full bg-foreground/10" />
-              </div>
-            ))}
-          </div>
-        </div>
+        <ul className="divide-y border-t">
+          {rows.map((row) => (
+            <li
+              key={row.label}
+              className="grid grid-cols-[1rem_minmax(0,1fr)] items-center gap-x-3 gap-y-0.5 px-5 py-3 text-sm @min-[24rem]/shot:grid-cols-[1rem_5.5rem_minmax(0,1fr)_auto]"
+            >
+              <span className="text-muted-foreground [&_svg]:size-4">{row.icon}</span>
+              <span className="text-muted-foreground">{row.label}</span>
+              <span className="col-start-2 truncate font-mono text-caption text-foreground @min-[24rem]/shot:col-start-auto">
+                {row.value}
+              </span>
+              {row.meta ? (
+                <span className="col-start-2 text-caption text-muted-foreground tabular @min-[24rem]/shot:col-start-auto @min-[24rem]/shot:text-right">
+                  {row.meta}
+                </span>
+              ) : null}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )

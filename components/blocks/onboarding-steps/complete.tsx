@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { CodeWindow } from "@/components/blocks/code-window"
 
 import { PROVIDERS, type OnboardingRepository, type OnboardingValues } from "./types"
+import { Kern } from "@/components/ui/kern"
 
 export function OnboardingComplete({
   values,
@@ -15,6 +16,7 @@ export function OnboardingComplete({
   repository,
   domain,
   dashboardHref,
+  autoFocus = true,
   onEdit,
 }: {
   values: OnboardingValues
@@ -22,6 +24,8 @@ export function OnboardingComplete({
   repository?: OnboardingRepository
   domain: string
   dashboardHref: string
+  /** Move focus to the heading on mount, after people finish. Off when a page opens on this state. */
+  autoFocus?: boolean
   onEdit: () => void
 }) {
   const titleId = React.useId()
@@ -43,21 +47,26 @@ export function OnboardingComplete({
   )
   const [shown, setShown] = React.useState(1)
 
+  // Stream the log in one line at a time. Under reduced motion the first tick
+  // shows every line at once. State only changes inside the timer callback.
+  // Read once: the heading takes focus when the state appears, never again.
+  const focusOnMount = React.useRef(autoFocus)
   React.useEffect(() => {
-    headingRef.current?.focus({ preventScroll: true })
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setShown(lines.length)
-      return
-    }
-    const timer = setInterval(() => {
-      setShown((n) => {
-        if (n >= lines.length) {
-          clearInterval(timer)
-          return n
-        }
-        return n + 1
-      })
-    }, 650)
+    if (focusOnMount.current) headingRef.current?.focus({ preventScroll: true })
+  }, [])
+
+  React.useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const timer = setInterval(
+      () => {
+        setShown((n) => {
+          const next = reduce ? lines.length : Math.min(n + 1, lines.length)
+          if (next >= lines.length) clearInterval(timer)
+          return next
+        })
+      },
+      reduce ? 0 : 650
+    )
     return () => clearInterval(timer)
   }, [lines])
 
@@ -75,10 +84,11 @@ export function OnboardingComplete({
       className="@container/complete animate-in overflow-hidden rounded-(--panel-radius) bg-panel text-panel-muted duration-(--duration-slow) ease-out fade-in-0 slide-in-from-bottom-2"
       aria-labelledby={titleId}
     >
-      <div className="grid gap-10 p-8 @narrow/complete:grid-cols-2 @narrow/complete:items-center @narrow/complete:gap-12 @narrow/complete:p-12 @page/complete:p-16">
+      <div className="grid gap-10 p-(--panel-padding-sm) @narrow/complete:grid-cols-2 @narrow/complete:items-center @narrow/complete:gap-12">
         <div className="min-w-0">
-          <span className="grid size-12 place-items-center rounded-full bg-panel-raised text-success">
-            <CheckIcon className="size-5" strokeWidth={2.5} aria-hidden="true" />
+          <span className="grid size-12 place-items-center rounded-full bg-panel-raised">
+            {/* dark: the check takes the dark theme's green, which reads on the panel in both themes. */}
+            <CheckIcon className="dark size-5 text-success" strokeWidth={2.5} aria-hidden="true" />
           </span>
           <h2
             id={titleId}
@@ -86,7 +96,7 @@ export function OnboardingComplete({
             tabIndex={-1}
             className="mt-8 text-h2 text-panel-foreground outline-none"
           >
-            {values.workspaceName.trim() || "Your workspace"} is ready.
+            <Kern>{`${values.workspaceName.trim() || "Your workspace"} is ready.`}</Kern>
           </h2>
           <p className="mt-4 max-w-prose text-lead">
             Lumen is deploying {repoName} from main. Your first production URL will be live in about a minute.
@@ -111,7 +121,7 @@ export function OnboardingComplete({
             </Button>
           </div>
         </div>
-        <CodeWindow title={`${repoName} · main`} lines={lines.slice(0, shown)} className="min-h-72" />
+        <CodeWindow title={`${repoName} · main`} lines={lines.slice(0, shown)} className="dark min-h-72" />
       </div>
     </section>
   )

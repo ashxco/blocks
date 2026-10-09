@@ -31,7 +31,7 @@ export default function FeaturesPage() {
             </>
           }
           description="Builds, previews, logs, metrics, domains and databases in one platform. Run it on our cloud or on servers you own, with the same workflow."
-          primaryAction={{ label: "Start for free", href: "/live/sign-up" }}
+          primaryAction={{ label: "Start free trial", href: "/live/sign-up" }}
           secondaryAction={{ label: "See pricing", href: "/live/pricing" }}
           command={null}
           visual={null}
@@ -42,7 +42,8 @@ export default function FeaturesPage() {
       <CapabilityGrid />
       <CtaBand
         title="See it on your own code."
-        description="Connect a repository and get a preview URL in about a minute. The free plan includes every feature on this page."
+        description="Connect a repository and get a preview URL in about a minute. Every plan includes every feature on this page, and Pro is free for 14 days."
+        aside={null}
       />
     </>
   )

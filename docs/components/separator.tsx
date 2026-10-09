@@ -58,14 +58,14 @@ export default function SeparatorDocs() {
 
       <Example
         title="Strong"
-        description="Use strong where a hairline needs more presence, such as the end of a group of settings."
+        description="Use strong where a line needs more presence, such as the end of a group of settings. It takes the border-strong colour at --border-width-strong."
         layout="stack"
         code={`<Separator variant="strong" />`}
       >
         <div className="mx-auto grid w-full max-w-96 gap-5">
           <p className="text-sm text-copy">Default hairline</p>
           <Separator />
-          <p className="text-sm text-copy">Strong hairline</p>
+          <p className="text-sm text-copy">Strong line</p>
           <Separator variant="strong" />
         </div>
       </Example>
@@ -111,7 +111,7 @@ export default function SeparatorDocs() {
       <ApiTable
         rows={[
           { prop: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Full width, or full height of the row." },
-          { prop: "variant", type: '"default" | "strong" | "panel"', default: '"default"', description: "border, input or panel-border colour." },
+          { prop: "variant", type: '"default" | "strong" | "panel"', default: '"default"', description: "A border hairline, a border-strong line at --border-width-strong, or a panel-border hairline." },
           { prop: "render", type: "ReactElement", description: "Render as another element." },
         ]}
       />

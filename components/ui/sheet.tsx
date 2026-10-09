@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button"
 
 /**
  * Blocks sheet. A dialog that slides in from an edge: bg-popover with a
- * hairline border on its inner edge, over the blurred overlay. Use
- * variant="floating" to inset it from the viewport with --dialog-radius
- * corners. Header, body and footer share --dialog-padding.
+ * hairline border on its inner edge, over the blurred overlay. Side sheets
+ * are --sheet-width wide (less a margin on phones). Use variant="floating"
+ * to inset it from the viewport with --dialog-radius corners. Header, body
+ * and footer share --dialog-padding.
  */
 
 type SheetSide = "top" | "right" | "bottom" | "left"
@@ -35,8 +36,8 @@ const floatingSide: Record<SheetSide, string> = {
 /** Size and slide-in direction. Width is a plain class so callers can override it. */
 const sideSize: Record<SheetSide, string> = {
   right:
-    "w-[calc(100%-3rem)] max-w-(--dialog-width) data-starting-style:translate-x-[calc(100%+0.75rem)] data-ending-style:translate-x-[calc(100%+0.75rem)]",
-  left: "w-[calc(100%-3rem)] max-w-(--dialog-width) data-starting-style:-translate-x-[calc(100%+0.75rem)] data-ending-style:-translate-x-[calc(100%+0.75rem)]",
+    "w-[calc(100%-3rem)] max-w-(--sheet-width) data-starting-style:translate-x-[calc(100%+0.75rem)] data-ending-style:translate-x-[calc(100%+0.75rem)]",
+  left: "w-[calc(100%-3rem)] max-w-(--sheet-width) data-starting-style:-translate-x-[calc(100%+0.75rem)] data-ending-style:-translate-x-[calc(100%+0.75rem)]",
   top: "max-h-[calc(100dvh-4rem)] data-starting-style:-translate-y-[calc(100%+0.75rem)] data-ending-style:-translate-y-[calc(100%+0.75rem)]",
   bottom:
     "max-h-[calc(100dvh-4rem)] data-starting-style:translate-y-[calc(100%+0.75rem)] data-ending-style:translate-y-[calc(100%+0.75rem)]",
@@ -80,15 +81,18 @@ function SheetContent({
   side = "right",
   variant = "edge",
   showCloseButton = true,
+  container,
   ...props
 }: SheetPrimitive.Popup.Props & {
   side?: SheetSide
   /** edge sits flush against the viewport; floating is inset with rounded corners. */
   variant?: "edge" | "floating"
   showCloseButton?: boolean
+  /** Element to portal into instead of <body>, e.g. a preview stage. */
+  container?: SheetPrimitive.Portal.Props["container"]
 }) {
   return (
-    <SheetPortal>
+    <SheetPortal container={container}>
       <SheetOverlay />
       <SheetPrimitive.Popup
         data-slot="sheet-content"
@@ -134,7 +138,7 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="sheet-header"
       className={cn(
-        "flex shrink-0 flex-col gap-2 p-(--dialog-padding) group-data-[closable=true]/sheet-content:pr-16",
+        "flex shrink-0 flex-col gap-2 p-(--dialog-padding)",
         className
       )}
       {...props}
@@ -173,7 +177,12 @@ function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn("text-h4 text-foreground", className)}
+      className={cn(
+        // Clear the close button on the title's line only, so the description
+        // below runs the full width of the sheet.
+        "text-h4 text-foreground group-data-[closable=true]/sheet-content:pr-10",
+        className
+      )}
       {...props}
     />
   )

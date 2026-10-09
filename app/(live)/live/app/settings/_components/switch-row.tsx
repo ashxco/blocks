@@ -8,6 +8,8 @@ import { Switch } from "@/components/ui/switch"
 
 export interface SwitchRowProps {
   label: string
+  /** Form field name, when the row sits in a form that saves with a button. */
+  name?: string
   description: React.ReactNode
   checked?: boolean
   defaultChecked?: boolean
@@ -16,11 +18,13 @@ export interface SwitchRowProps {
 }
 
 /**
- * A setting that applies the moment it changes: label and description on the
- * left, a switch on the right. Stack rows inside a `divide-y` list.
+ * An on/off setting: label and description on the left, a switch on the
+ * right. Stack rows inside a `divide-y` list, or give one row a `border-t`
+ * at the end of a form.
  */
 export function SwitchRow({
   label,
+  name,
   description,
   checked,
   defaultChecked,
@@ -36,6 +40,7 @@ export function SwitchRow({
       </FieldContent>
       <Switch
         id={id}
+        name={name}
         checked={checked}
         defaultChecked={defaultChecked}
         onCheckedChange={(next) => onCheckedChange?.(next)}

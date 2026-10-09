@@ -68,10 +68,10 @@ export default function TestimonialDocs() {
 
       <ApiTable
         rows={[
-          { prop: "quote", type: "ReactNode", default: "Priya Shah’s quote", description: "The quote, without quotation marks." },
-          { prop: "author", type: "{ name: string; role: string; initials: string; avatarSrc?: string; tint?: \"violet\" | \"mint\" | \"sand\" | \"sky\" | \"rose\" }", default: "Priya Shah, CTO", description: "The person. Initials show on a flat tint when there is no photo." },
+          { prop: "quote", type: "ReactNode", default: "Hannah Okoye’s quote", description: "The quote, without quotation marks." },
+          { prop: "author", type: "{ name: string; role: string; initials: string; avatarSrc?: string; tint?: \"violet\" | \"mint\" | \"sand\" | \"sky\" | \"rose\" }", default: "Hannah Okoye, CTO", description: "The person. Initials show on a flat tint when there is no photo." },
           { prop: "metric", type: "{ value: string; label: string } | null", default: '{ value: "4×", label: "faster releases" }', description: "Headline result. Pass null to hide it." },
-          { prop: "tone", type: '"subtle" | "panel" | "plain"', default: '"subtle"', description: "Tinted band, dark panel or between hairlines." },
+          { prop: "tone", type: '"subtle" | "panel" | "plain"', default: '"subtle"', description: "Tinted band with a hairline edge, dark panel, or between hairlines." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section spacing." },
           { prop: "className", type: "string", description: "Classes for the section." },
         ]}

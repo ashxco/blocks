@@ -114,14 +114,18 @@ function AvatarBadge({ className, ...props }: React.ComponentProps<"span">) {
   )
 }
 
-/** Overlapping avatars. Each one is cut out from the next with a ring in the page colour. */
+/**
+ * Overlapping avatars. Each one is cut out from the next with a ring in the
+ * page colour. The overlap plus the 2px ring stays clear of the second letter
+ * of two-letter initials at every size.
+ */
 function AvatarGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="avatar-group"
       className={cn(
-        "group/avatar-group flex items-center -space-x-1.5",
-        "has-data-[size=sm]:-space-x-1 has-data-[size=lg]:-space-x-2 has-data-[size=xl]:-space-x-3",
+        "group/avatar-group flex items-center -space-x-1",
+        "has-data-[size=sm]:-space-x-0.5 has-data-[size=lg]:-space-x-1.5 has-data-[size=xl]:-space-x-3",
         "*:data-[slot=avatar]:outline-2 *:data-[slot=avatar]:outline-background",
         className
       )}

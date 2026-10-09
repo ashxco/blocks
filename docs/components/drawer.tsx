@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/drawer"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const logLines = [
   { time: "12:05:09", level: "info", text: "GET /api/projects 200 in 41ms" },
@@ -45,21 +46,71 @@ const levelClass: Record<string, string> = {
   error: "text-destructive",
 }
 
+type Stage = HTMLDivElement | null
+
+/**
+ * The stage an example's drawer opens into, so the page shows the drawer
+ * itself. contain-layout makes the stage the containing block for the fixed
+ * drawer, and isolate keeps it under the site header. The drawer is non-modal
+ * there, so it has no overlay and the page still scrolls.
+ */
+function DrawerStage({ children }: { children: (container: Stage) => React.ReactNode }) {
+  const [container, setContainer] = React.useState<Stage>(null)
+  return (
+    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout">
+      <div className="grid content-start gap-8 p-6 sm:p-12">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="grid gap-1">
+            <p className="text-h3 text-foreground">feat-billing</p>
+            <p className="text-caption text-muted-foreground">Preview · lumen-web · ready 4 minutes ago</p>
+          </div>
+          {children(container)}
+        </div>
+        <dl className="grid divide-y border-y">
+          {previewRows.map((row) => (
+            <div key={row.label} className="flex items-center justify-between gap-6 py-4">
+              <dt className="text-sm text-muted-foreground">{row.label}</dt>
+              <dd className="text-sm font-medium text-foreground">{row.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  )
+}
+
+const previewRows = [
+  { label: "Commit", value: "Add usage-based billing page" },
+  { label: "Author", value: "Priya Raman" },
+  { label: "Built in", value: "38s" },
+  { label: "Comments", value: "3 open threads" },
+]
+
+/** Open in place on the docs page: no focus move, no scroll lock, no dismissal on outside clicks. */
+const inlineDrawer = { defaultOpen: true, modal: false, disablePointerDismissal: true } as const
+
 const snapPoints = ["168px", 1]
 
-function SnapPointsDrawer() {
+/**
+ * In a stage, snap points resolve against the stage instead of the screen:
+ * the drawer is as tall as the stage, less a strip at the top.
+ */
+const snapInStage =
+  "data-[swipe-axis=y]:data-snap-points:[--drawer-content-height:100%] data-[swipe-axis=y]:[--drawer-content-max-height:calc(100%-3rem)]"
+
+function SnapPointsDrawer({ container }: { container: Stage }) {
   const [snapPoint, setSnapPoint] = React.useState<number | string | null>(snapPoints[0])
 
   return (
-    <Drawer snapPoints={snapPoints} snapPoint={snapPoint} onSnapPointChange={setSnapPoint}>
+    <Drawer {...inlineDrawer} snapPoints={snapPoints} snapPoint={snapPoint} onSnapPointChange={setSnapPoint}>
       <DrawerTrigger render={<Button variant="outline" />}>
         <ScrollTextIcon data-icon="inline-start" />
         Live logs
       </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent container={container} initialFocus={false} className={snapInStage}>
         <DrawerHeader>
           <DrawerTitle>Live logs</DrawerTitle>
-          <DrawerDescription>lumen-web · production · streaming</DrawerDescription>
+          <DrawerDescription>lumen-web · production · drag up for more</DrawerDescription>
         </DrawerHeader>
         <ol className="grid gap-2 px-(--dialog-padding) pb-(--dialog-padding) font-mono text-code">
           {logLines.map((line) => (
@@ -74,76 +125,35 @@ function SnapPointsDrawer() {
   )
 }
 
-export default function DrawerDocs() {
+type Direction = "left" | "right"
+
+/** One side drawer, open in a stage, whose edge people switch from the bar above it. */
+function SideDrawersDemo() {
+  const [direction, setDirection] = React.useState<Direction>("right")
+
   return (
-    <Examples>
-      <Example
-        title="Bottom drawer"
-        description="The default. It slides up from the bottom, shows a handle and closes when people swipe it down, tap the overlay or press Escape."
-        code={`<Drawer>
-  <DrawerTrigger render={<Button variant="outline" />}>Share preview</DrawerTrigger>
-  <DrawerContent>
-    <DrawerHeader>
-      <DrawerTitle>Share this preview</DrawerTitle>
-      <DrawerDescription>Anyone with the link can view it.</DrawerDescription>
-    </DrawerHeader>
-    …
-    <DrawerFooter>
-      <Button>Copy link</Button>
-      <DrawerClose render={<Button variant="outline" />}>Done</DrawerClose>
-    </DrawerFooter>
-  </DrawerContent>
-</Drawer>`}
-      >
-        <Drawer>
-          <DrawerTrigger render={<Button variant="outline" />}>
-            <SendIcon data-icon="inline-start" />
-            Share preview
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>Share this preview</DrawerTitle>
-              <DrawerDescription>Anyone with the link can view feat-billing until the branch is merged.</DrawerDescription>
-            </DrawerHeader>
-            <div className="px-(--dialog-padding)">
-              <Field>
-                <FieldLabel htmlFor="drawer-link">Preview link</FieldLabel>
-                <Input id="drawer-link" readOnly defaultValue="feat-billing.lumen.app" />
-              </Field>
-            </div>
-            <DrawerFooter>
-              <Button>
-                <CopyIcon data-icon="inline-start" />
-                Copy link
-              </Button>
-              <DrawerClose render={<Button variant="outline" />}>Done</DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
-      </Example>
-
-      <Example
-        title="Snap points"
-        description="Give a drawer resting heights with snapPoints. Numbers from 0 to 1 are a share of the viewport; strings take px or rem."
-        code={`const snapPoints = ["168px", 1]
-const [snapPoint, setSnapPoint] = React.useState(snapPoints[0])
-
-<Drawer snapPoints={snapPoints} snapPoint={snapPoint} onSnapPointChange={setSnapPoint}>
-  …
-</Drawer>`}
-      >
-        <SnapPointsDrawer />
-      </Example>
-
-      <Example
-        title="Side drawers"
-        description="Set swipeDirection to left or right for a panel that people swipe back toward its edge. Side drawers hide the handle unless you pass showSwipeHandle."
-        code={`<Drawer swipeDirection="right">…</Drawer>`}
-      >
-        {(["left", "right"] as const).map((direction) => (
-          <Drawer key={direction} swipeDirection={direction}>
-            <DrawerTrigger render={<Button variant="outline" className="capitalize" />}>{direction}</DrawerTrigger>
-            <DrawerContent>
+    <div className="grid">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b px-6 py-3 sm:px-12">
+        <code className="font-mono text-code text-muted-foreground">swipeDirection=&quot;{direction}&quot;</code>
+        <ToggleGroup
+          size="sm"
+          aria-label="Drawer edge"
+          value={[direction]}
+          onValueChange={(value) => {
+            const next = value[0] as Direction | undefined
+            if (next) setDirection(next)
+          }}
+        >
+          <ToggleGroupItem value="left">Left</ToggleGroupItem>
+          <ToggleGroupItem value="right">Right</ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+      <DrawerStage>
+        {(container) => (
+          // A new drawer for each edge, so it opens from that edge.
+          <Drawer key={direction} {...inlineDrawer} swipeDirection={direction}>
+            <DrawerTrigger render={<Button variant="outline" />}>Filters</DrawerTrigger>
+            <DrawerContent container={container} initialFocus={false}>
               <DrawerHeader>
                 <DrawerTitle>Filters</DrawerTitle>
                 <DrawerDescription>Narrow the deployments list.</DrawerDescription>
@@ -160,43 +170,127 @@ const [snapPoint, setSnapPoint] = React.useState(snapPoints[0])
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
-        ))}
+        )}
+      </DrawerStage>
+    </div>
+  )
+}
+
+export default function DrawerDocs() {
+  return (
+    <Examples>
+      <Example
+        title="Bottom drawer"
+        layout="full"
+        description="The default. It slides up from the bottom, shows a handle and closes when people swipe it down, tap the overlay or press Escape."
+        code={`<Drawer>
+  <DrawerTrigger render={<Button variant="outline" />}>Share preview</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Share this preview</DrawerTitle>
+      <DrawerDescription>Anyone with the link can view it.</DrawerDescription>
+    </DrawerHeader>
+    …
+    <DrawerFooter>
+      <Button>Copy link</Button>
+      <DrawerClose render={<Button variant="outline" />}>Done</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>`}
+      >
+        <DrawerStage>
+          {(container) => (
+            <Drawer {...inlineDrawer}>
+              <DrawerTrigger render={<Button variant="outline" />}>
+                <SendIcon data-icon="inline-start" />
+                Share preview
+              </DrawerTrigger>
+              <DrawerContent container={container} initialFocus={false}>
+                <DrawerHeader>
+                  <DrawerTitle>Share this preview</DrawerTitle>
+                  <DrawerDescription>Anyone with the link can view feat-billing until the branch is merged.</DrawerDescription>
+                </DrawerHeader>
+                <div className="px-(--dialog-padding)">
+                  <Field>
+                    <FieldLabel htmlFor="drawer-link">Preview link</FieldLabel>
+                    <Input id="drawer-link" readOnly defaultValue="feat-billing.lumen.app" />
+                  </Field>
+                </div>
+                <DrawerFooter>
+                  <Button>
+                    <CopyIcon data-icon="inline-start" />
+                    Copy link
+                  </Button>
+                  <DrawerClose render={<Button variant="outline" />}>Done</DrawerClose>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+          )}
+        </DrawerStage>
+      </Example>
+
+      <Example
+        title="Snap points"
+        layout="full"
+        description="Give a drawer resting heights with snapPoints. Numbers from 0 to 1 are a share of the viewport; strings take px or rem. This one rests at 168px; drag its handle up to open it fully."
+        code={`const snapPoints = ["168px", 1]
+const [snapPoint, setSnapPoint] = React.useState(snapPoints[0])
+
+<Drawer snapPoints={snapPoints} snapPoint={snapPoint} onSnapPointChange={setSnapPoint}>
+  …
+</Drawer>`}
+      >
+        <DrawerStage>{(container) => <SnapPointsDrawer container={container} />}</DrawerStage>
+      </Example>
+
+      <Example
+        title="Side drawers"
+        layout="full"
+        description="Set swipeDirection to left or right for a panel that people swipe back toward its edge. Side drawers hide the handle unless you pass showSwipeHandle."
+        code={`<Drawer swipeDirection="right">…</Drawer>`}
+      >
+        <SideDrawersDemo />
       </Example>
 
       <Example
         title="Action sheet"
+        layout="full"
         description="On phones, a drawer of full-width actions replaces a dropdown menu. Keep the most used action first and the destructive one last."
       >
-        <Drawer>
-          <DrawerTrigger render={<Button />}>Deployment actions</DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>Deployment 8f2c1a9</DrawerTitle>
-              <DrawerDescription>main · Ready · 4 minutes ago</DrawerDescription>
-            </DrawerHeader>
-            <div className="grid gap-1 px-(--dialog-padding)">
-              <Button variant="ghost" size="lg" className="justify-start">
-                <ExternalLinkIcon data-icon="inline-start" />
-                Visit deployment
-              </Button>
-              <Button variant="ghost" size="lg" className="justify-start">
-                <QrCodeIcon data-icon="inline-start" />
-                Open on another device
-              </Button>
-              <Button variant="ghost" size="lg" className="justify-start">
-                <RotateCcwIcon data-icon="inline-start" />
-                Redeploy
-              </Button>
-              <Button variant="ghost" size="lg" className="justify-start text-destructive hover:text-destructive">
-                <Undo2Icon data-icon="inline-start" />
-                Roll back production
-              </Button>
-            </div>
-            <DrawerFooter>
-              <DrawerClose render={<Button variant="outline" size="lg" />}>Cancel</DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
+        <DrawerStage>
+          {(container) => (
+            <Drawer {...inlineDrawer}>
+              <DrawerTrigger render={<Button />}>Deployment actions</DrawerTrigger>
+              <DrawerContent container={container} initialFocus={false}>
+                <DrawerHeader>
+                  <DrawerTitle>Deployment 8f2c1a9</DrawerTitle>
+                  <DrawerDescription>main · Ready · 4 minutes ago</DrawerDescription>
+                </DrawerHeader>
+                <div className="grid gap-1 px-(--dialog-padding)">
+                  <Button variant="ghost" size="lg" className="justify-start">
+                    <ExternalLinkIcon data-icon="inline-start" />
+                    Visit deployment
+                  </Button>
+                  <Button variant="ghost" size="lg" className="justify-start">
+                    <QrCodeIcon data-icon="inline-start" />
+                    Open on another device
+                  </Button>
+                  <Button variant="ghost" size="lg" className="justify-start">
+                    <RotateCcwIcon data-icon="inline-start" />
+                    Redeploy
+                  </Button>
+                  <Button variant="ghost" size="lg" className="justify-start text-destructive hover:text-destructive">
+                    <Undo2Icon data-icon="inline-start" />
+                    Roll back production
+                  </Button>
+                </div>
+                <DrawerFooter>
+                  <DrawerClose render={<Button variant="outline" size="lg" />}>Cancel</DrawerClose>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+          )}
+        </DrawerStage>
       </Example>
 
       <Guidelines

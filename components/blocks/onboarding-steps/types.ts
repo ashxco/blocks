@@ -8,9 +8,9 @@ export interface OnboardingInvite {
 }
 
 export interface OnboardingRepository {
-  /** Stable id, e.g. "halcyon/web". */
+  /** Stable id, e.g. "acme/web". */
   id: string
-  /** Full name shown in the list, e.g. "halcyon/web". */
+  /** Full name shown in the list, e.g. "acme/web". */
   name: string
   /** Framework Lumen detected, e.g. "Next.js". */
   framework: string
@@ -78,7 +78,7 @@ export function validateStep(step: number, values: OnboardingValues, domain: str
     for (const invite of values.invites) {
       const email = invite.email.trim().toLowerCase()
       if (!email) continue
-      if (!EMAIL_PATTERN.test(email)) invites[invite.id] = "Enter a full address, like sam@halcyon.dev."
+      if (!EMAIL_PATTERN.test(email)) invites[invite.id] = "Enter a full address, like sam@acme.dev."
       else if (seen.has(email)) invites[invite.id] = "This address is already on the list."
       seen.add(email)
     }

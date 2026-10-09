@@ -8,7 +8,7 @@ export default function OnboardingStepsDocs() {
     <Examples>
       <Example
         title="Setup flow"
-        description="Name the workspace, invite the team, connect a repository. The URL fills in from the name, and finishing shows the first deployment building."
+        description="Name the workspace, invite the team, connect a repository. The URL fills in from the name, and the bar fills as steps are done. Finishing shows the first deployment building (see Finished below)."
         layout="full"
         minHeight="min-h-200"
         code={`<OnboardingSteps dashboardHref="/live/app" />`}
@@ -26,13 +26,41 @@ export default function OnboardingStepsDocs() {
         minHeight="min-h-200"
         code={`<OnboardingSteps
   defaultStep={2}
-  defaultValues={{ workspaceName: "Halcyon Labs", repositoryId: "halcyon/web" }}
+  defaultValues={{ workspaceName: "Acme Inc.", repositoryId: "acme/web" }}
 />`}
       >
         <div className="p-(--card-padding) sm:p-10">
           <OnboardingSteps
             defaultStep={2}
-            defaultValues={{ workspaceName: "Halcyon Labs", repositoryId: "halcyon/web" }}
+            defaultValues={{ workspaceName: "Acme Inc.", repositoryId: "acme/web" }}
+          />
+        </div>
+      </Example>
+
+      <Example
+        title="Finished"
+        description="The end of the flow: the workspace summary on a dark panel and the first deployment streaming in beside it. Open on it with defaultDone, for example when someone comes back after setting up."
+        layout="full"
+        code={`<OnboardingSteps
+  defaultDone
+  defaultValues={{
+    workspaceName: "Acme Inc.",
+    invites: [{ id: "sam", email: "sam@acme.dev", role: "developer" }],
+    repositoryId: "acme/web",
+  }}
+/>`}
+      >
+        <div className="p-(--card-padding) sm:p-10">
+          <OnboardingSteps
+            defaultDone
+            defaultValues={{
+              workspaceName: "Acme Inc.",
+              invites: [
+                { id: "sam", email: "sam@acme.dev", role: "developer" },
+                { id: "ana", email: "ana@acme.dev", role: "viewer" },
+              ],
+              repositoryId: "acme/web",
+            }}
           />
         </div>
       </Example>
@@ -69,9 +97,10 @@ export default function OnboardingStepsDocs() {
       <ApiTable
         rows={[
           { prop: "defaultStep", type: "0 | 1 | 2", default: "0", description: "Step to open on: workspace, team or repository." },
+          { prop: "defaultDone", type: "boolean", default: "false", description: "Open on the finished state with defaultValues as the answers. Focus stays where it is." },
           { prop: "defaultValues", type: "Partial<OnboardingValues>", description: "Prefilled answers: workspaceName, workspaceSlug, invites, provider, repositoryId." },
           { prop: "domain", type: "string", default: '"lumen.app"', description: "Host shown before the workspace URL." },
-          { prop: "repositories", type: "OnboardingRepository[]", default: "Five Halcyon repos", description: "Repositories offered in the last step: id, name, framework, updated, private." },
+          { prop: "repositories", type: "OnboardingRepository[]", default: "Five Acme repos", description: "Repositories offered in the last step: id, name, framework, updated, private." },
           { prop: "account", type: "string", default: '"maya-chen"', description: "Git account shown as connected." },
           { prop: "dashboardHref", type: "string", default: '"/live/app"', description: "Where “Open dashboard” leads after finishing." },
           { prop: "onComplete", type: "(values) => void | Promise<void>", description: "Called with the answers on Finish. Without it, the flow simulates a request." },

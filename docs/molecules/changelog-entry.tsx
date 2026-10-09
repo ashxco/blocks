@@ -23,7 +23,7 @@ export default function ChangelogEntryDocs() {
       <Example
         title="Single entry"
         layout="full"
-        description="An entry on its own, with the built-in screenshot sketch in a tint. Pass media={true} for the sketch or your own image."
+        description="An entry on its own, with the built-in preview environment card in a tint. Pass media={true} for that card, or your own image or component."
         code={`<ChangelogEntry />`}
       >
         <div className="p-6 sm:p-10">
@@ -37,10 +37,10 @@ export default function ChangelogEntryDocs() {
         surface="subtle"
         description="Any component can fill the media slot, such as a terminal for a CLI release. Children render under the list."
         code={`<ChangelogEntry
-  date="Jul 30, 2026"
-  dateTime="2026-07-30"
+  date="Mar 4, 2026"
+  dateTime="2026-03-04"
   version="v2.0.0"
-  title="Lumen CLI 2.0"
+  title="A CLI that starts in 50 ms"
   description="…"
   mediaTint="mint"
   media={<CodeWindow lines={[…]} />}
@@ -53,15 +53,16 @@ export default function ChangelogEntryDocs() {
       >
         <div className="p-6 sm:p-10">
           <ChangelogEntry
-            date="Jul 30, 2026"
-            dateTime="2026-07-30"
+            date="Mar 4, 2026"
+            dateTime="2026-03-04"
             version="v2.0.0"
-            title="Lumen CLI 2.0"
+            title="A CLI that starts in 50 ms"
             description="A rewrite of the CLI in Go. It starts in under 50 ms, streams build logs as they happen and works offline for everything that doesn’t need the API."
             mediaTint="mint"
             media={
               <div className="p-6 sm:p-10">
                 <CodeWindow
+                  wrap
                   title="~/acme"
                   lines={[
                     "$ lumen deploy --prod",
@@ -72,7 +73,7 @@ export default function ChangelogEntryDocs() {
                 />
               </div>
             }
-            items={["lumen logs --follow streams logs from every instance", "Shell completions for zsh, bash and fish"]}
+            items={["lumen open jumps to the project dashboard", "Shell completions for zsh, bash and fish"]}
           >
             <Button variant="link" nativeButton={false} render={<Link href="/live/blog/post" />}>
               Read the release notes
@@ -98,12 +99,12 @@ export default function ChangelogEntryDocs() {
       <ApiTable
         title="ChangelogEntry"
         rows={[
-          { prop: "date", type: "string", default: '"Oct 2, 2026"', description: "Display date." },
+          { prop: "date", type: "string", default: '"Oct 6, 2026"', description: "Display date." },
           { prop: "dateTime", type: "string", description: "Machine-readable date for the time element." },
-          { prop: "version", type: "string", default: '"v2.4.0"', description: "Release version, shown in mono." },
+          { prop: "version", type: "string", default: '"v2.12.0"', description: "Release version, shown in mono." },
           { prop: "title", type: "ReactNode", description: "What shipped, in the text-h3 role." },
           { prop: "description", type: "ReactNode", description: "One or two sentences on why it matters." },
-          { prop: "media", type: "ReactNode | true", description: "Screenshot slot in a tinted frame. true draws the built-in sketch." },
+          { prop: "media", type: "ReactNode | true", description: "Screenshot slot in a tinted frame. true draws the built-in preview environment card (ReleaseShot)." },
           { prop: "mediaTint", type: '"violet" | "mint" | "sand" | "sky" | "rose"', default: '"violet"', description: "Fill behind the media." },
           { prop: "items", type: "ReactNode[]", description: "Smaller changes as a bullet list." },
           { prop: "latest", type: "boolean", default: "false", description: "Brand dot on the rail for the newest release." },

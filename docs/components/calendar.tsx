@@ -1,60 +1,38 @@
 "use client"
 
 import * as React from "react"
-import { addDays, differenceInCalendarDays, format, startOfMonth, subDays } from "date-fns"
+import { addDays, differenceInCalendarDays, format, isSameDay, startOfMonth, subDays } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import type { DateRange } from "react-day-picker"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-
-const subscribe = () => () => {}
+import { cn } from "@/lib/utils"
 
 /**
- * Calendars depend on the viewer's clock and time zone, which the server
- * cannot know. Render them after hydration, with a same-size placeholder.
+ * Every example counts from one fixed day instead of the visitor's clock, so
+ * the server and the browser render the same month and the canvases are
+ * never empty while the page hydrates.
  */
-function ClientOnly({
-  children,
-  className = "h-90 w-76",
-}: {
-  children: React.ReactNode
-  className?: string
-}) {
-  const mounted = React.useSyncExternalStore(
-    subscribe,
-    () => true,
-    () => false
-  )
-  if (!mounted) return <div aria-hidden="true" className={className} />
-  return <>{children}</>
-}
+const today = new Date(2026, 10, 4)
 
 const frame = "rounded-(--card-radius) border"
 
 function SingleDate() {
-  const [date, setDate] = React.useState<Date | undefined>(() => new Date())
-  return (
-    <Calendar
-      mode="single"
-      selected={date}
-      onSelect={setDate}
-      className={frame}
-    />
-  )
+  const [date, setDate] = React.useState<Date | undefined>(today)
+  return <Calendar mode="single" today={today} selected={date} onSelect={setDate} className={frame} />
 }
 
 function UsageRange() {
-  const [range, setRange] = React.useState<DateRange | undefined>(() => {
-    const today = new Date()
-    return { from: subDays(today, 9), to: subDays(today, 2) }
-  })
+  const [range, setRange] = React.useState<DateRange | undefined>({ from: subDays(today, 16), to: subDays(today, 2) })
   return (
     <Calendar
       mode="range"
       numberOfMonths={2}
+      today={today}
       defaultMonth={range?.from}
       selected={range}
       onSelect={setRange}
@@ -64,16 +42,17 @@ function UsageRange() {
 }
 
 function BillingStart() {
-  const [date, setDate] = React.useState<Date | undefined>(() => startOfMonth(new Date()))
+  const [date, setDate] = React.useState<Date | undefined>(startOfMonth(today))
   return (
     <Calendar
       mode="single"
       captionLayout="dropdown"
+      today={today}
       selected={date}
       onSelect={setDate}
       defaultMonth={date}
       startMonth={new Date(2020, 0)}
-      endMonth={new Date(new Date().getFullYear() + 1, 11)}
+      endMonth={new Date(today.getFullYear() + 1, 11)}
       className={frame}
     />
   )
@@ -81,17 +60,17 @@ function BillingStart() {
 
 function MaintenanceWindow() {
   const [date, setDate] = React.useState<Date | undefined>()
-  const today = React.useMemo(() => new Date(), [])
   return (
     <div className="grid justify-items-center gap-3">
       <Calendar
         mode="single"
+        today={today}
         selected={date}
         onSelect={setDate}
         disabled={[{ before: addDays(today, 1) }, { dayOfWeek: [0, 6] }]}
         className={frame}
       />
-      <p className="text-sm text-muted-foreground" aria-live="polite">
+      <p className="text-caption text-muted-foreground" aria-live="polite">
         {date
           ? `Maintenance starts ${format(date, "EEEE, MMMM d")} at 02:00 UTC.`
           : "Pick a weekday from tomorrow on."}
@@ -115,19 +94,31 @@ function formatRange(range: DateRange | undefined) {
   return `${format(range.from, "MMM d")} – ${format(range.to, "MMM d, yyyy")}`
 }
 
+const wideQuery = "(min-width: 64rem)"
+
+/** True on screens wide enough for two months beside the presets. */
+function useWideScreen() {
+  return React.useSyncExternalStore(
+    (onChange) => {
+      const query = window.matchMedia(wideQuery)
+      query.addEventListener("change", onChange)
+      return () => query.removeEventListener("change", onChange)
+    },
+    () => window.matchMedia(wideQuery).matches,
+    () => true
+  )
+}
+
 function LogRangePicker() {
-  const today = React.useMemo(() => new Date(), [])
-  const [range, setRange] = React.useState<DateRange | undefined>(() => ({
-    from: subDays(today, 6),
-    to: today,
-  }))
+  const wide = useWideScreen()
+  const [range, setRange] = React.useState<DateRange | undefined>({ from: subDays(today, 6), to: today })
 
   return (
-    <div className="flex w-full max-w-prose flex-wrap items-center justify-between gap-3 rounded-(--card-radius) border bg-card px-4 py-3">
-      <div className="grid gap-0.5">
-        <p className="text-title text-foreground">Function logs</p>
-        <p className="text-caption text-muted-foreground">acme-storefront · Production</p>
-      </div>
+    <Card size="sm" className="w-full max-w-2xl flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4">
+      <CardHeader className="min-w-48 flex-1 gap-1">
+        <CardTitle>Function logs</CardTitle>
+        <CardDescription>acme-web · Production</CardDescription>
+      </CardHeader>
       <Popover>
         <PopoverTrigger render={<Button variant="outline" className="ps-4" />}>
           <CalendarIcon data-icon="inline-start" />
@@ -135,29 +126,39 @@ function LogRangePicker() {
         </PopoverTrigger>
         <PopoverContent align="end" className="w-auto max-w-[calc(100vw-2rem)] flex-row gap-0 overflow-hidden p-0">
           <div className="hidden w-40 shrink-0 flex-col gap-0.5 border-e p-2 sm:flex">
-            {presets.map((preset) => (
-              <Button
-                key={preset.label}
-                variant="ghost"
-                size="sm"
-                className="justify-start rounded-(--overlay-item-radius) px-2.5 font-medium"
-                onClick={() => setRange({ from: subDays(today, preset.days - 1), to: today })}
-              >
-                {preset.label}
-              </Button>
-            ))}
+            {presets.map((preset) => {
+              const from = subDays(today, preset.days - 1)
+              const active = Boolean(range?.from && range.to && isSameDay(range.from, from) && isSameDay(range.to, today))
+              return (
+                <Button
+                  key={preset.label}
+                  variant="ghost"
+                  size="sm"
+                  aria-pressed={active}
+                  className={cn(
+                    "justify-start rounded-(--overlay-item-radius) px-2.5 font-medium",
+                    active && "bg-accent font-semibold text-accent-foreground"
+                  )}
+                  onClick={() => setRange({ from, to: today })}
+                >
+                  {preset.label}
+                </Button>
+              )
+            })}
           </div>
           <Calendar
             mode="range"
+            numberOfMonths={wide ? 2 : 1}
+            today={today}
             selected={range}
             onSelect={setRange}
-            defaultMonth={range?.from}
+            defaultMonth={wide ? subDays(startOfMonth(today), 1) : range?.from}
             disabled={{ after: today }}
             endMonth={today}
           />
         </PopoverContent>
       </Popover>
-    </div>
+    </Card>
   )
 }
 
@@ -176,9 +177,7 @@ export default function CalendarDocs() {
   className="rounded-(--card-radius) border"
 />`}
       >
-        <ClientOnly>
-          <SingleDate />
-        </ClientOnly>
+        <SingleDate />
       </Example>
 
       <Example
@@ -193,9 +192,7 @@ export default function CalendarDocs() {
   onSelect={setRange}
 />`}
       >
-        <ClientOnly className="h-90 w-76 md:w-160">
-          <UsageRange />
-        </ClientOnly>
+        <UsageRange />
       </Example>
 
       <Example
@@ -210,9 +207,7 @@ export default function CalendarDocs() {
   onSelect={setDate}
 />`}
       >
-        <ClientOnly>
-          <BillingStart />
-        </ClientOnly>
+        <BillingStart />
       </Example>
 
       <Example
@@ -225,30 +220,44 @@ export default function CalendarDocs() {
   onSelect={setDate}
 />`}
       >
-        <ClientOnly className="h-96 w-76">
-          <MaintenanceWindow />
-        </ClientOnly>
+        <MaintenanceWindow />
       </Example>
 
       <Example
         title="Date range picker"
-        description="A calendar in a popover, with presets for the ranges people pick most. The button shows the range in plain words."
-        layout="stack"
+        description="A calendar in a popover, with presets for the ranges people pick most and the current one marked. Two months show on wide screens, one on small ones. The button shows the range in plain words."
         surface="subtle"
-        minHeight="min-h-[30rem]"
         code={`<Popover>
   <PopoverTrigger render={<Button variant="outline" />}>
     <CalendarIcon data-icon="inline-start" />
     {formatRange(range)}
   </PopoverTrigger>
-  <PopoverContent align="end" className="w-auto p-0">
-    <Calendar mode="range" selected={range} onSelect={setRange} />
+  <PopoverContent align="end" className="w-auto flex-row gap-0 p-0">
+    <div className="flex w-40 flex-col gap-0.5 border-e p-2">
+      {presets.map((preset) => (
+        <Button
+          key={preset.label}
+          variant="ghost"
+          size="sm"
+          aria-pressed={isActive(preset)}
+          className={cn("justify-start", isActive(preset) && "bg-accent font-semibold")}
+          onClick={() => setRange(rangeFor(preset))}
+        >
+          {preset.label}
+        </Button>
+      ))}
+    </div>
+    <Calendar
+      mode="range"
+      numberOfMonths={wide ? 2 : 1}
+      selected={range}
+      onSelect={setRange}
+      disabled={{ after: today }}
+    />
   </PopoverContent>
 </Popover>`}
       >
-        <ClientOnly className="h-17 w-full max-w-prose">
-          <LogRangePicker />
-        </ClientOnly>
+        <LogRangePicker />
       </Example>
 
       <Guidelines
@@ -275,7 +284,8 @@ export default function CalendarDocs() {
           { prop: "startMonth / endMonth", type: "Date", description: "The first and last month people can navigate to." },
           { prop: "showOutsideDays", type: "boolean", default: "true", description: "Show muted days from the previous and next month." },
           { prop: "buttonVariant", type: "Button variant", default: '"ghost"', description: "Variant of the previous and next month buttons." },
-          { prop: "className", type: "string", description: "Root classes. Override the cell size with [--cell-size:--spacing(9)]." },
+          { prop: "today", type: "Date", default: "new Date()", description: "The day that carries the brand dot. Pass a fixed date when the calendar renders on the server." },
+          { prop: "className", type: "string", description: "Root classes. Set --calendar-cell-size to change the cell size." },
         ]}
       />
     </Examples>

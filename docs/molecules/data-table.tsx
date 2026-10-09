@@ -1,14 +1,14 @@
 "use client"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
-import { DataTable, defaultProjects } from "@/components/blocks/data-table"
+import { DataTable } from "@/components/blocks/data-table"
 
 export default function DataTableDocs() {
   return (
     <Examples>
       <Example
         title="Projects"
-        description="Search by name, repository or region, filter by status, choose columns, sort by clicking a header, select rows for a bulk redeploy, and act on one row from its menu."
+        description="Search by name, repository or region, filter by status, choose columns, sort by clicking a header (newest deploy first to start), select rows for a bulk redeploy, and act on one row from its menu. In narrow slots the detail columns step out, so project, status and the row menu always fit."
         layout="full"
         code={`<DataTable rows={projects} pageSize={8} />`}
       >
@@ -19,25 +19,30 @@ export default function DataTableDocs() {
 
       <Example
         title="Compact"
-        description="Hide optional columns and shorten the page when the table shares a page with other content."
+        description="When the table shares a page with other content: one line per row at the small row height, fewer columns and a shorter page. The repository and branch lines drop out; the row menu still has everything."
         layout="full"
         surface="subtle"
-        code={`<DataTable pageSize={5} hiddenColumns={["framework", "region"]} />`}
+        code={`<DataTable density="compact" pageSize={5} hiddenColumns={["framework", "region"]} />`}
       >
         <div className="p-6 md:p-10">
           <DataTable
+            density="compact"
             pageSize={5}
             hiddenColumns={["framework", "region"]}
-            rows={defaultProjects.slice(0, 12)}
           />
         </div>
       </Example>
 
       <Example
         title="Empty"
-        description="With no rows the table says what to do next. When filters hide every row, it offers to clear them."
+        description="With no rows at all, the toolbar, header and paging step aside and the card says what to do next, with one primary action. When filters hide every row, it offers to clear them instead."
         layout="full"
-        code={`<DataTable rows={[]} />`}
+        code={`<DataTable
+  rows={[]}
+  emptyTitle="No projects yet"
+  emptyDescription="Import a repository and Lumen builds and deploys it as your first project."
+  emptyAction={{ label: "Import repository", href: "/live/onboarding", icon: FolderGit2Icon }}
+/>`}
       >
         <div className="p-6 md:p-10">
           <DataTable rows={[]} />
@@ -63,7 +68,7 @@ export default function DataTableDocs() {
             prop: "rows",
             type: "ProjectRow[]",
             description:
-              "Rows to show. Defaults to the 18 Lumen projects of Acme Inc.",
+              "Rows to show. Defaults to the 12 Lumen projects of Acme Inc., the same list the app templates use.",
           },
           {
             prop: "pageSize",
@@ -76,7 +81,7 @@ export default function DataTableDocs() {
             type: '("framework" | "region" | "requests" | "updated")[]',
             default: "[]",
             description:
-              "Optional columns hidden on first render. People can show them from the Columns menu.",
+              "Optional columns hidden on first render. People can show them from the Columns menu. Below 34, 44, 52 and 60rem of table width, Last deploy, Requests, Framework and Region step out on their own; the deploy time then sits under the status.",
           },
           {
             prop: "noun",
@@ -84,6 +89,26 @@ export default function DataTableDocs() {
             default: '{ one: "project", other: "projects" }',
             description:
               "What a row is called in counts, placeholders and empty states.",
+          },
+          {
+            prop: "density",
+            type: '"default" | "compact"',
+            default: '"default"',
+            description:
+              "Compact sets one-line rows at --table-row-height-sm, without the repository and branch lines.",
+          },
+          {
+            prop: "emptyTitle / emptyDescription",
+            type: "string",
+            description:
+              "Empty-state copy when there are no rows at all. Defaults follow the noun.",
+          },
+          {
+            prop: "emptyAction",
+            type: "{ label; href?; onClick?; icon? } | null",
+            default: "Import repository",
+            description:
+              "The empty state’s primary action, a small primary button. The default only applies to projects; null leaves it out.",
           },
           {
             prop: "className",

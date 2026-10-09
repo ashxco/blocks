@@ -78,7 +78,7 @@ export default function ProgressDocs() {
     <Examples>
       <Example
         title="Default"
-        description="A 4px ink bar on a muted track."
+        description="A 4px ink bar on a bg-secondary track."
         layout="stack"
         code={`<Progress value={64} aria-label="Upload progress" />`}
       >

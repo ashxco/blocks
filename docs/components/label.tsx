@@ -4,9 +4,21 @@ import { KeyRoundIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { tokens } from "@/design-system/generated/tokens"
+
+/** The label type role, read from the generated tokens so the copy follows the system. */
+const labelRole = (() => {
+  const value = tokens.find((token) => token.cssVar === "--text-label")?.value as
+    | { fontSize?: string; fontWeight?: number }
+    | undefined
+  const size = value?.fontSize?.endsWith("rem") ? `${parseFloat(value.fontSize) * 16}px` : value?.fontSize
+  const weights: Record<number, string> = { 400: "regular", 500: "medium", 600: "semibold", 700: "bold", 800: "extra-bold" }
+  return [size, value?.fontWeight ? weights[value.fontWeight] : undefined].filter(Boolean).join(", ")
+})()
 
 export default function LabelDocs() {
   return (
@@ -14,13 +26,15 @@ export default function LabelDocs() {
       <Example
         title="With an input"
         layout="stack"
-        description="Label-role type: 14px, semibold, full ink. Point htmlFor at the control's id so clicking the label focuses it."
-        code={`<Label htmlFor="team">Team name</Label>
-<Input id="team" placeholder="Halcyon Labs" />`}
+        description={`The label type role (${labelRole}) in full ink. Point htmlFor at the control’s id so clicking the label focuses it.`}
+        code={`<div className="grid gap-2">
+  <Label htmlFor="team">Team name</Label>
+  <Input id="team" placeholder="Acme" />
+</div>`}
       >
-        <div className="grid w-full max-w-96 gap-2">
+        <div className="grid w-full max-w-sm gap-2">
           <Label htmlFor="label-team">Team name</Label>
-          <Input id="label-team" placeholder="Halcyon Labs" />
+          <Input id="label-team" placeholder="Acme" />
         </div>
       </Example>
 
@@ -28,17 +42,19 @@ export default function LabelDocs() {
         title="With selection controls"
         layout="stack"
         description="Put the label after a checkbox and before a switch. Use htmlFor, or wrap the control so the whole row is clickable."
-        code={`<Label>
+        code={`<Label className="font-medium">
   <Checkbox defaultChecked />
   Email me when a production build fails
 </Label>
 
 <div className="flex items-center justify-between gap-4">
-  <Label htmlFor="auto-deploy">Deploy on push</Label>
+  <Label htmlFor="auto-deploy" className="font-medium">
+    Deploy on push
+  </Label>
   <Switch id="auto-deploy" defaultChecked />
 </div>`}
       >
-        <div className="grid w-full max-w-96 gap-5">
+        <div className="grid w-full max-w-sm gap-5">
           <Label className="font-medium">
             <Checkbox defaultChecked />
             Email me when a production build fails
@@ -56,16 +72,22 @@ export default function LabelDocs() {
         title="Optional and icons"
         layout="stack"
         description="Mark the minority. When most fields are required, add “Optional” to the rest in muted text. A leading icon takes the muted colour."
-        code={`<Label htmlFor="company">
-  Company <span className="font-normal text-muted-foreground">Optional</span>
-</Label>
+        code={`<div className="grid gap-2">
+  <Label htmlFor="company">
+    Company <span className="font-normal text-muted-foreground">Optional</span>
+  </Label>
+  <Input id="company" autoComplete="organization" />
+</div>
 
-<Label htmlFor="token">
-  <KeyRoundIcon />
-  Access token
-</Label>`}
+<div className="grid gap-2">
+  <Label htmlFor="token">
+    <KeyRoundIcon />
+    Access token
+  </Label>
+  <Input id="token" type="password" className="font-mono" />
+</div>`}
       >
-        <div className="grid w-full max-w-96 gap-6">
+        <div className="grid w-full max-w-sm gap-6">
           <div className="grid gap-2">
             <Label htmlFor="label-company">
               Company <span className="font-normal text-muted-foreground">Optional</span>
@@ -85,21 +107,34 @@ export default function LabelDocs() {
       <Example
         title="Disabled"
         layout="stack"
-        description="A label dims with its control when the control comes first and carries the peer class, as checkboxes and switches do, or inside a Field with data-disabled."
+        description="A label dims with its control. When the control comes first and carries the peer class, as a checkbox does, that happens on its own. When the label comes first, as before a switch, set data-disabled on the surrounding Field."
+        code={`<div className="flex items-center gap-2">
+  <Checkbox id="legacy" disabled />
+  <Label htmlFor="legacy" className="font-medium">
+    Use the legacy build image
+  </Label>
+</div>
+
+<Field orientation="horizontal" data-disabled className="justify-between gap-4">
+  <Label htmlFor="protect" className="font-medium">
+    Protect preview deployments
+  </Label>
+  <Switch id="protect" disabled defaultChecked />
+</Field>`}
       >
-        <div className="grid w-full max-w-96 gap-5">
+        <div className="grid w-full max-w-sm gap-5">
           <div className="flex items-center gap-2">
             <Checkbox id="label-disabled-check" disabled />
             <Label htmlFor="label-disabled-check" className="font-medium">
               Use the legacy build image
             </Label>
           </div>
-          <div className="flex items-center gap-3">
-            <Switch id="label-disabled-switch" disabled defaultChecked />
+          <Field orientation="horizontal" data-disabled="true" className="justify-between gap-4">
             <Label htmlFor="label-disabled-switch" className="font-medium">
               Protect preview deployments
             </Label>
-          </div>
+            <Switch id="label-disabled-switch" disabled defaultChecked />
+          </Field>
         </div>
       </Example>
 

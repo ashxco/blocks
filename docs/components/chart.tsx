@@ -15,6 +15,7 @@ import {
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import {
+  chartMotion,
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
@@ -96,6 +97,7 @@ export default function ChartDocs() {
     <YAxis tickLine={false} axisLine={false} width={44} tickFormatter={compact.format} />
     <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
     <Area
+      {...chartMotion}
       dataKey="requests"
       type="monotone"
       stroke="var(--color-requests)"
@@ -130,6 +132,7 @@ export default function ChartDocs() {
               />
               <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
               <Area
+                {...chartMotion}
                 dataKey="requests"
                 type="monotone"
                 stroke="var(--color-requests)"
@@ -172,6 +175,7 @@ export default function ChartDocs() {
               <ChartTooltip content={<ChartTooltipContent />} />
               <ChartLegend verticalAlign="top" align="right" content={<ChartLegendContent className="justify-end" />} />
               <Bar
+                {...chartMotion}
                 dataKey="production"
                 stackId="deploys"
                 fill="var(--color-production)"
@@ -180,6 +184,7 @@ export default function ChartDocs() {
                 maxBarSize={40}
               />
               <Bar
+                {...chartMotion}
                 dataKey="preview"
                 stackId="deploys"
                 fill="var(--color-preview)"
@@ -227,6 +232,7 @@ export default function ChartDocs() {
               <ChartLegend content={<ChartLegendContent />} />
               {(["iad", "fra", "sin"] as const).map((key) => (
                 <Line
+                  {...chartMotion}
                   key={key}
                   dataKey={key}
                   type="monotone"
@@ -252,15 +258,19 @@ export default function ChartDocs() {
           {(["dot", "line", "dashed"] as const).map((indicator) => (
             <div key={indicator} className="grid gap-3 rounded-(--card-radius) border border-border bg-card p-4">
               <p className="font-mono text-xs text-muted-foreground">indicator=&quot;{indicator}&quot;</p>
-              <ChartContainer config={deploysConfig} className="aspect-auto h-44 w-full">
+              {/* The tooltip is pinned in a band above the bars, so it never covers them. */}
+              <ChartContainer config={deploysConfig} className="aspect-auto h-60 w-full">
                 <BarChart data={deploys} margin={{ left: 0, right: 0, top: 84 }}>
+                  <XAxis dataKey="day" hide />
                   <ChartTooltip
-                    defaultIndex={3}
+                    defaultIndex={4}
+                    position={{ y: 0 }}
                     cursor={false}
                     content={<ChartTooltipContent indicator={indicator} />}
                   />
-                  <Bar dataKey="production" stackId="d" fill="var(--color-production)" stroke="var(--card)" strokeWidth={2} />
+                  <Bar {...chartMotion} dataKey="production" stackId="d" fill="var(--color-production)" stroke="var(--card)" strokeWidth={2} />
                   <Bar
+                    {...chartMotion}
                     dataKey="preview"
                     stackId="d"
                     fill="var(--color-preview)"
@@ -291,6 +301,7 @@ export default function ChartDocs() {
             <AreaChart data={buildMinutes} margin={{ left: 2, right: 2, top: 6, bottom: 2 }}>
               <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel indicator="line" />} />
               <Area
+                {...chartMotion}
                 dataKey="minutes"
                 type="monotone"
                 stroke="var(--color-minutes)"
@@ -328,6 +339,13 @@ export default function ChartDocs() {
           { prop: "config", type: "ChartConfig", description: "Label, icon and colour per series key. Each colour becomes var(--color-<key>) inside the chart." },
           { prop: "className", type: "string", default: '"aspect-video"', description: "Size the chart. Use aspect-auto with a fixed height, such as h-64, in cards." },
           { prop: "initialDimension", type: "{ width: number; height: number }", default: "{ width: 320, height: 200 }", description: "Size used before the container is measured." },
+        ]}
+      />
+
+      <ApiTable
+        title="Series motion"
+        rows={[
+          { prop: "{...chartMotion}", type: "{ animationDuration: number; animationEasing: string }", default: "560, \"ease-out\"", description: "Spread on every Area, Bar and Line so series draw in --duration-slower instead of Recharts’ 1.5s. Recharts skips it when people ask for reduced motion." },
         ]}
       />
 

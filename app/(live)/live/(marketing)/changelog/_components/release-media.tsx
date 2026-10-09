@@ -6,10 +6,13 @@ import { cn } from "@/lib/utils"
  * frame that ChangelogEntry draws, so each one pads itself away from the edge.
  */
 
-/** Live log stream, for the `lumen logs` release. */
+/**
+ * Live log stream, for the `lumen logs` release. Log lines are columns, so
+ * the window scrolls sideways on phones instead of wrapping them apart.
+ */
 export function LogsShot({ className }: { className?: string }) {
   return (
-    <div className={cn("p-5 sm:p-10", className)}>
+    <div className={cn("p-3 sm:p-10", className)}>
       <CodeWindow
         title="lumen logs"
         lines={[
@@ -35,8 +38,8 @@ const alerts = [
 export function SpendLimitShot({ className }: { className?: string }) {
   return (
     <div aria-hidden="true" className={cn("grid place-items-center p-5 sm:p-10", className)}>
-      <div className="grid w-full max-w-md gap-6 rounded-(--card-radius) border bg-background p-6">
-        <div className="flex items-baseline justify-between gap-4">
+      <div className="@container/usage grid w-full max-w-md gap-6 rounded-(--card-radius) border bg-background p-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <p className="text-title text-foreground">Usage this month</p>
           <p className="text-caption text-muted-foreground">Resets Sep 1</p>
         </div>
@@ -53,12 +56,18 @@ export function SpendLimitShot({ className }: { className?: string }) {
 
         <ul className="grid gap-3 border-t pt-5">
           {alerts.map((alert) => (
-            <li key={alert.label} className="flex items-center justify-between gap-4 text-sm">
+            <li
+              key={alert.label}
+              className="grid gap-x-4 gap-y-0.5 text-sm @min-[22rem]/usage:grid-cols-[minmax(0,1fr)_auto] @min-[22rem]/usage:items-center"
+            >
               <span className="flex min-w-0 items-center gap-2.5 text-foreground">
                 <span className={cn("size-2 shrink-0 rounded-full", alert.dot)} />
                 {alert.label}
               </span>
-              <span className="shrink-0 text-muted-foreground">{alert.date}</span>
+              {/* Under the label in a narrow card, aligned with its text. */}
+              <span className="pl-4.5 text-muted-foreground @min-[22rem]/usage:pl-0 @min-[22rem]/usage:text-right">
+                {alert.date}
+              </span>
             </li>
           ))}
         </ul>

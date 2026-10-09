@@ -6,6 +6,7 @@ import { ArrowRightIcon } from "lucide-react"
 
 import {
   PostCover,
+  type CoverFigure,
   type CoverPattern,
   type CoverTint,
 } from "@/components/blocks/post-card/post-cover"
@@ -13,6 +14,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
+import { Kern } from "@/components/ui/kern"
 
 export {
   PostCover,
@@ -21,7 +23,7 @@ export {
   tintClass,
   tintInkClass,
 } from "@/components/blocks/post-card/post-cover"
-export type { CoverPattern, CoverTint, PostCoverProps } from "@/components/blocks/post-card/post-cover"
+export type { CoverFigure, CoverPattern, CoverTint, PostCoverProps } from "@/components/blocks/post-card/post-cover"
 
 export interface PostAuthor {
   name: string
@@ -33,7 +35,7 @@ export interface PostAuthor {
 export interface Post {
   title: string
   excerpt?: string
-  /** Shown in brand violet above the title. */
+  /** Shown first in the meta line under the title. */
   category?: string
   /** Display date, e.g. "Sep 22, 2026". */
   date?: string
@@ -41,7 +43,8 @@ export interface Post {
   dateTime?: string
   readTime?: string
   href?: string
-  cover?: { pattern?: CoverPattern; tint?: CoverTint }
+  /** Cover shapes and fill. figures feeds the "compare" pattern. */
+  cover?: { pattern?: CoverPattern; tint?: CoverTint; figures?: CoverFigure[] }
   author?: PostAuthor
 }
 
@@ -52,19 +55,42 @@ export interface PostCardProps extends Partial<Post> {
 }
 
 const defaultPost: Post = {
-  title: "Introducing preview environments",
+  title: "A database branch for every pull request",
   excerpt:
-    "Every branch now gets its own URL, variables and a copy of your database. Here is how it works and how to turn it on.",
+    "Preview environments now get a copy-on-write branch of your Postgres database, ready in under two seconds and deleted when the pull request closes.",
   category: "Product",
-  date: "Sep 22, 2026",
-  dateTime: "2026-09-22",
-  readTime: "4 min read",
+  date: "Oct 7, 2026",
+  dateTime: "2026-10-07",
+  readTime: "5 min read",
   href: "/live/blog/post",
-  cover: { pattern: "window", tint: "violet" },
+  cover: { pattern: "branch", tint: "mint" },
 }
 
+/** The six newest posts from the Lumen blog template, so docs and pages agree. */
 export const defaultPosts: Post[] = [
   defaultPost,
+  {
+    title: "Live logs from every replica at once",
+    excerpt:
+      "One command now streams every replica and follows your app through a deploy. Here is how to filter it down to the requests that matter.",
+    category: "Product",
+    date: "Sep 24, 2026",
+    dateTime: "2026-09-24",
+    readTime: "4 min read",
+    href: "/live/blog/post",
+    cover: { pattern: "fields", tint: "sand" },
+  },
+  {
+    title: "Fernhill moved twelve services to Lumen in a week",
+    excerpt:
+      "Their platform team replaced a hand-rolled Kubernetes setup and gave every engineer a preview URL. They told us how it went.",
+    category: "Customers",
+    date: "Sep 17, 2026",
+    dateTime: "2026-09-17",
+    readTime: "6 min read",
+    href: "/live/blog/post",
+    cover: { pattern: "grid", tint: "sky" },
+  },
   {
     title: "Deploy a Next.js app in five minutes",
     excerpt: "Connect a repository, push to main and get a production URL with HTTPS. No config file needed.",
@@ -73,7 +99,7 @@ export const defaultPosts: Post[] = [
     dateTime: "2026-09-12",
     readTime: "6 min read",
     href: "/live/blog/post",
-    cover: { pattern: "terminal", tint: "mint" },
+    cover: { pattern: "window", tint: "rose" },
   },
   {
     title: "Our seed round, and what comes next",
@@ -83,7 +109,7 @@ export const defaultPosts: Post[] = [
     dateTime: "2026-08-28",
     readTime: "3 min read",
     href: "/live/blog/post",
-    cover: { pattern: "orbit", tint: "sand" },
+    cover: { pattern: "orbit", tint: "violet" },
   },
   {
     title: "Zero-downtime deploys, explained",
@@ -93,27 +119,7 @@ export const defaultPosts: Post[] = [
     dateTime: "2026-08-14",
     readTime: "10 min read",
     href: "/live/blog/post",
-    cover: { pattern: "branch", tint: "sky" },
-  },
-  {
-    title: "Migrating a Rails app to Lumen",
-    excerpt: "Move your web, worker and Postgres database across in an afternoon, with a rollback plan.",
-    category: "Guides",
-    date: "Aug 2, 2026",
-    dateTime: "2026-08-02",
-    readTime: "7 min read",
-    href: "/live/blog/post",
-    cover: { pattern: "grid", tint: "rose" },
-  },
-  {
-    title: "The new Lumen desktop app",
-    excerpt: "Watch builds, tail logs and roll back from your menu bar, on macOS and Windows.",
-    category: "Product",
-    date: "Jul 20, 2026",
-    dateTime: "2026-07-20",
-    readTime: "5 min read",
-    href: "/live/blog/post",
-    cover: { pattern: "bars", tint: "panel" },
+    cover: { pattern: "uptime", tint: "panel" },
   },
 ]
 
@@ -123,25 +129,44 @@ function initialsOf(name: string) {
 }
 
 function PostMeta({
+  category,
   date,
   dateTime,
   readTime,
   tone = "default",
   className,
-}: Pick<Post, "date" | "dateTime" | "readTime"> & { tone?: "default" | "panel"; className?: string }) {
-  if (!date && !readTime) return null
+}: Pick<Post, "category" | "date" | "dateTime" | "readTime"> & { tone?: "default" | "panel"; className?: string }) {
+  const parts = [
+    category ? <span key="category">{category}</span> : null,
+    date ? (
+      <time key="date" dateTime={dateTime}>
+        {date}
+      </time>
+    ) : null,
+    readTime ? <span key="read">{readTime}</span> : null,
+  ].filter(Boolean)
+  if (parts.length === 0) return null
   return (
-    <p className={`flex flex-wrap items-center gap-x-2 text-caption ${tone === "panel" ? "text-panel-muted" : "text-muted-foreground"} ${className ?? ""}`}>
-      {date ? <time dateTime={dateTime}>{date}</time> : null}
-      {date && readTime ? <span aria-hidden="true">·</span> : null}
-      {readTime ? <span>{readTime}</span> : null}
+    <p
+      className={cn(
+        "flex flex-wrap items-center gap-x-2 text-caption",
+        tone === "panel" ? "text-panel-muted" : "text-muted-foreground",
+        className
+      )}
+    >
+      {parts.map((part, i) => (
+        <React.Fragment key={i}>
+          {i > 0 ? <span aria-hidden="true">·</span> : null}
+          {part}
+        </React.Fragment>
+      ))}
     </p>
   )
 }
 
 /**
- * A blog post card: flat tinted cover, category, title, excerpt and meta.
- * The whole card is one link.
+ * A blog post card: flat tinted cover, title, excerpt, then category, date
+ * and reading time in one meta line. The whole card is one link.
  */
 export function PostCard({
   title = defaultPost.title,
@@ -161,14 +186,13 @@ export function PostCard({
         href={href ?? "#"}
         className="group grid content-start gap-5 rounded-(--card-radius) outline-none focus-visible:focus-ring"
       >
-        <PostCover pattern={cover?.pattern} tint={cover?.tint} />
+        <PostCover pattern={cover?.pattern} tint={cover?.tint} figures={cover?.figures} />
         <div className="grid gap-2">
-          {category ? <p className="text-label text-brand">{category}</p> : null}
           <Heading className="text-h4 text-foreground decoration-foreground/25 decoration-2 underline-offset-4 group-hover:underline">
             {title}
           </Heading>
           {excerpt ? <p className="line-clamp-2 text-body text-copy">{excerpt}</p> : null}
-          <PostMeta date={date} dateTime={dateTime} readTime={readTime} className="mt-1" />
+          <PostMeta category={category} date={date} dateTime={dateTime} readTime={readTime} className="mt-1" />
         </div>
       </Link>
     </article>
@@ -185,13 +209,20 @@ export interface FeaturedPostProps extends Partial<Post> {
 const defaultFeatured: Post = {
   title: "How we cut build times by 70%",
   excerpt:
-    "Layer caching, a smarter dependency graph and one very slow Docker step. A tour of the changes behind Lumen 2.3, with the numbers.",
+    "Layer caching, a smarter dependency graph and one very slow Docker step. A tour of the build changes we shipped in September, with the numbers.",
   category: "Engineering",
   date: "Sep 30, 2026",
   dateTime: "2026-09-30",
   readTime: "8 min read",
   href: "/live/blog/post",
-  cover: { pattern: "bars", tint: "violet" },
+  cover: {
+    pattern: "compare",
+    tint: "violet",
+    figures: [
+      { label: "Median build, June", value: "61s", share: 1 },
+      { label: "Median build, today", value: "18s", share: 0.29 },
+    ],
+  },
   author: { name: "Priya Natarajan", role: "Staff engineer" },
 }
 
@@ -235,22 +266,19 @@ export function FeaturedPost({
         <PostCover
           pattern={cover?.pattern}
           tint={cover?.tint}
+          figures={cover?.figures}
           className={cn("@narrow:col-span-7", panel && "rounded-(--card-radius)")}
         />
         <div className={cn("grid gap-4 @narrow:col-span-5", panel && "px-4 pb-6 @narrow:p-0")}>
-          {category ? (
-            <p className={`text-label ${panel ? "text-panel-muted" : "text-brand"}`}>{category}</p>
-          ) : null}
           <Heading
-            className={`text-h2 decoration-2 underline-offset-4 group-hover:underline ${
+            className={cn(
+              "text-h2 decoration-2 underline-offset-4 group-hover:underline",
               panel ? "text-panel-foreground decoration-panel-foreground/30" : "text-foreground decoration-foreground/25"
-            }`}
+            )}
           >
-            {title}
+            <Kern>{title}</Kern>
           </Heading>
-          {excerpt ? (
-            <p className={`text-lead ${panel ? "text-panel-muted" : "text-copy"}`}>{excerpt}</p>
-          ) : null}
+          {excerpt ? <p className={cn("text-lead", panel ? "text-panel-muted" : "text-copy")}>{excerpt}</p> : null}
           <div className="mt-3 flex items-center gap-3">
             {author ? (
               <Avatar size="lg" className={cn(panel && "after:border-panel-border")}>
@@ -264,7 +292,7 @@ export function FeaturedPost({
             ) : null}
             <div className="grid gap-0.5">
               {author ? (
-                <p className={`text-label ${panel ? "text-panel-foreground" : "text-foreground"}`}>
+                <p className={cn("text-label", panel ? "text-panel-foreground" : "text-foreground")}>
                   {author.name}
                   {author.role ? (
                     <span className={cn("font-normal", panel ? "text-panel-muted" : "text-muted-foreground")}>
@@ -274,12 +302,7 @@ export function FeaturedPost({
                   ) : null}
                 </p>
               ) : null}
-              <PostMeta
-                date={date}
-                dateTime={dateTime}
-                readTime={readTime}
-                tone={tone}
-              />
+              <PostMeta category={category} date={date} dateTime={dateTime} readTime={readTime} tone={tone} />
             </div>
           </div>
         </div>
@@ -331,10 +354,10 @@ export function PostGrid({
     >
       <div className="@container grid gap-10">
         {title || viewAll ? (
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             {title ? <h2 className="text-h3 text-foreground">{title}</h2> : null}
             {viewAll ? (
-              <Button variant="ghost" nativeButton={false} render={<Link href={viewAll.href} />}>
+              <Button variant="ghost" className="-mr-4" nativeButton={false} render={<Link href={viewAll.href} />}>
                 {viewAll.label}
                 <ArrowRightIcon data-icon="inline-end" />
               </Button>

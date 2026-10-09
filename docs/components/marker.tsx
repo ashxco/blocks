@@ -159,8 +159,8 @@ export default function MarkerDocs() {
         rows={[
           { prop: "variant", type: '"default" | "separator" | "border"', default: '"default"', description: "Marker: a plain line, centred between hairlines, or with a hairline underneath." },
           { prop: "render", type: "ReactElement", description: "Marker: render as another element, such as an li in a list of steps." },
-          { prop: "children", type: "ReactNode", description: "MarkerIcon: an icon, a Spinner or a status dot. Hidden from screen readers." },
-          { prop: "children", type: "ReactNode", description: "MarkerContent: the text. <strong> and links are styled for you." },
+          { prop: "MarkerIcon children", type: "ReactNode", description: "An icon, a Spinner or a status dot. Hidden from screen readers." },
+          { prop: "MarkerContent children", type: "ReactNode", description: "The text. <strong> and links are styled for you." },
         ]}
       />
     </Examples>

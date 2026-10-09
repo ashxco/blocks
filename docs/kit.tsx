@@ -12,7 +12,10 @@
 import * as React from "react"
 import { CheckIcon, PenLineIcon, XIcon } from "lucide-react"
 
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { ExamplesList } from "@/components/viewer/example-canvas"
+import { TokenText } from "@/components/viewer/token-text"
 
 /**
  * One example on a preview canvas, with Preview and Code tabs, a copy button,
@@ -21,19 +24,40 @@ import { cn } from "@/lib/utils"
  */
 export { Example, type ExampleProps } from "@/components/viewer/example-canvas"
 
+/*
+ * Thumbnails. The viewer's index pages render each docs module as a small
+ * live preview of its first example. On the server, a request-scoped flag
+ * (React.cache is per request there) makes <Examples> pass on only the first
+ * example and drops the guidelines and API tables, so the rest is never
+ * rendered or sent. Docs modules that run on the client get the same result
+ * from ExampleThumbnailContext, through ExamplesList.
+ */
+const thumbnailRequest = React.cache(() => ({ active: false }))
+
+/** Called by a viewer index page before it renders docs modules as thumbnails. */
+export function renderDocsAsThumbnails() {
+  thumbnailRequest().active = true
+}
+
+function isThumbnailRequest() {
+  return thumbnailRequest().active
+}
+
 /** Wraps a page's examples with consistent spacing. */
 export function Examples({ children }: { children: React.ReactNode }) {
-  return <div className="grid gap-16 sm:gap-20">{children}</div>
+  if (isThumbnailRequest()) return <>{React.Children.toArray(children)[0] ?? null}</>
+  return <ExamplesList>{children}</ExamplesList>
 }
 
 /** Do / don't guidance for a component or molecule. */
 export function Guidelines({ do: dos = [], dont = [] }: { do?: string[]; dont?: string[] }) {
+  if (isThumbnailRequest()) return null
   return (
-    <section data-slot="guidelines" aria-labelledby="guidelines" className="grid scroll-mt-24 gap-5">
+    <section data-slot="guidelines" aria-labelledby="guidelines" className="grid scroll-mt-24 gap-6">
       <h2 id="guidelines" className="text-h3">
         Guidelines
       </h2>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-x-10 gap-y-12 md:grid-cols-2">
         <GuidelineList tone="do" title="Do" items={dos} />
         <GuidelineList tone="dont" title="Don’t" items={dont} />
       </div>
@@ -41,34 +65,33 @@ export function Guidelines({ do: dos = [], dont = [] }: { do?: string[]; dont?: 
   )
 }
 
+/** One column of guidance: a strong rule in the status colour, then hairline rows. */
 function GuidelineList({ tone, title, items }: { tone: "do" | "dont"; title: string; items: string[] }) {
   const Icon = tone === "do" ? CheckIcon : XIcon
+  const color = tone === "do" ? "text-success" : "text-destructive"
   return (
     <div
       className={cn(
-        "grid content-start overflow-hidden rounded-(--card-radius) border border-t-2",
-        tone === "do" ? "border-t-success" : "border-t-destructive"
+        "grid content-start border-t-(length:--border-width-strong) pt-5",
+        tone === "do" ? "border-success" : "border-destructive"
       )}
     >
-      <div className="flex items-center gap-3 px-5 pt-5 pb-3 sm:px-6">
+      <h3 className="flex items-center gap-2.5 text-title">
         <span
           className={cn(
-            "grid size-7 place-items-center rounded-full",
-            tone === "do" ? "bg-success-subtle text-success" : "bg-destructive-subtle text-destructive"
+            "grid size-6 place-items-center rounded-full",
+            tone === "do" ? "bg-success-subtle" : "bg-destructive-subtle",
+            color
           )}
         >
-          <Icon aria-hidden="true" className="size-4" strokeWidth={2.5} />
+          <Icon aria-hidden="true" className="size-3.5" strokeWidth={2.75} />
         </span>
-        <h3 className="text-title">{title}</h3>
-      </div>
-      <ul className="grid divide-y px-5 sm:px-6">
+        {title}
+      </h3>
+      <ul className="mt-3 grid divide-y">
         {items.map((item) => (
-          <li key={item} className="flex gap-3 py-3.5 text-body text-copy last:pb-5">
-            <Icon
-              aria-hidden="true"
-              className={cn("mt-1.5 size-3.5 shrink-0", tone === "do" ? "text-success" : "text-destructive")}
-              strokeWidth={2.5}
-            />
+          <li key={item} className="flex gap-3 py-4 text-body text-copy last:pb-0">
+            <Icon aria-hidden="true" className={cn("mt-1.5 size-3.5 shrink-0", color)} strokeWidth={2.5} />
             <span>{item}</span>
           </li>
         ))}
@@ -84,8 +107,62 @@ export interface ApiRow {
   description: string
 }
 
+/**
+ * Splits a TypeScript type on its top-level "|", leaving unions inside
+ * brackets, braces, generics and strings alone.
+ */
+function unionMembers(type: string): string[] {
+  const parts: string[] = []
+  let depth = 0
+  let quote: string | null = null
+  let current = ""
+  for (let i = 0; i < type.length; i++) {
+    const ch = type[i]
+    if (quote) {
+      current += ch
+      if (ch === quote && type[i - 1] !== "\\") quote = null
+      continue
+    }
+    if (ch === '"' || ch === "'" || ch === "`") quote = ch
+    else if ("([{<".includes(ch)) depth += 1
+    else if (")]}".includes(ch) || (ch === ">" && type[i - 1] !== "=")) depth = Math.max(0, depth - 1)
+    if (ch === "|" && depth === 0) {
+      parts.push(current.trim())
+      current = ""
+      continue
+    }
+    current += ch
+  }
+  parts.push(current.trim())
+  return parts.filter(Boolean)
+}
+
+/**
+ * A type in mono. Each union member stays on one line; the line only wraps
+ * at the "|" between members, never inside "outline-inverse".
+ */
+function TypeValue({ type }: { type: string }) {
+  const members = unionMembers(type)
+  return (
+    <code className="font-mono text-code text-copy">
+      {members.map((member, index) => (
+        <React.Fragment key={`${member}-${index}`}>
+          {index > 0 ? <span className="text-muted-foreground">{"\u00a0| "}</span> : null}
+          <span className={member.length <= 32 ? "whitespace-nowrap" : "break-words"}>{member}</span>
+        </React.Fragment>
+      ))}
+    </code>
+  )
+}
+
+/** A description, with CSS variables such as --button-* kept whole in mono. */
+function Description({ text }: { text: string }) {
+  return <TokenText text={text} />
+}
+
 /** Props reference table. Becomes a list of cards on small screens. */
 export function ApiTable({ title = "API", rows }: { title?: string; rows: ApiRow[] }) {
+  if (isThumbnailRequest()) return null
   const id = `api-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`
   return (
     <section data-slot="api" aria-labelledby={id} className="grid scroll-mt-24 gap-5">
@@ -94,59 +171,57 @@ export function ApiTable({ title = "API", rows }: { title?: string; rows: ApiRow
       </h2>
 
       {/* Small screens: one card per prop. */}
-      <dl className="grid divide-y rounded-(--card-radius) border md:hidden">
+      <dl className="grid min-w-0 divide-y rounded-(--card-radius) border md:hidden">
         {rows.map((r) => (
-          <div key={r.prop} className="grid gap-2 p-5">
+          <div key={r.prop} className="grid min-w-0 gap-2 p-5">
             <dt className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-              <code className="font-mono text-code font-semibold text-foreground">{r.prop}</code>
+              <code className="min-w-0 font-mono text-code font-semibold text-foreground">{r.prop}</code>
               {r.default ? (
-                <span className="font-mono text-code text-muted-foreground">= {r.default}</span>
+                <span className="min-w-0 font-mono text-code text-muted-foreground [overflow-wrap:anywhere]">
+                  = {r.default}
+                </span>
               ) : null}
             </dt>
             <dd className="grid gap-2">
-              <code className="font-mono text-code break-words text-copy">{r.type}</code>
-              <p className="text-body text-copy">{r.description}</p>
+              <TypeValue type={r.type} />
+              <p className="text-caption text-copy">
+                <Description text={r.description} />
+              </p>
             </dd>
           </div>
         ))}
       </dl>
 
-      {/* Larger screens: a hairline table. */}
-      <div className="hidden overflow-x-auto rounded-(--card-radius) border md:block">
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="border-b bg-subtle">
-              <th scope="col" className="h-11 px-5 text-caption font-semibold text-muted-foreground">
-                Prop
-              </th>
-              <th scope="col" className="h-11 px-5 text-caption font-semibold text-muted-foreground">
-                Type
-              </th>
-              <th scope="col" className="h-11 px-5 text-caption font-semibold text-muted-foreground">
-                Default
-              </th>
-              <th scope="col" className="h-11 px-5 text-caption font-semibold text-muted-foreground">
-                Description
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
+      {/* Larger screens: the system's own table, in its card variant. */}
+      <div className="hidden md:block">
+        <Table variant="card" size="sm">
+          <TableHeader>
+            <TableRow>
+              <TableHead scope="col">Prop</TableHead>
+              <TableHead scope="col">Type</TableHead>
+              <TableHead scope="col">Default</TableHead>
+              <TableHead scope="col">Description</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {rows.map((r) => (
-              <tr key={r.prop} className="align-top">
-                <td className="px-5 py-4 whitespace-nowrap">
+              <TableRow key={r.prop} className="align-baseline">
+                <TableCell className="py-3 align-baseline">
                   <code className="font-mono text-code font-semibold text-foreground">{r.prop}</code>
-                </td>
-                <td className="max-w-80 px-5 py-4">
-                  <code className="font-mono text-code break-words text-copy">{r.type}</code>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap">
+                </TableCell>
+                <TableCell className="max-w-80 py-3 align-baseline whitespace-normal">
+                  <TypeValue type={r.type} />
+                </TableCell>
+                <TableCell className="py-3 align-baseline">
                   <code className="font-mono text-code text-muted-foreground">{r.default ?? "–"}</code>
-                </td>
-                <td className="min-w-64 px-5 py-4 text-sm text-copy">{r.description}</td>
-              </tr>
+                </TableCell>
+                <TableCell className="min-w-64 py-3 align-baseline text-caption whitespace-normal text-copy">
+                  <Description text={r.description} />
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </section>
   )

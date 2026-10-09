@@ -15,7 +15,7 @@ function series(
     state = (state * 16807) % 2147483647
     return (state - 1) / 2147483646
   }
-  const end = Date.UTC(2026, 9, 6)
+  const end = Date.UTC(2026, 9, 9)
   const day = 24 * 60 * 60 * 1000
   return Array.from({ length: 90 }, (_, index) => {
     const time = end - (89 - index) * day
@@ -36,6 +36,8 @@ function series(
 }
 
 const deployments = series(4242, 14, 10, 0.08, 0.35)
+/** Builds include previews and retries, so there are more of them and the weekend dip is shallower. */
+const builds = series(9001, 31, 14, 0.12, 0.55)
 const latency = series(777, 132, 22, -0.18)
 
 export default function ChartCardDocs() {
@@ -59,7 +61,7 @@ export default function ChartCardDocs() {
 
       <Example
         title="Bars"
-        description="For counts per day, such as deployments. Bars cap at 24px wide and grow from one baseline."
+        description="For counts per day, such as deployments. Bars cap at 24px wide and grow from one baseline. A single series next to the page’s main chart draws in ink, so violet stays on the one chart that matters most."
         layout="full"
         surface="subtle"
         code={`<ChartCard
@@ -68,7 +70,7 @@ export default function ChartCardDocs() {
   description="Production and preview deployments per day."
   seriesLabel="Deployments"
   valueFormat="number"
-  color={2}
+  color="ink"
   data={deployments}
 />`}
       >
@@ -79,7 +81,7 @@ export default function ChartCardDocs() {
             description="Production and preview deployments per day."
             seriesLabel="Deployments"
             valueFormat="number"
-            color={2}
+            color="ink"
             defaultPeriod="30d"
             data={deployments}
           />
@@ -88,16 +90,16 @@ export default function ChartCardDocs() {
 
       <Example
         title="When lower is better"
-        description="Latency averages over the period instead of summing, and a drop reads as good news."
+        description="Latency averages over the period instead of summing, and a drop reads as good news. The axis counts in round steps from zero, with the unit on each label."
         layout="full"
         code={`<ChartCard
   title="p95 latency"
   seriesLabel="p95"
   valueFormat="ms"
   goodWhen="down"
-  color={3}
   data={latency}
-/>`}
+/>
+<ChartCard type="bar" title="Builds" seriesLabel="Builds" valueFormat="number" color="ink" periods={["30d"]} data={builds} />`}
       >
         <div className="@container">
           <div className="grid gap-4 p-6 @min-[48rem]:grid-cols-2 @min-[48rem]:p-10">
@@ -107,7 +109,6 @@ export default function ChartCardDocs() {
               seriesLabel="p95"
               valueFormat="ms"
               goodWhen="down"
-              color={3}
               defaultPeriod="7d"
               data={latency}
             />
@@ -117,10 +118,10 @@ export default function ChartCardDocs() {
               description="Builds started per day."
               seriesLabel="Builds"
               valueFormat="number"
-              color={4}
+              color="ink"
               periods={["30d"]}
               defaultPeriod="30d"
-              data={deployments}
+              data={builds}
             />
           </div>
         </div>
@@ -130,11 +131,11 @@ export default function ChartCardDocs() {
         do={[
           "Plot one measure per card. Two measures with different scales need two cards.",
           "Give every day a point, oldest first, and at least as many days as the longest period.",
-          "Pick the series colour by meaning and keep it the same wherever that measure appears.",
+          "Keep violet (chart-1) for the page’s main chart and draw other single series in ink. Save chart-2 to chart-4 for charts with several series.",
         ]}
         dont={[
           "Don’t add a second y-axis.",
-          "Don’t fill areas with gradients; the wash is a flat 10% of the series colour.",
+          "Don’t fill areas with gradients; the wash is a flat 6% of the series colour.",
           "Don’t colour the figures or labels with the series colour; text stays in text tokens.",
         ]}
       />
@@ -198,9 +199,10 @@ export default function ChartCardDocs() {
           },
           {
             prop: "color",
-            type: "1 | 2 | 3 | 4",
+            type: '1 | 2 | 3 | 4 | "ink"',
             default: "1",
-            description: "Chart token for the series.",
+            description:
+              "Chart token for the series, or ink (the foreground colour) for a quiet single series.",
           },
           {
             prop: "goodWhen",

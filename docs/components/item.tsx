@@ -34,10 +34,16 @@ const domains = [
 ] as const
 
 const members = [
-  { name: "Maya Okafor", email: "maya@acme.dev", role: "Owner", initials: "MO" },
-  { name: "Daniel Reyes", email: "daniel@acme.dev", role: "Admin", initials: "DR" },
-  { name: "Priya Shah", email: "priya@acme.dev", role: "Developer", initials: "PS" },
+  { name: "Priya Raman", email: "priya@lumen.app", role: "Owner", initials: "PR" },
+  { name: "Mateo Ortiz", email: "mateo@lumen.app", role: "Admin", initials: "MO" },
+  { name: "Aiko Kato", email: "aiko@lumen.app", role: "Developer", initials: "AK" },
 ]
+
+const sizeRows = [
+  { size: "default", branch: "preview-comments", meta: "Last deployed 9 minutes ago" },
+  { size: "sm", branch: "chore/node-22", meta: "Last deployed 3 hours ago" },
+  { size: "xs", branch: "fix/apex-redirect", meta: "Last deployed yesterday" },
+] as const
 
 export default function ItemDocs() {
   return (
@@ -80,7 +86,7 @@ export default function ItemDocs() {
             </ItemMedia>
             <ItemContent>
               <ItemTitle>Deploy key</ItemTitle>
-              <ItemDescription>Read-only access to acme/web-app. Added 3 days ago.</ItemDescription>
+              <ItemDescription>Read-only access to lumen-labs/lumen-web. Added 3 days ago.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">
@@ -94,7 +100,7 @@ export default function ItemDocs() {
             </ItemMedia>
             <ItemContent>
               <ItemTitle>Two-factor authentication</ItemTitle>
-              <ItemDescription>Required for every member of Acme Inc.</ItemDescription>
+              <ItemDescription>Required for every member of Lumen Labs</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Badge variant="success">On</Badge>
@@ -110,17 +116,20 @@ export default function ItemDocs() {
         code={`<Item size="sm" variant="outline">…</Item>
 <Item size="xs" variant="outline">…</Item>`}
       >
-        <div className="grid max-w-prose gap-3">
-          {(["default", "sm", "xs"] as const).map((size) => (
-            <Item key={size} size={size} variant="outline">
-              <ItemMedia variant="icon">
-                <GitBranchIcon />
-              </ItemMedia>
-              <ItemContent>
-                <ItemTitle>preview-comments</ItemTitle>
-                <ItemDescription>Size {size}. Last deployed 9 minutes ago.</ItemDescription>
-              </ItemContent>
-            </Item>
+        <div className="grid max-w-prose gap-5">
+          {sizeRows.map((row) => (
+            <div key={row.size} className="grid gap-2">
+              <Item size={row.size} variant="outline">
+                <ItemMedia variant="icon">
+                  <GitBranchIcon />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{row.branch}</ItemTitle>
+                  <ItemDescription>{row.meta}</ItemDescription>
+                </ItemContent>
+              </Item>
+              <p className="font-mono text-xs text-muted-foreground">size=&quot;{row.size}&quot;</p>
+            </div>
           ))}
         </div>
       </Example>
@@ -204,7 +213,7 @@ export default function ItemDocs() {
             </ItemMedia>
             <ItemContent>
               <ItemTitle>Deployment webhook</ItemTitle>
-              <ItemDescription>POST https://hooks.acme.dev/lumen on every deployment.</ItemDescription>
+              <ItemDescription>POST https://lumen.app/api/hooks/deploy on every deployment.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">
@@ -222,7 +231,7 @@ export default function ItemDocs() {
             </ItemMedia>
             <ItemContent>
               <ItemTitle>Incident webhook</ItemTitle>
-              <ItemDescription>POST https://hooks.acme.dev/pager when a deployment fails.</ItemDescription>
+              <ItemDescription>POST https://lumen.app/api/hooks/incident when a deployment fails.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">
@@ -251,11 +260,11 @@ export default function ItemDocs() {
 
       <ApiTable
         rows={[
-          { prop: "variant", type: '"default" | "outline" | "muted"', default: '"default"', description: "Item: borderless, hairline outline, or tinted fill." },
+          { prop: "Item variant", type: '"default" | "outline" | "muted"', default: '"default"', description: "Borderless, hairline outline, or tinted fill." },
           { prop: "size", type: '"default" | "sm" | "xs"', default: '"default"', description: "Item: padding, gap, title role and media size." },
           { prop: "render", type: "ReactElement", description: "Item: render as a link or button. Interactive rows get a hover fill." },
-          { prop: "variant", type: '"default" | "divided" | "contained"', default: '"default"', description: "ItemGroup: stacked rows, hairline rows, or rows in a bordered list." },
-          { prop: "variant", type: '"default" | "icon" | "image"', default: '"default"', description: "ItemMedia: a bare icon, an icon in a muted tile, or a cropped image." },
+          { prop: "ItemGroup variant", type: '"default" | "divided" | "contained"', default: '"default"', description: "Stacked rows, hairline rows, or rows in a bordered list." },
+          { prop: "ItemMedia variant", type: '"default" | "icon" | "image"', default: '"default"', description: "A bare icon, an icon in a muted tile, or a cropped image." },
         ]}
       />
     </Examples>

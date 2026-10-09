@@ -15,6 +15,7 @@ import {
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const deployments = [
@@ -123,7 +124,7 @@ export default function TabsDocs() {
         description="Use variant line when the tabs sit on a border that is already there, such as the bottom of a page header."
         layout="stack"
         code={`<header className="border-b">
-  <h1 className="text-h3">web-app</h1>
+  <h1 className="text-h3">lumen-web</h1>
   <Tabs defaultValue="deployments">
     <TabsList variant="line">…</TabsList>
   </Tabs>
@@ -132,49 +133,59 @@ export default function TabsDocs() {
         <header className="grid gap-5 border-b">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="grid gap-1">
-              <h3 className="text-h3">web-app</h3>
+              <h3 className="text-h3">lumen-web</h3>
               <p className="text-sm text-muted-foreground">lumen.app · Frankfurt, fra1</p>
             </div>
             <Button size="sm" variant="outline">
               Visit
             </Button>
           </div>
-          <Tabs defaultValue="deployments">
-            <TabsList variant="line">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="deployments">Deployments</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
-            </TabsList>
+          <Tabs defaultValue="deployments" className="min-w-0">
+            {/* The row scrolls rather than overflow the page, and on a phone the least used tab
+                drops out so every tab left in the row shows whole. */}
+            <div className="no-scrollbar -mx-6 scroll-px-6 overflow-x-auto px-6 sm:-mx-10 sm:scroll-px-10 sm:px-10">
+              <TabsList variant="line" className="w-max">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="deployments">Deployments</TabsTrigger>
+                <TabsTrigger value="analytics" className="@max-md:hidden">
+                  Analytics
+                </TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
+              </TabsList>
+            </div>
           </Tabs>
         </header>
       </Example>
 
       <Example
         title="With icons and counts"
-        description="Icons sit before the label. Counts use a small badge after it."
+        description="Icons sit before the label. Counts use a small badge after it. When the row can run wider than a phone, put the list in an overflow-x-auto wrapper so it scrolls."
         layout="stack"
       >
-        <Tabs defaultValue="deployments">
-          <TabsList>
-            <TabsTrigger value="deployments">
-              <GitBranchIcon />
-              Deployments
-            </TabsTrigger>
-            <TabsTrigger value="logs">
-              <ScrollTextIcon />
-              Logs
-            </TabsTrigger>
-            <TabsTrigger value="incidents">
-              <ActivityIcon />
-              Incidents
-              <Badge variant="destructive">2</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="members" disabled>
-              <UsersIcon />
-              Members
-            </TabsTrigger>
-          </TabsList>
+        <Tabs defaultValue="deployments" className="min-w-0">
+          {/* The row scrolls rather than overflow the page. On a phone the disabled tab drops
+              out, so every tab left in the row, and its count, shows whole. */}
+          <div className="no-scrollbar -mx-6 scroll-px-6 overflow-x-auto px-6 sm:-mx-10 sm:scroll-px-10 sm:px-10">
+            <TabsList className="min-w-full gap-4 data-horizontal:w-max @md:gap-6">
+              <TabsTrigger value="deployments">
+                <GitBranchIcon />
+                Deployments
+              </TabsTrigger>
+              <TabsTrigger value="logs">
+                <ScrollTextIcon />
+                Logs
+              </TabsTrigger>
+              <TabsTrigger value="incidents">
+                <ActivityIcon />
+                Incidents
+                <Badge variant="destructive">2</Badge>
+              </TabsTrigger>
+              <TabsTrigger value="members" disabled className="@max-md:hidden">
+                <UsersIcon />
+                Members
+              </TabsTrigger>
+            </TabsList>
+          </div>
         </Tabs>
       </Example>
 
@@ -190,8 +201,8 @@ export default function TabsDocs() {
   <TabsContent value="general">…</TabsContent>
 </Tabs>`}
       >
-        <Tabs defaultValue="domains" orientation="vertical" className="min-h-56">
-          <TabsList className="w-48">
+        <Tabs defaultValue="domains" orientation="vertical" className="min-h-56 max-sm:data-vertical:flex-col">
+          <TabsList className="sm:w-48">
             <TabsTrigger value="general">
               <SettingsIcon />
               General
@@ -221,7 +232,7 @@ export default function TabsDocs() {
           </TabsContent>
           <TabsContent value="git" className="grid content-start gap-2">
             <h4 className="text-title">Git</h4>
-            <p className="text-sm">Connected to acme/web-app. Pushes to main deploy to production.</p>
+            <p className="text-sm">Connected to lumen-labs/lumen-web. Pushes to main deploy to production.</p>
           </TabsContent>
           <TabsContent value="env" className="grid content-start gap-2">
             <h4 className="text-title">Environment variables</h4>
@@ -237,7 +248,7 @@ export default function TabsDocs() {
       >
         <section className="grid gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)">
           <div className="grid gap-1">
-            <h3 className="text-h4">api</h3>
+            <h3 className="text-h4">lumen-api</h3>
             <p className="text-sm text-muted-foreground">Node.js 22 · 2 regions · Last deployed 2 minutes ago</p>
           </div>
           <Tabs defaultValue="deployments">
@@ -254,7 +265,14 @@ export default function TabsDocs() {
                     className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 py-3.5 first:pt-0 last:pb-0"
                   >
                     <p className="truncate text-label text-foreground">{d.message}</p>
-                    <Badge variant={d.status === "Ready" ? "success" : "warning"}>{d.status}</Badge>
+                    <Badge variant={d.status === "Ready" ? "success" : "info"}>
+                      {d.status === "Ready" ? (
+                        <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
+                      ) : (
+                        <Spinner className="size-3" />
+                      )}
+                      {d.status}
+                    </Badge>
                     <p className="flex min-w-0 items-center gap-2 text-caption text-muted-foreground">
                       <span className="font-mono">{d.sha}</span>
                       <span aria-hidden="true">·</span>

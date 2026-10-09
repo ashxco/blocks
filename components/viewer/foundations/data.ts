@@ -51,6 +51,14 @@ export function leafName(name: string) {
   return parts[parts.length - 1]
 }
 
+/**
+ * Drops a trailing "Use px-gutter." sentence from a token description, for
+ * places that already show the utility next to it.
+ */
+export function withoutUsage(description?: string) {
+  return description?.replace(/\s*Use [^.]+\.$/, "") || undefined
+}
+
 export function sentenceCase(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
@@ -105,9 +113,24 @@ export function refLabel(ref?: string) {
   return ref ? shortName(ref) : undefined
 }
 
-/** CSS variable of the primitive a semantic token points at. */
-export function refVar(ref?: string) {
-  return ref ? tokenByName(ref)?.cssVar : undefined
+const primitiveColors = tokens.filter((t) => t.tier === "primitive" && t.type === "color")
+
+/**
+ * Names the primitive behind a colour value: the token reference when there
+ * is one, otherwise the primitive with the same OKLCH channels plus opacity
+ * ("ink.0 at 9%"). Undefined for a tuned one-off that matches no primitive.
+ */
+export function colorAlias(value: string, ref?: string): string | undefined {
+  if (ref) return refLabel(ref)
+  const parsed = parseOklch(value)
+  if (!parsed) return undefined
+  const match = primitiveColors.find((p) => {
+    const q = parseOklch(p.value)
+    return q && q.l === parsed.l && q.c === parsed.c && (q.c === 0 || q.h === parsed.h)
+  })
+  const base = match ? refLabel(match.name) : parsed.l === 0 && parsed.c === 0 ? "black" : undefined
+  if (!base) return undefined
+  return parsed.alpha < 1 ? `${base} at ${Math.round(parsed.alpha * 100)}%` : base
 }
 
 /** The single most useful utility for a semantic colour. */
@@ -117,22 +140,11 @@ export function primaryColorUtility(t: DesignToken) {
   if (role === "ring" || role === "sidebar-ring") return `outline-${role}`
   if (role === "border" || role === "border-strong" || role === "input" || role.endsWith("-border"))
     return `border-${role}`
-  if (role === "copy" || role.endsWith("foreground") || role === "panel-muted") return `text-${role}`
+  if (role === "copy" || role.endsWith("foreground") || role === "panel-muted" || role === "panel-brand")
+    return `text-${role}`
   if (role === "brand" || role === "destructive" || role === "success" || role === "warning" || role === "info")
     return `text-${role} · bg-${role}`
   return `bg-${role}`
-}
-
-/**
- * The light-theme colour of a semantic role as a CSS value, whatever theme
- * the page is in: a reference to its primitive, or the raw value for
- * translucent roles that have no primitive.
- */
-export function lightColor(cssVar: string) {
-  const t = tokens.find((x) => x.tier === "semantic" && x.cssVar === cssVar)
-  if (!t) return `var(${cssVar})`
-  const primitive = refVar(t.ref)
-  return primitive ? `var(${primitive})` : String(t.value)
 }
 
 /** Light and dark values for a semantic token (dark falls back to light). */
@@ -173,11 +185,11 @@ export function clampRange(value: string): { min: number; max: number } | null {
   return min === null || max === null ? null : { min, max }
 }
 
-/** Human size: "16px", "44–80px fluid", or the raw value. */
+/** Human size: "16px", "44–80px fluid" (fluid bounds in whole pixels), or the raw value. */
 export function describeSize(value: unknown): string {
   const v = String(value)
   const range = clampRange(v)
-  if (range) return `${round(range.min)}–${round(range.max)}px fluid`
+  if (range) return `${Math.round(range.min)}–${Math.round(range.max)}px fluid`
   const px = toPx(v)
   if (px === null) return v
   if (px >= 9999) return "Fully round"
@@ -229,25 +241,35 @@ export function formatValue(t: DesignToken, value: unknown): string {
 }
 
 /**
- * Tailwind usage for a token. The generated list writes every component
- * token as h-(--…); radius, padding and width tokens get the utility that
- * actually applies them.
+ * Tailwind usage for a token, as the token build writes it, with a few hints
+ * narrowed to the one utility people should reach for:
+ * - Tailwind keeps max-w-prose as its fixed 65ch, so the 42rem prose
+ *   container is reached through its variable or the @prose: query.
+ * - The hairline is plain `border`; only the strong width needs the variable.
+ * - Named spacing has one intended axis each (px-gutter, py-section, gap-stack).
  */
+const utilityOverrides: Record<string, string> = {
+  "container.prose": "max-w-(--container-prose) · @prose:",
+  "border.hairline": "border",
+  "border.strong": "border-(length:--border-width-strong)",
+  "space.gutter": "px-gutter",
+  "space.section": "py-section",
+  "space.section-sm": "py-section-sm",
+  "space.stack": "gap-stack",
+}
+
 export function utilityFor(t: DesignToken): string | undefined {
-  const v = `(${t.cssVar})`
-  if (t.tier === "component") {
-    if (/radius/.test(t.name)) return `rounded-${v}`
-    if (/padding-x/.test(t.name)) return `px-${v}`
-    if (/padding/.test(t.name)) return `p-${v}`
-    if (/width/.test(t.name)) return `w-${v}`
-    if (/size/.test(t.name)) return `size-${v}`
-    return t.utility ?? `h-${v}`
-  }
-  if (t.utility) return t.utility
-  if (t.group === "z") return `z-${v}`
-  if (t.group === "focus") return "focus-visible:focus-ring"
-  if (t.name === "border.hairline") return "border"
-  return undefined
+  return utilityOverrides[t.name] ?? t.utility
+}
+
+/**
+ * The single intended utility for any token: the primary utility for a
+ * semantic colour, nothing for primitives (CSS variables only), otherwise
+ * the build's hint.
+ */
+export function intendedUtility(t: DesignToken): string | undefined {
+  if (t.type === "color") return t.tier === "semantic" ? primaryColorUtility(t) : undefined
+  return utilityFor(t)
 }
 
 export function isColor(t: DesignToken) {

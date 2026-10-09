@@ -3,6 +3,7 @@ import { ArrowRightIcon, ScaleIcon, StarIcon, TagIcon } from "lucide-react"
 
 import { InstallCommand } from "@/components/blocks/install-command"
 import { Button } from "@/components/ui/button"
+import { Kern } from "@/components/ui/kern"
 
 const repoStats = [
   { label: "GitHub stars", value: "12.4k" },
@@ -10,10 +11,11 @@ const repoStats = [
   { label: "Releases", value: "94" },
 ]
 
+/** The three newest releases, matching the changelog template. */
 const releases = [
-  { version: "v4.12.0", title: "Database branches for preview deploys", date: "Oct 2" },
-  { version: "v4.11.3", title: "Faster cold starts for Go and Rust", date: "Sep 24" },
-  { version: "v4.11.0", title: "Scheduled jobs with retries", date: "Sep 16" },
+  { version: "v2.12.0", title: "Branch your database with every preview", date: "Oct 6" },
+  { version: "v2.11.0", title: "Live logs in your terminal", date: "Sep 24" },
+  { version: "v2.10.0", title: "New regions in São Paulo, Mumbai and Sydney", date: "Sep 10" },
 ]
 
 /**
@@ -27,22 +29,24 @@ export function OpenSourceBand() {
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-20">
         <div className="grid justify-items-start gap-6">
           <h2 id="open-source-heading" className="max-w-narrow text-h2 text-foreground">
-            Apache 2.0.
-            <br />
-            Fork it, run it, ship it.
+            <Kern>
+              Apache 2.0.
+              <br />
+              Fork it, run it, ship it.
+            </Kern>
           </h2>
           <p className="max-w-prose text-lead text-copy">
             The builder, the router and the dashboard are open source. Run Lumen on one server or a hundred, with
             no licence key and nothing phoning home.
           </p>
           <div className="mt-3 flex flex-wrap gap-3">
-            <Button size="lg" variant="outline" nativeButton={false} render={<Link href="#" />}>
-              <StarIcon data-icon="inline-start" />
-              Star on GitHub
-            </Button>
-            <Button size="lg" variant="secondary" nativeButton={false} render={<Link href="#" />}>
+            <Button size="lg" nativeButton={false} render={<Link href="/live/blog/post" />}>
               Self-hosting guide
               <ArrowRightIcon data-icon="inline-end" />
+            </Button>
+            <Button size="lg" variant="outline" nativeButton={false} render={<a href="https://github.com" />}>
+              <StarIcon data-icon="inline-start" />
+              Star on GitHub
             </Button>
           </div>
         </div>

@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation"
 import { Collapsible } from "@base-ui/react/collapsible"
 import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react"
 
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
+import { Kbd } from "@/components/ui/kbd"
 import { cn } from "@/lib/utils"
 import { navSections, sectionForPath, type NavGroup, type NavSection } from "@/components/viewer/nav"
 
@@ -94,12 +96,11 @@ export function SidebarNav({
 
   return (
     <div className={cn("grid gap-6", className)}>
-      <div className="relative">
-        <SearchIcon
-          aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-        />
-        <input
+      <InputGroup size="sm">
+        <InputGroupAddon>
+          <SearchIcon aria-hidden="true" />
+        </InputGroupAddon>
+        <InputGroupInput
           ref={filterRef}
           type="search"
           value={query}
@@ -113,33 +114,28 @@ export function SidebarNav({
           }}
           placeholder="Filter"
           aria-label="Filter navigation"
-          className={cn(
-            "h-(--control-height-sm) w-full rounded-(--control-radius) border border-transparent bg-muted pr-9 pl-9 text-label font-medium text-foreground",
-            "transition-colors duration-(--duration-fast) outline-none placeholder:text-muted-foreground",
-            "hover:border-input focus-visible:border-ring focus-visible:focus-ring [&::-webkit-search-cancel-button]:appearance-none"
-          )}
+          aria-keyshortcuts={autoFocusFilter ? undefined : "/"}
+          className="[&::-webkit-search-cancel-button]:appearance-none"
         />
-        {query ? (
-          <button
-            type="button"
-            onClick={() => {
-              setQuery("")
-              filterRef.current?.focus()
-            }}
-            aria-label="Clear filter"
-            className="absolute top-1/2 right-2 grid size-6 -translate-y-1/2 place-items-center rounded-xs text-muted-foreground outline-none hover:text-foreground focus-visible:focus-ring"
-          >
-            <XIcon className="size-3.5" />
-          </button>
-        ) : (
-          <kbd
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 right-2.5 grid h-5 min-w-5 -translate-y-1/2 place-items-center rounded-xs border bg-background px-1 font-mono text-xs text-muted-foreground"
-          >
-            /
-          </kbd>
-        )}
-      </div>
+        <InputGroupAddon align="inline-end">
+          {query ? (
+            <InputGroupButton
+              size="icon-xs"
+              aria-label="Clear filter"
+              onClick={() => {
+                setQuery("")
+                filterRef.current?.focus()
+              }}
+            >
+              <XIcon aria-hidden="true" />
+            </InputGroupButton>
+          ) : (
+            <Kbd aria-hidden="true" className="pointer-coarse:hidden">
+              /
+            </Kbd>
+          )}
+        </InputGroupAddon>
+      </InputGroup>
 
       {sections.length === 0 ? (
         <p className="px-3 text-caption text-muted-foreground">

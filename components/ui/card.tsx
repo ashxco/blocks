@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils"
  * --card-padding inside (--card-padding-sm at size="sm"). No shadow.
  *
  * - `variant="default"`: bg-card on the canvas.
- * - `variant="subtle"`: a tinted fill, for cards that should recede.
+ * - `variant="subtle"`: a tinted fill (bg-muted, which stays one step off
+ *   bg-card in dark), for cards that should recede.
  * - `variant="panel"`: the dark emphasis surface; stays dark in both themes.
  *
  * A CardHeader with `border-b` and the CardFooter run edge to edge. The inset
@@ -25,7 +26,7 @@ const cardVariants = cva(
     variants: {
       variant: {
         default: "border-border bg-card text-card-foreground",
-        subtle: "border-border bg-subtle text-foreground",
+        subtle: "border-border bg-muted text-foreground",
         panel: "border-panel-border bg-panel text-panel-foreground",
       },
       size: {
@@ -91,7 +92,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-description"
       className={cn(
-        "text-sm text-muted-foreground group-data-[variant=panel]/card:text-panel-muted",
+        "text-sm text-pretty text-muted-foreground group-data-[variant=panel]/card:text-panel-muted",
         "[&_a]:font-semibold [&_a]:text-foreground [&_a]:underline-offset-4 [&_a:hover]:underline",
         className
       )}
@@ -131,8 +132,9 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-footer"
       className={cn(
-        "-mx-(--card-inset) -mb-(--card-inset) flex items-center gap-3 border-t border-border bg-subtle px-(--card-inset) py-4",
-        "group-data-[variant=subtle]/card:bg-muted group-data-[variant=panel]/card:border-panel-border group-data-[variant=panel]/card:bg-panel-raised",
+        // bg-muted: the subtle tint in light, one step off bg-card in dark (where bg-subtle equals bg-card).
+        "-mx-(--card-inset) -mb-(--card-inset) flex items-center gap-3 border-t border-border bg-muted px-(--card-inset) py-4",
+        "group-data-[variant=subtle]/card:bg-secondary group-data-[variant=panel]/card:border-panel-border group-data-[variant=panel]/card:bg-panel-raised",
         className
       )}
       {...props}

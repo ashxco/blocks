@@ -83,6 +83,23 @@ export default function CodeWindowDocs() {
         />
       </Example>
 
+      <Example
+        title="Wrapped lines"
+        description="Set wrap for marketing visuals that must fit a phone. Sentence-like lines wrap at spaces with a hanging indent instead of scrolling out of view. Leave it off for logs and tables: columns should scroll sideways, not break apart."
+        code={`<CodeWindow wrap title="lumen deploy" lines={[…]} />`}
+      >
+        <CodeWindow
+          wrap
+          className="w-full max-w-80"
+          title="lumen deploy"
+          lines={[
+            "$ lumen deploy",
+            "→ Building acme/web from main and restoring the build cache",
+            "✓ Live at web.acme.dev once every health check passed",
+          ]}
+        />
+      </Example>
+
       <Guidelines
         do={[
           "Show real commands and believable output, short enough to read at a glance.",
@@ -92,6 +109,7 @@ export default function CodeWindowDocs() {
         dont={[
           "Don’t paste long logs; five to eight lines tell the story.",
           "Don’t colour whole lines; the markers carry the meaning.",
+          "Don’t wrap columns such as log lines or tables; let them scroll sideways.",
           "Don’t use it for a single command people should copy; use the install command.",
         ]}
       />
@@ -101,6 +119,7 @@ export default function CodeWindowDocs() {
           { prop: "title", type: "string", default: '"terminal"', description: "Label in the title bar, also the accessible name." },
           { prop: "lines", type: "string[]", default: "A deploy log", description: "Output lines. $ prompt, ✓ success, → muted." },
           { prop: "children", type: "ReactNode", description: "Custom body content. Used when lines is not set." },
+          { prop: "wrap", type: "boolean", default: "false", description: "Wrap long lines with a hanging indent instead of scrolling sideways. For sentence-like output in visuals; not for logs, tables or code people copy." },
           { prop: "className", type: "string", description: "Classes for the frame, such as a width." },
         ]}
       />

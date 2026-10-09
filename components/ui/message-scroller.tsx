@@ -49,10 +49,10 @@ function MessageScrollerViewport({
       data-slot="message-scroller-viewport"
       className={cn(
         "size-full min-h-0 min-w-0 overflow-y-auto overscroll-contain contain-content outline-none",
-        "scrollbar-thin scrollbar-gutter-stable scrollbar-thumb-border-strong scrollbar-track-transparent",
+        "[scrollbar-color:var(--border-strong)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin]",
         // Inset focus outline, since the scroller clips anything outside it.
         "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring",
-        "data-autoscrolling:scrollbar-thumb-transparent data-pending-scroll:invisible",
+        "data-autoscrolling:[scrollbar-color:transparent_transparent] data-pending-scroll:invisible",
         className
       )}
       {...props}

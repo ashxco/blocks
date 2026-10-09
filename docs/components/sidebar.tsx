@@ -52,9 +52,12 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 
-/** Keeps the fixed sidebar inside the preview canvas. */
+/**
+ * Keeps the sidebar inside the preview canvas: the fixed desktop sidebar and,
+ * on a phone, the sheet it opens as. The frame grows with the page inside it.
+ */
 const framed =
-  "relative h-[36rem] min-h-0 overflow-hidden **:data-[slot=sidebar-container]:absolute **:data-[slot=sidebar-container]:h-full"
+  "relative isolate min-h-[36rem] overflow-hidden contain-layout **:data-[slot=sidebar-container]:absolute **:data-[slot=sidebar-container]:h-full"
 
 const nav = [
   { title: "Overview", icon: HouseIcon },
@@ -65,13 +68,19 @@ const nav = [
   { title: "Databases", icon: DatabaseIcon },
 ]
 
-const projects = ["web-app", "api", "docs"]
+const projects = ["lumen-web", "lumen-api", "docs"]
+
+const recent = [
+  { message: "Add usage-based billing page", project: "lumen-web", hash: "8f2c1a9", time: "4m ago", dot: "bg-success" },
+  { message: "Add preview comments to pull requests", project: "lumen-web", hash: "7f03b1d", time: "9m ago", dot: "bg-info" },
+  { message: "Rate-limit the deployments endpoint", project: "lumen-api", hash: "c41e7b2", time: "1h ago", dot: "bg-success" },
+]
 
 function WorkspaceButton() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" aria-label="Workspace: Acme Inc.">
+        <SidebarMenuButton size="lg" aria-label="Workspace: Lumen Labs">
           <span
             aria-hidden="true"
             className="grid size-8 shrink-0 place-items-center rounded-sm bg-primary text-sm font-extrabold text-primary-foreground"
@@ -79,7 +88,7 @@ function WorkspaceButton() {
             L
           </span>
           <span className="grid min-w-0 flex-1">
-            <span className="truncate text-label text-foreground">Acme Inc.</span>
+            <span className="truncate text-label text-foreground">Lumen Labs</span>
             <span className="truncate text-caption font-normal text-muted-foreground">Pro plan</span>
           </span>
           <ChevronsUpDownIcon className="ml-auto text-muted-foreground" />
@@ -93,13 +102,13 @@ function UserButton() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" aria-label="Account: Maya Okafor">
+        <SidebarMenuButton size="lg" aria-label="Account: Priya Raman">
           <Avatar size="sm">
-            <AvatarFallback>MO</AvatarFallback>
+            <AvatarFallback>PR</AvatarFallback>
           </Avatar>
           <span className="grid min-w-0 flex-1">
-            <span className="truncate text-label text-foreground">Maya Okafor</span>
-            <span className="truncate text-caption font-normal text-muted-foreground">maya@acme.dev</span>
+            <span className="truncate text-label text-foreground">Priya Raman</span>
+            <span className="truncate text-caption font-normal text-muted-foreground">priya@lumen.app</span>
           </span>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -109,10 +118,12 @@ function UserButton() {
 
 function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset" | "floating" }) {
   const [active, setActive] = React.useState("Overview")
+  const [frame, setFrame] = React.useState<HTMLDivElement | null>(null)
 
   return (
-    <SidebarProvider className={framed}>
-      <Sidebar collapsible="icon" variant={variant}>
+    // On a phone the sidebar is a sheet. The preview opens it in the frame, so the page shows the sidebar.
+    <SidebarProvider ref={setFrame} defaultOpenMobile className={framed}>
+      <Sidebar collapsible="icon" variant={variant} container={frame}>
         <SidebarHeader>
           <WorkspaceButton />
         </SidebarHeader>
@@ -154,7 +165,7 @@ function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset"
                       <span aria-hidden="true" className="grid size-4 place-items-center">
                         <span className="size-1.5 rounded-full bg-success" />
                       </span>
-                      <span className="font-mono text-sm font-medium">{name}</span>
+                      <span>{name}</span>
                     </SidebarMenuButton>
                     <SidebarMenuAction showOnHover aria-label={`More actions for ${name}`}>
                       <MoreHorizontalIcon />
@@ -177,7 +188,7 @@ function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset"
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="max-sm:hidden">
-                <BreadcrumbLink href="#acme">Acme Inc.</BreadcrumbLink>
+                <BreadcrumbLink href="#lumen-labs">Lumen Labs</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="max-sm:hidden" />
               <BreadcrumbItem>
@@ -203,6 +214,27 @@ function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset"
               </div>
             ))}
           </div>
+          <section aria-labelledby="sidebar-recent" className="grid gap-3">
+            <h4 id="sidebar-recent" className="text-title text-foreground">
+              Recent deployments
+            </h4>
+            <ul className="grid divide-y rounded-(--card-radius) border bg-card">
+              {recent.map((d) => (
+                <li key={d.hash} className="flex items-center justify-between gap-4 px-4 py-3">
+                  <span className="grid min-w-0 gap-0.5">
+                    <span className="truncate text-sm font-medium text-foreground">{d.message}</span>
+                    <span className="truncate text-caption text-muted-foreground">
+                      {d.project} · <span className="font-mono">{d.hash}</span>
+                    </span>
+                  </span>
+                  <span className="flex shrink-0 items-center gap-1.5 text-caption text-muted-foreground">
+                    <span aria-hidden="true" className={`size-1.5 rounded-full ${d.dot}`} />
+                    {d.time}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
       </SidebarInset>
     </SidebarProvider>
@@ -318,7 +350,7 @@ export default function SidebarDocs() {
 
       <Example
         title="Menu states"
-        description="Hover fills with bg-sidebar-accent; the active item is an ink row. Badges count, actions appear on hover, skeletons hold the space while items load."
+        description="Hover fills with bg-sidebar-accent; the active item is an ink row. Badges count, actions appear on hover, and variant=“outline” frames an add action, here dashed. Skeletons hold the space while items load."
         layout="full"
       >
         <SidebarProvider className="min-h-0 justify-center bg-subtle p-6 sm:p-10">
@@ -350,7 +382,7 @@ export default function SidebarDocs() {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton variant="outline">
+                    <SidebarMenuButton variant="outline" className="border-dashed">
                       <PlusIcon />
                       <span>New project</span>
                     </SidebarMenuButton>

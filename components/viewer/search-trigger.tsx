@@ -4,6 +4,7 @@ import * as React from "react"
 import { SearchIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Kbd } from "@/components/ui/kbd"
 
 /** Event the viewer header listens for to open the command palette. */
 export const OPEN_SEARCH_EVENT = "blocks:open-search"
@@ -23,14 +24,19 @@ export function useModKey() {
   )
 }
 
-/** A button that opens the command palette from anywhere on the page. */
+/**
+ * A button that opens the command palette from anywhere on the page. The
+ * keyboard shortcut only shows where there is likely to be a keyboard.
+ */
 export function SearchTrigger({ label = "Search Blocks" }: { label?: string }) {
   const mod = useModKey()
   return (
-    <Button variant="outline" size="lg" onClick={openSearch}>
+    <Button variant="outline" size="lg" onClick={openSearch} aria-keyshortcuts="Meta+K Control+K">
       <SearchIcon data-icon="inline-start" />
       {label}
-      <kbd className="ml-1 rounded-full border bg-muted px-2 font-mono text-xs text-muted-foreground">{mod}K</kbd>
+      <Kbd aria-hidden="true" className="ml-1 hidden sm:not-pointer-coarse:inline-flex">
+        {mod}K
+      </Kbd>
     </Button>
   )
 }

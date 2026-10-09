@@ -34,9 +34,9 @@ export interface FaqProps {
 
 const defaultItems: FaqItem[] = [
   {
-    question: "Is there a free plan?",
+    question: "Can I try Lumen before I pay?",
     answer:
-      "Yes. The Hobby plan includes one project, preview URLs for every branch and 100 GB of bandwidth a month. You don’t need a card to start.",
+      "Yes. Every new workspace gets 14 days of Pro, with no card needed. When the trial ends, pick a plan to keep your projects running. Hobby starts at $5 a month.",
   },
   {
     question: "Can I run Lumen on my own servers?",
@@ -46,7 +46,7 @@ const defaultItems: FaqItem[] = [
   {
     question: "Do you charge per seat?",
     answer:
-      "No. Invite your whole team on any paid plan. You pay per server, plus usage above what your plan includes.",
+      "No. Each plan includes a set number of team members, and Scale includes unlimited. Inviting someone never changes your bill.",
   },
   {
     question: "How do preview URLs work?",

@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils"
  * Blocks textarea. The same filled control as <Input>: `bg-muted` and a
  * hairline `border-input` at rest, canvas colour and a violet border plus
  * focus outline while focused. It grows with its content
- * (`field-sizing: content`) from a comfortable minimum height and can be
- * resized vertically.
+ * (`field-sizing: content`) from a comfortable minimum height, so most
+ * answers need no manual resizing, and can still be resized vertically with a
+ * quiet corner grip.
  */
 function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
@@ -23,6 +24,11 @@ function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
         "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",
         "group-data-[invalid=true]/field:border-destructive! group-data-[invalid=true]/field:focus-visible:outline-destructive",
         "disabled:pointer-events-none disabled:resize-none disabled:opacity-50",
+        // The resize grip: a small muted dot inset in the corner, in place of
+        // the browser's hatch, so it never traces the rounded border
+        // (Chromium and Safari; other browsers keep their own grip).
+        "[&::-webkit-resizer]:rounded-full [&::-webkit-resizer]:border-4 [&::-webkit-resizer]:border-transparent",
+        "[&::-webkit-resizer]:bg-muted-foreground/45 [&::-webkit-resizer]:bg-clip-content",
         className
       )}
       {...props}

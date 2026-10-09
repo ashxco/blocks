@@ -14,9 +14,9 @@ export { Sparkline } from "@/components/blocks/stat-card/sparkline"
 export interface StatCardProps {
   /** What is measured, in sentence case. */
   label?: string
-  /** The headline value, already formatted ("2.41M", "$1,284", "112 ms"). */
+  /** The headline value, already formatted ("2.41M", "$1,284"). Pass units through `unit`. */
   value?: React.ReactNode
-  /** Small unit after the value ("/day", "ms"). */
+  /** Small unit after the value ("ms", "%", "/day"). */
   unit?: string
   /** Change against the previous period, in percent. Negative for a drop. */
   change?: number
@@ -76,50 +76,29 @@ export function StatCard({
           {Icon ? (
             <Icon
               aria-hidden="true"
-              className={
-                panel
-                  ? "size-4 shrink-0 text-panel-muted"
-                  : "size-4 shrink-0 text-muted-foreground"
-              }
+              className={cn("size-4 shrink-0", panel ? "text-panel-muted" : "text-muted-foreground")}
             />
           ) : null}
-          <span
-            className={
-              panel
-                ? "truncate text-label text-panel-muted"
-                : "truncate text-label text-muted-foreground"
-            }
-          >
+          <span className={cn("truncate text-label", panel ? "text-panel-muted" : "text-muted-foreground")}>
             {label}
           </span>
         </p>
         {trend.length > 1 ? (
           <Sparkline
             data={trend}
+            // Ink, not brand: the trend's direction is told by the change below, in its own colour.
             className={cn(
               "hidden h-8 w-20 shrink-0 @min-[13rem]/stat:block",
-              panel ? "text-panel-foreground" : "text-brand"
+              panel ? "text-panel-muted" : "text-muted-foreground"
             )}
           />
         ) : null}
       </div>
 
-      <p
-        className={
-          panel
-            ? "mt-4 text-h2 text-panel-foreground tabular"
-            : "mt-4 text-h2 text-foreground tabular"
-        }
-      >
+      <p className={cn("mt-4 text-h2 tabular", panel ? "text-panel-foreground" : "text-foreground")}>
         {value}
         {unit ? (
-          <span
-            className={
-              panel
-                ? "ml-1 align-baseline text-label text-panel-muted"
-                : "ml-1 align-baseline text-label text-muted-foreground"
-            }
-          >
+          <span className={cn("ml-1 align-baseline text-label", panel ? "text-panel-muted" : "text-muted-foreground")}>
             {unit}
           </span>
         ) : null}
@@ -128,7 +107,9 @@ export function StatCard({
         <span
           className={cn(
             "inline-flex items-center gap-0.5 font-semibold tabular",
-            good ? "text-success" : "text-destructive"
+            good ? "text-success" : "text-destructive",
+            // On the panel the status colours take their dark-theme values, which read in both themes.
+            panel && "dark"
           )}
         >
           <ChangeIcon aria-hidden="true" className="size-3.5" />

@@ -71,9 +71,9 @@ const actions: ActionItem[] = [
     run: (router) => router.push("/live/app/projects"),
   },
   {
-    label: "Invite a teammate",
+    label: "Invite members",
     icon: UserPlusIcon,
-    keywords: ["member", "team", "add"],
+    keywords: ["teammate", "team", "add", "invite"],
     run: (router) => router.push("/live/app/team"),
   },
   {
@@ -166,7 +166,7 @@ export function CommandMenuButton({
       onClick={onClick}
       aria-label={`Search (${shortcut})`}
       className={cn(
-        "w-64 justify-between gap-3 border-border bg-muted pr-1.5 text-muted-foreground hover:border-border-strong hover:text-foreground",
+        "w-3xs justify-between gap-3 border-border bg-muted pr-1.5 text-muted-foreground hover:border-border-strong hover:text-foreground",
         className
       )}
     >
@@ -192,8 +192,6 @@ export function CommandMenu({
   placeholder = "Search pages and actions",
   className,
 }: CommandMenuProps) {
-  const router = useRouter()
-  const { theme, setTheme } = useTheme()
   const [internalOpen, setInternalOpen] = React.useState(false)
   const open = openProp ?? internalOpen
 
@@ -218,23 +216,18 @@ export function CommandMenu({
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [hotkey, open, setOpen])
 
-  function run(callback: () => void) {
-    setOpen(false)
-    callback()
-  }
-
   return (
     <>
       {trigger === "auto" ? (
         <>
           <CommandMenuButton
             onClick={() => setOpen(true)}
-            className={cn("hidden md:inline-flex", className)}
+            className={cn("hidden @3xl:inline-flex", className)}
           />
           <CommandMenuButton
             variant="icon"
             onClick={() => setOpen(true)}
-            className={cn("md:hidden", className)}
+            className={cn("@3xl:hidden", className)}
           />
         </>
       ) : null}
@@ -255,79 +248,156 @@ export function CommandMenu({
           <DialogDescription className="sr-only">
             Search for a page or an action, then press Enter to run it.
           </DialogDescription>
-          <Command loop className="bg-popover">
-            <CommandInput placeholder={placeholder} />
-            <CommandList className="max-h-[min(24rem,50vh)] p-(--overlay-padding)">
-              <CommandEmpty>
-                <span className="text-label text-foreground">No results</span>
-                <span className="mt-1 block text-caption text-muted-foreground">
-                  Try a page name such as Billing, or an action such as
-                  “invite”.
-                </span>
-              </CommandEmpty>
-              <CommandGroup heading="Navigation">
-                {appNav.map((item) => (
-                  <CommandItem
-                    key={item.href}
-                    value={`Go to ${item.title}`}
-                    onSelect={() => run(() => router.push(item.href))}
-                  >
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-              <CommandSeparator />
-              <CommandGroup heading="Actions">
-                {actions.map((action) => (
-                  <CommandItem
-                    key={action.label}
-                    value={action.label}
-                    keywords={action.keywords}
-                    onSelect={() => run(() => action.run(router))}
-                  >
-                    <action.icon />
-                    <span>{action.label}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-              <CommandSeparator />
-              <CommandGroup heading="Theme">
-                {themeOptions.map((option) => (
-                  <CommandItem
-                    key={option.value}
-                    value={option.label}
-                    keywords={["theme", "appearance", option.value]}
-                    data-checked={theme === option.value}
-                    onSelect={() => run(() => setTheme(option.value))}
-                  >
-                    <option.icon />
-                    <span>{option.label}</span>
-                    {theme === option.value ? (
-                      <span className="sr-only">(current)</span>
-                    ) : null}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-            <div className="flex items-center gap-4 border-t border-border px-4 py-2.5 text-caption text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <Kbd>↑</Kbd>
-                <Kbd>↓</Kbd>
-                Move
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Kbd>↵</Kbd>
-                Open
-              </span>
-              <span className="ml-auto flex items-center gap-1.5">
-                <Kbd>Esc</Kbd>
-                Close
-              </span>
-            </div>
-          </Command>
+          <CommandPalette
+            placeholder={placeholder}
+            onRun={() => setOpen(false)}
+            dialog
+          />
         </DialogContent>
       </Dialog>
     </>
+  )
+}
+
+/**
+ * The palette itself: search, then navigation, actions and theme, with key
+ * hints in the footer. CommandMenu shows it in a dialog; CommandMenuPanel
+ * shows it inline.
+ */
+function CommandPalette({
+  placeholder,
+  onRun,
+  dialog = false,
+}: {
+  placeholder: string
+  /** Called before a chosen item runs, for example to close the dialog. */
+  onRun?: () => void
+  /** In the dialog, the footer also says how to close it. */
+  dialog?: boolean
+}) {
+  const router = useRouter()
+  const { theme: savedTheme, forcedTheme, setTheme } = useTheme()
+  // The theme is only known in the browser. Inline, the palette renders on the
+  // server too, so the current theme is marked after hydration to keep the two
+  // renders identical. A page can force a theme (?theme=dark); mark that one.
+  const hydrated = React.useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false
+  )
+  const theme = hydrated ? (forcedTheme ?? savedTheme) : undefined
+
+  function run(callback: () => void) {
+    onRun?.()
+    callback()
+  }
+
+  return (
+    <Command loop className="bg-popover">
+      <CommandInput placeholder={placeholder} />
+      {/* In the dialog the list scrolls within the viewport; inline it shows every group whole. */}
+      <CommandList
+        className={cn(
+          "p-(--overlay-padding)",
+          dialog ? "max-h-[min(24rem,50vh)]" : "max-h-none"
+        )}
+      >
+        <CommandEmpty>
+          <span className="text-label text-foreground">No results</span>
+          <span className="mt-1 block text-caption text-muted-foreground">
+            Try a page name such as Billing, or an action such as “invite”.
+          </span>
+        </CommandEmpty>
+        <CommandGroup heading="Navigation">
+          {appNav.map((item) => (
+            <CommandItem
+              key={item.href}
+              value={`Go to ${item.title}`}
+              onSelect={() => run(() => router.push(item.href))}
+            >
+              <item.icon />
+              <span>{item.title}</span>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Actions">
+          {actions.map((action) => (
+            <CommandItem
+              key={action.label}
+              value={action.label}
+              keywords={action.keywords}
+              onSelect={() => run(() => action.run(router))}
+            >
+              <action.icon />
+              <span>{action.label}</span>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Theme">
+          {themeOptions.map((option) => (
+            <CommandItem
+              key={option.value}
+              value={option.label}
+              keywords={["theme", "appearance", option.value]}
+              data-checked={theme === option.value}
+              onSelect={() => run(() => setTheme(option.value))}
+            >
+              <option.icon />
+              <span>{option.label}</span>
+              {theme === option.value ? (
+                <span className="sr-only">(current)</span>
+              ) : null}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+      <div className="flex items-center gap-4 border-t border-border px-4 py-2.5 text-caption text-muted-foreground">
+        <span className="flex items-center gap-1.5">
+          <Kbd>↑</Kbd>
+          <Kbd>↓</Kbd>
+          Move
+        </span>
+        <span className="flex items-center gap-1.5">
+          <Kbd>↵</Kbd>
+          Open
+        </span>
+        {dialog ? (
+          <span className="ml-auto flex items-center gap-1.5">
+            <Kbd>Esc</Kbd>
+            Close
+          </span>
+        ) : null}
+      </div>
+    </Command>
+  )
+}
+
+export interface CommandMenuPanelProps {
+  /** Placeholder for the search input. */
+  placeholder?: string
+  className?: string
+}
+
+/**
+ * The palette on its own bordered surface, without the dialog or a trigger:
+ * for a docs preview of the open state, an empty-state search or a page that
+ * keeps search open.
+ */
+export function CommandMenuPanel({
+  placeholder = "Search pages and actions",
+  className,
+}: CommandMenuPanelProps) {
+  return (
+    <div
+      data-slot="command-menu-panel"
+      className={cn(
+        "w-full max-w-(--dialog-width) overflow-hidden rounded-(--dialog-radius) border bg-popover text-popover-foreground",
+        className
+      )}
+    >
+      <CommandPalette placeholder={placeholder} />
+    </div>
   )
 }

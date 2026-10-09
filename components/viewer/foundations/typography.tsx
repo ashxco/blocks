@@ -74,7 +74,8 @@ function ScaleLadder() {
             <Meta className="hidden @prose:block">
               {describeSize(v.fontSize)} / {v.lineHeight}
             </Meta>
-            <span className={`${scaleClass[step] ?? "text-base"} min-w-0 truncate font-extrabold text-foreground`}>
+            {/* Medium, as the scale is used in tables and settings; bold belongs to the roles above. */}
+            <span className={`${scaleClass[step] ?? "text-base"} min-w-0 truncate font-medium text-foreground`}>
               Lumen
             </span>
           </li>
@@ -100,8 +101,8 @@ const metrics: [label: string, value: string][] = [
   ["Region", "iad1"],
 ]
 
-const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const lowercase = "abcdefghijklmnopqrstuvwxyz"
+/* Half alphabets per line, so no line wraps and leaves a few letters behind. */
+const alphabet = ["ABCDEFGHIJKLM", "NOPQRSTUVWXYZ", "abcdefghijklm", "nopqrstuvwxyz"]
 const figures = "0123456789 & @ # % ( ) → ·"
 
 function Families() {
@@ -112,19 +113,27 @@ function Families() {
   return (
     <div className="grid gap-6 @narrow:grid-cols-2">
       {/* Sans */}
-      <div className="grid content-start gap-10 rounded-(--panel-radius) border bg-card p-(--card-padding) @prose:p-10">
+      <div className="flex flex-col gap-10 rounded-(--panel-radius) border bg-card p-(--panel-padding-sm)">
         <div className="grid gap-2">
-          <h3 className="text-h3">Plus Jakarta Sans</h3>
+          <h3 className="text-h3 text-foreground">Plus Jakarta Sans</h3>
           <p className="text-caption text-copy">{withoutName(sans?.description, "Plus Jakarta Sans")}</p>
           <Code className="text-muted-foreground">font-sans · font-heading</Code>
         </div>
         <p aria-hidden className="text-7xl leading-none font-extrabold text-foreground">
           Aa
         </p>
-        <div aria-label="Glyph sample" className="grid gap-1 font-sans text-xl text-foreground [overflow-wrap:anywhere]">
-          <span>{uppercase}</span>
-          <span>{lowercase}</span>
+        <div aria-label="Glyph sample" className="grid gap-1 font-sans text-xl text-foreground">
+          {alphabet.map((line) => (
+            <span key={line}>{line}</span>
+          ))}
           <span className="tabular">{figures}</span>
+        </div>
+        {/* Heading and body together, as the family is used on every page. */}
+        <div className="grid gap-2">
+          <p className="text-h4 text-foreground">Preview every pull request</p>
+          <p className="text-body text-copy">
+            Each branch gets its own URL, so reviewers see the change running before it merges.
+          </p>
         </div>
         <ul className="grid border-b">
           {weights.map((w) => (
@@ -138,11 +147,12 @@ function Families() {
             </li>
           ))}
         </ul>
-        <Meta className="[overflow-wrap:anywhere]">{familyStack(sans?.value)}</Meta>
+        {/* mt-auto: both cards end on their font stack, on the same line. */}
+        <Meta className="mt-auto [overflow-wrap:anywhere]">{familyStack(sans?.value)}</Meta>
       </div>
 
       {/* Mono, on a panel */}
-      <div className="grid content-start gap-10 rounded-(--panel-radius) bg-panel p-(--card-padding) text-panel-foreground @prose:p-10">
+      <div className="flex flex-col gap-10 rounded-(--panel-radius) bg-panel p-(--panel-padding-sm) text-panel-foreground">
         <div className="grid gap-2">
           <h3 className="text-h3 text-panel-foreground">Geist Mono</h3>
           <p className="text-caption text-panel-muted">{withoutName(mono?.description, "Geist Mono")}</p>
@@ -151,9 +161,10 @@ function Families() {
         <p aria-hidden className="font-mono text-7xl leading-none font-bold text-panel-foreground">
           Aa
         </p>
-        <div aria-label="Glyph sample" className="grid gap-1 font-mono text-lg text-panel-foreground [overflow-wrap:anywhere]">
-          <span>{uppercase}</span>
-          <span>{lowercase}</span>
+        <div aria-label="Glyph sample" className="grid gap-1 font-mono text-lg text-panel-foreground">
+          {alphabet.map((line) => (
+            <span key={line}>{line}</span>
+          ))}
           <span>{"0123456789 {} [] <> => != #"}</span>
         </div>
         <pre className="overflow-x-auto rounded-lg border border-panel-border bg-terminal p-5 font-mono text-code text-terminal-foreground">
@@ -171,7 +182,7 @@ function Families() {
             </div>
           ))}
         </dl>
-        <span className="font-mono text-xs text-panel-muted [overflow-wrap:anywhere]">{familyStack(mono?.value)}</span>
+        <span className="mt-auto font-mono text-xs text-panel-muted [overflow-wrap:anywhere]">{familyStack(mono?.value)}</span>
       </div>
     </div>
   )
@@ -187,7 +198,7 @@ export function TypographyFoundation({ title, description }: { title: string; de
       <Section
         id="roles"
         title="Type roles"
-        description="One utility sets size, line height, tracking and weight together. Pick the role for the job; never assemble type by hand. Headings are always extra-bold and full ink."
+        description="One utility sets size, line height, tracking and weight together; a size range means the role scales with the viewport. Pick the role for the job; never assemble type by hand. Hero to h2 are extra-bold (800), h3 to title are bold (700), and every heading is full ink."
       >
         <TypeSpecimens roles={roleSpecs()} />
       </Section>

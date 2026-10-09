@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { ArrowUpRightIcon, SearchIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Kbd } from "@/components/ui/kbd"
 import { cn } from "@/lib/utils"
 import { CommandPalette } from "@/components/viewer/command-palette"
 import { MobileMenu } from "@/components/viewer/mobile-menu"
@@ -27,8 +28,8 @@ function useScrolled(threshold = 4) {
 
 /**
  * The slim top bar: wordmark, section links, search (⌘K), theme switch and a
- * link to the live templates. It blends into the page and turns into frosted
- * glass with a hairline once the page scrolls.
+ * link that opens the live templates in a new tab. It blends into the page
+ * and turns into frosted glass with a hairline once the page scrolls.
  */
 export function ViewerHeader() {
   const pathname = usePathname()
@@ -98,17 +99,14 @@ export function ViewerHeader() {
             className={cn(
               "group/search flex h-(--button-height-sm) items-center gap-2 rounded-(--button-radius) border border-transparent text-label text-muted-foreground outline-none",
               "transition-colors duration-(--duration-fast) hover:text-foreground focus-visible:focus-ring",
-              "w-(--button-height-sm) justify-center sm:w-44 sm:justify-start sm:border-border sm:bg-muted sm:pr-1.5 sm:pl-3.5 sm:hover:border-border-strong xl:w-56"
+              "w-(--button-height-sm) justify-center lg:w-44 lg:justify-start lg:border-border lg:bg-muted lg:pr-1.5 lg:pl-3.5 lg:hover:border-border-strong xl:w-56"
             )}
           >
             <SearchIcon aria-hidden="true" className="size-4 shrink-0" />
-            <span className="hidden font-medium sm:inline">Search</span>
-            <kbd
-              aria-hidden="true"
-              className="ml-auto hidden h-6 items-center rounded-full border bg-background px-2 font-mono text-xs text-muted-foreground sm:inline-flex"
-            >
+            <span className="hidden font-medium lg:inline">Search</span>
+            <Kbd aria-hidden="true" className="ml-auto hidden bg-background lg:not-pointer-coarse:inline-flex">
               {mod}K
-            </kbd>
+            </Kbd>
           </button>
 
           <ThemeToggle />
@@ -116,11 +114,12 @@ export function ViewerHeader() {
           <Button
             size="sm"
             nativeButton={false}
-            render={<Link href="/live" />}
+            render={<a href="/live" target="_blank" rel="noopener" />}
             className="hidden lg:inline-flex"
           >
             Live templates
             <ArrowUpRightIcon data-icon="inline-end" />
+            <span className="sr-only">(opens in a new tab)</span>
           </Button>
 
           <MobileMenu />

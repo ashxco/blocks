@@ -5,8 +5,9 @@ import { ScrollArea as ScrollAreaPrimitive } from "@base-ui/react/scroll-area"
 import { cn } from "@/lib/utils"
 
 /**
- * Blocks scroll area. Native scrolling with a thin, quiet scrollbar that
- * fades in while you hover or scroll and darkens under the pointer.
+ * Blocks scroll area. Native scrolling with a thin, quiet scrollbar
+ * (--scrollbar-size) that fades in while you hover or scroll and darkens
+ * under the pointer.
  * Keyboard users can focus the viewport and scroll with the arrow keys.
  */
 function ScrollArea({
@@ -46,8 +47,8 @@ function ScrollBar({
         "group/scrollbar flex touch-none p-0.5 select-none",
         "opacity-0 transition-opacity duration-(--duration-base) ease-standard",
         "data-hovering:opacity-100 data-scrolling:opacity-100 data-scrolling:duration-(--duration-instant)",
-        "data-vertical:h-full data-vertical:w-2.5",
-        "data-horizontal:h-2.5 data-horizontal:flex-col",
+        "data-vertical:h-full data-vertical:w-(--scrollbar-size)",
+        "data-horizontal:h-(--scrollbar-size) data-horizontal:flex-col",
         className
       )}
       {...props}

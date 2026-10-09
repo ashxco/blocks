@@ -7,8 +7,9 @@ import { MinusIcon } from "lucide-react"
 
 /**
  * Blocks one-time code input. Each character sits in its own filled slot
- * (control height, control radius, `bg-muted`). The active slot turns to the
- * canvas colour with a violet border and focus outline, and shows a caret.
+ * (control height, control radius, `bg-muted`), empty or not, exactly like
+ * <Input>. Only the active slot turns to the canvas colour with a violet
+ * border and focus outline, and shows a caret.
  *
  * Invalid: set `aria-invalid` on <InputOTP> (or `data-invalid` on the
  * surrounding <Field>) and every slot turns destructive.
@@ -61,11 +62,12 @@ function InputOTPSlot({
       data-active={isActive}
       data-filled={Boolean(char)}
       className={cn(
-        "relative flex h-(--control-height-lg) w-10 items-center justify-center rounded-(--control-radius) border border-input bg-muted",
-        "font-mono text-lg font-semibold text-foreground tabular sm:w-11",
+        // Slots are --otp-slot-width wide, 0.5rem narrower on phones so six
+        // digits fit inside a card.
+        "relative flex h-(--control-height-lg) w-[calc(var(--otp-slot-width)-0.5rem)] shrink-0 items-center justify-center rounded-(--control-radius) border border-input bg-muted sm:w-(--otp-slot-width)",
+        "font-mono text-lg font-semibold text-foreground tabular",
         "transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
         "group-hover/input-otp:border-foreground/25",
-        "data-[filled=true]:bg-background",
         "data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:bg-background data-[active=true]:focus-ring",
         "aria-invalid:border-destructive group-has-[input[aria-invalid=true]]/input-otp:border-destructive",
         "group-data-[invalid=true]/field:border-destructive!",
