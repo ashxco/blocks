@@ -51,16 +51,15 @@ export function InstallCommand({ command = "npm i -g lumen", tone = "default", c
         className
       )}
     >
-      <span aria-hidden="true" className={panel ? "font-mono text-code text-panel-muted select-none" : "font-mono text-code text-brand select-none"}>
+      <span aria-hidden="true" className={cn("font-mono text-code select-none", panel ? "text-panel-brand" : "text-brand")}>
         $
       </span>
       <code
         ref={codeRef}
-        className={
-          panel
-            ? "min-w-0 flex-1 overflow-x-auto font-mono text-code whitespace-nowrap text-panel-foreground [scrollbar-width:none]"
-            : "min-w-0 flex-1 overflow-x-auto font-mono text-code whitespace-nowrap text-foreground [scrollbar-width:none]"
-        }
+        className={cn(
+          "min-w-0 flex-1 overflow-x-auto font-mono text-code whitespace-nowrap [scrollbar-width:none]",
+          panel ? "text-panel-foreground" : "text-foreground"
+        )}
       >
         {command}
       </code>

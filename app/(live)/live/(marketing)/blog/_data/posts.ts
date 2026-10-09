@@ -1,37 +1,61 @@
 import type { Post } from "@/components/blocks/post-card"
 
-/** Lumen blog content shared by the blog index and the article template. */
+/**
+ * Lumen blog content shared by the blog index and the article template.
+ * Dates and features line up with the changelog template: database branches
+ * shipped in v2.12.0 on Oct 6, live logs in v2.11.0 on Sep 24. No two posts
+ * within a dozen of each other share a cover pattern, and the tints rotate so
+ * neighbouring cards always differ.
+ */
 
 export const POST_HREF = "/live/blog/post"
 
 export const featuredPost: Post = {
   title: "How we cut build times by 70%",
   excerpt:
-    "Layer caching, a smarter dependency graph and one very slow Docker step. A tour of the changes behind Lumen 2.3, with the numbers.",
+    "Layer caching, a smarter dependency graph and one very slow Docker step. A tour of the build changes we shipped in September, with the numbers.",
   category: "Engineering",
   date: "Sep 30, 2026",
   dateTime: "2026-09-30",
   readTime: "8 min read",
   href: POST_HREF,
-  cover: { pattern: "bars", tint: "violet" },
+  cover: {
+    pattern: "compare",
+    tint: "violet",
+    figures: [
+      { label: "Median build, June", value: "61s", share: 1 },
+      { label: "Median build, today", value: "18s", share: 0.29 },
+    ],
+  },
   author: { name: "Priya Natarajan", role: "Staff engineer" },
 }
 
 /** Every post except the featured one, newest first. */
 export const posts: Post[] = [
   {
-    title: "Introducing preview environments",
+    title: "A database branch for every pull request",
     excerpt:
-      "Every branch now gets its own URL, variables and a copy of your database. Here is how it works and how to turn it on.",
+      "Preview environments now get a copy-on-write branch of your Postgres database, ready in under two seconds and deleted when the pull request closes.",
     category: "Product",
-    date: "Sep 22, 2026",
-    dateTime: "2026-09-22",
-    readTime: "4 min read",
+    date: "Oct 7, 2026",
+    dateTime: "2026-10-07",
+    readTime: "5 min read",
     href: POST_HREF,
-    cover: { pattern: "window", tint: "sky" },
+    cover: { pattern: "branch", tint: "mint" },
   },
   {
-    title: "Fernhill moved 40 services to Lumen in a weekend",
+    title: "Live logs from every replica at once",
+    excerpt:
+      "One command now streams every replica and follows your app through a deploy. Here is how to filter it down to the requests that matter.",
+    category: "Product",
+    date: "Sep 24, 2026",
+    dateTime: "2026-09-24",
+    readTime: "4 min read",
+    href: POST_HREF,
+    cover: { pattern: "fields", tint: "sand" },
+  },
+  {
+    title: "Fernhill moved twelve services to Lumen in a week",
     excerpt:
       "Their platform team replaced a hand-rolled Kubernetes setup and gave every engineer a preview URL. They told us how it went.",
     category: "Customers",
@@ -39,7 +63,7 @@ export const posts: Post[] = [
     dateTime: "2026-09-17",
     readTime: "6 min read",
     href: POST_HREF,
-    cover: { pattern: "grid", tint: "mint" },
+    cover: { pattern: "grid", tint: "sky" },
   },
   {
     title: "Deploy a Next.js app in five minutes",
@@ -50,7 +74,7 @@ export const posts: Post[] = [
     dateTime: "2026-09-12",
     readTime: "6 min read",
     href: POST_HREF,
-    cover: { pattern: "terminal", tint: "sand" },
+    cover: { pattern: "window", tint: "rose" },
   },
   {
     title: "Our seed round, and what comes next",
@@ -72,7 +96,7 @@ export const posts: Post[] = [
     dateTime: "2026-08-14",
     readTime: "10 min read",
     href: POST_HREF,
-    cover: { pattern: "branch", tint: "sky" },
+    cover: { pattern: "uptime", tint: "panel" },
   },
   {
     title: "Migrating a Rails app to Lumen",
@@ -83,7 +107,7 @@ export const posts: Post[] = [
     dateTime: "2026-08-02",
     readTime: "7 min read",
     href: POST_HREF,
-    cover: { pattern: "grid", tint: "rose" },
+    cover: { pattern: "stack", tint: "mint" },
   },
   {
     title: "The new Lumen desktop app",
@@ -94,21 +118,10 @@ export const posts: Post[] = [
     dateTime: "2026-07-20",
     readTime: "5 min read",
     href: POST_HREF,
-    cover: { pattern: "bars", tint: "panel" },
+    cover: { pattern: "menubar", tint: "sand" },
   },
   {
-    title: "A database branch for every pull request",
-    excerpt:
-      "Preview environments now copy your Postgres schema and a sample of data, then throw it away when the branch merges.",
-    category: "Product",
-    date: "Jul 8, 2026",
-    dateTime: "2026-07-08",
-    readTime: "5 min read",
-    href: POST_HREF,
-    cover: { pattern: "branch", tint: "mint" },
-  },
-  {
-    title: "What we learned running 38 regions",
+    title: "What we learned running 38 edge regions",
     excerpt:
       "Routing, cold starts and the surprising cost of DNS. Notes from two years of running Lumen on six continents.",
     category: "Engineering",
@@ -116,7 +129,7 @@ export const posts: Post[] = [
     dateTime: "2026-06-24",
     readTime: "9 min read",
     href: POST_HREF,
-    cover: { pattern: "orbit", tint: "panel" },
+    cover: { pattern: "regions", tint: "sky" },
   },
   {
     title: "Structured logs without the setup",
@@ -138,7 +151,7 @@ export const posts: Post[] = [
     dateTime: "2026-05-27",
     readTime: "3 min read",
     href: POST_HREF,
-    cover: { pattern: "window", tint: "sand" },
+    cover: { pattern: "address", tint: "violet" },
   },
   {
     title: "How Tandem ships 60 previews a day",
@@ -149,23 +162,47 @@ export const posts: Post[] = [
     dateTime: "2026-05-14",
     readTime: "5 min read",
     href: POST_HREF,
-    cover: { pattern: "grid", tint: "violet" },
+    cover: { pattern: "bars", tint: "panel" },
+  },
+  {
+    title: "Branching strategies for teams past fifty engineers",
+    excerpt:
+      "Trunk-based, release branches or something in between: how teams on Lumen map branches to environments, and the one we use.",
+    category: "Guides",
+    date: "Apr 29, 2026",
+    dateTime: "2026-04-29",
+    readTime: "7 min read",
+    href: POST_HREF,
+    cover: { pattern: "branch", tint: "sand" },
+  },
+  {
+    title: "Tracing a slow request across five services",
+    excerpt:
+      "Request IDs, structured logs and one dashboard query. How we found a 900 ms stall in our own API.",
+    category: "Engineering",
+    date: "Apr 15, 2026",
+    dateTime: "2026-04-15",
+    readTime: "8 min read",
+    href: POST_HREF,
+    cover: { pattern: "fields", tint: "mint" },
   },
 ]
 
 /** Categories in the order the filter shows them. */
 export const categories = ["Product", "Engineering", "Guides", "Customers", "Company"] as const
 
-/**
- * Post cards and the featured post print the category as a label above the
- * title. Blocks marketing pages carry no labels above headings, so pages pass
- * cards through this to drop it; the category still drives the filter and
- * shows in the meta line of the latest list and the article byline.
- */
-export function withoutCategoryLabel(post: Post): Post {
-  // An empty string, not undefined: undefined would fall back to the card's default category.
-  return { ...post, category: "" }
+/** How many of the newest posts the "Latest" rail beside the featured post shows. */
+export const LATEST_COUNT = 5
+
+function byTitle(title: string): Post {
+  const post = posts.find((p) => p.title === title)
+  if (!post) throw new Error(`No post titled "${title}"`)
+  return post
 }
 
 /** Posts shown under the article as further reading. */
-export const relatedPosts: Post[] = [posts[4], posts[8], posts[0]]
+export const relatedPosts: Post[] = [
+  byTitle("Zero-downtime deploys, explained"),
+  byTitle("Structured logs without the setup"),
+  byTitle("A database branch for every pull request"),
+]

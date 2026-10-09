@@ -1,6 +1,9 @@
 import type { Metadata } from "next"
 
+import { DocPager } from "@/components/viewer/doc-pager"
 import { FoundationsOverview } from "@/components/viewer/foundations/overview"
+import { ViewerPage } from "@/components/viewer/viewer-page"
+import { foundations } from "@/lib/registry"
 
 export const metadata: Metadata = {
   title: "Foundations",
@@ -8,5 +11,14 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  return <FoundationsOverview />
+  /* Like every sub-page, the overview ends on a pager: on to the first foundation. */
+  const first = foundations[0]
+  return (
+    <ViewerPage>
+      <FoundationsOverview />
+      {first ? (
+        <DocPager next={{ title: first.title, href: `/foundations/${first.slug}`, group: first.group }} />
+      ) : null}
+    </ViewerPage>
+  )
 }

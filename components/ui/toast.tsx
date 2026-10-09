@@ -29,6 +29,19 @@ import { Spinner } from "@/components/ui/spinner"
  */
 const toast = ToastPrimitive.createToastManager()
 
+/** Shared by the live toast and ToastCard, so both look the same. */
+const toastStyles = {
+  surface:
+    "rounded-(--card-radius) border border-input bg-popover text-popover-foreground",
+  content: "flex items-start gap-3 py-3.5 pr-3 pl-4",
+  text: "flex min-w-0 flex-1 flex-col gap-0.5 py-px",
+  title: "text-sm leading-snug font-bold tracking-tight text-foreground",
+  description: "text-sm text-pretty text-muted-foreground",
+  action: "shrink-0 self-center",
+  close:
+    "relative shrink-0 text-muted-foreground after:absolute after:-inset-2 after:content-[''] hover:text-foreground",
+} as const
+
 function ToastProvider({ ...props }: ToastPrimitive.Provider.Props) {
   return <ToastPrimitive.Provider {...props} />
 }
@@ -55,7 +68,8 @@ function Toast({ className, ...props }: ToastPrimitive.Root.Props) {
     <ToastPrimitive.Root
       data-slot="toast"
       className={cn(
-        "group/toast pointer-events-auto absolute right-0 bottom-0 z-[calc(1000-var(--toast-index))] w-full origin-bottom rounded-(--card-radius) border border-input bg-popover text-popover-foreground will-change-transform outline-none select-none focus-visible:focus-ring",
+        toastStyles.surface,
+        "group/toast pointer-events-auto absolute right-0 bottom-0 z-[calc(1000-var(--toast-index))] w-full origin-bottom will-change-transform outline-none select-none focus-visible:focus-ring",
         "[--gap:0.625rem] [--height:var(--toast-frontmost-height,var(--toast-height))] [--offset-y:calc(var(--toast-offset-y)*-1+calc(var(--toast-index)*var(--gap)*-1)+var(--toast-swipe-movement-y))] [--peek:0.625rem] [--scale:calc(max(0,1-(var(--toast-index)*0.05)))] [--shrink:calc(1-var(--scale))]",
         "h-(--height) [transform:translateX(var(--toast-swipe-movement-x))_translateY(calc(var(--toast-swipe-movement-y)-(var(--toast-index)*var(--peek))-(var(--shrink)*var(--height))))_scale(var(--scale))]",
         "[transition:transform_var(--duration-slower)_var(--ease-out),opacity_var(--duration-slow)_var(--ease-out),height_var(--duration-fast)_var(--ease-standard)]",
@@ -83,7 +97,8 @@ function ToastContent({ className, ...props }: ToastPrimitive.Content.Props) {
     <ToastPrimitive.Content
       data-slot="toast-content"
       className={cn(
-        "flex h-full items-start gap-3 overflow-hidden py-3.5 pr-3 pl-4 transition-opacity duration-(--duration-base) ease-out data-behind:opacity-0 data-expanded:opacity-100",
+        toastStyles.content,
+        "h-full overflow-hidden transition-opacity duration-(--duration-base) ease-out data-behind:opacity-0 data-expanded:opacity-100",
         className
       )}
       {...props}
@@ -95,10 +110,7 @@ function ToastTitle({ className, ...props }: ToastPrimitive.Title.Props) {
   return (
     <ToastPrimitive.Title
       data-slot="toast-title"
-      className={cn(
-        "text-sm leading-snug font-bold tracking-tight text-foreground",
-        className
-      )}
+      className={cn(toastStyles.title, className)}
       {...props}
     />
   )
@@ -111,7 +123,7 @@ function ToastDescription({
   return (
     <ToastPrimitive.Description
       data-slot="toast-description"
-      className={cn("text-sm text-pretty text-muted-foreground", className)}
+      className={cn(toastStyles.description, className)}
       {...props}
     />
   )
@@ -126,7 +138,7 @@ function ToastAction({
     <ToastPrimitive.Action
       data-slot="toast-action"
       render={render}
-      className={cn("shrink-0 self-center", className)}
+      className={cn(toastStyles.action, className)}
       {...props}
     />
   )
@@ -143,10 +155,7 @@ function ToastClose({
       data-slot="toast-close"
       aria-label="Dismiss notification"
       render={render}
-      className={cn(
-        "relative shrink-0 text-muted-foreground after:absolute after:-inset-2 after:content-[''] hover:text-foreground",
-        className
-      )}
+      className={cn(toastStyles.close, className)}
       {...props}
     >
       {children ?? <XIcon aria-hidden="true" className="size-3.5" />}
@@ -189,7 +198,7 @@ function ToastList() {
     <Toast key={toastItem.id} toast={toastItem}>
       <ToastContent>
         <ToastIcon type={toastItem.type} />
-        <div className="flex min-w-0 flex-1 flex-col gap-0.5 py-px">
+        <div className={toastStyles.text}>
           <ToastTitle />
           <ToastDescription />
         </div>
@@ -217,6 +226,65 @@ function Toaster({
   )
 }
 
+type ToastType = "success" | "info" | "warning" | "error" | "loading"
+
+/**
+ * A toast drawn in place, outside the toast manager: the same card, icon and
+ * type as a live toast. Use it to show toasts in docs, design reviews and
+ * empty states. It is static, so it has no live region; add role="status"
+ * if you show one as feedback. Pass onClose to show the dismiss button.
+ *
+ *   <ToastCard type="success" title="Deployment ready" description="lumen-web is live." />
+ */
+function ToastCard({
+  type,
+  title,
+  description,
+  action,
+  onClose,
+  className,
+  ...props
+}: Omit<React.ComponentProps<"div">, "title"> & {
+  type?: ToastType
+  title: React.ReactNode
+  description?: React.ReactNode
+  /** A short action, such as an outline xs Button labelled Undo. */
+  action?: React.ReactNode
+  /** Shows the dismiss button and is called when it is pressed. */
+  onClose?: () => void
+}) {
+  return (
+    <div
+      data-slot="toast-card"
+      data-type={type}
+      className={cn(toastStyles.surface, "w-full", className)}
+      {...props}
+    >
+      <div className={toastStyles.content}>
+        <ToastIcon type={type} />
+        <div className={toastStyles.text}>
+          <p className={toastStyles.title}>{title}</p>
+          {description ? (
+            <p className={toastStyles.description}>{description}</p>
+          ) : null}
+        </div>
+        {action ? <div className={toastStyles.action}>{action}</div> : null}
+        {onClose ? (
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            aria-label="Dismiss notification"
+            onClick={onClose}
+            className={toastStyles.close}
+          >
+            <XIcon aria-hidden="true" className="size-3.5" />
+          </Button>
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
 const createToastManager = ToastPrimitive.createToastManager
 const useToastManager = ToastPrimitive.useToastManager
 
@@ -224,6 +292,7 @@ export {
   Toaster,
   Toast,
   ToastAction,
+  ToastCard,
   ToastClose,
   ToastContent,
   ToastDescription,

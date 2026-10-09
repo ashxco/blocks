@@ -13,6 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { personTone, type PersonTone } from "@/components/blocks/members-list/people"
 
 export type ActivityKind =
   "deploy" | "failed" | "rollback" | "domain" | "member" | "env" | "database"
@@ -22,8 +23,13 @@ export interface ActivityActor {
   /** Shown when there is no image. Defaults to the first letters of the name. */
   initials?: string
   image?: string
-  /** Flat tint behind the initials. */
-  tint?: "violet" | "mint" | "sand" | "sky" | "rose"
+  /**
+   * Flat tint behind the initials. Defaults to the person's tint from the
+   * shared people list, so a name has one colour on every page.
+   */
+  tone?: PersonTone
+  /** The product itself (builds, checks, renewals): drawn as the Lumen mark instead of initials. */
+  system?: boolean
 }
 
 export interface ActivityItem {
@@ -33,8 +39,10 @@ export interface ActivityItem {
   action: string
   /** The object of the action, shown in bold, e.g. "web". */
   target?: string
-  /** The rest of the sentence, e.g. "to production". */
+  /** The rest of the sentence, e.g. "to production" or "on". */
   context?: string
+  /** A branch, commit or other code name that ends the sentence, set in mono: "feat/rate-limits". */
+  code?: string
   /** A commit message, command or other supporting line, set in mono. */
   detail?: string
   /** Relative time label, e.g. "2 min ago". */
@@ -81,7 +89,7 @@ const kinds: Record<
 export const defaultActivity: ActivityItem[] = [
   {
     id: "a1",
-    actor: { name: "Maya Chen", tint: "violet" },
+    actor: { name: "Maya Chen" },
     action: "deployed",
     target: "web",
     context: "to production",
@@ -91,17 +99,18 @@ export const defaultActivity: ActivityItem[] = [
   },
   {
     id: "a2",
-    actor: { name: "Lumen", initials: "L", tint: "rose" },
+    actor: { name: "Lumen", system: true },
     action: "failed to build",
     target: "api",
-    context: "on feat/rate-limits",
+    context: "on",
+    code: "feat/rate-limits",
     detail: "npm run build exited with code 1",
     time: "18 min ago",
     kind: "failed",
   },
   {
     id: "a3",
-    actor: { name: "Daniel Okafor", tint: "sky" },
+    actor: { name: "Daniel Okafor" },
     action: "added the domain",
     target: "status.acme.dev",
     context: "to docs",
@@ -110,7 +119,7 @@ export const defaultActivity: ActivityItem[] = [
   },
   {
     id: "a4",
-    actor: { name: "Priya Shah", tint: "mint" },
+    actor: { name: "Priya Shah" },
     action: "invited",
     target: "sam@acme.dev",
     context: "as a developer",
@@ -119,16 +128,17 @@ export const defaultActivity: ActivityItem[] = [
   },
   {
     id: "a5",
-    actor: { name: "Leo Martins", tint: "sand" },
+    actor: { name: "Leo Martins" },
     action: "rolled back",
     target: "api",
-    context: "to 7f02b1d",
+    context: "to",
+    code: "7f02b1d",
     time: "Yesterday",
     kind: "rollback",
   },
   {
     id: "a6",
-    actor: { name: "Maya Chen", tint: "violet" },
+    actor: { name: "Maya Chen" },
     action: "updated 3 environment variables in",
     target: "web",
     context: "for production",
@@ -137,7 +147,7 @@ export const defaultActivity: ActivityItem[] = [
   },
   {
     id: "a7",
-    actor: { name: "Daniel Okafor", tint: "sky" },
+    actor: { name: "Daniel Okafor" },
     action: "created the database",
     target: "orders-db",
     context: "in Frankfurt",
@@ -184,17 +194,27 @@ export function ActivityFeed({
               />
             ) : null}
             <div className="relative shrink-0 self-start">
-              <Avatar>
-                {item.actor.image ? (
-                  <AvatarImage src={item.actor.image} alt="" />
-                ) : null}
-                <AvatarFallback
-                  tone={item.actor.tint ?? "violet"}
-                  className="text-xs"
+              {item.actor.system ? (
+                // The product's own events carry its mark, so they never read as a person called "L".
+                <span
+                  aria-hidden="true"
+                  className="grid size-(--avatar-size-md) place-items-center rounded-sm bg-foreground"
                 >
-                  {item.actor.initials ?? initialsOf(item.actor.name)}
-                </AvatarFallback>
-              </Avatar>
+                  <span className="size-2.5 rounded-full bg-brand" />
+                </span>
+              ) : (
+                <Avatar>
+                  {item.actor.image ? (
+                    <AvatarImage src={item.actor.image} alt="" />
+                  ) : null}
+                  <AvatarFallback
+                    tone={item.actor.tone ?? personTone(item.actor.name)}
+                    className="text-xs"
+                  >
+                    {item.actor.initials ?? initialsOf(item.actor.name)}
+                  </AvatarFallback>
+                </Avatar>
+              )}
               {kind ? (
                 <span
                   aria-hidden="true"
@@ -217,10 +237,20 @@ export function ActivityFeed({
                 {item.context ? (
                   <span className="font-normal"> {item.context}</span>
                 ) : null}
+                {item.code ? (
+                  <>
+                    {" "}
+                    {/* inline-block keeps a branch name whole on one line; it only wraps when it is wider than the column. */}
+                    <code className="inline-block max-w-full font-mono text-code font-normal break-words text-foreground">
+                      {item.code}
+                    </code>
+                  </>
+                ) : null}
                 {kind ? <span className="sr-only"> ({kind.label})</span> : null}
               </p>
               {item.detail ? (
-                <p className="w-fit max-w-full truncate rounded-xs bg-muted px-2 py-0.5 font-mono text-code text-copy">
+                // Wraps instead of truncating: a commit message or an error is only useful whole.
+                <p className="w-fit max-w-full rounded-xs bg-muted px-2 py-0.5 font-mono text-code break-words whitespace-pre-wrap text-copy">
                   {item.detail}
                 </p>
               ) : null}

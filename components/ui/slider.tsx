@@ -10,9 +10,11 @@ function toValues(input: number | readonly number[] | undefined) {
 }
 
 /**
- * Blocks slider. A hairline-grey track with an ink range and a
- * canvas-coloured thumb ringed in ink. Pass a number for one thumb or an
- * array for a range. The violet focus outline sits on the thumb.
+ * Blocks slider. A grey track (muted foreground at 40%, so it stays visible
+ * on the dark canvas too) with an ink range and an ink thumb set in a
+ * canvas-coloured ring, so the thumb cuts cleanly through the track. Pass a
+ * number for one thumb or an array for a range. The violet focus outline
+ * sits on the thumb.
  *
  * Label it with `aria-labelledby` (pointing at a <Label id>) or with
  * `getAriaLabel` for range sliders, where each thumb needs its own name.
@@ -58,7 +60,7 @@ function Slider({
       >
         <SliderPrimitive.Track
           data-slot="slider-track"
-          className="relative grow overflow-hidden rounded-full bg-input select-none data-horizontal:h-1.5 data-horizontal:w-full data-vertical:h-full data-vertical:w-1.5"
+          className="relative grow overflow-hidden rounded-full bg-muted-foreground/40 select-none data-horizontal:h-1.5 data-horizontal:w-full data-vertical:h-full data-vertical:w-1.5"
         >
           <SliderPrimitive.Indicator
             data-slot="slider-range"
@@ -73,9 +75,9 @@ function Slider({
             getAriaLabel={getAriaLabel}
             getAriaValueText={getAriaValueText}
             className={cn(
-              "relative block size-5 shrink-0 rounded-full border-2 border-primary bg-background select-none",
-              "transition-[scale] duration-(--duration-fast) ease-standard",
-              "after:absolute after:-inset-2.5",
+              "relative block size-6 shrink-0 rounded-full border-4 border-background bg-primary select-none",
+              "transition-[scale,border-width] duration-(--duration-fast) ease-standard",
+              "after:absolute after:-inset-2",
               "hover:scale-110 data-dragging:scale-110",
               "has-[:focus-visible]:focus-ring",
               "data-disabled:pointer-events-none"

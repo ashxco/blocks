@@ -31,7 +31,13 @@ export default function SettingsSectionDocs() {
         description="Stack sections with hairlines between them. Sections that save on change, like notifications, drop the footer."
         layout="full"
         code={`<div className="divide-y">
-  <SettingsSection title="Build and deploy" description="…" saveLabel="Save build settings">
+  <SettingsSection
+    title="Build and deploy"
+    description="…"
+    saveLabel="Save build settings"
+    successTitle="Build settings saved"
+    successDescription="They apply from the next push to main."
+  >
     <FieldGroup>…</FieldGroup>
   </SettingsSection>
   <SettingsSection title="Notifications" description="…" hideFooter>
@@ -42,8 +48,10 @@ export default function SettingsSectionDocs() {
         <div className="divide-y px-(--card-padding) sm:px-10">
           <SettingsSection
             title="Build and deploy"
-            description="How Lumen builds halcyon-web. Changes apply from the next push."
+            description="How Lumen builds web. Changes apply from the next push."
             saveLabel="Save build settings"
+            successTitle="Build settings saved"
+            successDescription="They apply from the next push to main."
             footerNote="Redeploy to apply these to the current production build."
           >
             <FieldGroup>
@@ -65,7 +73,7 @@ export default function SettingsSectionDocs() {
 
           <SettingsSection
             title="Notifications"
-            description="Emails go to maya@halcyon.dev. Each switch saves as soon as you flip it."
+            description="Emails go to maya@acme.dev. Each switch saves as soon as you flip it."
             hideFooter
           >
             <FieldGroup>
@@ -99,7 +107,7 @@ export default function SettingsSectionDocs() {
         do={[
           "Say what the settings change and who they affect in the description.",
           "Group five or fewer related controls per section.",
-          "Write the save label as the outcome: “Save build settings”.",
+          "Write the save label as the outcome: “Save build settings”, and the success toast as what changed: “Build settings saved”.",
           "Use hideFooter for switches that apply immediately, and confirm with a toast.",
         ]}
         dont={[
@@ -118,6 +126,8 @@ export default function SettingsSectionDocs() {
           { prop: "saveLabel", type: "string", default: '"Save changes"', description: "Label of the submit button." },
           { prop: "hideFooter", type: "boolean", default: "false", description: "Remove the footer for controls that save on change." },
           { prop: "onSave", type: "() => void | Promise<void>", description: "Called on submit. Throw to show an error toast. Without it, the section simulates a request." },
+          { prop: "successTitle", type: "string", default: '"Changes saved"', description: "Toast title after a save. Say what changed: “Profile saved”." },
+          { prop: "successDescription", type: "string", description: "Optional toast line after a save: what happens next." },
           { prop: "as", type: '"h2" | "h3"', default: '"h2"', description: "Heading level of the title." },
           { prop: "className", type: "string", description: "Classes for the section. It has py-10 by default." },
         ]}

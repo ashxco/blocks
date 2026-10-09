@@ -12,30 +12,26 @@ import {
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Toggle } from "@/components/ui/toggle"
 
 const logLines = [
   { time: "14:02:11", level: "info", text: "Build started for commit 8f3c2a1 on main" },
   { time: "14:02:19", level: "info", text: "Installed 412 packages in 6.8s" },
-  { time: "14:02:48", level: "warn", text: "Image hero.png is 2.4 MB. Consider compressing it before the next deploy." },
-  { time: "14:03:02", level: "info", text: "Deployment ready at lumen-web-8f3c2a1.lumen.app" },
+  { time: "14:02:31", level: "warn", text: "Image hero.png is 2.4 MB. Compress it to speed up first load." },
+  { time: "14:03:02", level: "info", text: "Deployment ready at acme-web-8f3c2a1.lumen.app" },
 ]
 
 function LogViewer() {
   const [live, setLive] = React.useState(true)
-  const [wrap, setWrap] = React.useState(false)
+  const [wrap, setWrap] = React.useState(true)
   const [timestamps, setTimestamps] = React.useState(true)
 
   return (
-    <div className="overflow-hidden rounded-(--card-radius) border bg-card">
-      <div className="flex flex-wrap items-center gap-2 border-b px-3 py-2">
-        <Toggle
-          size="sm"
-          variant="outline"
-          pressed={live}
-          onPressedChange={setLive}
-        >
+    <Card className="@container/logs w-full max-w-2xl gap-0 p-0">
+      <div className="flex items-center gap-2 border-b px-3 py-2">
+        <Toggle size="sm" variant="outline" pressed={live} onPressedChange={setLive}>
           {live ? <RadioIcon data-icon="inline-start" /> : <PauseIcon data-icon="inline-start" />}
           {live ? "Live" : "Paused"}
         </Toggle>
@@ -46,16 +42,19 @@ function LogViewer() {
         <Toggle size="sm" pressed={wrap} onPressedChange={setWrap} aria-label="Wrap long lines">
           <WrapTextIcon />
         </Toggle>
-        <p className="ml-auto text-sm text-muted-foreground">
+        <p className="ml-auto hidden text-caption text-muted-foreground @md/logs:block">
           {live ? "Streaming from iad1" : "Stream paused"}
         </p>
       </div>
-      <div className="grid gap-1.5 bg-terminal p-4 font-mono text-code text-terminal-foreground">
+      <div
+        className={
+          wrap
+            ? "grid gap-1.5 bg-terminal p-4 font-mono text-code text-terminal-foreground"
+            : "grid gap-1.5 overflow-x-auto bg-terminal p-4 font-mono text-code text-terminal-foreground [scrollbar-width:thin]"
+        }
+      >
         {logLines.map((line) => (
-          <p
-            key={line.time}
-            className={wrap ? "break-words whitespace-normal" : "truncate whitespace-nowrap"}
-          >
+          <p key={line.time} className={wrap ? "break-words whitespace-pre-wrap" : "whitespace-pre"}>
             {timestamps ? <span className="mr-3 opacity-50">{line.time}</span> : null}
             <span className={line.level === "warn" ? "text-warning" : "opacity-50"}>
               {line.level.toUpperCase()}
@@ -64,7 +63,7 @@ function LogViewer() {
           </p>
         ))}
       </div>
-    </div>
+    </Card>
   )
 }
 
@@ -76,6 +75,9 @@ export default function ToggleDocs() {
         description="A quiet pill that turns ink when it is on. Icon-only toggles become circles and need an aria-label."
         code={`<Toggle aria-label="Wrap long lines">
   <WrapTextIcon />
+</Toggle>
+<Toggle defaultPressed aria-label="Pin to sidebar">
+  <PinIcon />
 </Toggle>
 <Toggle defaultPressed>
   <ClockIcon data-icon="inline-start" />
@@ -100,6 +102,13 @@ export default function ToggleDocs() {
         code={`<Toggle variant="outline">
   <StarIcon data-icon="inline-start" />
   Star project
+</Toggle>
+<Toggle variant="outline" defaultPressed>
+  <BellIcon data-icon="inline-start" />
+  Watching
+</Toggle>
+<Toggle variant="outline" aria-label="Pin to sidebar">
+  <PinIcon />
 </Toggle>`}
       >
         <Toggle variant="outline">
@@ -117,29 +126,61 @@ export default function ToggleDocs() {
 
       <Example
         title="Sizes"
-        description="Heights match buttons of the same size, so toggles and buttons line up in one row."
+        description="Heights match buttons of the same size, so toggles and buttons line up in one row. Shown off; a pressed toggle turns ink."
+        code={`<Toggle size="sm" variant="outline">
+  <BellIcon data-icon="inline-start" />
+  Watch
+</Toggle>
+<Toggle variant="outline">
+  <BellIcon data-icon="inline-start" />
+  Watch
+</Toggle>
+<Toggle size="lg" variant="outline">
+  <BellIcon data-icon="inline-start" />
+  Watch
+</Toggle>
+
+<Toggle size="sm" variant="outline" aria-label="Star project"><StarIcon /></Toggle>
+<Toggle variant="outline" aria-label="Star project"><StarIcon /></Toggle>
+<Toggle size="lg" variant="outline" aria-label="Star project"><StarIcon /></Toggle>`}
       >
-        <Toggle size="sm" variant="outline" defaultPressed>
-          Small
-        </Toggle>
-        <Toggle variant="outline" defaultPressed>
-          Medium
-        </Toggle>
-        <Toggle size="lg" variant="outline" defaultPressed>
-          Large
-        </Toggle>
-        <Toggle size="sm" variant="outline" aria-label="Small icon toggle">
-          <StarIcon />
-        </Toggle>
-        <Toggle variant="outline" aria-label="Medium icon toggle">
-          <StarIcon />
-        </Toggle>
-        <Toggle size="lg" variant="outline" aria-label="Large icon toggle">
-          <StarIcon />
-        </Toggle>
+        <div className="grid justify-items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Toggle size="sm" variant="outline">
+              <BellIcon data-icon="inline-start" />
+              Watch
+            </Toggle>
+            <Toggle variant="outline">
+              <BellIcon data-icon="inline-start" />
+              Watch
+            </Toggle>
+            <Toggle size="lg" variant="outline">
+              <BellIcon data-icon="inline-start" />
+              Watch
+            </Toggle>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Toggle size="sm" variant="outline" aria-label="Star project, small">
+              <StarIcon />
+            </Toggle>
+            <Toggle variant="outline" aria-label="Star project, medium">
+              <StarIcon />
+            </Toggle>
+            <Toggle size="lg" variant="outline" aria-label="Star project, large">
+              <StarIcon />
+            </Toggle>
+          </div>
+        </div>
       </Example>
 
-      <Example title="States" description="Off, on, and disabled in both positions.">
+      <Example
+        title="States"
+        description="Off, on, and disabled in both positions."
+        code={`<Toggle variant="outline">Off</Toggle>
+<Toggle variant="outline" defaultPressed>On</Toggle>
+<Toggle variant="outline" disabled>Disabled</Toggle>
+<Toggle variant="outline" defaultPressed disabled>Disabled on</Toggle>`}
+      >
         <Toggle variant="outline">Off</Toggle>
         <Toggle variant="outline" defaultPressed>
           On
@@ -154,14 +195,25 @@ export default function ToggleDocs() {
 
       <Example
         title="Log viewer"
-        description="Toggles change how content is shown, right away. Controlled with pressed and onPressedChange."
-        layout="stack"
+        description="Toggles change how content is shown, right away. Turn off wrapping and long lines scroll sideways instead. Controlled with pressed and onPressedChange."
+        surface="subtle"
         code={`const [live, setLive] = React.useState(true)
+const [timestamps, setTimestamps] = React.useState(true)
+const [wrap, setWrap] = React.useState(true)
 
-<Toggle size="sm" variant="outline" pressed={live} onPressedChange={setLive}>
-  {live ? <RadioIcon data-icon="inline-start" /> : <PauseIcon data-icon="inline-start" />}
-  {live ? "Live" : "Paused"}
-</Toggle>`}
+<div className="flex items-center gap-2 border-b px-3 py-2">
+  <Toggle size="sm" variant="outline" pressed={live} onPressedChange={setLive}>
+    {live ? <RadioIcon data-icon="inline-start" /> : <PauseIcon data-icon="inline-start" />}
+    {live ? "Live" : "Paused"}
+  </Toggle>
+  <Separator orientation="vertical" className="mx-1 my-1.5" />
+  <Toggle size="sm" pressed={timestamps} onPressedChange={setTimestamps} aria-label="Show timestamps">
+    <ClockIcon />
+  </Toggle>
+  <Toggle size="sm" pressed={wrap} onPressedChange={setWrap} aria-label="Wrap long lines">
+    <WrapTextIcon />
+  </Toggle>
+</div>`}
       >
         <LogViewer />
       </Example>

@@ -1,6 +1,8 @@
 import * as React from "react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
+import { Kern } from "@/components/ui/kern"
 
 const founders = [
   { name: "Maya Okafor", role: "Co-founder, CEO", initials: "MO", tone: "violet" as const },
@@ -13,10 +15,10 @@ const founders = [
  */
 export function FoundersStory({ className }: { className?: string }) {
   return (
-    <section aria-labelledby="story-heading" className={`container-page py-section ${className ?? ""}`}>
+    <section aria-labelledby="story-heading" className={cn("container-page py-section", className)}>
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
         <h2 id="story-heading" className="text-h2 text-foreground lg:col-span-5">
-          Built by people who carried the pager.
+          <Kern>Built by people who carried the pager.</Kern>
         </h2>
 
         <div className="grid gap-6 lg:col-span-6 lg:col-start-7 lg:pt-2">

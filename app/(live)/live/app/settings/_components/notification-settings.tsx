@@ -47,7 +47,7 @@ const workspaceEvents: Preference[] = [
   {
     id: "usage",
     label: "Usage alerts",
-    description: "Build minutes, bandwidth or database storage passes 80% of the Pro plan.",
+    description: "Build minutes, bandwidth or database storage reaches 50%, 80% or 100% of the Pro plan.",
     on: true,
   },
   {
@@ -60,7 +60,7 @@ const workspaceEvents: Preference[] = [
     id: "members",
     label: "New members",
     description: "Someone accepts an invite to Acme Inc.",
-    on: false,
+    on: true,
   },
   {
     id: "summary",

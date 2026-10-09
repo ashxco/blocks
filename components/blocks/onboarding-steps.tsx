@@ -18,7 +18,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { toast } from "@/components/ui/toast"
 
 import { OnboardingComplete } from "./onboarding-steps/complete"
-import { RepositoryStep, TeamStep, WorkspaceStep, newInvite } from "./onboarding-steps/step-fields"
+import { RepositoryStep, SLUG_PLACEHOLDER, TeamStep, WorkspaceStep, newInvite } from "./onboarding-steps/step-fields"
 import {
   EMAIL_PATTERN,
   hasErrors,
@@ -28,7 +28,9 @@ import {
   type OnboardingValues,
   type StepErrors,
 } from "./onboarding-steps/types"
+import { Kern } from "@/components/ui/kern"
 
+export { WorkspaceUrlInput, type WorkspaceUrlInputProps } from "./onboarding-steps/workspace-url-input"
 export type {
   GitProvider,
   InviteRole,
@@ -40,6 +42,12 @@ export type {
 export interface OnboardingStepsProps {
   /** Step to open on: 0 workspace, 1 team, 2 repository. */
   defaultStep?: 0 | 1 | 2
+  /**
+   * Open on the finished state, with the first deployment building, using
+   * defaultValues as the answers. For previews and for people who come back
+   * after setting up.
+   */
+  defaultDone?: boolean
   /** Prefill any answers, for example from an invite or a sign-up form. */
   defaultValues?: Partial<OnboardingValues>
   /** Host shown before the workspace slug. */
@@ -69,38 +77,39 @@ const STEPS: StepMeta[] = [
   {
     title: "Name your workspace",
     short: "Workspace",
-    hint: "A name and a URL for your team.",
+    hint: "Name and URL",
     description: "Your workspace holds projects, domains and the people who ship them.",
     icon: Building2Icon,
   },
   {
     title: "Invite your team",
     short: "Team",
-    hint: "Invite by email or share a link.",
+    hint: "Invite by email or link",
     description: "Teammates can review previews, read logs and promote deployments to production.",
     icon: UserPlusIcon,
   },
   {
     title: "Connect a repository",
     short: "Repository",
-    hint: "Choose the code Lumen deploys.",
+    hint: "Pick what Lumen deploys",
     description: "Pick the code Lumen should deploy. Every push after this builds automatically.",
     icon: GitBranchIcon,
   },
 ]
 
 const defaultRepositories: OnboardingRepository[] = [
-  { id: "halcyon/web", name: "halcyon/web", framework: "Next.js", updated: "2 hours ago" },
-  { id: "halcyon/api", name: "halcyon/api", framework: "Node.js", updated: "yesterday", private: true },
-  { id: "halcyon/docs", name: "halcyon/docs", framework: "Astro", updated: "3 days ago" },
-  { id: "halcyon/dashboard", name: "halcyon/dashboard", framework: "Vite", updated: "last week", private: true },
-  { id: "halcyon/marketing", name: "halcyon/marketing", framework: "Remix", updated: "2 weeks ago" },
+  { id: "acme/web", name: "acme/web", framework: "Next.js", updated: "2 hours ago" },
+  { id: "acme/api", name: "acme/api", framework: "Node.js", updated: "yesterday", private: true },
+  { id: "acme/docs", name: "acme/docs", framework: "Astro", updated: "3 days ago" },
+  { id: "acme/dashboard", name: "acme/dashboard", framework: "Next.js", updated: "last week", private: true },
+  { id: "acme/checkout", name: "acme/checkout", framework: "Remix", updated: "2 weeks ago" },
 ]
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export function OnboardingSteps({
   defaultStep = 0,
+  defaultDone = false,
   defaultValues,
   domain = "lumen.app",
   repositories = defaultRepositories,
@@ -112,10 +121,16 @@ export function OnboardingSteps({
   const idPrefix = React.useId()
   const [step, setStep] = React.useState<number>(defaultStep)
   const [furthest, setFurthest] = React.useState<number>(defaultStep)
-  const [done, setDone] = React.useState(false)
+  const [done, setDone] = React.useState(defaultDone)
+  // Focus moves to the completion heading only when people finish here, not when a page opens on it.
+  const [finishedHere, setFinishedHere] = React.useState(false)
   const [pending, setPending] = React.useState(false)
   const [attempted, setAttempted] = React.useState<Record<number, boolean>>({})
-  const [invitesSent, setInvitesSent] = React.useState(0)
+  const [invitesSent, setInvitesSent] = React.useState(() =>
+    defaultDone
+      ? (defaultValues?.invites ?? []).filter((i) => EMAIL_PATTERN.test(i.email.trim())).length
+      : 0
+  )
   const [slugEdited, setSlugEdited] = React.useState(Boolean(defaultValues?.workspaceSlug))
   const [values, setValues] = React.useState<OnboardingValues>(() => {
     const name = defaultValues?.workspaceName ?? ""
@@ -143,7 +158,8 @@ export function OnboardingSteps({
   const errors: StepErrors = attempted[step] ? validateStep(step, values, domain) : {}
   const current = STEPS[step]
   const validInvites = values.invites.filter((i) => EMAIL_PATTERN.test(i.email.trim())).length
-  const progress = done ? 100 : ((step + 1) / STEPS.length) * 100
+  // Completed steps only, so the bar starts nearly empty and fills when setup finishes. A sliver shows on step one.
+  const progress = done ? 100 : Math.max(6, (step / STEPS.length) * 100)
 
   function goTo(next: number) {
     stepChanged.current = true
@@ -187,6 +203,7 @@ export function OnboardingSteps({
     setPending(true)
     try {
       await (onComplete ? onComplete(values) : wait(700))
+      setFinishedHere(true)
       setDone(true)
     } finally {
       setPending(false)
@@ -217,15 +234,16 @@ export function OnboardingSteps({
           repository={repositories.find((r) => r.id === values.repositoryId)}
           domain={domain}
           dashboardHref={dashboardHref}
+          autoFocus={finishedHere}
           onEdit={() => {
             setDone(false)
             goTo(0)
           }}
         />
       ) : (
-        <div className="grid gap-8 @narrow:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] @narrow:gap-12 @page:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] @page:gap-20">
-          {/* Step list: a dark panel on wide containers */}
-          <aside className="hidden flex-col rounded-(--panel-radius) bg-panel p-8 text-panel-muted @narrow:flex">
+        <div className="grid gap-8 @narrow:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] @narrow:gap-12 @page:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] @page:gap-20">
+          {/* Step list: a dark panel on wide containers. It keeps its own height and stays in view beside long steps. */}
+          <aside className="hidden flex-col rounded-(--panel-radius) bg-panel p-(--panel-padding-sm) text-panel-muted @narrow:sticky @narrow:top-6 @narrow:flex @narrow:self-start">
             <p className="text-title text-panel-foreground">Set up Lumen</p>
             <p className="mt-2 text-sm">Three short steps. You can change any of this later in settings.</p>
             <ol className="mt-10 grid gap-1">
@@ -240,12 +258,11 @@ export function OnboardingSteps({
                       disabled={i > furthest || active}
                       aria-current={active ? "step" : undefined}
                       onClick={() => goTo(i)}
+                      // The active step is the raised fill and the ink ring on its icon; nothing else.
                       className={cn(
-                        "relative flex w-full items-start gap-4 rounded-(--control-radius) border border-transparent p-4 text-left outline-none",
+                        "flex w-full items-start gap-4 rounded-(--control-radius) p-4 text-left outline-none",
                         "transition-colors duration-(--duration-fast) focus-visible:focus-ring",
-                        active
-                          ? "border-panel-border bg-panel-raised before:absolute before:inset-y-4 before:left-0 before:w-0.5 before:rounded-full before:bg-brand"
-                          : "enabled:hover:bg-panel-raised"
+                        active ? "bg-panel-raised" : "enabled:hover:bg-panel-raised"
                       )}
                     >
                       <span
@@ -259,20 +276,26 @@ export function OnboardingSteps({
                         <Icon className="size-4" strokeWidth={complete ? 2.5 : 2} aria-hidden="true" />
                       </span>
                       <span className="grid gap-1">
-                        <span className={`text-label ${active || complete ? "text-panel-foreground" : "text-panel-muted"}`}>
+                        <span className={cn("text-label text-balance", active || complete ? "text-panel-foreground" : "text-panel-muted")}>
                           {s.title}
                         </span>
-                        <span className="text-caption text-panel-muted">{s.hint}</span>
+                        <span className="text-caption text-balance text-panel-muted">{s.hint}</span>
                       </span>
                     </button>
                   </li>
                 )
               })}
             </ol>
-            <div className="mt-auto grid gap-1 border-t border-panel-border pt-6">
+            <div className="mt-10 grid gap-1 border-t border-panel-border pt-6">
               <p className="text-caption">Your workspace</p>
+              {/* Until there is a slug, the panel shows the field's placeholder, muted, so both use one stand-in. */}
               <p className="truncate font-mono text-sm text-panel-foreground">
-                {domain}/{values.workspaceSlug || "your-team"}
+                {domain}/
+                {values.workspaceSlug ? (
+                  values.workspaceSlug
+                ) : (
+                  <span className="text-panel-muted">{SLUG_PLACEHOLDER}</span>
+                )}
               </p>
             </div>
           </aside>
@@ -307,7 +330,7 @@ export function OnboardingSteps({
               >
                 <header className="grid gap-3">
                   <h2 ref={headingRef} tabIndex={-1} className="text-h2 text-foreground outline-none">
-                    {current.title}
+                    <Kern>{current.title}</Kern>
                   </h2>
                   <p className="max-w-prose text-lead text-copy">{current.description}</p>
                 </header>

@@ -85,7 +85,7 @@ export default function SkeletonDocs() {
 
       <ApiTable
         rows={[
-          { prop: "className", type: "string", default: '"rounded-sm"', description: "Size and radius. The fill is bg-muted with a motion-safe pulse." },
+          { prop: "className", type: "string", default: '"rounded-sm"', description: "Size and radius. The fill is bg-secondary with a motion-safe pulse." },
           { prop: "...props", type: "<div> props", description: "Any div attribute. Hidden from assistive technology by default." },
         ]}
       />

@@ -120,78 +120,80 @@ export default function ResizableDocs() {
       <Example
         title="Workspace"
         layout="stack"
-        description="Nest groups to build an app workspace: files on the left, the editor above the request log on the right."
+        description="Nest groups to build an app workspace: files on the left, the editor above the request log on the right. On a phone the workspace keeps its width and scrolls sideways rather than squeezing the panels."
       >
-        <div className="h-[28rem] overflow-hidden rounded-(--card-radius) border border-border bg-card">
-          <ResizablePanelGroup orientation="horizontal">
-            <ResizablePanel defaultSize="26%" minSize="18%" maxSize="40%" className="bg-sidebar">
-              <div className="grid gap-0.5 p-3">
-                <p className="px-2 pt-1 pb-2 text-caption font-semibold text-muted-foreground">lumen-web</p>
-                {files.map((f) => (
-                  <div
-                    key={f.name}
-                    style={{ paddingLeft: `${0.5 + f.depth * 1}rem` }}
-                    className={
-                      f.active
-                        ? "flex h-8 items-center gap-2 rounded-sm bg-sidebar-accent pr-2 text-sm font-semibold text-sidebar-accent-foreground"
-                        : "flex h-8 items-center gap-2 rounded-sm pr-2 text-sm text-copy"
-                    }
-                  >
-                    {f.folder ? (
-                      <FolderIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-                    ) : (
-                      <FileCodeIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-                    )}
-                    <span className="truncate">{f.name}</span>
-                  </div>
-                ))}
-              </div>
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize="74%" minSize="40%">
-              <ResizablePanelGroup orientation="vertical">
-                <ResizablePanel defaultSize="55%" minSize="25%">
-                  <div className="flex h-full flex-col">
-                    <div className="flex h-11 items-center gap-1.5 border-b border-border px-4 text-caption text-muted-foreground">
-                      app
-                      <ChevronRightIcon aria-hidden="true" className="size-3.5" />
-                      <span className="font-semibold text-foreground">page.tsx</span>
+        <div className="w-full overflow-x-auto overscroll-x-contain rounded-(--card-radius) border border-border bg-card">
+          <div className="h-[28rem] min-w-(--container-prose)">
+            <ResizablePanelGroup orientation="horizontal">
+              <ResizablePanel defaultSize="26%" minSize="18%" maxSize="40%" className="bg-sidebar">
+                <div className="grid gap-0.5 p-3">
+                  <p className="px-2 pt-1 pb-2 text-caption font-semibold text-muted-foreground">lumen-web</p>
+                  {files.map((f) => (
+                    <div
+                      key={f.name}
+                      style={{ paddingLeft: `${0.5 + f.depth * 1}rem` }}
+                      className={
+                        f.active
+                          ? "flex h-8 items-center gap-2 rounded-sm bg-sidebar-accent pr-2 text-sm font-semibold text-sidebar-accent-foreground"
+                          : "flex h-8 items-center gap-2 rounded-sm pr-2 text-sm text-copy"
+                      }
+                    >
+                      {f.folder ? (
+                        <FolderIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                      ) : (
+                        <FileCodeIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                      )}
+                      <span className="truncate">{f.name}</span>
                     </div>
-                    <pre className="min-h-0 flex-1 overflow-auto p-4 font-mono text-code text-copy">
-                      <code>{`export default async function Page() {
+                  ))}
+                </div>
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel defaultSize="74%" minSize="40%">
+                <ResizablePanelGroup orientation="vertical">
+                  <ResizablePanel defaultSize="55%" minSize="25%">
+                    <div className="flex h-full flex-col">
+                      <div className="flex h-11 items-center gap-1.5 border-b border-border px-4 text-caption text-muted-foreground">
+                        app
+                        <ChevronRightIcon aria-hidden="true" className="size-3.5" />
+                        <span className="font-semibold text-foreground">page.tsx</span>
+                      </div>
+                      <pre className="min-h-0 flex-1 overflow-auto p-4 font-mono text-code text-copy">
+                        <code>{`export default async function Page() {
   const projects = await lumen.projects.list()
   return <ProjectGrid projects={projects} />
 }`}</code>
-                    </pre>
-                  </div>
-                </ResizablePanel>
-                <ResizableHandle withHandle />
-                <ResizablePanel defaultSize="45%" minSize="20%">
-                  <div className="flex h-full flex-col">
-                    <div className="flex h-11 shrink-0 items-center justify-between border-b border-border px-4">
-                      <p className="text-label text-foreground">Requests</p>
-                      <p className="text-caption text-muted-foreground">Live</p>
+                      </pre>
                     </div>
-                    <ul className="min-h-0 flex-1 divide-y divide-border overflow-auto">
-                      {requests.map((r) => (
-                        <li
-                          key={r.time + r.path}
-                          className="grid grid-cols-[4.5rem_3.5rem_1fr_auto] items-center gap-3 px-4 py-2 font-mono text-xs"
-                        >
-                          <span className="text-muted-foreground tabular-nums">{r.time}</span>
-                          <span className="font-semibold text-foreground">{r.method}</span>
-                          <span className="truncate text-copy">{r.path}</span>
-                          <span className={r.status >= 500 ? "text-destructive tabular-nums" : "text-muted-foreground tabular-nums"}>
-                            {r.status} · {r.ms}ms
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </ResizablePanel>
-              </ResizablePanelGroup>
-            </ResizablePanel>
-          </ResizablePanelGroup>
+                  </ResizablePanel>
+                  <ResizableHandle withHandle />
+                  <ResizablePanel defaultSize="45%" minSize="20%">
+                    <div className="flex h-full flex-col">
+                      <div className="flex h-11 shrink-0 items-center justify-between border-b border-border px-4">
+                        <p className="text-label text-foreground">Requests</p>
+                        <p className="text-caption text-muted-foreground">Live</p>
+                      </div>
+                      <ul className="min-h-0 flex-1 divide-y divide-border overflow-auto">
+                        {requests.map((r) => (
+                          <li
+                            key={r.time + r.path}
+                            className="grid grid-cols-[4.5rem_3.5rem_1fr_auto] items-center gap-3 px-4 py-2 font-mono text-xs"
+                          >
+                            <span className="text-muted-foreground tabular-nums">{r.time}</span>
+                            <span className="font-semibold text-foreground">{r.method}</span>
+                            <span className="truncate text-copy">{r.path}</span>
+                            <span className={r.status >= 500 ? "whitespace-nowrap text-destructive tabular-nums" : "whitespace-nowrap text-muted-foreground tabular-nums"}>
+                              {r.status} · {r.ms}ms
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </ResizablePanel>
+                </ResizablePanelGroup>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </div>
         </div>
       </Example>
 

@@ -37,26 +37,34 @@ function TooltipContent({
   align = "center",
   alignOffset = 0,
   children,
+  collisionAvoidance,
+  collisionBoundary,
+  container,
   ...props
 }: TooltipPrimitive.Popup.Props &
   Pick<
     TooltipPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset"
-  >) {
+    "align" | "alignOffset" | "side" | "sideOffset" | "collisionAvoidance" | "collisionBoundary"
+  > & {
+    /** Element to portal into instead of <body>, e.g. a preview stage. */
+    container?: TooltipPrimitive.Portal.Props["container"]
+  }) {
   return (
-    <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Portal container={container}>
       <TooltipPrimitive.Positioner
         align={align}
         alignOffset={alignOffset}
         side={side}
         sideOffset={sideOffset}
+        collisionAvoidance={collisionAvoidance}
+        collisionBoundary={collisionBoundary}
         className="isolate z-(--z-overlay)"
       >
         <TooltipPrimitive.Popup
           data-slot="tooltip-content"
           className={cn(
             "inline-flex w-fit max-w-64 origin-(--transform-origin) items-center gap-2 rounded-xs bg-primary px-2 py-1",
-            "text-caption font-medium text-balance text-primary-foreground",
+            "text-caption font-medium text-pretty text-primary-foreground",
             "has-data-[slot=kbd]:py-0.5 has-data-[slot=kbd]:pr-0.5",
             "transition-[opacity,scale] duration-(--duration-base) ease-out",
             "data-starting-style:scale-98 data-starting-style:opacity-0",

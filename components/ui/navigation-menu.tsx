@@ -16,11 +16,17 @@ import { cn } from "@/lib/utils"
  */
 function NavigationMenu({
   align = "start",
+  collisionAvoidance,
+  collisionBoundary,
+  container,
   className,
   children,
   ...props
 }: NavigationMenuPrimitive.Root.Props &
-  Pick<NavigationMenuPrimitive.Positioner.Props, "align">) {
+  Pick<NavigationMenuPrimitive.Positioner.Props, "align" | "collisionAvoidance" | "collisionBoundary"> & {
+    /** Element to portal the panel into instead of <body>, e.g. a preview stage. */
+    container?: NavigationMenuPrimitive.Portal.Props["container"]
+  }) {
   return (
     <NavigationMenuPrimitive.Root
       data-slot="navigation-menu"
@@ -31,7 +37,12 @@ function NavigationMenu({
       {...props}
     >
       {children}
-      <NavigationMenuPositioner align={align} />
+      <NavigationMenuPositioner
+        align={align}
+        collisionAvoidance={collisionAvoidance}
+        collisionBoundary={collisionBoundary}
+        container={container}
+      />
     </NavigationMenuPrimitive.Root>
   )
 }
@@ -122,10 +133,13 @@ function NavigationMenuPositioner({
   sideOffset = 10,
   align = "start",
   alignOffset = 0,
+  container,
   ...props
-}: NavigationMenuPrimitive.Positioner.Props) {
+}: NavigationMenuPrimitive.Positioner.Props & {
+  container?: NavigationMenuPrimitive.Portal.Props["container"]
+}) {
   return (
-    <NavigationMenuPrimitive.Portal>
+    <NavigationMenuPrimitive.Portal container={container}>
       <NavigationMenuPrimitive.Positioner
         side={side}
         sideOffset={sideOffset}
@@ -144,7 +158,7 @@ function NavigationMenuPositioner({
           data-slot="navigation-menu-popup"
           className={cn(
             "relative h-(--popup-height) w-(--popup-width) origin-(--transform-origin) overflow-hidden",
-            "rounded-(--overlay-radius) border border-border bg-popover text-popover-foreground outline-none",
+            "rounded-(--overlay-radius) border border-input bg-popover text-popover-foreground outline-none",
             "transition-[opacity,scale,width,height] duration-(--duration-base) ease-out",
             "data-starting-style:scale-98 data-starting-style:opacity-0 data-ending-style:scale-98 data-ending-style:opacity-0"
           )}

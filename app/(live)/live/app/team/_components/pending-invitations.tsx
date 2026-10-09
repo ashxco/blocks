@@ -93,7 +93,8 @@ function InvitationRow({
       </div>
 
       <div className="col-start-2 flex items-center gap-2 @prose:col-start-auto @prose:justify-end">
-        <Button variant={expired ? "outline" : "ghost"} size="sm" onClick={() => onResend(invitation)}>
+        {/* One button style for live and expired invites, so stacked rows share an edge. */}
+        <Button variant="outline" size="sm" onClick={() => onResend(invitation)}>
           {expired ? "Send again" : "Resend"}
         </Button>
         <Button

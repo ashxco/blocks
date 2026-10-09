@@ -5,7 +5,6 @@ import { KeyRoundIcon, LogOutIcon, RocketIcon, Trash2Icon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import {
-  AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -17,20 +16,126 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { Dialog } from "@/components/ui/dialog"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
-function PromoteDialog() {
-  const [open, setOpen] = React.useState(false)
+type Stage = HTMLDivElement | null
+
+/** Inside a stage, the dialog fits the stage rather than the viewport. */
+const inStage = "max-h-[calc(100%-2rem)]"
+
+/**
+ * The previews show each alert dialog already open, in place on the page.
+ * AlertDialog is always modal, which would lock this page's scroll and trap
+ * focus, so the previews use the Dialog root that the alert dialog parts are
+ * built on, without a modal state. Your code uses AlertDialog, as in the Code tab.
+ */
+function PreviewRoot({
+  open,
+  onOpenChange,
+  children,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  children: React.ReactNode
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange} modal={false} disablePointerDismissal>
+      {children}
+    </Dialog>
+  )
+}
+
+/**
+ * The stage the dialog opens into. contain-layout makes it the containing
+ * block for the fixed overlay and popup; isolate keeps them under the site header.
+ */
+function DialogStage({
+  title,
+  meta,
+  rows,
+  children,
+}: {
+  title: string
+  meta: string
+  rows: { label: string; value: string; mono?: boolean }[]
+  children: (container: Stage) => React.ReactNode
+}) {
+  const [container, setContainer] = React.useState<Stage>(null)
+  return (
+    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout">
+      <div className="grid content-start gap-8 p-6 sm:p-12">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="grid gap-1">
+            <p className="text-h3 text-foreground">{title}</p>
+            <p className="text-caption text-muted-foreground">{meta}</p>
+          </div>
+          {children(container)}
+        </div>
+        <dl className="grid divide-y border-y">
+          {rows.map((row) => (
+            <div key={row.label} className="flex items-center justify-between gap-6 py-4">
+              <dt className="text-sm text-muted-foreground">{row.label}</dt>
+              <dd className={row.mono ? "font-mono text-code text-foreground" : "text-sm font-medium text-foreground"}>
+                {row.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  )
+}
+
+const deploymentRows = [
+  { label: "Deployment", value: "8f2c1a9", mono: true },
+  { label: "Branch", value: "main" },
+  { label: "Author", value: "Priya Raman" },
+  { label: "Built in", value: "38s" },
+  { label: "Regions", value: "Frankfurt, Virginia, Singapore" },
+]
+
+const branchRows = [
+  { label: "Preview URL", value: "feat-billing.lumen.app", mono: true },
+  { label: "Deployments", value: "12" },
+  { label: "Last commit", value: "2 hours ago" },
+  { label: "Comments", value: "3 open threads" },
+]
+
+const accountRows = [
+  { label: "MacBook Pro · Safari", value: "This device" },
+  { label: "iPhone 16 · Lumen app", value: "2 hours ago" },
+  { label: "Linux · Chrome", value: "Yesterday" },
+  { label: "Lumen CLI", value: "3 days ago" },
+]
+
+const keyRows = [
+  { label: "Key", value: "lmn_live_••••••••3f9a", mono: true },
+  { label: "Scopes", value: "Deployments, domains" },
+  { label: "Created", value: "12 March 2025" },
+  { label: "Last used", value: "2 minutes ago" },
+]
+
+const projectRows = [
+  { label: "Deployments", value: "214" },
+  { label: "Domains", value: "lumen.app, www.lumen.app", mono: true },
+  { label: "Created", value: "March 2025" },
+  { label: "Owner", value: "Lumen Labs" },
+]
+
+function PromoteDialog({ container }: { container: Stage }) {
+  const [open, setOpen] = React.useState(true)
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <PreviewRoot open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger render={<Button />}>
         <RocketIcon data-icon="inline-start" />
         Promote to production
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
           <AlertDialogTitle>Promote this deployment?</AlertDialogTitle>
           <AlertDialogDescription>
@@ -43,17 +148,17 @@ function PromoteDialog() {
           <AlertDialogAction onClick={() => setOpen(false)}>Promote</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-    </AlertDialog>
+    </PreviewRoot>
   )
 }
 
-function DeleteBranchDialog() {
-  const [open, setOpen] = React.useState(false)
+function DeleteBranchDialog({ container }: { container: Stage }) {
+  const [open, setOpen] = React.useState(true)
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <PreviewRoot open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger render={<Button variant="outline" />}>Delete preview branch</AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
           <AlertDialogMedia className="bg-destructive-subtle text-destructive">
             <Trash2Icon />
@@ -71,20 +176,20 @@ function DeleteBranchDialog() {
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-    </AlertDialog>
+    </PreviewRoot>
   )
 }
 
-function SignOutDialog() {
-  const [open, setOpen] = React.useState(false)
+function SignOutDialog({ container }: { container: Stage }) {
+  const [open, setOpen] = React.useState(true)
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger render={<Button variant="ghost" />}>
+    <PreviewRoot open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger render={<Button variant="outline" />}>
         <LogOutIcon data-icon="inline-start" />
         Sign out everywhere
       </AlertDialogTrigger>
-      <AlertDialogContent size="sm">
+      <AlertDialogContent size="sm" container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <LogOutIcon />
@@ -97,55 +202,88 @@ function SignOutDialog() {
           <AlertDialogAction onClick={() => setOpen(false)}>Sign out</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-    </AlertDialog>
+    </PreviewRoot>
   )
 }
 
-function RotateKeyDialog() {
-  const [open, setOpen] = React.useState(false)
-  const [pending, setPending] = React.useState(false)
+/**
+ * The pending state, shown in place. The bar above the stage switches the
+ * dialog between ready and pending; Rotate key runs the request for real.
+ */
+function PendingDemo() {
+  const [open, setOpen] = React.useState(true)
+  const [pending, setPending] = React.useState(true)
+  const timer = React.useRef<number | undefined>(undefined)
+
+  React.useEffect(() => () => window.clearTimeout(timer.current), [])
 
   function rotate() {
     setPending(true)
-    window.setTimeout(() => {
+    timer.current = window.setTimeout(() => {
       setPending(false)
       setOpen(false)
     }, 1400)
   }
 
+  function showState(next: string | undefined) {
+    if (!next) return
+    window.clearTimeout(timer.current)
+    setPending(next === "pending")
+    setOpen(true)
+  }
+
   return (
-    <AlertDialog open={open} onOpenChange={(next) => !pending && setOpen(next)}>
-      <AlertDialogTrigger render={<Button variant="outline" />}>
-        <KeyRoundIcon data-icon="inline-start" />
-        Rotate API key
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Rotate the production API key?</AlertDialogTitle>
-          <AlertDialogDescription>
-            The current key stops working in 10 minutes. Update <strong>LUMEN_API_KEY</strong> in your CI before then.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={rotate} disabled={pending}>
-            {pending ? <Spinner data-icon="inline-start" /> : null}
-            {pending ? "Rotating key" : "Rotate key"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <div className="grid">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b px-6 py-3 sm:px-12">
+        <p className="text-caption text-muted-foreground">Dialog state</p>
+        <ToggleGroup
+          size="sm"
+          aria-label="Dialog state"
+          value={[pending ? "pending" : "ready"]}
+          onValueChange={(value) => showState(value[0])}
+        >
+          <ToggleGroupItem value="ready">Ready</ToggleGroupItem>
+          <ToggleGroupItem value="pending">Pending</ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+      <DialogStage title="API keys" meta="lumen-web · production" rows={keyRows}>
+        {(container) => (
+          <PreviewRoot open={open} onOpenChange={(next) => !pending && setOpen(next)}>
+            <AlertDialogTrigger render={<Button variant="outline" />}>
+              <KeyRoundIcon data-icon="inline-start" />
+              Rotate API key
+            </AlertDialogTrigger>
+            <AlertDialogContent container={container} initialFocus={false} className={inStage}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Rotate the production API key?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  The current key stops working in 10 minutes. Update <strong>LUMEN_API_KEY</strong> in your CI before
+                  then.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={rotate} disabled={pending}>
+                  {pending ? <Spinner data-icon="inline-start" /> : null}
+                  {pending ? "Rotating key" : "Rotate key"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </PreviewRoot>
+        )}
+      </DialogStage>
+    </div>
   )
 }
 
-function TypeToConfirmDialog() {
+function TypeToConfirmDialog({ container }: { container: Stage }) {
   const project = "lumen-web"
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(true)
   const [value, setValue] = React.useState("")
   const matches = value.trim() === project
 
   return (
-    <AlertDialog
+    <PreviewRoot
       open={open}
       onOpenChange={(next) => {
         setOpen(next)
@@ -153,7 +291,7 @@ function TypeToConfirmDialog() {
       }}
     >
       <AlertDialogTrigger render={<Button variant="destructive" />}>Delete project</AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
           <AlertDialogMedia className="bg-destructive-subtle text-destructive">
             <Trash2Icon />
@@ -183,7 +321,7 @@ function TypeToConfirmDialog() {
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
-    </AlertDialog>
+    </PreviewRoot>
   )
 }
 
@@ -192,6 +330,7 @@ export default function AlertDialogDocs() {
     <Examples>
       <Example
         title="Confirm an action"
+        layout="full"
         description="Ask one clear question. The description says what will change; the action repeats the verb from the title. AlertDialogAction does not close the dialog on its own, so close it when the work is done."
         code={`const [open, setOpen] = React.useState(false)
 
@@ -213,11 +352,14 @@ export default function AlertDialogDocs() {
   </AlertDialogContent>
 </AlertDialog>`}
       >
-        <PromoteDialog />
+        <DialogStage title="lumen-web" meta="Preview · ready 4 minutes ago" rows={deploymentRows}>
+          {(container) => <PromoteDialog container={container} />}
+        </DialogStage>
       </Example>
 
       <Example
         title="Destructive"
+        layout="full"
         description="Add a tinted media tile and use the destructive button for actions that delete data or can’t be undone."
         code={`<AlertDialogContent>
   <AlertDialogHeader>
@@ -233,19 +375,25 @@ export default function AlertDialogDocs() {
   </AlertDialogFooter>
 </AlertDialogContent>`}
       >
-        <DeleteBranchDialog />
+        <DialogStage title="feat-billing" meta="Preview branch · lumen-web" rows={branchRows}>
+          {(container) => <DeleteBranchDialog container={container} />}
+        </DialogStage>
       </Example>
 
       <Example
         title="Small"
+        layout="full"
         description="size=“sm” centres a short question and gives both answers equal width. Good for sign-out and leave prompts."
         code={`<AlertDialogContent size="sm">…</AlertDialogContent>`}
       >
-        <SignOutDialog />
+        <DialogStage title="Sessions" meta="4 devices signed in" rows={accountRows}>
+          {(container) => <SignOutDialog container={container} />}
+        </DialogStage>
       </Example>
 
       <Example
         title="Pending state"
+        layout="full"
         description="Keep the dialog open while the request runs. Disable both buttons and say what is happening in the action label."
         code={`<AlertDialog open={open} onOpenChange={(next) => !pending && setOpen(next)}>
   …
@@ -258,14 +406,17 @@ export default function AlertDialogDocs() {
   </AlertDialogFooter>
 </AlertDialog>`}
       >
-        <RotateKeyDialog />
+        <PendingDemo />
       </Example>
 
       <Example
         title="Type to confirm"
+        layout="full"
         description="For the most destructive actions, ask people to type the name of what they are deleting. The action stays disabled until it matches."
       >
-        <TypeToConfirmDialog />
+        <DialogStage title="lumen-web" meta="Settings · Danger zone" rows={projectRows}>
+          {(container) => <TypeToConfirmDialog container={container} />}
+        </DialogStage>
       </Example>
 
       <Guidelines

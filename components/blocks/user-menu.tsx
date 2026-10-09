@@ -29,6 +29,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
+import { personTone, type PersonTone } from "@/components/blocks/members-list/people"
 
 export interface UserMenuUser {
   name: string
@@ -36,6 +37,8 @@ export interface UserMenuUser {
   /** Defaults to the first letters of the name. */
   initials?: string
   image?: string
+  /** Avatar fill. Defaults to the person's tint from the shared people list, so they look the same on every page. */
+  tone?: PersonTone
 }
 
 export interface UserMenuProps {
@@ -79,7 +82,7 @@ function UserAvatar({
   return (
     <Avatar size={size === "sm" ? "sm" : "default"}>
       {user.image ? <AvatarImage src={user.image} alt="" /> : null}
-      <AvatarFallback tone="violet" className="text-xs">
+      <AvatarFallback tone={user.tone ?? personTone(user.name)} className="text-xs">
         {user.initials ?? initialsOf(user.name)}
       </AvatarFallback>
     </Avatar>
@@ -98,7 +101,8 @@ export function UserMenu({
   signOutHref = "/live/sign-in",
   className,
 }: UserMenuProps) {
-  const { theme, setTheme } = useTheme()
+  // A page can force a theme (?theme=dark in previews); the radio shows the one on screen.
+  const { theme, forcedTheme, setTheme } = useTheme()
 
   const trigger =
     variant === "full" ? (
@@ -180,7 +184,7 @@ export function UserMenu({
         <DropdownMenuGroup>
           <DropdownMenuLabel>Theme</DropdownMenuLabel>
           <DropdownMenuRadioGroup
-            value={theme ?? "system"}
+            value={forcedTheme ?? theme ?? "system"}
             onValueChange={(value) => setTheme(String(value))}
           >
             {themes.map((option) => (

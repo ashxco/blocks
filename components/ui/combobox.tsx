@@ -26,6 +26,28 @@ import { CheckIcon, ChevronDownIcon, SearchIcon, XIcon } from "lucide-react"
  */
 const Combobox = ComboboxPrimitive.Root
 
+/**
+ * Class recipes for the parts of the open list. The components below use
+ * them, and they are exported for static pictures of an open list, such as
+ * documentation that shows grouped results without opening the popup.
+ */
+const comboboxStyles = {
+  /** The popup surface: popover colour, hairline border, overlay radius. */
+  popup: "rounded-(--overlay-radius) border border-border bg-popover text-popover-foreground outline-none",
+  /** The scrolling list inside the popup. */
+  list: "no-scrollbar max-h-80 min-h-0 scroll-py-(--overlay-padding) overflow-y-auto overscroll-contain p-(--overlay-padding) outline-none data-empty:p-0",
+  label: "flex h-8 items-end px-2.5 pb-1.5 text-caption font-semibold text-muted-foreground select-none",
+  item: cn(
+    "group/combobox-item relative flex min-h-(--overlay-item-height) w-full cursor-default items-center gap-2 rounded-(--overlay-item-radius) py-1.5 ps-2.5 pe-9 text-sm text-foreground outline-none select-none",
+    "transition-colors duration-(--duration-instant) ease-standard",
+    "data-highlighted:bg-accent data-highlighted:text-accent-foreground data-[selected]:font-semibold",
+    "data-disabled:pointer-events-none data-disabled:opacity-50",
+    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+  ),
+  itemIndicator: "pointer-events-none absolute end-2.5 flex size-4 items-center justify-center",
+  separator: "-mx-(--overlay-padding) my-(--overlay-padding) h-px bg-border",
+} as const
+
 function ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props) {
   return <ComboboxPrimitive.Value data-slot="combobox-value" {...props} />
 }
@@ -59,7 +81,7 @@ function ComboboxTrigger({
 
 /** Small round icon button used for the chevron and clear actions inside the input. */
 const inputActionClass = cn(
-  "grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground outline-none",
+  "grid size-(--button-height-xs) shrink-0 place-items-center rounded-full text-muted-foreground outline-none",
   "transition-[background-color,color] duration-(--duration-fast) ease-standard",
   "hover:bg-accent hover:text-foreground focus-visible:focus-ring",
   "disabled:pointer-events-none disabled:opacity-50",
@@ -100,7 +122,8 @@ function ComboboxInput({
       data-slot="combobox-input-group"
       data-variant={inPopup ? "search" : "control"}
       className={cn(
-        "group/combobox-input relative flex w-full min-w-0 items-center text-sm text-foreground",
+        // 16px on phones (as <Input>, so iOS does not zoom on focus), 14px from md.
+        "group/combobox-input relative flex w-full min-w-0 items-center text-base text-foreground md:text-sm",
         "[&>svg]:pointer-events-none [&>svg]:shrink-0 [&>svg:not([class*='size-'])]:size-4 [&>svg:not([class*='text-'])]:text-muted-foreground",
         "has-disabled:pointer-events-none has-disabled:opacity-50",
         inPopup
@@ -120,7 +143,7 @@ function ComboboxInput({
       <ComboboxPrimitive.Input
         data-slot="combobox-input"
         disabled={disabled}
-        className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+        className="h-full min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed md:text-sm"
         {...props}
       />
       {children}
@@ -171,7 +194,7 @@ function ComboboxContent({
             data-chips={!!anchor}
             className={cn(
               "group/combobox-content relative flex max-h-[min(var(--available-height),--spacing(96))] w-(--anchor-width) max-w-(--available-width) min-w-56 origin-(--transform-origin) flex-col overflow-hidden",
-              "rounded-(--overlay-radius) border border-border bg-popover text-popover-foreground outline-none",
+              comboboxStyles.popup,
               "data-[chips=true]:min-w-(--anchor-width)",
               "duration-(--duration-base) ease-out data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
               "data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=inline-start]:slide-in-from-right-1 data-[side=inline-end]:slide-in-from-left-1",
@@ -190,10 +213,7 @@ function ComboboxList({ className, ...props }: ComboboxPrimitive.List.Props) {
   return (
     <ComboboxPrimitive.List
       data-slot="combobox-list"
-      className={cn(
-        "no-scrollbar max-h-80 min-h-0 scroll-py-(--overlay-padding) overflow-y-auto overscroll-contain p-(--overlay-padding) outline-none data-empty:p-0",
-        className
-      )}
+      className={cn(comboboxStyles.list, className)}
       {...props}
     />
   )
@@ -207,21 +227,14 @@ function ComboboxItem({
   return (
     <ComboboxPrimitive.Item
       data-slot="combobox-item"
-      className={cn(
-        "group/combobox-item relative flex min-h-(--overlay-item-height) w-full cursor-default items-center gap-2 rounded-(--overlay-item-radius) py-1.5 ps-2.5 pe-9 text-sm text-foreground outline-none select-none",
-        "transition-colors duration-(--duration-instant) ease-standard",
-        "data-highlighted:bg-accent data-highlighted:text-accent-foreground data-[selected]:font-semibold",
-        "data-disabled:pointer-events-none data-disabled:opacity-50",
-        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
-        className
-      )}
+      className={cn(comboboxStyles.item, className)}
       {...props}
     >
       {children}
       <ComboboxPrimitive.ItemIndicator
         data-slot="combobox-item-indicator"
         render={
-          <span className="pointer-events-none absolute end-2.5 flex size-4 items-center justify-center" />
+          <span className={comboboxStyles.itemIndicator} />
         }
       >
         <CheckIcon className="size-4 text-foreground" strokeWidth={2.5} />
@@ -247,10 +260,7 @@ function ComboboxLabel({
   return (
     <ComboboxPrimitive.GroupLabel
       data-slot="combobox-label"
-      className={cn(
-        "flex h-8 items-end px-2.5 pb-1.5 text-caption font-semibold text-muted-foreground select-none",
-        className
-      )}
+      className={cn(comboboxStyles.label, className)}
       {...props}
     />
   )
@@ -286,10 +296,7 @@ function ComboboxSeparator({
   return (
     <ComboboxPrimitive.Separator
       data-slot="combobox-separator"
-      className={cn(
-        "-mx-(--overlay-padding) my-(--overlay-padding) h-px bg-border",
-        className
-      )}
+      className={cn(comboboxStyles.separator, className)}
       {...props}
     />
   )
@@ -304,7 +311,7 @@ function ComboboxChips({
     <ComboboxPrimitive.Chips
       data-slot="combobox-chips"
       className={cn(
-        "flex min-h-(--control-height-md) w-full min-w-0 flex-wrap items-center gap-1.5 rounded-(--control-radius) border border-input bg-muted py-2 ps-(--control-padding-x) pe-2 text-sm text-foreground",
+        "flex min-h-(--control-height-md) w-full min-w-0 flex-wrap items-center gap-1.5 rounded-(--control-radius) border border-input bg-muted py-2 ps-(--control-padding-x) pe-2 text-base text-foreground md:text-sm",
         "transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
         "hover:border-foreground/25",
         "has-[input:focus-visible]:border-ring has-[input:focus-visible]:focus-ring",
@@ -367,7 +374,7 @@ function ComboboxChipsInput({
     <ComboboxPrimitive.Input
       data-slot="combobox-chip-input"
       className={cn(
-        "h-(--badge-height) min-w-24 flex-1 bg-transparent px-1 text-sm text-foreground outline-none placeholder:text-muted-foreground",
+        "h-(--badge-height) min-w-24 flex-1 bg-transparent px-1 text-base text-foreground outline-none placeholder:text-muted-foreground md:text-sm",
         className
       )}
       {...props}
@@ -397,4 +404,5 @@ export {
   ComboboxValue,
   ComboboxClear,
   useComboboxAnchor,
+  comboboxStyles,
 }

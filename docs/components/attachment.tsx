@@ -77,7 +77,7 @@ function Composer() {
         id="ask-lumen"
         rows={2}
         placeholder="Ask about a deploy, a domain or your usage"
-        className="w-full resize-none bg-transparent px-2 py-1.5 text-sm/6 text-foreground outline-none placeholder:text-muted-foreground"
+        className="w-full resize-none bg-transparent px-2 py-1.5 text-base/6 text-foreground outline-none placeholder:text-muted-foreground sm:text-sm/6"
       />
       <div className="flex items-center justify-between gap-2">
         <Button
@@ -122,7 +122,7 @@ export default function AttachmentDocs() {
       <Example
         title="States"
         layout="stack"
-        description="idle is a dashed drop target. uploading and processing pulse the title. error says what went wrong in the description. done is the resting card."
+        description="Idle is a dashed drop target. Uploading and Processing pulse the title. Error says what went wrong in the description. Done is the resting card."
         code={`<Attachment state="idle">…</Attachment>
 <Attachment state="uploading">…</Attachment>
 <Attachment state="processing">…</Attachment>

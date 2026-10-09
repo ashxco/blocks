@@ -9,7 +9,7 @@ export default function StatsDocs() {
       <Example
         title="Default"
         layout="full"
-        description="Four big tabular numbers between hairlines. Two columns in narrow slots, one on phones."
+        description="Four big tabular numbers between hairlines. Two columns on phones and in narrow slots, with the figures a size smaller."
         code={`<Stats />`}
       >
         <Stats />

@@ -13,12 +13,7 @@ import {
   FieldTitle,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupText,
-} from "@/components/ui/input-group"
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
@@ -41,6 +36,7 @@ import {
   type OnboardingValues,
   type StepErrors,
 } from "./types"
+import { WorkspaceUrlInput } from "./workspace-url-input"
 
 interface StepProps {
   /** Prefix for element ids, so the parent can focus the first invalid field. */
@@ -51,6 +47,9 @@ interface StepProps {
 }
 
 /* Step 1: name the workspace and choose its URL ------------------------- */
+
+/** Stand-in slug: the URL field's placeholder, and the step panel's preview until there is a value. */
+export const SLUG_PLACEHOLDER = "acme"
 
 export function WorkspaceStep({
   idPrefix,
@@ -72,7 +71,7 @@ export function WorkspaceStep({
           id={`${idPrefix}-name`}
           name="workspaceName"
           autoComplete="organization"
-          placeholder="Halcyon Labs"
+          placeholder="Acme Inc."
           value={values.workspaceName}
           onChange={(e) => onNameChange(e.target.value)}
           aria-invalid={Boolean(errors.workspaceName)}
@@ -89,29 +88,17 @@ export function WorkspaceStep({
 
       <Field data-invalid={Boolean(errors.workspaceSlug)}>
         <FieldLabel htmlFor={`${idPrefix}-slug`}>Workspace URL</FieldLabel>
-        <InputGroup>
-          <InputGroupAddon>
-            <InputGroupText className="font-mono">{domain}/</InputGroupText>
-          </InputGroupAddon>
-          <InputGroupInput
-            id={`${idPrefix}-slug`}
-            name="workspaceSlug"
-            spellCheck={false}
-            autoCapitalize="none"
-            autoComplete="off"
-            placeholder="halcyon-labs"
-            className="font-mono"
-            value={slug}
-            onChange={(e) => onSlugChange(e.target.value)}
-            aria-invalid={Boolean(errors.workspaceSlug)}
-            aria-describedby={`${idPrefix}-slug-note`}
-          />
-          {available ? (
-            <InputGroupAddon align="inline-end">
-              <CheckIcon className="text-success" aria-hidden="true" />
-            </InputGroupAddon>
-          ) : null}
-        </InputGroup>
+        <WorkspaceUrlInput
+          domain={domain}
+          id={`${idPrefix}-slug`}
+          name="workspaceSlug"
+          placeholder={SLUG_PLACEHOLDER}
+          value={slug}
+          onChange={(e) => onSlugChange(e.target.value)}
+          aria-invalid={Boolean(errors.workspaceSlug)}
+          aria-describedby={`${idPrefix}-slug-note`}
+          endAddon={available ? <CheckIcon className="text-success" aria-hidden="true" /> : null}
+        />
         {errors.workspaceSlug ? (
           <FieldError id={`${idPrefix}-slug-note`}>{errors.workspaceSlug}</FieldError>
         ) : (
@@ -147,7 +134,7 @@ export function TeamStep({
   onInvitesChange,
 }: StepProps & { onInvitesChange: (invites: OnboardingInvite[]) => void }) {
   const [copied, setCopied] = React.useState(false)
-  const slug = values.workspaceSlug || "your-team"
+  const slug = values.workspaceSlug || SLUG_PLACEHOLDER
   const mailDomain = `${slug.split("-")[0]}.dev`
   const inviteLink = `${domain}/${slug}/join/k7Qm2x`
   const examples = ["sam", "ana", "kai", "noor", "eli"]

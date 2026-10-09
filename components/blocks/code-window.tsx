@@ -12,6 +12,13 @@ export interface CodeWindowProps {
   lines?: string[]
   /** Custom content for the body. Replaces lines when set. */
   children?: React.ReactNode
+  /**
+   * Wrap long lines instead of scrolling sideways, with a hanging indent so
+   * each line still reads as one. Use it for sentence-like output in
+   * marketing visuals that must fit a phone; leave it off for logs and
+   * tables, whose columns should scroll, and for code people copy.
+   */
+  wrap?: boolean
   className?: string
 }
 
@@ -54,7 +61,7 @@ function CodeLine({ text }: { text: string }) {
  * A dark terminal frame with a title bar. Pass lines for shell output, or
  * children for anything else (an editor view, a log stream).
  */
-export function CodeWindow({ title = "terminal", lines, children, className }: CodeWindowProps) {
+export function CodeWindow({ title = "terminal", lines, children, wrap = false, className }: CodeWindowProps) {
   const content = lines ?? (children ? null : defaultLines)
   return (
     <figure
@@ -75,10 +82,16 @@ export function CodeWindow({ title = "terminal", lines, children, className }: C
           {title}
         </figcaption>
       </div>
-      <div className="min-h-0 flex-1 overflow-x-auto">
+      <div className={cn("min-h-0 flex-1", !wrap && "overflow-x-auto")}>
         {content ? (
-          <pre className="m-0 w-max min-w-full px-5 py-5 font-mono text-code text-terminal-foreground">
-            <code>
+          <pre
+            data-wrap={wrap || undefined}
+            className={cn(
+              "m-0 px-5 py-5 font-mono text-code text-terminal-foreground",
+              wrap ? "w-full whitespace-pre-wrap break-words" : "w-max min-w-full"
+            )}
+          >
+            <code className={wrap ? "[&>span]:-indent-[2ch] [&>span]:pl-[2ch]" : undefined}>
               {content.map((line, i) => (
                 <CodeLine key={i} text={line} />
               ))}

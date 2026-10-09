@@ -36,7 +36,7 @@ const buttonVariants = cva(
         inverse:
           "bg-panel-foreground text-panel hover:bg-panel-foreground/88",
         "outline-inverse":
-          "border-panel-border text-panel-foreground hover:border-panel-foreground/60",
+          "border-panel-foreground/25 text-panel-foreground hover:border-panel-foreground/70 aria-expanded:border-panel-foreground/70",
       },
       size: {
         default:

@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { ContactPanel } from "@/components/blocks/contact-panel"
 
 import { HelpLinks } from "./_components/help-links"
+import { Kern } from "@/components/ui/kern"
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -21,7 +22,9 @@ export default function ContactPage() {
     <>
       <section className="container-page pt-section-sm pb-14 lg:pb-20">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-end lg:gap-16">
-          <h1 className="max-w-narrow text-display text-foreground">Talk to the people who build Lumen.</h1>
+          <h1 className="max-w-narrow text-display text-foreground">
+            <Kern>Talk to the people who build Lumen.</Kern>
+          </h1>
 
           <div className="grid gap-10 lg:pb-2">
             <p className="max-w-prose text-lead text-copy">

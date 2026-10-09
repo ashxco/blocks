@@ -11,6 +11,7 @@ import {
   Columns3Icon,
   CopyIcon,
   ExternalLinkIcon,
+  FolderGit2Icon,
   GitBranchIcon,
   ListFilterIcon,
   MoreHorizontalIcon,
@@ -21,6 +22,7 @@ import {
   TerminalIcon,
   Trash2Icon,
   XIcon,
+  type LucideIcon,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -74,7 +76,37 @@ export interface DataTableProps {
   hiddenColumns?: OptionalColumn[]
   /** What one row is called, for counts and messages. */
   noun?: { one: string; other: string }
+  /**
+   * "compact" sets rows at --table-row-height-sm on one line each (no
+   * repository or branch line), for tables that share a page.
+   */
+  density?: "default" | "compact"
+  /** Heading of the empty state when there are no rows at all. Defaults to "No projects yet". */
+  emptyTitle?: string
+  /** What to do next, under the empty heading. */
+  emptyDescription?: string
+  /**
+   * The empty state's primary action. Defaults to Import repository for
+   * projects; pass null to leave it out.
+   */
+  emptyAction?: DataTableEmptyAction | null
   className?: string
+}
+
+export interface DataTableEmptyAction {
+  label: string
+  /** A link target. Without it the action is a button that calls onClick. */
+  href?: string
+  onClick?: () => void
+  icon?: LucideIcon
+}
+
+const defaultNoun = { one: "project", other: "projects" }
+
+const defaultEmptyAction: DataTableEmptyAction = {
+  label: "Import repository",
+  href: "/live/onboarding",
+  icon: FolderGit2Icon,
 }
 
 const columnLabels: Record<OptionalColumn, string> = {
@@ -91,10 +123,15 @@ const statusOrder: Record<ProjectStatus, number> = {
   paused: 3,
 }
 
+/** Three significant figures everywhere, so 101K sits next to 64.2K, 45.6K and 4.31K. */
 const compact = new Intl.NumberFormat("en-US", {
   notation: "compact",
-  maximumFractionDigits: 1,
+  minimumSignificantDigits: 3,
+  maximumSignificantDigits: 3,
 })
+
+/** Header cells share the small row height token. */
+const headCell = "h-(--table-row-height-sm)"
 
 function SortHeader({
   label,
@@ -136,6 +173,38 @@ function SortHeader({
 }
 
 /**
+ * Optional columns step in as the table gets room, so on a phone the row is
+ * project, status and its menu with nothing scrolled out of view. The
+ * Columns menu still decides which of them show once there is room.
+ */
+const columnFrom: Record<OptionalColumn, string> = {
+  updated: "hidden @min-[34rem]/table:table-cell",
+  requests: "hidden @min-[44rem]/table:table-cell",
+  framework: "hidden @min-[52rem]/table:table-cell",
+  region: "hidden @min-[60rem]/table:table-cell",
+}
+
+/*
+ * Below 28rem of table width the cells tighten and the repository name
+ * truncates, so checkbox, project, status and the row menu fit a phone slot.
+ */
+
+/**
+ * The row menu stays pinned to the right edge if the table ever scrolls, with
+ * the row's own fill so content passes under it cleanly.
+ */
+const stickyEnd =
+  "sticky right-0 bg-card group-hover/row:bg-subtle group-data-[state=selected]/row:bg-accent"
+
+function ariaSort(
+  sort: { key: SortKey; direction: "asc" | "desc" } | null,
+  key: SortKey
+) {
+  if (sort?.key !== key) return undefined
+  return sort.direction === "asc" ? "ascending" : "descending"
+}
+
+/**
  * Projects table with search, a status filter, column visibility, sortable
  * headers, row selection with bulk actions, row menus and pagination. Plain
  * React state, no table library.
@@ -144,9 +213,30 @@ export function DataTable({
   rows = defaultProjects,
   pageSize = 8,
   hiddenColumns = [],
-  noun = { one: "project", other: "projects" },
+  noun = defaultNoun,
+  density = "default",
+  emptyTitle,
+  emptyDescription,
+  emptyAction,
   className,
 }: DataTableProps) {
+  const dense = density === "compact"
+  const projects =
+    noun.one === defaultNoun.one && noun.other === defaultNoun.other
+  const empty = {
+    title: emptyTitle ?? `No ${noun.other} yet`,
+    description:
+      emptyDescription ??
+      (projects
+        ? "Import a repository and Lumen builds and deploys it as your first project."
+        : `Add your first ${noun.one} and it shows up here.`),
+    action:
+      emptyAction === undefined
+        ? projects
+          ? defaultEmptyAction
+          : null
+        : emptyAction,
+  }
   const [data, setData] = React.useState(rows)
   const [query, setQuery] = React.useState("")
   const [statuses, setStatuses] = React.useState<ProjectStatus[]>([])
@@ -155,7 +245,7 @@ export function DataTable({
     direction: "asc" | "desc"
   } | null>({
     key: "updated",
-    direction: "asc",
+    direction: "desc",
   })
   const [page, setPage] = React.useState(1)
   const [selected, setSelected] = React.useState<Set<string>>(() => new Set())
@@ -191,7 +281,8 @@ export function DataTable({
         case "requests":
           return (a.requests - b.requests) * factor
         case "updated":
-          return (a.updatedMinutes - b.updatedMinutes) * factor
+          // Ascending is oldest first, like a timestamp; fewer minutes ago is newer.
+          return (b.updatedMinutes - a.updatedMinutes) * factor
       }
     })
   }, [filtered, sort])
@@ -206,15 +297,16 @@ export function DataTable({
   const allOnPage = pageIds.length > 0 && selectedOnPage === pageIds.length
   const someOnPage = selectedOnPage > 0 && !allOnPage
   const filtering = query.trim() !== "" || statuses.length > 0
-  const visibleColumns = Object.values(columns).filter(Boolean).length
-  const colSpan = 4 + visibleColumns
 
   const label = (count: number) => (count === 1 ? noun.one : noun.other)
 
   function toggleSort(key: SortKey) {
     setSort((current) => {
       if (!current || current.key !== key)
-        return { key, direction: key === "requests" ? "desc" : "asc" }
+        return {
+          key,
+          direction: key === "requests" || key === "updated" ? "desc" : "asc",
+        }
       if (current.direction === "asc") return { key, direction: "desc" }
       return { key, direction: "asc" }
     })
@@ -300,293 +392,298 @@ export function DataTable({
     })
   }
 
+  // With no rows at all there is nothing to search, filter, select or page
+  // through: the card holds only the empty state and its action.
+  const hasData = data.length > 0
+
   return (
     <div
       data-slot="data-table"
+      data-density={density}
       className={cn("@container/table grid gap-4", className)}
     >
-      <div className="flex flex-col gap-3 @min-[44rem]/table:flex-row @min-[44rem]/table:items-center @min-[44rem]/table:justify-between">
-        <InputGroup className="h-(--control-height-sm) w-full @min-[44rem]/table:w-72">
-          <InputGroupAddon>
-            <SearchIcon aria-hidden="true" />
-          </InputGroupAddon>
-          <InputGroupInput
-            aria-label={`Search ${noun.other}`}
-            placeholder={`Search ${noun.other}`}
-            value={query}
-            onChange={(event) => {
-              setQuery(event.target.value)
-              setPage(1)
-            }}
-          />
-          {query ? (
-            <InputGroupAddon align="inline-end">
-              <InputGroupButton
-                size="icon-xs"
-                aria-label="Clear search"
-                onClick={() => setQuery("")}
-              >
-                <XIcon />
-              </InputGroupButton>
+      {hasData ? (
+        <div className="flex flex-col gap-3 @min-[44rem]/table:flex-row @min-[44rem]/table:items-center @min-[44rem]/table:justify-between">
+          <InputGroup className="h-(--control-height-sm) w-full @min-[44rem]/table:w-72">
+            <InputGroupAddon>
+              <SearchIcon aria-hidden="true" />
             </InputGroupAddon>
-          ) : null}
-        </InputGroup>
+            <InputGroupInput
+              aria-label={`Search ${noun.other}`}
+              placeholder={`Search ${noun.other}`}
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value)
+                setPage(1)
+              }}
+            />
+            {query ? (
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  size="icon-xs"
+                  aria-label="Clear search"
+                  onClick={() => setQuery("")}
+                >
+                  <XIcon />
+                </InputGroupButton>
+              </InputGroupAddon>
+            ) : null}
+          </InputGroup>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {selected.size > 0 ? (
-            <div className="mr-auto flex items-center gap-2 @min-[44rem]/table:mr-2">
-              <span className="text-label text-foreground tabular">
-                {selected.size} selected
-              </span>
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => redeploy([...selected])}
-              >
-                <RotateCcwIcon data-icon="inline-start" />
-                Redeploy
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setSelected(new Set())}
-              >
-                Clear
-              </Button>
-            </div>
-          ) : null}
-
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button variant="outline" size="sm" />}
-            >
-              <ListFilterIcon data-icon="inline-start" />
-              Status
-              {statuses.length > 0 ? (
-                <span className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-xs font-bold text-primary-foreground tabular">
-                  {statuses.length}
+          <div className="flex flex-wrap items-center gap-2">
+            {selected.size > 0 ? (
+              <div className="mr-auto flex items-center gap-2 @min-[44rem]/table:mr-2">
+                <span className="text-label text-foreground tabular">
+                  {selected.size} selected
                 </span>
-              ) : null}
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
-              <DropdownMenuGroup>
-                <DropdownMenuLabel>Filter by status</DropdownMenuLabel>
-                {projectStatuses.map((status) => {
-                  const count = data.filter(
-                    (row) => row.status === status.value
-                  ).length
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={status.value}
-                      checked={statuses.includes(status.value)}
-                      onCheckedChange={(checked) => {
-                        setStatuses((current) =>
-                          checked
-                            ? [...current, status.value]
-                            : current.filter((value) => value !== status.value)
-                        )
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => redeploy([...selected])}
+                >
+                  <RotateCcwIcon data-icon="inline-start" />
+                  Redeploy
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setSelected(new Set())}
+                >
+                  Clear
+                </Button>
+              </div>
+            ) : null}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={<Button variant="outline" size="sm" />}
+              >
+                <ListFilterIcon data-icon="inline-start" />
+                Status
+                {statuses.length > 0 ? (
+                  <span className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-xs font-bold text-primary-foreground tabular">
+                    {statuses.length}
+                  </span>
+                ) : null}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Filter by status</DropdownMenuLabel>
+                  {projectStatuses.map((status) => {
+                    const count = data.filter(
+                      (row) => row.status === status.value
+                    ).length
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={status.value}
+                        checked={statuses.includes(status.value)}
+                        onCheckedChange={(checked) => {
+                          setStatuses((current) =>
+                            checked
+                              ? [...current, status.value]
+                              : current.filter(
+                                  (value) => value !== status.value
+                                )
+                          )
+                          setPage(1)
+                        }}
+                      >
+                        <StatusBadge status={status.value} />
+                        <span className="ml-auto text-muted-foreground tabular">
+                          {count}
+                        </span>
+                      </DropdownMenuCheckboxItem>
+                    )
+                  })}
+                </DropdownMenuGroup>
+                {statuses.length > 0 ? (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setStatuses([])
                         setPage(1)
                       }}
                     >
-                      <StatusBadge status={status.value} />
-                      <span className="ml-auto text-muted-foreground tabular">
-                        {count}
-                      </span>
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-              </DropdownMenuGroup>
-              {statuses.length > 0 ? (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setStatuses([])
-                      setPage(1)
-                    }}
-                  >
-                    <XIcon />
-                    Clear filter
-                  </DropdownMenuItem>
-                </>
-              ) : null}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                      <XIcon />
+                      Clear filter
+                    </DropdownMenuItem>
+                  </>
+                ) : null}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button variant="outline" size="sm" />}
-            >
-              <Columns3Icon data-icon="inline-start" />
-              Columns
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
-              <DropdownMenuGroup>
-                <DropdownMenuLabel>Show columns</DropdownMenuLabel>
-                {(Object.keys(columnLabels) as OptionalColumn[]).map(
-                  (column) => (
-                    <DropdownMenuCheckboxItem
-                      key={column}
-                      checked={columns[column]}
-                      onCheckedChange={(checked) =>
-                        setColumns((current) => ({
-                          ...current,
-                          [column]: checked,
-                        }))
-                      }
-                    >
-                      {columnLabels[column]}
-                    </DropdownMenuCheckboxItem>
-                  )
-                )}
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <DropdownMenu>
+              {/* Below 34rem no optional column has room, so the menu would change nothing. */}
+              <DropdownMenuTrigger
+                render={<Button variant="outline" size="sm" />}
+                className="hidden @min-[34rem]/table:inline-flex"
+              >
+                <Columns3Icon data-icon="inline-start" />
+                Columns
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Show columns</DropdownMenuLabel>
+                  {(Object.keys(columnLabels) as OptionalColumn[]).map(
+                    (column) => (
+                      <DropdownMenuCheckboxItem
+                        key={column}
+                        checked={columns[column]}
+                        onCheckedChange={(checked) =>
+                          setColumns((current) => ({
+                            ...current,
+                            [column]: checked,
+                          }))
+                        }
+                      >
+                        {columnLabels[column]}
+                      </DropdownMenuCheckboxItem>
+                    )
+                  )}
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <div className="overflow-hidden rounded-(--card-radius) border border-border bg-card">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="w-12 pl-4">
-                <Checkbox
-                  aria-label="Select all rows on this page"
-                  checked={allOnPage}
-                  indeterminate={someOnPage}
-                  disabled={pageRows.length === 0}
-                  onCheckedChange={(checked) => togglePage(checked)}
-                />
-              </TableHead>
-              <TableHead
-                className="h-11 px-3 font-semibold text-muted-foreground"
-                aria-sort={
-                  sort?.key === "name"
-                    ? sort.direction === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : undefined
-                }
-              >
-                <SortHeader
-                  label="Project"
-                  column="name"
-                  sort={sort}
-                  onSort={toggleSort}
-                />
-              </TableHead>
-              <TableHead
-                className="h-11 px-3 font-semibold text-muted-foreground"
-                aria-sort={
-                  sort?.key === "status"
-                    ? sort.direction === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : undefined
-                }
-              >
-                <SortHeader
-                  label="Status"
-                  column="status"
-                  sort={sort}
-                  onSort={toggleSort}
-                />
-              </TableHead>
-              {columns.framework ? (
-                <TableHead className="h-11 px-3 font-semibold text-muted-foreground">
-                  <span className="text-caption font-semibold">Framework</span>
-                </TableHead>
-              ) : null}
-              {columns.region ? (
-                <TableHead className="h-11 px-3 font-semibold text-muted-foreground">
-                  <span className="text-caption font-semibold">Region</span>
-                </TableHead>
-              ) : null}
-              {columns.requests ? (
-                <TableHead
-                  className="h-11 px-3 text-right font-semibold text-muted-foreground"
-                  aria-sort={
-                    sort?.key === "requests"
-                      ? sort.direction === "asc"
-                        ? "ascending"
-                        : "descending"
-                      : undefined
-                  }
-                >
-                  <SortHeader
-                    label="Requests (24h)"
-                    column="requests"
-                    sort={sort}
-                    onSort={toggleSort}
-                    align="end"
-                  />
-                </TableHead>
-              ) : null}
-              {columns.updated ? (
-                <TableHead
-                  className="h-11 px-3 font-semibold text-muted-foreground"
-                  aria-sort={
-                    sort?.key === "updated"
-                      ? sort.direction === "asc"
-                        ? "ascending"
-                        : "descending"
-                      : undefined
-                  }
-                >
-                  <SortHeader
-                    label="Last deploy"
-                    column="updated"
-                    sort={sort}
-                    onSort={toggleSort}
-                  />
-                </TableHead>
-              ) : null}
-              <TableHead className="w-14 pr-4">
-                <span className="sr-only">Actions</span>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {pageRows.length === 0 ? (
+        {hasData ? (
+          <Table size={dense ? "sm" : "default"}>
+            <TableHeader>
               <TableRow className="hover:bg-transparent">
-                <TableCell
-                  colSpan={colSpan}
-                  className="h-56 text-center whitespace-normal"
+                <TableHead
+                  className={cn(
+                    headCell,
+                    "w-10 pl-3",
+                    "@min-[28rem]/table:w-12 @min-[28rem]/table:pl-4"
+                  )}
                 >
-                  <div className="mx-auto grid max-w-80 justify-items-center gap-2">
-                    <p className="text-title text-foreground">
-                      {filtering
-                        ? `No ${noun.other} match`
-                        : `No ${noun.other} yet`}
-                    </p>
-                    <p className="text-caption text-muted-foreground">
-                      {filtering
-                        ? "Try a different name, or clear the filters to see everything."
-                        : "Import a repository to create your first one."}
-                    </p>
-                    {filtering ? (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="mt-2"
-                        onClick={clearFilters}
-                      >
-                        Clear filters
-                      </Button>
-                    ) : null}
-                  </div>
-                </TableCell>
+                  <Checkbox
+                    aria-label="Select all rows on this page"
+                    checked={allOnPage}
+                    indeterminate={someOnPage}
+                    disabled={pageRows.length === 0}
+                    onCheckedChange={(checked) => togglePage(checked)}
+                  />
+                </TableHead>
+                <TableHead
+                  className={cn(
+                    headCell,
+                    "pr-2 pl-3 font-semibold text-muted-foreground",
+                    "@min-[28rem]/table:px-3"
+                  )}
+                  aria-sort={ariaSort(sort, "name")}
+                >
+                  <SortHeader
+                    label="Project"
+                    column="name"
+                    sort={sort}
+                    onSort={toggleSort}
+                  />
+                </TableHead>
+                <TableHead
+                  className={cn(
+                    headCell,
+                    "px-2 font-semibold text-muted-foreground",
+                    "@min-[28rem]/table:px-3"
+                  )}
+                  aria-sort={ariaSort(sort, "status")}
+                >
+                  <SortHeader
+                    label="Status"
+                    column="status"
+                    sort={sort}
+                    onSort={toggleSort}
+                  />
+                </TableHead>
+                {columns.framework ? (
+                  <TableHead
+                    className={cn(
+                      headCell,
+                      "px-3 font-semibold text-muted-foreground",
+                      columnFrom.framework
+                    )}
+                  >
+                    <span className="text-caption font-semibold">
+                      Framework
+                    </span>
+                  </TableHead>
+                ) : null}
+                {columns.region ? (
+                  <TableHead
+                    className={cn(
+                      headCell,
+                      "px-3 font-semibold text-muted-foreground",
+                      columnFrom.region
+                    )}
+                  >
+                    <span className="text-caption font-semibold">Region</span>
+                  </TableHead>
+                ) : null}
+                {columns.requests ? (
+                  <TableHead
+                    className={cn(
+                      headCell,
+                      "px-3 text-right font-semibold text-muted-foreground",
+                      columnFrom.requests
+                    )}
+                    aria-sort={ariaSort(sort, "requests")}
+                  >
+                    <SortHeader
+                      label="Requests (24h)"
+                      column="requests"
+                      sort={sort}
+                      onSort={toggleSort}
+                      align="end"
+                    />
+                  </TableHead>
+                ) : null}
+                {columns.updated ? (
+                  <TableHead
+                    className={cn(
+                      headCell,
+                      "px-3 font-semibold text-muted-foreground",
+                      columnFrom.updated
+                    )}
+                    aria-sort={ariaSort(sort, "updated")}
+                  >
+                    <SortHeader
+                      label="Last deploy"
+                      column="updated"
+                      sort={sort}
+                      onSort={toggleSort}
+                    />
+                  </TableHead>
+                ) : null}
+                <TableHead
+                  className={cn(
+                    headCell,
+                    "w-12 pr-2 pl-0",
+                    "@min-[28rem]/table:w-14 @min-[28rem]/table:pr-4 @min-[28rem]/table:pl-4",
+                    stickyEnd
+                  )}
+                >
+                  <span className="sr-only">Actions</span>
+                </TableHead>
               </TableRow>
-            ) : (
-              pageRows.map((row) => {
+            </TableHeader>
+            <TableBody>
+              {pageRows.map((row) => {
                 const isSelected = selected.has(row.id)
                 return (
                   <TableRow
                     key={row.id}
                     data-state={isSelected ? "selected" : undefined}
-                    className="h-(--table-row-height) hover:bg-accent/60 data-[state=selected]:bg-accent"
+                    className={cn(
+                      "group/row hover:bg-subtle data-[state=selected]:bg-accent",
+                      dense
+                        ? "h-(--table-row-height-sm)"
+                        : "h-(--table-row-height)"
+                    )}
                   >
-                    <TableCell className="pl-4">
+                    <TableCell className="pl-3 @min-[28rem]/table:pl-4">
                       <Checkbox
                         aria-label={`Select ${row.name}`}
                         checked={isSelected}
@@ -595,7 +692,13 @@ export function DataTable({
                         }
                       />
                     </TableCell>
-                    <TableCell className="px-3 py-2.5">
+                    <TableCell
+                      className={cn(
+                        dense ? "py-1.5" : "py-2.5",
+                        "pr-2 pl-3",
+                        "@min-[28rem]/table:px-3"
+                      )}
+                    >
                       <div className="grid gap-0.5">
                         <Link
                           href="/live/app/projects"
@@ -605,26 +708,55 @@ export function DataTable({
                             {row.name}
                           </span>
                         </Link>
-                        <span className="font-mono text-xs text-muted-foreground">
-                          {row.repo}
-                        </span>
+                        {dense ? null : (
+                          <span
+                            className={cn(
+                              "block max-w-24 truncate font-mono text-xs text-muted-foreground",
+                              "@min-[22rem]/table:max-w-32 @min-[28rem]/table:max-w-none"
+                            )}
+                          >
+                            {row.repo}
+                          </span>
+                        )}
                       </div>
                     </TableCell>
-                    <TableCell className="px-3">
-                      <StatusBadge status={row.status} />
+                    <TableCell
+                      className={cn(
+                        dense ? "py-1.5" : "py-2.5",
+                        "px-2 @min-[28rem]/table:px-3"
+                      )}
+                    >
+                      <div className="grid justify-items-start gap-1">
+                        <StatusBadge status={row.status} />
+                        {/* Until the Last deploy column fits, its time sits under the status. */}
+                        {columns.updated && !dense ? (
+                          <span className="text-caption text-muted-foreground @min-[34rem]/table:hidden">
+                            {row.updated}
+                          </span>
+                        ) : null}
+                      </div>
                     </TableCell>
                     {columns.framework ? (
-                      <TableCell className="px-3 text-copy">
+                      <TableCell
+                        className={cn("px-3 text-copy", columnFrom.framework)}
+                      >
                         {row.framework}
                       </TableCell>
                     ) : null}
                     {columns.region ? (
-                      <TableCell className="px-3 text-copy">
+                      <TableCell
+                        className={cn("px-3 text-copy", columnFrom.region)}
+                      >
                         {row.region}
                       </TableCell>
                     ) : null}
                     {columns.requests ? (
-                      <TableCell className="px-3 text-right text-foreground tabular">
+                      <TableCell
+                        className={cn(
+                          "px-3 text-right text-foreground tabular",
+                          columnFrom.requests
+                        )}
+                      >
                         {row.requests === 0 ? (
                           <span className="text-muted-foreground">0</span>
                         ) : (
@@ -633,20 +765,28 @@ export function DataTable({
                       </TableCell>
                     ) : null}
                     {columns.updated ? (
-                      <TableCell className="px-3">
+                      <TableCell className={cn("px-3", columnFrom.updated)}>
                         <div className="grid gap-0.5">
                           <span className="text-copy">{row.updated}</span>
-                          <span className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground">
-                            <GitBranchIcon
-                              aria-hidden="true"
-                              className="size-3"
-                            />
-                            {row.branch}
-                          </span>
+                          {dense ? null : (
+                            <span className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground">
+                              <GitBranchIcon
+                                aria-hidden="true"
+                                className="size-3"
+                              />
+                              {row.branch}
+                            </span>
+                          )}
                         </div>
                       </TableCell>
                     ) : null}
-                    <TableCell className="pr-4 text-right">
+                    <TableCell
+                      className={cn(
+                        "pr-2 pl-0 text-right",
+                        "@min-[28rem]/table:pr-4 @min-[28rem]/table:pl-4",
+                        stickyEnd
+                      )}
+                    >
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           render={
@@ -716,46 +856,107 @@ export function DataTable({
                     </TableCell>
                   </TableRow>
                 )
-              })
-            )}
-          </TableBody>
-        </Table>
+              })}
+            </TableBody>
+          </Table>
+        ) : null}
 
-        <div className="flex flex-col gap-3 border-t border-border px-4 py-3 @min-[32rem]/table:flex-row @min-[32rem]/table:items-center @min-[32rem]/table:justify-between">
-          <p
-            className="text-caption text-muted-foreground tabular"
-            aria-live="polite"
+        {/* Outside the table, so the message centres in the card even when the table scrolls. */}
+        {pageRows.length === 0 ? (
+          <div
+            className={cn(
+              "grid min-h-56 place-items-center px-6 py-10 text-center",
+              hasData && "border-t border-border"
+            )}
           >
-            {sorted.length === 0
-              ? `0 ${noun.other}`
-              : `Showing ${start + 1}–${start + pageRows.length} of ${sorted.length} ${label(sorted.length)}`}
-            {selected.size > 0 ? ` · ${selected.size} selected` : null}
-          </p>
-          <nav aria-label="Pagination" className="flex items-center gap-2">
-            <span className="text-caption text-muted-foreground tabular">
-              Page {currentPage} of {pageCount}
-            </span>
-            <Button
-              variant="outline"
-              size="icon-sm"
-              aria-label="Previous page"
-              disabled={currentPage <= 1}
-              onClick={() => setPage(currentPage - 1)}
+            <div role="status" className="grid max-w-80 justify-items-center gap-2">
+              <p className="text-title text-foreground">
+                {filtering ? `No ${noun.other} match` : empty.title}
+              </p>
+              <p className="text-caption text-muted-foreground">
+                {filtering
+                  ? "Try a different name, or clear the filters to see everything."
+                  : empty.description}
+              </p>
+              {filtering ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-2"
+                  onClick={clearFilters}
+                >
+                  Clear filters
+                </Button>
+              ) : empty.action ? (
+                <EmptyAction action={empty.action} />
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+
+        {/* Counts and paging only mean something when there are rows to page through. */}
+        {sorted.length > 0 ? (
+          <div className="flex flex-col gap-3 border-t border-border px-4 py-3 @min-[32rem]/table:flex-row @min-[32rem]/table:items-center @min-[32rem]/table:justify-between">
+            <p
+              className="text-caption text-muted-foreground tabular"
+              aria-live="polite"
             >
-              <ChevronLeftIcon />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon-sm"
-              aria-label="Next page"
-              disabled={currentPage >= pageCount}
-              onClick={() => setPage(currentPage + 1)}
-            >
-              <ChevronRightIcon />
-            </Button>
-          </nav>
-        </div>
+              {`Showing ${start + 1}–${start + pageRows.length} of ${sorted.length} ${label(sorted.length)}`}
+              {selected.size > 0 ? ` · ${selected.size} selected` : null}
+            </p>
+            <nav aria-label="Pagination" className="flex items-center gap-2">
+              <span className="text-caption text-muted-foreground tabular">
+                Page {currentPage} of {pageCount}
+              </span>
+              <Button
+                variant="outline"
+                size="icon-sm"
+                aria-label="Previous page"
+                disabled={currentPage <= 1}
+                onClick={() => setPage(currentPage - 1)}
+              >
+                <ChevronLeftIcon />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon-sm"
+                aria-label="Next page"
+                disabled={currentPage >= pageCount}
+                onClick={() => setPage(currentPage + 1)}
+              >
+                <ChevronRightIcon />
+              </Button>
+            </nav>
+          </div>
+        ) : null}
       </div>
     </div>
+  )
+}
+
+function EmptyAction({ action }: { action: DataTableEmptyAction }) {
+  const Icon = action.icon
+  const content = (
+    <>
+      {Icon ? <Icon data-icon="inline-start" /> : null}
+      {action.label}
+    </>
+  )
+  if (action.href) {
+    return (
+      <Button
+        size="sm"
+        className="mt-2"
+        nativeButton={false}
+        render={<Link href={action.href} />}
+      >
+        {content}
+      </Button>
+    )
+  }
+  return (
+    <Button size="sm" className="mt-2" onClick={action.onClick}>
+      {content}
+    </Button>
   )
 }

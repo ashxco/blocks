@@ -4,8 +4,7 @@ import * as React from "react"
 import { PlayIcon, RotateCcwIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-
-import { cx } from "./layout"
+import { cn } from "@/lib/utils"
 
 /* ------------------------------------------------------------------------ */
 /* Reduced motion                                                            */
@@ -27,22 +26,22 @@ export function useReducedMotion() {
   )
 }
 
-/** Shown in place of the demos when the system asks for reduced motion. */
+/** Shown once, above the first demos, when the system asks for reduced motion. */
 function ReducedMotionNote({ inverse = false }: { inverse?: boolean }) {
   return (
     <div
       role="note"
-      className={cx(
+      className={cn(
         "grid gap-1 rounded-(--card-radius) border p-(--card-padding)",
         inverse ? "border-panel-border bg-panel-raised" : "bg-subtle"
       )}
     >
-      <p className={cx("text-title", inverse ? "text-panel-foreground" : "text-foreground")}>
+      <p className={cn("text-title", inverse ? "text-panel-foreground" : "text-foreground")}>
         Reduced motion is on
       </p>
-      <p className={cx("text-caption", inverse ? "text-panel-muted" : "text-copy")}>
-        Your system asks for less motion, so these demos stay still. Blocks honours the same setting everywhere: transitions
-        and animations finish almost instantly, so state still changes but nothing travels across the screen.
+      <p className={cn("text-caption", inverse ? "text-panel-muted" : "text-copy")}>
+        Your system asks for less motion, so the demos on this page stay still. Blocks honours the same setting everywhere:
+        transitions finish instantly, so state still changes but nothing travels across the screen.
       </p>
     </div>
   )
@@ -72,8 +71,10 @@ interface DemoProps {
 }
 
 /**
- * A dot that crosses its track using the live token values, read from CSS at
- * play time, so the demo always matches the stylesheet.
+ * A dot that travels a thin rail, from the start tick to the end tick, using
+ * the live token values read from CSS at play time, so the demo always
+ * matches the stylesheet. A rail with ticks, not a pill with a knob, so it
+ * never reads as a switch.
  */
 function Demo({ durationVar, easingVar, run, label, inverse = false, reduced }: DemoProps) {
   const dotRef = React.useRef<HTMLSpanElement>(null)
@@ -112,16 +113,30 @@ function Demo({ durationVar, easingVar, run, label, inverse = false, reduced }: 
 
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <div
-        aria-hidden
-        className={cx(
-          "relative flex h-12 min-w-0 flex-1 items-center rounded-full px-2",
-          inverse ? "bg-panel-raised" : "border bg-muted"
-        )}
-      >
+      {/* The dot is size-3, so ticks inset by half of it mark its centre at the start and the end. They stand
+          taller than the dot, so the end tick still shows once the dot arrives. */}
+      <div aria-hidden className="relative flex h-10 min-w-0 flex-1 items-center">
+        <span
+          className={cn(
+            "absolute inset-x-1.5 top-1/2 h-(--border-width-strong) -translate-y-1/2 rounded-full",
+            inverse ? "bg-panel-foreground/20" : "bg-border-strong"
+          )}
+        />
+        <span
+          className={cn(
+            "absolute top-1/2 left-1.5 h-6 w-(--border-width-strong) -translate-x-1/2 -translate-y-1/2 rounded-full",
+            inverse ? "bg-panel-muted" : "bg-muted-foreground"
+          )}
+        />
+        <span
+          className={cn(
+            "absolute top-1/2 right-1.5 h-6 w-(--border-width-strong) translate-x-1/2 -translate-y-1/2 rounded-full",
+            inverse ? "bg-panel-muted" : "bg-muted-foreground"
+          )}
+        />
         <span
           ref={dotRef}
-          className={cx("block size-8 rounded-full", inverse ? "bg-panel-foreground" : "bg-foreground")}
+          className={cn("relative block size-3 rounded-full", inverse ? "bg-panel-foreground" : "bg-foreground")}
         />
       </div>
       {reduced ? null : (
@@ -179,7 +194,7 @@ export function DurationDemos({ items, easingVar }: { items: DurationItem[]; eas
   const ref = usePlayOnView<HTMLDivElement>(playAll, reduced)
 
   return (
-    <div ref={ref} className="grid gap-6 rounded-(--panel-radius) bg-panel p-(--card-padding) text-panel-foreground @prose:p-10">
+    <div ref={ref} className="grid gap-6 rounded-(--panel-radius) bg-panel p-(--panel-padding-sm) text-panel-foreground">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <p className="max-w-prose text-caption text-panel-muted">
           Each dot crosses the same distance with the standard easing. Only the duration changes.
@@ -200,7 +215,7 @@ export function DurationDemos({ items, easingVar }: { items: DurationItem[]; eas
           >
             <div className="grid gap-1">
               <div className="flex items-baseline gap-3">
-                <h3 className="text-h4 text-panel-foreground">{item.name}</h3>
+                <h3 className="text-title text-panel-foreground">{item.name}</h3>
                 <span className="font-mono text-label text-panel-muted tabular">{item.value}</span>
               </div>
               <code className="font-mono text-xs text-panel-muted">{item.utility}</code>
@@ -238,8 +253,8 @@ function Curve({ points }: { points: [number, number, number, number] }) {
   const p = (x: number, y: number) => `${x * 100} ${100 - y * 100}`
   return (
     <svg viewBox="-6 -6 112 112" aria-hidden className="aspect-square w-full max-w-48 overflow-visible">
-      <rect x="0" y="0" width="100" height="100" className="fill-none stroke-border" vectorEffect="non-scaling-stroke" />
-      <path d="M0 100 L100 0" className="fill-none stroke-border" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+      <rect x="0" y="0" width="100" height="100" className="fill-none stroke-border-strong" vectorEffect="non-scaling-stroke" />
+      <path d="M0 100 L100 0" className="fill-none stroke-border-strong" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
       <path d={`M0 100 L${p(x1, y1)}`} className="fill-none stroke-muted-foreground" vectorEffect="non-scaling-stroke" />
       <path d={`M100 0 L${p(x2, y2)}`} className="fill-none stroke-muted-foreground" vectorEffect="non-scaling-stroke" />
       <circle cx={x1 * 100} cy={100 - y1 * 100} r="2.5" className="fill-background stroke-muted-foreground" vectorEffect="non-scaling-stroke" />
@@ -274,16 +289,16 @@ export function EasingDemos({ items, durationVar }: { items: EasingItem[]; durat
           </Button>
         )}
       </div>
-      {reduced ? <ReducedMotionNote /> : null}
       <ul className="grid gap-6 @prose:grid-cols-2">
         {items.map((item) => (
           <li key={item.cssVar} className="grid content-start gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)">
-            <div className="grid place-items-center rounded-lg bg-subtle p-6">
+            {/* Muted, not subtle: inside a card, subtle matches the card in dark mode. */}
+            <div className="grid place-items-center rounded-lg bg-muted p-6">
               <Curve points={item.points} />
             </div>
             <div className="grid gap-1.5">
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <h3 className="text-title">{item.name}</h3>
+                <h3 className="text-title text-foreground">{item.name}</h3>
                 <code className="font-mono text-code text-muted-foreground">{item.utility}</code>
               </div>
               <span className="font-mono text-xs text-muted-foreground">cubic-bezier({item.points.join(", ")})</span>

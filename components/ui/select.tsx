@@ -19,6 +19,27 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
  */
 const Select = SelectPrimitive.Root
 
+/**
+ * Class recipes for the parts of the open list. The components below use
+ * them, and they are exported for static pictures of an open list, such as
+ * documentation that shows the groups without opening the popup.
+ */
+const selectStyles = {
+  /** The list surface: popover colour, hairline border, overlay radius. */
+  list: "rounded-(--overlay-radius) border border-border bg-popover p-(--overlay-padding) text-popover-foreground outline-none",
+  label: "flex h-8 items-end px-2.5 pb-1.5 text-caption font-semibold text-muted-foreground select-none",
+  item: cn(
+    "group/select-item relative flex min-h-(--overlay-item-height) w-full cursor-default items-center gap-2 rounded-(--overlay-item-radius) py-1.5 ps-2.5 pe-9 text-sm text-foreground outline-none select-none",
+    "transition-colors duration-(--duration-instant) ease-standard",
+    "data-highlighted:bg-accent data-highlighted:text-accent-foreground data-[selected]:font-semibold",
+    "data-disabled:pointer-events-none data-disabled:opacity-50",
+    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
+  ),
+  itemText: "flex min-w-0 flex-1 items-center gap-2 whitespace-nowrap",
+  itemIndicator: "pointer-events-none absolute end-2.5 flex size-4 items-center justify-center",
+  separator: "pointer-events-none -mx-(--overlay-padding) my-(--overlay-padding) h-px bg-border",
+} as const
+
 function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   return (
     <SelectPrimitive.Group
@@ -42,9 +63,11 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
   )
 }
 
+/* Text sizes follow <Input>: 16px on phones in the default size (so iOS does
+   not zoom on focus and the value matches inputs beside it), 14px from md. */
 const triggerSize = {
-  sm: "h-(--control-height-sm) ps-3 pe-2.5",
-  default: "h-(--control-height-md) ps-(--control-padding-x) pe-3",
+  sm: "h-(--control-height-sm) ps-3 pe-2.5 text-sm",
+  default: "h-(--control-height-md) ps-(--control-padding-x) pe-3 text-base md:text-sm",
   lg: "h-(--control-height-lg) ps-4 pe-3.5 text-base",
 } as const
 
@@ -61,7 +84,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "group/select-trigger flex w-fit min-w-0 items-center justify-between gap-2 rounded-(--control-radius) border border-input bg-muted text-sm whitespace-nowrap text-foreground select-none",
+        "group/select-trigger flex w-fit min-w-0 items-center justify-between gap-2 rounded-(--control-radius) border border-input bg-muted whitespace-nowrap text-foreground select-none",
         "transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard",
         "outline-none hover:border-foreground/25 focus-visible:border-ring focus-visible:focus-ring",
         "data-popup-open:border-foreground/30 data-popup-open:bg-background",
@@ -114,7 +137,7 @@ function SelectContent({
           data-align-trigger={alignItemWithTrigger}
           className={cn(
             "relative isolate max-h-[min(var(--available-height),--spacing(96))] w-max min-w-(--anchor-width) max-w-(--available-width) origin-(--transform-origin) overflow-x-hidden overflow-y-auto overscroll-contain",
-            "rounded-(--overlay-radius) border border-border bg-popover p-(--overlay-padding) text-popover-foreground outline-none",
+            selectStyles.list,
             "duration-(--duration-base) ease-out data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
             "data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=inline-start]:slide-in-from-right-1 data-[side=inline-end]:slide-in-from-left-1",
             "data-closed:data-[side=bottom]:slide-out-to-top-1 data-closed:data-[side=top]:slide-out-to-bottom-1",
@@ -140,10 +163,7 @@ function SelectLabel({
   return (
     <SelectPrimitive.GroupLabel
       data-slot="select-label"
-      className={cn(
-        "flex h-8 items-end px-2.5 pb-1.5 text-caption font-semibold text-muted-foreground select-none",
-        className
-      )}
+      className={cn(selectStyles.label, className)}
       {...props}
     />
   )
@@ -157,26 +177,19 @@ function SelectItem({
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
-      className={cn(
-        "group/select-item relative flex min-h-(--overlay-item-height) w-full cursor-default items-center gap-2 rounded-(--overlay-item-radius) py-1.5 ps-2.5 pe-9 text-sm text-foreground outline-none select-none",
-        "transition-colors duration-(--duration-instant) ease-standard",
-        "data-highlighted:bg-accent data-highlighted:text-accent-foreground data-[selected]:font-semibold",
-        "data-disabled:pointer-events-none data-disabled:opacity-50",
-        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
-        className
-      )}
+      className={cn(selectStyles.item, className)}
       {...props}
     >
       <SelectPrimitive.ItemText
         data-slot="select-item-text"
-        className="flex min-w-0 flex-1 items-center gap-2 whitespace-nowrap"
+        className={selectStyles.itemText}
       >
         {children}
       </SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator
         data-slot="select-item-indicator"
         render={
-          <span className="pointer-events-none absolute end-2.5 flex size-4 items-center justify-center" />
+          <span className={selectStyles.itemIndicator} />
         }
       >
         <CheckIcon className="size-4 text-foreground" strokeWidth={2.5} />
@@ -192,10 +205,7 @@ function SelectSeparator({
   return (
     <SelectPrimitive.Separator
       data-slot="select-separator"
-      className={cn(
-        "pointer-events-none -mx-(--overlay-padding) my-(--overlay-padding) h-px bg-border",
-        className
-      )}
+      className={cn(selectStyles.separator, className)}
       {...props}
     />
   )
@@ -248,4 +258,5 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
+  selectStyles,
 }

@@ -4,6 +4,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
 import { CodeWindow } from "@/components/blocks/code-window"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { Kern } from "@/components/ui/kern"
 
 const popular = [
   { title: "Pricing", description: "Plans from $5 a month", href: "/live/pricing" },
@@ -20,21 +21,12 @@ const popular = [
 export function NotFoundPanel({ className }: { className?: string }) {
   return (
     <section className={cn("container-page", className)}>
-      <div className="@container relative isolate overflow-hidden rounded-(--panel-radius) bg-panel p-(--panel-padding) text-panel-foreground">
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 600 600"
-          fill="none"
-          className="pointer-events-none absolute -bottom-72 -left-72 -z-10 size-160 stroke-panel-border"
-        >
-          {[60, 120, 180, 240, 299].map((r) => (
-            <circle key={r} cx="300" cy="300" r={r} strokeWidth="1" vectorEffect="non-scaling-stroke" />
-          ))}
-        </svg>
-
+      <div className="@container rounded-(--panel-radius) bg-panel p-(--panel-padding) text-panel-foreground">
         <div className="grid items-center gap-12 @min-[60rem]:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] @min-[60rem]:gap-16">
           <div className="grid justify-items-start gap-6">
-            <h1 className="max-w-narrow text-display text-panel-foreground">This page didn’t ship.</h1>
+            <h1 className="max-w-narrow text-display text-panel-foreground">
+              <Kern>This page didn’t ship.</Kern>
+            </h1>
             <p className="max-w-prose text-lead text-panel-muted">
               The link may be out of date, or the page moved when we reorganised the site. Check the address for typos,
               or head back to the start.
@@ -51,9 +43,10 @@ export function NotFoundPanel({ className }: { className?: string }) {
           </div>
 
           <CodeWindow
+            wrap
             title="lumen.dev"
             lines={[
-              "$ curl -I https://lumen.dev/docs/v1/quickstart",
+              "$ curl -I lumen.dev/docs/v1",
               "HTTP/2 404",
               "x-lumen-region: fra-1",
               "x-lumen-route: no match",

@@ -1,6 +1,7 @@
 import { BellIcon, DatabaseIcon, GitBranchIcon, GlobeIcon, ShieldCheckIcon } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 
 /* Small product cards that sit over the terminal in each feature row. They
    are illustrations: the row's heading and copy carry the meaning, so each
@@ -109,7 +110,7 @@ export function AuditCard() {
         {auditEvents.map((event) => (
           <li key={event.what} className="flex items-center gap-3 px-4 py-3">
             <span
-              className={`grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold text-foreground ${event.tint}`}
+              className={cn("grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold text-foreground", event.tint)}
             >
               {event.initials}
             </span>

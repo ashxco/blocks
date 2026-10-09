@@ -1,5 +1,7 @@
 import * as React from "react"
 
+import { cn } from "@/lib/utils"
+
 export interface TeamZone {
   city: string
   /** Display offset, e.g. "UTC+2". */
@@ -38,7 +40,10 @@ function utc(hours: number) {
 export function TimeZonesPanel({ zones = defaultZones, className }: TimeZonesPanelProps) {
   return (
     <figure
-      className={`@container relative isolate m-0 overflow-hidden rounded-(--panel-radius) bg-panel p-6 text-panel-foreground sm:p-10 ${className ?? ""}`}
+      className={cn(
+        "@container relative isolate m-0 overflow-hidden rounded-(--panel-radius) bg-panel p-6 text-panel-foreground sm:p-10",
+        className
+      )}
     >
       <figcaption className="grid gap-2">
         <span className="text-h4 text-panel-foreground">One team, six time zones</span>

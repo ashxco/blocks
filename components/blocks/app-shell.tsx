@@ -55,6 +55,12 @@ export interface AppShellProps {
   /** Title in the top bar. Defaults to the active navigation item. */
   title?: string
   /**
+   * The navigation item to highlight, by href ("/live/app/projects").
+   * Defaults to the item that matches the URL. In previews, where the URL is
+   * the docs page, it falls back to the item named by `title`, then the first.
+   */
+  activeHref?: string
+  /**
    * Contain the shell in its parent instead of the viewport, for docs and
    * previews. Give it a height through className (defaults to 44rem).
    */
@@ -93,14 +99,13 @@ export function LumenWordmark({ className }: { className?: string }) {
   )
 }
 
-function NavLinks() {
-  const pathname = usePathname()
+function NavLinks({ currentPath }: { currentPath: string | null }) {
   const { isMobile, setOpenMobile } = useSidebar()
 
   return (
     <SidebarMenu className="gap-0.5">
       {appNav.map((item) => {
-        const active = isNavActive(pathname, item)
+        const active = isNavActive(currentPath, item)
         return (
           <SidebarMenuItem key={item.href}>
             <SidebarMenuButton
@@ -113,7 +118,7 @@ function NavLinks() {
                   onClick={() => isMobile && setOpenMobile(false)}
                 />
               }
-              className="h-9 gap-3 px-2.5 text-muted-foreground hover:text-foreground data-active:bg-sidebar-accent data-active:text-foreground data-active:[&>svg]:text-brand"
+              className="h-(--control-height-sm) gap-3 px-2.5 text-muted-foreground hover:text-foreground data-active:bg-sidebar-accent data-active:text-foreground data-active:[&>svg]:text-brand"
             >
               <item.icon />
               <span className="text-label">{item.title}</span>
@@ -145,7 +150,7 @@ function RecentProjects() {
                     onClick={() => isMobile && setOpenMobile(false)}
                   />
                 }
-                className="h-8 gap-3 px-2.5 text-muted-foreground hover:text-foreground"
+                className="h-(--control-height-xs) gap-3 px-2.5 text-muted-foreground hover:text-foreground"
               >
                 <span
                   aria-hidden="true"
@@ -164,18 +169,27 @@ function RecentProjects() {
   )
 }
 
+/** Build minutes this cycle. Matches the billing page and Pro on the pricing page. */
+const buildMinutes = { used: 7240, limit: 10_000 }
+
 function UsagePanel() {
+  const format = (value: number) => value.toLocaleString("en-US")
   return (
-    <div className="grid gap-3 rounded-lg bg-panel p-4 text-panel-foreground group-data-[collapsible=icon]:hidden">
+    <div className="grid gap-3 rounded-lg bg-panel p-(--card-padding-sm) text-panel-foreground group-data-[collapsible=icon]:hidden">
       <div className="flex items-baseline justify-between gap-2">
         <p className="text-caption font-semibold text-panel-foreground">
           Build minutes
         </p>
-        <p className="text-caption text-panel-muted tabular">2,400 / 3,000</p>
+        <p className="text-caption text-panel-muted tabular">
+          {format(buildMinutes.used)} / {format(buildMinutes.limit)}
+        </p>
       </div>
       <Progress
-        value={80}
+        value={Math.round((buildMinutes.used / buildMinutes.limit) * 100)}
         aria-label="Build minutes used this cycle"
+        getAriaValueText={() =>
+          `${format(buildMinutes.used)} of ${format(buildMinutes.limit)} minutes`
+        }
         className="gap-0 **:data-[slot=progress-indicator]:bg-panel-foreground **:data-[slot=progress-track]:bg-panel-raised"
       />
       <p className="text-caption text-panel-muted">
@@ -230,7 +244,7 @@ function WorkspaceSwitcher() {
             side="top"
             align="start"
             sideOffset={8}
-            className="w-60"
+            className="w-3xs"
           >
             <DropdownMenuGroup>
               <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
@@ -266,10 +280,17 @@ function WorkspaceSwitcher() {
   )
 }
 
-function TopBar({ title, hotkey }: { title?: string; hotkey: boolean }) {
-  const pathname = usePathname()
+function TopBar({
+  title,
+  currentPath,
+  hotkey,
+}: {
+  title?: string
+  currentPath: string | null
+  hotkey: boolean
+}) {
   const [searchOpen, setSearchOpen] = React.useState(false)
-  const current = appNav.find((item) => isNavActive(pathname, item))
+  const current = appNav.find((item) => isNavActive(currentPath, item))
   const heading = title ?? current?.title ?? "Overview"
 
   return (
@@ -305,7 +326,7 @@ function TopBar({ title, hotkey }: { title?: string; hotkey: boolean }) {
       <div className="flex shrink-0 items-center gap-1 @min-[36rem]/topbar:gap-2">
         <CommandMenuButton
           onClick={() => setSearchOpen(true)}
-          className="hidden w-56 @min-[44rem]/topbar:inline-flex @min-[60rem]/topbar:w-64"
+          className="hidden w-3xs @min-[44rem]/topbar:inline-flex @min-[60rem]/topbar:w-2xs"
         />
         <CommandMenuButton
           variant="icon"
@@ -331,15 +352,29 @@ function TopBar({ title, hotkey }: { title?: string; hotkey: boolean }) {
  * with search (Cmd+K), notifications and the user menu; and the content area.
  * Below the md breakpoint the sidebar opens as a sheet.
  */
+/**
+ * The path the navigation highlights: activeHref when given, else the URL.
+ * A preview sits on a docs URL that matches nothing, so it falls back to the
+ * item named by the title, then to the first item.
+ */
+function useCurrentPath(activeHref: string | undefined, title: string | undefined, preview: boolean) {
+  const pathname = usePathname()
+  if (activeHref) return activeHref
+  if (!preview || appNav.some((item) => isNavActive(pathname, item))) return pathname
+  return (appNav.find((item) => item.title === title) ?? appNav[0]).href
+}
+
 export function AppShell({
   children,
   title,
+  activeHref,
   preview = false,
   hotkey = true,
   className,
 }: AppShellProps) {
   const frameRef = React.useRef<HTMLDivElement>(null)
   const [open, setOpen] = React.useState(true)
+  const currentPath = useCurrentPath(activeHref, title, preview)
 
   // In previews the shell follows its own width, not the viewport: collapse
   // the sidebar to icons when the frame is narrower than the md breakpoint.
@@ -384,7 +419,7 @@ export function AppShell({
         <SidebarContent className="gap-2 py-3">
           <SidebarGroup>
             <SidebarGroupContent>
-              <NavLinks />
+              <NavLinks currentPath={currentPath} />
             </SidebarGroupContent>
           </SidebarGroup>
           <RecentProjects />
@@ -398,7 +433,7 @@ export function AppShell({
       <SidebarInset
         className={cn("min-w-0", preview && "h-full min-h-0 overflow-y-auto")}
       >
-        <TopBar title={title} hotkey={hotkey} />
+        <TopBar title={title} currentPath={currentPath} hotkey={hotkey} />
         <div
           data-slot="app-shell-content"
           className="container-wide flex-1 py-8 @min-[48rem]/shell:py-10"

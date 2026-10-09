@@ -3,20 +3,28 @@
 import * as React from "react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { Card } from "@/components/ui/card"
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
 import {
   NativeSelect,
   NativeSelectOptGroup,
   NativeSelectOption,
 } from "@/components/ui/native-select"
+import { tokens } from "@/design-system/generated/tokens"
+
+/** A dimension token in px, read from the generated tokens so the copy follows the system. */
+function tokenPx(cssVar: string) {
+  const value = tokens.find((token) => token.cssVar === cssVar)?.value
+  return typeof value === "string" && value.endsWith("rem") ? `${parseFloat(value) * 16}px` : String(value ?? "")
+}
 
 type Level = "all" | "info" | "warn" | "error"
 
 const logLines: { time: string; level: Exclude<Level, "all">; source: string; message: string }[] = [
-  { time: "14:02:11", level: "info", source: "build", message: "Installed 412 packages in 9.8s" },
+  { time: "14:02:11", level: "info", source: "build", message: "Installed 412 packages in 6.8s" },
   { time: "14:02:26", level: "info", source: "build", message: "Compiled 38 routes" },
-  { time: "14:02:31", level: "warn", source: "build", message: "Image /hero.png is 2.4 MB. Compress it to speed up first load." },
-  { time: "14:02:40", level: "info", source: "deploy", message: "Uploaded build to fra-1 and iad-1" },
+  { time: "14:02:31", level: "warn", source: "build", message: "Image hero.png is 2.4 MB. Compress it to speed up first load." },
+  { time: "14:02:40", level: "info", source: "deploy", message: "Uploaded build to fra1 and iad1" },
   { time: "14:03:02", level: "error", source: "runtime", message: "GET /api/orders returned 500: DATABASE_URL is not set" },
   { time: "14:03:05", level: "info", source: "runtime", message: "GET / returned 200 in 84 ms" },
   { time: "14:03:17", level: "warn", source: "runtime", message: "Function /api/search took 9.1s. The limit is 10s." },
@@ -39,14 +47,15 @@ function LogFilter() {
   )
 
   return (
-    <div className="w-full max-w-prose overflow-hidden rounded-(--card-radius) border bg-card">
+    <Card className="@container/logs w-full max-w-2xl gap-0 p-0">
       <div className="flex flex-wrap items-center gap-3 border-b px-4 py-3">
-        <p className="me-auto text-title text-foreground">Logs</p>
+        <p className="basis-full text-title text-foreground @md/logs:me-auto @md/logs:basis-auto">Logs</p>
         <NativeSelect
           size="sm"
           aria-label="Source"
           value={source}
           onChange={(event) => setSource(event.target.value)}
+          className="flex-1 @md/logs:flex-none"
         >
           <NativeSelectOption value="all">All sources</NativeSelectOption>
           <NativeSelectOption value="build">Build</NativeSelectOption>
@@ -58,6 +67,7 @@ function LogFilter() {
           aria-label="Level"
           value={level}
           onChange={(event) => setLevel(event.target.value as Level)}
+          className="flex-1 @md/logs:flex-none"
         >
           <NativeSelectOption value="all">All levels</NativeSelectOption>
           <NativeSelectOption value="info">Info</NativeSelectOption>
@@ -68,106 +78,164 @@ function LogFilter() {
       <ol className="divide-y font-mono text-code">
         {lines.length ? (
           lines.map((line) => (
-            <li key={line.time} className="flex gap-4 px-4 py-2.5">
+            <li key={line.time} className="flex flex-wrap gap-x-4 gap-y-0.5 px-4 py-2.5 @md/logs:flex-nowrap">
               <span className="shrink-0 text-muted-foreground tabular">{line.time}</span>
               <span className={`w-12 shrink-0 font-semibold ${levelTone[line.level]}`}>{line.level}</span>
-              <span className="min-w-0 text-copy">{line.message}</span>
+              <span className="min-w-0 basis-full text-copy @md/logs:basis-auto">{line.message}</span>
             </li>
           ))
         ) : (
-          <li className="px-4 py-8 text-center font-sans text-sm text-muted-foreground">
+          <li className="px-4 py-8 text-center font-sans text-caption text-muted-foreground">
             No log lines match these filters.
           </li>
         )}
       </ol>
-    </div>
+    </Card>
   )
 }
+
+const sizes = [
+  { size: "sm", label: "Small", height: tokenPx("--control-height-sm") },
+  { size: "default", label: "Medium", height: tokenPx("--control-height-md") },
+  { size: "lg", label: "Large", height: tokenPx("--control-height-lg") },
+] as const
 
 export default function NativeSelectDocs() {
   return (
     <Examples>
       <Example
         title="Default"
+        layout="stack"
         description="The platform select with Blocks control styling. The option list is drawn by the operating system."
-        code={`<NativeSelect defaultValue="iad-1" aria-label="Region">
-  <NativeSelectOption value="fra-1">Frankfurt, fra-1</NativeSelectOption>
-  <NativeSelectOption value="iad-1">Washington, D.C., iad-1</NativeSelectOption>
-  <NativeSelectOption value="sfo-1">San Francisco, sfo-1</NativeSelectOption>
-</NativeSelect>`}
+        code={`<Field>
+  <FieldLabel htmlFor="region">Region</FieldLabel>
+  <NativeSelect id="region" defaultValue="iad1">
+    <NativeSelectOption value="fra1">Frankfurt (fra1)</NativeSelectOption>
+    <NativeSelectOption value="iad1">Washington, D.C. (iad1)</NativeSelectOption>
+    <NativeSelectOption value="sfo1">San Francisco (sfo1)</NativeSelectOption>
+    <NativeSelectOption value="sin1">Singapore (sin1)</NativeSelectOption>
+    <NativeSelectOption value="syd1">Sydney (syd1)</NativeSelectOption>
+  </NativeSelect>
+</Field>`}
       >
-        <NativeSelect defaultValue="iad-1" aria-label="Region" className="w-64">
-          <NativeSelectOption value="fra-1">Frankfurt, fra-1</NativeSelectOption>
-          <NativeSelectOption value="iad-1">Washington, D.C., iad-1</NativeSelectOption>
-          <NativeSelectOption value="sfo-1">San Francisco, sfo-1</NativeSelectOption>
-          <NativeSelectOption value="sin-1">Singapore, sin-1</NativeSelectOption>
-          <NativeSelectOption value="syd-1">Sydney, syd-1</NativeSelectOption>
-        </NativeSelect>
+        <Field className="max-w-sm">
+          <FieldLabel htmlFor="native-region">Region</FieldLabel>
+          <NativeSelect id="native-region" defaultValue="iad1">
+            <NativeSelectOption value="fra1">Frankfurt (fra1)</NativeSelectOption>
+            <NativeSelectOption value="iad1">Washington, D.C. (iad1)</NativeSelectOption>
+            <NativeSelectOption value="sfo1">San Francisco (sfo1)</NativeSelectOption>
+            <NativeSelectOption value="sin1">Singapore (sin1)</NativeSelectOption>
+            <NativeSelectOption value="syd1">Sydney (syd1)</NativeSelectOption>
+          </NativeSelect>
+        </Field>
       </Example>
 
       <Example
         title="Sizes"
+        layout="stack"
         description="The same control heights as Select and Input. className goes on the wrapper, so set the width there."
-        code={`<NativeSelect size="sm">…</NativeSelect>
-<NativeSelect>…</NativeSelect>
-<NativeSelect size="lg">…</NativeSelect>`}
+        code={`{(["sm", "default", "lg"] as const).map((size) => (
+  <NativeSelect key={size} size={size} defaultValue="production" aria-label="Environment" className="w-full">
+    <NativeSelectOption value="production">Production</NativeSelectOption>
+    <NativeSelectOption value="preview">Preview</NativeSelectOption>
+    <NativeSelectOption value="development">Development</NativeSelectOption>
+  </NativeSelect>
+))}`}
       >
-        {(["sm", "default", "lg"] as const).map((size) => (
-          <NativeSelect key={size} size={size} defaultValue="production" aria-label={`Environment, ${size} size`} className="w-44">
-            <NativeSelectOption value="production">Production</NativeSelectOption>
-            <NativeSelectOption value="preview">Preview</NativeSelectOption>
-            <NativeSelectOption value="development">Development</NativeSelectOption>
-          </NativeSelect>
-        ))}
+        <div className="grid w-full max-w-sm gap-6">
+          {sizes.map(({ size, label, height }) => (
+            <Field key={size}>
+              <FieldLabel htmlFor={`native-size-${size}`}>
+                {label} <span className="font-normal text-muted-foreground">{height}</span>
+              </FieldLabel>
+              <NativeSelect id={`native-size-${size}`} size={size} defaultValue="production">
+                <NativeSelectOption value="production">Production</NativeSelectOption>
+                <NativeSelectOption value="preview">Preview</NativeSelectOption>
+                <NativeSelectOption value="development">Development</NativeSelectOption>
+              </NativeSelect>
+            </Field>
+          ))}
+        </div>
       </Example>
 
       <Example
         title="Option groups"
-        description="Use optgroup to group options. A disabled first option works as a placeholder."
-        code={`<NativeSelect defaultValue="">
-  <NativeSelectOption value="" disabled>Choose a runtime</NativeSelectOption>
-  <NativeSelectOptGroup label="Node.js">
-    <NativeSelectOption value="node-22">Node.js 22 LTS</NativeSelectOption>
-    <NativeSelectOption value="node-20">Node.js 20</NativeSelectOption>
-  </NativeSelectOptGroup>
-  <NativeSelectOptGroup label="Other runtimes">
-    <NativeSelectOption value="bun-1.2">Bun 1.2</NativeSelectOption>
-  </NativeSelectOptGroup>
-</NativeSelect>`}
+        layout="stack"
+        description="Use optgroup to group options. A disabled first option works as a placeholder until a value is picked."
+        code={`<Field>
+  <FieldLabel htmlFor="runtime">Runtime</FieldLabel>
+  <NativeSelect id="runtime" defaultValue="">
+    <NativeSelectOption value="" disabled>Choose a runtime</NativeSelectOption>
+    <NativeSelectOptGroup label="Node.js">
+      <NativeSelectOption value="node-22">Node.js 22 LTS</NativeSelectOption>
+      <NativeSelectOption value="node-20">Node.js 20</NativeSelectOption>
+    </NativeSelectOptGroup>
+    <NativeSelectOptGroup label="Other runtimes">
+      <NativeSelectOption value="bun-1.2">Bun 1.2</NativeSelectOption>
+      <NativeSelectOption value="deno-2">Deno 2</NativeSelectOption>
+      <NativeSelectOption value="python-3.13">Python 3.13</NativeSelectOption>
+    </NativeSelectOptGroup>
+  </NativeSelect>
+  <FieldDescription>Lumen installs it on every build machine.</FieldDescription>
+</Field>`}
       >
-        <NativeSelect defaultValue="" aria-label="Runtime" className="w-56">
-          <NativeSelectOption value="" disabled>
-            Choose a runtime
-          </NativeSelectOption>
-          <NativeSelectOptGroup label="Node.js">
-            <NativeSelectOption value="node-22">Node.js 22 LTS</NativeSelectOption>
-            <NativeSelectOption value="node-20">Node.js 20</NativeSelectOption>
-          </NativeSelectOptGroup>
-          <NativeSelectOptGroup label="Other runtimes">
-            <NativeSelectOption value="bun-1.2">Bun 1.2</NativeSelectOption>
-            <NativeSelectOption value="deno-2">Deno 2</NativeSelectOption>
-            <NativeSelectOption value="python-3.13">Python 3.13</NativeSelectOption>
-          </NativeSelectOptGroup>
-        </NativeSelect>
+        <Field className="max-w-sm">
+          <FieldLabel htmlFor="native-runtime">Runtime</FieldLabel>
+          <NativeSelect id="native-runtime" defaultValue="">
+            <NativeSelectOption value="" disabled>
+              Choose a runtime
+            </NativeSelectOption>
+            <NativeSelectOptGroup label="Node.js">
+              <NativeSelectOption value="node-22">Node.js 22 LTS</NativeSelectOption>
+              <NativeSelectOption value="node-20">Node.js 20</NativeSelectOption>
+            </NativeSelectOptGroup>
+            <NativeSelectOptGroup label="Other runtimes">
+              <NativeSelectOption value="bun-1.2">Bun 1.2</NativeSelectOption>
+              <NativeSelectOption value="deno-2">Deno 2</NativeSelectOption>
+              <NativeSelectOption value="python-3.13">Python 3.13</NativeSelectOption>
+            </NativeSelectOptGroup>
+          </NativeSelect>
+          <FieldDescription>Lumen installs it on every build machine.</FieldDescription>
+        </Field>
       </Example>
 
       <Example
         title="States"
         description="Disabled selects fade. Invalid selects take aria-invalid, turn the border red and explain the fix below."
         layout="stack"
+        code={`<Field>
+  <FieldLabel htmlFor="machine">Build machine</FieldLabel>
+  <NativeSelect id="machine" defaultValue="standard" disabled>
+    <NativeSelectOption value="standard">Standard</NativeSelectOption>
+    <NativeSelectOption value="enhanced">Enhanced</NativeSelectOption>
+    <NativeSelectOption value="turbo">Turbo</NativeSelectOption>
+  </NativeSelect>
+  <FieldDescription>Upgrade to the Pro plan to change it.</FieldDescription>
+</Field>
+
+<Field data-invalid>
+  <FieldLabel htmlFor="branch">Production branch</FieldLabel>
+  <NativeSelect id="branch" defaultValue="" aria-invalid>
+    <NativeSelectOption value="" disabled>Choose a branch</NativeSelectOption>
+    <NativeSelectOption value="main">main</NativeSelectOption>
+    <NativeSelectOption value="release">release</NativeSelectOption>
+  </NativeSelect>
+  <FieldError>Choose the branch Lumen deploys to production.</FieldError>
+</Field>`}
       >
-        <div className="grid w-full max-w-144 gap-6 sm:grid-cols-2">
+        <div className="grid w-full max-w-2xl gap-6 @xl:grid-cols-2">
           <Field>
             <FieldLabel htmlFor="native-disabled">Build machine</FieldLabel>
-            <NativeSelect id="native-disabled" defaultValue="standard" disabled className="w-full">
+            <NativeSelect id="native-disabled" defaultValue="standard" disabled>
               <NativeSelectOption value="standard">Standard</NativeSelectOption>
-              <NativeSelectOption value="performance">Performance</NativeSelectOption>
+              <NativeSelectOption value="enhanced">Enhanced</NativeSelectOption>
+              <NativeSelectOption value="turbo">Turbo</NativeSelectOption>
             </NativeSelect>
             <FieldDescription>Upgrade to the Pro plan to change it.</FieldDescription>
           </Field>
           <Field data-invalid="true">
             <FieldLabel htmlFor="native-invalid">Production branch</FieldLabel>
-            <NativeSelect id="native-invalid" defaultValue="" aria-invalid="true" className="w-full">
+            <NativeSelect id="native-invalid" defaultValue="" aria-invalid="true">
               <NativeSelectOption value="" disabled>
                 Choose a branch
               </NativeSelectOption>
@@ -182,13 +250,34 @@ export default function NativeSelectDocs() {
       <Example
         title="Filter bar"
         description="Small native selects filter a log stream. They are quick to scan, need no popup and work well on phones."
-        layout="stack"
         surface="subtle"
-        code={`<NativeSelect size="sm" aria-label="Level" value={level} onChange={(e) => setLevel(e.target.value)}>
-  <NativeSelectOption value="all">All levels</NativeSelectOption>
-  <NativeSelectOption value="warn">Warnings</NativeSelectOption>
-  <NativeSelectOption value="error">Errors</NativeSelectOption>
-</NativeSelect>`}
+        code={`<div className="flex flex-wrap items-center gap-3 border-b px-4 py-3">
+  <p className="basis-full text-title text-foreground @md/logs:me-auto @md/logs:basis-auto">Logs</p>
+  <NativeSelect
+    size="sm"
+    aria-label="Source"
+    value={source}
+    onChange={(e) => setSource(e.target.value)}
+    className="flex-1 @md/logs:flex-none"
+  >
+    <NativeSelectOption value="all">All sources</NativeSelectOption>
+    <NativeSelectOption value="build">Build</NativeSelectOption>
+    <NativeSelectOption value="deploy">Deploy</NativeSelectOption>
+    <NativeSelectOption value="runtime">Runtime</NativeSelectOption>
+  </NativeSelect>
+  <NativeSelect
+    size="sm"
+    aria-label="Level"
+    value={level}
+    onChange={(e) => setLevel(e.target.value)}
+    className="flex-1 @md/logs:flex-none"
+  >
+    <NativeSelectOption value="all">All levels</NativeSelectOption>
+    <NativeSelectOption value="info">Info</NativeSelectOption>
+    <NativeSelectOption value="warn">Warnings</NativeSelectOption>
+    <NativeSelectOption value="error">Errors</NativeSelectOption>
+  </NativeSelect>
+</div>`}
       >
         <LogFilter />
       </Example>

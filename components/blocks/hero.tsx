@@ -5,6 +5,7 @@ import { ArrowRightIcon } from "lucide-react"
 import { InstallCommand } from "@/components/blocks/install-command"
 import { HeroProductMoment } from "@/components/blocks/hero/product-moment"
 import { Button } from "@/components/ui/button"
+import { Kern } from "@/components/ui/kern"
 import { cn } from "@/lib/utils"
 
 export {
@@ -47,7 +48,7 @@ const defaultTitle = (
   <>
     Ship anything.
     <br />
-    Own <span className="text-brand">everything.</span>
+    Own <span className="text-brand">everything</span>.
   </>
 )
 
@@ -63,7 +64,7 @@ export function Hero({
   variant = "split",
   title = defaultTitle,
   description = defaultDescription,
-  primaryAction = { label: "Start for free", href: "/live/sign-up" },
+  primaryAction = { label: "Start free trial", href: "/live/sign-up" },
   secondaryAction = { label: "Book a demo", href: "/live/contact" },
   command = "npm i -g lumen",
   visual,
@@ -82,7 +83,16 @@ export function Hero({
           : "flex min-w-0 flex-col items-start"
       }
     >
-      <Heading className="text-display text-foreground">{title}</Heading>
+      <Heading
+        className={cn(
+          "text-display text-foreground",
+          // Beside the visual, the headline scales with the hero so a two-line
+          // title keeps two lines in a narrower slot.
+          !centered && media && "@min-[60rem]/hero:text-[length:min(var(--text-display),6.4cqi)]"
+        )}
+      >
+        <Kern>{title}</Kern>
+      </Heading>
       {description ? (
         <p className="mt-6 max-w-prose text-lead text-copy">{description}</p>
       ) : null}
@@ -120,7 +130,7 @@ export function Hero({
         <div
           className={cn(
             "grid items-center gap-12",
-            media && "@min-[68rem]/hero:grid-cols-[1.3fr_1fr] @min-[68rem]/hero:gap-16"
+            media && "@min-[60rem]/hero:grid-cols-[1.2fr_1fr] @min-[60rem]/hero:gap-16"
           )}
         >
           {copy}

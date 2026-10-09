@@ -15,30 +15,30 @@ import {
 import { PlanPicker } from "./plan-picker"
 
 /**
- * BillingSummary and the plan picker share one plan. BillingSummary keeps its
- * own copy of the plan after mount, so a change made in the picker remounts it
- * (the revision key) with the new plan and the latest payment method.
+ * BillingSummary and the plan picker share one plan and one card. Both read
+ * them from this view, and BillingSummary follows its currentPlanId and
+ * paymentMethod props, so a change made in either place shows in both.
+ * Upgrades apply now; downgrades are scheduled for renewal.
+ *
+ * The plan picker is the one way to change plans on this page: the panel's
+ * “Change plan” button links down to it instead of opening a dialog.
  */
 export function BillingView() {
   const [planId, setPlanId] = React.useState(CURRENT_PLAN_ID)
   const [scheduledId, setScheduledId] = React.useState<string | null>(null)
   const [payment, setPayment] = React.useState<PaymentMethod>(PAYMENT_METHOD)
-  const [revision, setRevision] = React.useState(0)
 
   return (
     <div className="grid gap-16">
       <BillingSummary
-        key={revision}
         plans={LUMEN_PLANS}
         currentPlanId={planId}
         renewsOn={RENEWS_ON}
         periodLabel={PERIOD_LABEL}
         usage={USAGE}
         paymentMethod={payment}
-        onPlanChange={(plan) => {
-          setPlanId(plan.id)
-          setScheduledId(null)
-        }}
+        changePlanHref="#change-plan"
+        nextCharge={LUMEN_PLANS.find((p) => p.id === (scheduledId ?? planId))?.price}
         onPaymentMethodChange={(method) => setPayment((current) => ({ ...current, ...method }))}
       />
 
@@ -50,10 +50,10 @@ export function BillingView() {
         onUpgrade={(plan) => {
           setPlanId(plan.id)
           setScheduledId(null)
-          setRevision((r) => r + 1)
         }}
         onSchedule={(plan) => setScheduledId(plan.id)}
         onCancelScheduled={() => setScheduledId(null)}
+        anchorId="change-plan"
         className="border-t pt-12"
       />
     </div>

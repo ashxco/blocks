@@ -149,7 +149,7 @@ export const navSections: NavSection[] = [
     href: sectionHref.templates,
     description: sectionDescription.templates,
     groups: [
-      { items: [{ title: "Gallery", href: sectionHref.templates, description: sectionDescription.templates }] },
+      { items: [{ title: "Overview", href: sectionHref.templates, description: sectionDescription.templates }] },
       ...templateKinds.map(({ kind, title }) => ({
         title,
         items: templates
@@ -175,20 +175,50 @@ export interface PagerLink {
   title: string
   href: string
   group: string
+  /** Replaces the default "Previous in <group>" / "Next in <group>" caption. */
+  caption?: string
 }
 
-/** Previous and next entries inside the same group. */
+/**
+ * Previous and next pages for a doc page. Walks the whole section in sidebar
+ * order, across group boundaries, so readers never hit a dead end: the first
+ * entry leads back to the section overview and the last one on to the next
+ * section.
+ */
 export function pagerFor<T extends { slug: string; title: string; group: string }>(
   entries: T[],
   slug: string,
-  base: string,
-  sameGroup: (a: T, b: T) => boolean = (a, b) => a.group === b.group
+  base: string
 ): { prev?: PagerLink; next?: PagerLink } {
-  const current = entries.find((e) => e.slug === slug)
-  if (!current) return {}
-  const siblings = entries.filter((e) => sameGroup(e, current))
-  const index = siblings.indexOf(current)
-  const link = (e: T | undefined): PagerLink | undefined =>
-    e ? { title: e.title, href: `${base}/${e.slug}`, group: e.group } : undefined
-  return { prev: link(siblings[index - 1]), next: link(siblings[index + 1]) }
+  const href = `${base}/${slug}`
+  const sectionIndex = navSections.findIndex((s) => s.href === base)
+  const section = navSections[sectionIndex]
+
+  if (!section) {
+    const index = entries.findIndex((e) => e.slug === slug)
+    if (index < 0) return {}
+    const link = (e: T | undefined): PagerLink | undefined =>
+      e ? { title: e.title, href: `${base}/${e.slug}`, group: e.group } : undefined
+    return { prev: link(entries[index - 1]), next: link(entries[index + 1]) }
+  }
+
+  const items = section.groups.flatMap((g) => g.items).filter((i) => i.href !== section.href)
+  const index = items.findIndex((i) => i.href === href)
+  if (index < 0) return {}
+  const toLink = (i: NavItem): PagerLink => ({ title: i.title, href: i.href, group: i.group ?? section.title })
+
+  const prev: PagerLink =
+    index > 0
+      ? toLink(items[index - 1])
+      : { title: `${section.title} overview`, href: section.href, group: section.title, caption: "Back to the start" }
+
+  const following = navSections[sectionIndex + 1]
+  const next: PagerLink | undefined =
+    index < items.length - 1
+      ? toLink(items[index + 1])
+      : following
+        ? { title: following.title, href: following.href, group: following.title, caption: "Next section" }
+        : undefined
+
+  return { prev, next }
 }

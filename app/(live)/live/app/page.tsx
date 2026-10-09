@@ -28,7 +28,7 @@ export default function DashboardPage() {
           <>
             <Button variant="outline" nativeButton={false} render={<Link href="/live/app/team" />}>
               <UserPlusIcon data-icon="inline-start" />
-              Invite teammate
+              Invite members
             </Button>
             <Button nativeButton={false} render={<Link href="/live/onboarding" />}>
               <PlusIcon data-icon="inline-start" />
@@ -44,7 +44,7 @@ export default function DashboardPage() {
         <h2 id="metrics-title" className="sr-only">
           Key metrics
         </h2>
-        <div className="grid grid-cols-1 gap-3 @min-[30rem]/dashboard:grid-cols-2 @min-[30rem]/dashboard:gap-4 @min-[64rem]/dashboard:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 @min-[20rem]/dashboard:grid-cols-2 @min-[30rem]/dashboard:gap-4 @min-[64rem]/dashboard:grid-cols-4">
           <StatCard icon={ActivityIcon} />
           <StatCard
             label="Deployments"

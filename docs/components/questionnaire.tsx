@@ -38,6 +38,23 @@ const needs = [
   { value: "logs", label: "Log drains" },
 ]
 
+/*
+ * Root.items lists the questions up front, so the server renders the first
+ * question, the progress bar and the buttons instead of an empty form.
+ */
+const onboardingItems = [
+  { name: "framework", required: true, choices: frameworks.map(({ value }) => ({ value })) },
+  { name: "needs", choices: needs.map(({ value }) => ({ value })) },
+  { name: "team", required: true },
+]
+
+const where = ["Every page", "Pages that load data", "Only the first visit"]
+const when = ["After the last deploy", "Without a deploy"]
+const chatItems = [
+  { name: "where", required: true, choices: where.map((value) => ({ value })) },
+  { name: "when", required: true, choices: when.map((value) => ({ value })) },
+]
+
 function Onboarding() {
   const [summary, setSummary] = React.useState<string[] | null>(null)
 
@@ -77,7 +94,13 @@ function Onboarding() {
   }
 
   return (
-    <Questionnaire shortcuts="letters" onSubmit={submit} className="mx-auto max-w-lg" aria-label="Set up your workspace">
+    <Questionnaire
+      items={onboardingItems}
+      shortcuts="letters"
+      onSubmit={submit}
+      className="mx-auto max-w-lg"
+      aria-label="Set up your workspace"
+    >
       <QuestionnaireProgress />
 
       <QuestionnaireItem name="framework" required>
@@ -157,22 +180,33 @@ function InChat() {
             </Bubble>
             {answer ? null : (
               <div className="w-full rounded-(--card-radius) border border-border p-5">
-                <Questionnaire shortcuts="numbers" onSubmit={submit} aria-label="Narrow down the slowdown" className="gap-5">
+                <Questionnaire
+                  items={chatItems}
+                  shortcuts="numbers"
+                  onSubmit={submit}
+                  aria-label="Narrow down the slowdown"
+                  className="gap-5"
+                >
                   <QuestionnaireProgress />
                   <QuestionnaireItem name="where" required>
                     <QuestionnaireTitle size="sm">Where do you see it?</QuestionnaireTitle>
                     <QuestionnaireChoices>
-                      <QuestionnaireChoice value="Every page">Every page</QuestionnaireChoice>
-                      <QuestionnaireChoice value="Pages that load data">Pages that load data</QuestionnaireChoice>
-                      <QuestionnaireChoice value="Only the first visit">Only the first visit</QuestionnaireChoice>
+                      {where.map((value) => (
+                        <QuestionnaireChoice key={value} value={value}>
+                          {value}
+                        </QuestionnaireChoice>
+                      ))}
                     </QuestionnaireChoices>
                     <QuestionnaireError />
                   </QuestionnaireItem>
                   <QuestionnaireItem name="when" required>
                     <QuestionnaireTitle size="sm">When did it start?</QuestionnaireTitle>
                     <QuestionnaireChoices>
-                      <QuestionnaireChoice value="After the last deploy">After the last deploy</QuestionnaireChoice>
-                      <QuestionnaireChoice value="Without a deploy">Without a deploy</QuestionnaireChoice>
+                      {when.map((value) => (
+                        <QuestionnaireChoice key={value} value={value}>
+                          {value}
+                        </QuestionnaireChoice>
+                      ))}
                     </QuestionnaireChoices>
                     <QuestionnaireError />
                   </QuestionnaireItem>
@@ -232,6 +266,7 @@ export default function QuestionnaireDocs() {
       <Example
         title="Set up a workspace"
         layout="stack"
+        minHeight="min-h-112"
         description="One question at a time. Press a letter to pick a choice, Enter to continue and the arrow keys to move. Required questions explain what is missing; optional ones can be skipped."
         code={`<Questionnaire shortcuts="letters" onSubmit={submit}>
   <QuestionnaireProgress />
@@ -270,6 +305,7 @@ export default function QuestionnaireDocs() {
       <Example
         title="In a conversation"
         layout="stack"
+        minHeight="min-h-112"
         description="A short questionnaire inside an assistant reply. Use the title role and small buttons so it sits quietly in the thread; the answers come back as the person’s own message."
         code={`<Message>
   <MessageAvatar><SunIcon /></MessageAvatar>
@@ -297,7 +333,8 @@ export default function QuestionnaireDocs() {
 
       <Example
         title="Choice states"
-        description="Rows darken on hover and take an ink edge and an ink check when picked. Disabled choices fade; an invalid question edges its choices in the destructive colour and explains what is missing."
+        minHeight="min-h-80"
+        description="Rows darken on hover and take an ink edge and a filled indicator when picked. Disabled choices fade; an invalid question edges its choices in the destructive colour and explains what is missing."
         code={`<QuestionnaireChoice value="iad" defaultChecked>Washington, D.C.</QuestionnaireChoice>
 <QuestionnaireChoice value="gru" disabled>São Paulo</QuestionnaireChoice>
 
@@ -307,7 +344,10 @@ export default function QuestionnaireDocs() {
 </QuestionnaireItem>`}
       >
         <div className="grid w-full gap-8 md:grid-cols-2">
-          <Questionnaire aria-label="Primary region">
+          <Questionnaire
+            items={[{ name: "primary-region", choices: [{ value: "iad" }, { value: "fra" }, { value: "gru", disabled: true }] }]}
+            aria-label="Primary region"
+          >
             <QuestionnaireItem name="primary-region">
               <QuestionnaireTitle size="sm">Primary region</QuestionnaireTitle>
               <QuestionnaireChoices>
@@ -326,7 +366,10 @@ export default function QuestionnaireDocs() {
               </QuestionnaireChoices>
             </QuestionnaireItem>
           </Questionnaire>
-          <Questionnaire aria-label="Deploy alerts">
+          <Questionnaire
+            items={[{ name: "alerts", required: true, choices: [{ value: "email" }, { value: "slack" }, { value: "webhook" }] }]}
+            aria-label="Deploy alerts"
+          >
             <QuestionnaireItem name="alerts" multiple required invalid>
               <QuestionnaireTitle size="sm">Send deploy alerts to</QuestionnaireTitle>
               <QuestionnaireChoices>
@@ -350,7 +393,7 @@ export default function QuestionnaireDocs() {
         dont={[
           "Don’t print “Step 2 of 4” above the question; the progress bar already shows it.",
           "Don’t use a questionnaire for a form people fill in once and review; use fields on one page.",
-          "Don’t colour choices; picked choices get an ink edge and an ink check.",
+          "Don’t colour choices; picked choices get an ink edge and a filled indicator.",
         ]}
       />
 
@@ -361,7 +404,7 @@ export default function QuestionnaireDocs() {
           { prop: "onSubmit", type: "(event: FormEvent) => void", description: "Runs when every required question has an answer. Read the answers with FormData." },
           { prop: "defaultItem / item", type: "string", description: "The question shown first, or the controlled current question." },
           { prop: "onItemChange", type: "(item: string) => void", description: "Called when the current question changes." },
-          { prop: "items", type: "QuestionnaireItemDefinition[]", description: "Optional list of questions and choices, to keep shortcuts stable when choices render conditionally." },
+          { prop: "items", type: "QuestionnaireItemDefinition[]", description: "The questions and their choice values. Pass it so the server renders the first question, the progress bar and the buttons, and so shortcuts stay stable when choices render conditionally." },
         ]}
       />
 

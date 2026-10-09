@@ -39,6 +39,8 @@ export interface PlanPickerProps {
   onUpgrade: (plan: LumenPlan) => void | Promise<void>
   onSchedule: (plan: LumenPlan) => void | Promise<void>
   onCancelScheduled: () => void
+  /** Anchor for links that jump to the picker, e.g. "change-plan". */
+  anchorId?: string
   className?: string
 }
 
@@ -59,6 +61,7 @@ export function PlanPicker({
   onUpgrade,
   onSchedule,
   onCancelScheduled,
+  anchorId,
   className,
 }: PlanPickerProps) {
   const id = React.useId()
@@ -111,7 +114,11 @@ export function PlanPicker({
   }
 
   return (
-    <section aria-labelledby={`${id}-title`} className={cn("@container/plans grid gap-8", className)}>
+    <section
+      id={anchorId}
+      aria-labelledby={`${id}-title`}
+      className={cn("@container/plans grid scroll-mt-24 gap-8", className)}
+    >
       <div className="flex flex-col gap-4 @min-[48rem]/plans:flex-row @min-[48rem]/plans:items-end @min-[48rem]/plans:justify-between @min-[48rem]/plans:gap-10">
         <div className="grid gap-2">
           <h2 id={`${id}-title`} className="text-h3 text-foreground">

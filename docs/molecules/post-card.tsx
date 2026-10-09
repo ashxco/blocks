@@ -16,15 +16,15 @@ export default function PostCardDocs() {
     <Examples>
       <Example
         title="Post card"
-        description="Flat tinted cover, category, title, a two-line excerpt and meta. The whole card is one link."
+        description="Flat tinted cover, title and a two-line excerpt, then category, date and reading time in one meta line. The whole card is one link."
         code={`<PostCard
   category="Product"
-  title="Introducing preview environments"
-  excerpt="Every branch now gets its own URL…"
-  date="Sep 22, 2026"
-  readTime="4 min read"
+  title="A database branch for every pull request"
+  excerpt="Preview environments now get a copy-on-write branch…"
+  date="Oct 7, 2026"
+  readTime="5 min read"
   href="/live/blog/post"
-  cover={{ pattern: "window", tint: "violet" }}
+  cover={{ pattern: "branch", tint: "mint" }}
 />`}
       >
         <div className="grid w-full max-w-narrow gap-8 sm:grid-cols-2">
@@ -48,7 +48,7 @@ export default function PostCardDocs() {
         title="Featured post on a panel"
         layout="full"
         description="Set tone to panel to give the lead story a dark emphasis surface. Use it once per page."
-        code={`<FeaturedPost tone="panel" cover={{ pattern: "branch", tint: "mint" }} />`}
+        code={`<FeaturedPost tone="panel" cover={{ pattern: "uptime", tint: "sky" }} />`}
       >
         <div className="p-6 sm:p-10">
           <FeaturedPost
@@ -60,7 +60,7 @@ export default function PostCardDocs() {
             dateTime="2026-08-14"
             readTime="10 min read"
             author={{ name: "Tom Lindqvist", role: "Infrastructure" }}
-            cover={{ pattern: "branch", tint: "mint" }}
+            cover={{ pattern: "uptime", tint: "sky" }}
           />
         </div>
       </Example>
@@ -97,8 +97,15 @@ export default function PostCardDocs() {
       <Example
         title="Covers"
         layout="stack"
-        description="Six shape patterns and six fills. The panel fill is the dark emphasis surface; the others are flat tints that follow the theme."
-        code={`<PostCover pattern="orbit" tint="sand" />`}
+        description="Thirteen shape patterns and six fills, so a dozen posts in a row never repeat a cover. The panel fill is the dark emphasis surface; the others are flat tints that follow the theme. The compare pattern draws real figures as bars."
+        code={`<PostCover pattern="orbit" tint="sand" />
+<PostCover
+  pattern="compare"
+  figures={[
+    { label: "Before", value: "61s", share: 1 },
+    { label: "After", value: "18s", share: 0.29 },
+  ]}
+/>`}
       >
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {coverPatterns.map((pattern, i) => (
@@ -112,16 +119,31 @@ export default function PostCardDocs() {
         </div>
       </Example>
 
+      <Example
+        title="Cover thumbnails"
+        layout="stack"
+        description={`For lists of posts, size="sm" draws the whole cover at card size and scales it to a 6rem thumbnail, so each pattern stays recognisable.`}
+        code={`<PostCover size="sm" pattern="terminal" tint="panel" />`}
+      >
+        <div className="flex flex-wrap gap-4">
+          {coverPatterns.map((pattern, i) => (
+            <PostCover key={pattern} size="sm" pattern={pattern} tint={coverTints[i % coverTints.length]} />
+          ))}
+        </div>
+      </Example>
+
       <Guidelines
         do={[
           "Write titles that say what the reader will learn or get.",
           "Keep excerpts to two lines; the card clamps anything longer.",
-          "Vary cover tints and patterns so neighbouring cards look different.",
+          "Vary cover tints and patterns so neighbouring cards look different; don’t reuse a pattern within twelve posts.",
+          "Pick a pattern that matches the story: compare for before and after numbers, regions for anything global.",
         ]}
         dont={[
           "Don’t use photos with text on them as covers.",
           "Don’t add a second link inside the card; the whole card is the link.",
           "Don’t put more than one featured post on a page.",
+          "Don’t add a category label or badge above the title; the meta line carries it.",
         ]}
       />
 
@@ -130,12 +152,12 @@ export default function PostCardDocs() {
         rows={[
           { prop: "title", type: "string", description: "Post title, in the text-h4 role." },
           { prop: "excerpt", type: "string", description: "Summary, clamped to two lines." },
-          { prop: "category", type: "string", description: "Shown in brand violet above the title." },
+          { prop: "category", type: "string", description: "First item of the meta line under the title. Also drives the grid filter." },
           { prop: "date", type: "string", description: "Display date." },
           { prop: "dateTime", type: "string", description: "Machine-readable date for the time element." },
           { prop: "readTime", type: "string", description: "e.g. “4 min read”." },
           { prop: "href", type: "string", default: '"/live/blog/post"', description: "Where the card links." },
-          { prop: "cover", type: "{ pattern?: CoverPattern; tint?: CoverTint }", default: '{ pattern: "window", tint: "violet" }', description: "Cover shapes and fill." },
+          { prop: "cover", type: "{ pattern?: CoverPattern; tint?: CoverTint; figures?: CoverFigure[] }", default: '{ pattern: "branch", tint: "mint" }', description: "Cover shapes and fill. figures feeds the compare pattern." },
           { prop: "as", type: '"h2" | "h3"', default: '"h3"', description: "Heading level of the title." },
         ]}
       />
@@ -165,8 +187,10 @@ export default function PostCardDocs() {
       <ApiTable
         title="PostCover"
         rows={[
-          { prop: "pattern", type: '"window" | "terminal" | "orbit" | "bars" | "grid" | "branch"', default: '"window"', description: "Shape composition." },
+          { prop: "pattern", type: '"window" | "terminal" | "orbit" | "bars" | "grid" | "branch" | "compare" | "regions" | "uptime" | "stack" | "menubar" | "fields" | "address"', default: '"window"', description: "Shape composition." },
+          { prop: "figures", type: "{ label: string; value: string; share: number }[]", default: "Before 61s, after 18s", description: "Bars for the compare pattern, longest first. share runs from 0 to 1; the last bar is drawn in ink." },
           { prop: "tint", type: '"violet" | "mint" | "sand" | "sky" | "rose" | "panel"', default: '"violet"', description: "Fill behind the shapes." },
+          { prop: "size", type: '"default" | "sm"', default: '"default"', description: "sm is a 6rem × 4.5rem thumbnail with the whole composition scaled down." },
           { prop: "className", type: "string", description: "Override the 16:10 ratio or radius." },
         ]}
       />

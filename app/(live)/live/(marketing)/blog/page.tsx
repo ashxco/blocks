@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { BlogIndex } from "./_components/blog-index"
 import { LatestList } from "./_components/latest-list"
 import { NewsletterBand } from "./_components/newsletter-band"
-import { categories, featuredPost, posts, withoutCategoryLabel } from "./_data/posts"
+import { LATEST_COUNT, categories, featuredPost, posts } from "./_data/posts"
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -34,7 +34,7 @@ export default function BlogPage() {
             Get posts by email
             <ArrowDownIcon data-icon="inline-end" />
           </Button>
-          <Button variant="ghost" nativeButton={false} render={<Link href="/live/changelog" />}>
+          <Button variant="outline" nativeButton={false} render={<Link href="/live/changelog" />}>
             <HistoryIcon data-icon="inline-start" />
             Read the changelog
           </Button>
@@ -43,12 +43,12 @@ export default function BlogPage() {
 
       <div className="container-page pb-section-sm">
         <div className="grid gap-x-12 gap-y-14 lg:grid-cols-12">
-          <FeaturedPost {...withoutCategoryLabel(featuredPost)} tone="panel" as="h2" className="min-w-0 lg:col-span-8" />
-          <LatestList posts={posts.slice(0, 5)} className="lg:col-span-4" />
+          <FeaturedPost {...featuredPost} tone="panel" as="h2" className="min-w-0 lg:col-span-8" />
+          <LatestList posts={posts.slice(0, LATEST_COUNT)} className="lg:col-span-4" />
         </div>
       </div>
 
-      <BlogIndex posts={posts} categories={categories} />
+      <BlogIndex posts={posts} categories={categories} skip={LATEST_COUNT} />
 
       <NewsletterBand />
     </>

@@ -29,9 +29,9 @@ export default function HeroDocs() {
         layout="full"
         description="Change the headline, actions and command for a product or campaign page. Highlight one word, never more."
         code={`<Hero
-  title={<>Preview every branch. Merge with <span className="text-brand">confidence.</span></>}
+  title={<>Preview every branch. Merge with <span className="text-brand">confidence</span>.</>}
   description="Every pull request gets its own URL with production-like data, so reviewers see the change before it ships."
-  primaryAction={{ label: "Start for free", href: "/live/sign-up" }}
+  primaryAction={{ label: "Start free trial", href: "/live/sign-up" }}
   secondaryAction={{ label: "See all features", href: "/live/features" }}
   command="lumen preview --branch feat/billing"
 />`}
@@ -39,11 +39,11 @@ export default function HeroDocs() {
         <Hero
           title={
             <>
-              Preview every branch. Merge with <span className="text-brand">confidence.</span>
+              Preview every branch. Merge with <span className="text-brand">confidence</span>.
             </>
           }
           description="Every pull request gets its own URL with production-like data, so reviewers see the change before it ships."
-          primaryAction={{ label: "Start for free", href: "/live/sign-up" }}
+          primaryAction={{ label: "Start free trial", href: "/live/sign-up" }}
           secondaryAction={{ label: "See all features", href: "/live/features" }}
           command="lumen preview --branch feat/billing"
         />
@@ -58,8 +58,8 @@ export default function HeroDocs() {
   variant="centered"
   visual={null}
   command={null}
-  title={<>Pricing that grows <span className="text-brand">with you.</span></>}
-  description="Start free. Pay per server when you go to production, never per seat."
+  title={<>Pricing that grows with <span className="text-brand">you</span>.</>}
+  description="Plans from $5 a month, with a 14-day Pro trial. Pay for traffic, never per seat."
   secondaryAction={null}
 />`}
       >
@@ -69,10 +69,10 @@ export default function HeroDocs() {
           command={null}
           title={
             <>
-              Pricing that grows <span className="text-brand">with you.</span>
+              Pricing that grows with <span className="text-brand">you</span>.
             </>
           }
-          description="Start free. Pay per server when you go to production, never per seat."
+          description="Plans from $5 a month, with a 14-day Pro trial. Pay for traffic, never per seat."
           secondaryAction={null}
         />
       </Example>
@@ -94,6 +94,7 @@ export default function HeroDocs() {
         do={[
           "Use one hero per page, as the page’s h1.",
           "Keep the headline to two short lines and highlight one word with text-brand.",
+          "End statements with a period, outside the highlighted word.",
           "Pair one primary action with one outline action.",
           "Show the product with real components, not a screenshot of a mockup.",
         ]}
@@ -111,7 +112,7 @@ export default function HeroDocs() {
           { prop: "variant", type: '"split" | "centered"', default: '"split"', description: "Copy beside the visual, or centred above it." },
           { prop: "title", type: "ReactNode", default: '"Ship anything. Own everything."', description: "Display headline. Wrap one word in <span className=\"text-brand\">." },
           { prop: "description", type: "ReactNode", description: "Lead paragraph under the headline." },
-          { prop: "primaryAction", type: "{ label: string; href: string } | null", default: '"Start for free" → /live/sign-up', description: "Ink button with an arrow. Pass null to hide it." },
+          { prop: "primaryAction", type: "{ label: string; href: string } | null", default: '"Start free trial" → /live/sign-up', description: "Ink button with an arrow. Pass null to hide it." },
           { prop: "secondaryAction", type: "{ label: string; href: string } | null", default: '"Book a demo" → /live/contact', description: "Outline button. Pass null to hide it." },
           { prop: "command", type: "string | null", default: '"npm i -g lumen"', description: "Install command with a copy button. Pass null to hide it." },
           { prop: "visual", type: "ReactNode | null", default: "<HeroProductMoment />", description: "Replaces the product moment. Pass null for a copy-only hero." },

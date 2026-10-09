@@ -7,6 +7,7 @@ import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Spinner } from "@/components/ui/spinner"
 import {
   Table,
   TableBody,
@@ -20,11 +21,25 @@ import {
 
 type Status = "Ready" | "Building" | "Failed" | "Canceled"
 
-const statusVariant: Record<Status, "success" | "warning" | "destructive" | "secondary"> = {
+/* The same status reads the same everywhere: in progress is info, with a spinner. */
+const statusVariant: Record<Status, "success" | "info" | "destructive" | "secondary"> = {
   Ready: "success",
-  Building: "warning",
+  Building: "info",
   Failed: "destructive",
   Canceled: "secondary",
+}
+
+function StatusBadge({ status }: { status: Status }) {
+  return (
+    <Badge variant={statusVariant[status]}>
+      {status === "Building" ? (
+        <Spinner className="size-3" />
+      ) : (
+        <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
+      )}
+      {status}
+    </Badge>
+  )
 }
 
 const deployments: {
@@ -174,7 +189,7 @@ export default function TableDocs() {
             {deployments.map((d) => (
               <TableRow key={d.id}>
                 <TableCell>
-                  <div className="grid max-w-72">
+                  <div className="grid min-w-48 max-w-72">
                     <span className="truncate font-semibold">{d.message}</span>
                     <span className="font-mono text-xs text-muted-foreground">{d.commit}</span>
                   </div>
@@ -186,7 +201,7 @@ export default function TableDocs() {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={statusVariant[d.status]}>{d.status}</Badge>
+                  <StatusBadge status={d.status} />
                 </TableCell>
                 <TableCell className="text-right text-copy">{d.duration}</TableCell>
                 <TableCell className="text-right text-muted-foreground">{d.age}</TableCell>
@@ -251,7 +266,7 @@ export default function TableDocs() {
       <Example
         title="Dense"
         layout="stack"
-        description={`size="sm" drops rows to the control height for settings and long lists people scan quickly.`}
+        description={`size="sm" drops rows to --table-row-height-sm for settings and long lists people scan quickly.`}
         code={`<Table size="sm">…</Table>`}
       >
         <Table size="sm">
@@ -341,7 +356,7 @@ export default function TableDocs() {
       <ApiTable
         rows={[
           { prop: "variant", type: '"plain" | "card"', default: '"plain"', description: "Table: plain sits on the page; card adds a border, card radius and a tinted header." },
-          { prop: "size", type: '"default" | "sm"', default: '"default"', description: "Table: row height. default uses --table-row-height, sm uses --control-height-md." },
+          { prop: "size", type: '"default" | "sm"', default: '"default"', description: "Table: row height. default uses --table-row-height, sm uses --table-row-height-sm." },
           { prop: "data-state", type: '"selected"', description: "TableRow: marks a selected row with the accent fill. aria-selected works too." },
           { prop: "colSpan", type: "number", description: "TableCell: span columns, for empty states and grouped rows." },
           { prop: "className", type: "string", description: "Every part. Use text-right for numeric columns and font-semibold for the lead column." },

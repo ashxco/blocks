@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { StatusBadge, type ProjectStatus } from "@/components/blocks/data-table"
+import { personTone } from "@/components/blocks/members-list/people"
 import { cn } from "@/lib/utils"
 
 interface Deployment {
@@ -16,7 +17,8 @@ interface Deployment {
   branch: string
   environment: "Production" | "Preview"
   status: Exclude<ProjectStatus, "paused">
-  author: { name: string; initials: string; tint: "violet" | "mint" | "sand" | "sky" | "rose" }
+  /** Avatar tints come from the shared people list, so each person matches the team page and the top bar. */
+  author: { name: string; initials: string }
   duration: string
   time: string
 }
@@ -30,7 +32,7 @@ const deployments: Deployment[] = [
     branch: "feat/usage-page",
     environment: "Preview",
     status: "building",
-    author: { name: "Priya Shah", initials: "PS", tint: "mint" },
+    author: { name: "Priya Shah", initials: "PS" },
     duration: "1m 12s",
     time: "Just now",
   },
@@ -42,7 +44,7 @@ const deployments: Deployment[] = [
     branch: "main",
     environment: "Production",
     status: "ready",
-    author: { name: "Maya Chen", initials: "MC", tint: "violet" },
+    author: { name: "Maya Chen", initials: "MC" },
     duration: "28s",
     time: "2 min ago",
   },
@@ -54,7 +56,7 @@ const deployments: Deployment[] = [
     branch: "feat/rate-limits",
     environment: "Preview",
     status: "failed",
-    author: { name: "Leo Martins", initials: "LM", tint: "sand" },
+    author: { name: "Leo Martins", initials: "LM" },
     duration: "41s",
     time: "18 min ago",
   },
@@ -66,7 +68,7 @@ const deployments: Deployment[] = [
     branch: "main",
     environment: "Production",
     status: "ready",
-    author: { name: "Daniel Okafor", initials: "DO", tint: "sky" },
+    author: { name: "Daniel Okafor", initials: "DO" },
     duration: "19s",
     time: "1 hr ago",
   },
@@ -78,7 +80,7 @@ const deployments: Deployment[] = [
     branch: "main",
     environment: "Production",
     status: "ready",
-    author: { name: "Maya Chen", initials: "MC", tint: "violet" },
+    author: { name: "Maya Chen", initials: "MC" },
     duration: "34s",
     time: "3 hr ago",
   },
@@ -90,7 +92,7 @@ const deployments: Deployment[] = [
     branch: "fix/push-tokens",
     environment: "Preview",
     status: "failed",
-    author: { name: "Sam Rivera", initials: "SR", tint: "rose" },
+    author: { name: "Daniel Okafor", initials: "DO" },
     duration: "52s",
     time: "7 hr ago",
   },
@@ -113,10 +115,11 @@ export function RecentDeployments({ className }: { className?: string }) {
             Builds from every branch. Production keeps the last good build when one fails.
           </p>
         </div>
+        {/* The negative margin cancels the ghost padding, so the label lines up with the times below. */}
         <Button
           variant="ghost"
           size="sm"
-          className="shrink-0"
+          className="-mr-(--button-padding-x-sm) shrink-0"
           nativeButton={false}
           render={<Link href="/live/app/projects" />}
         >
@@ -164,9 +167,9 @@ export function RecentDeployments({ className }: { className?: string }) {
                 </span>
               </div>
 
-              <div className="flex items-center gap-2.5 @min-[44rem]/deploys:justify-self-end">
+              <div className="flex basis-full items-center gap-2.5 @min-[44rem]/deploys:justify-self-end">
                 <Avatar size="sm">
-                  <AvatarFallback tone={deployment.author.tint}>{deployment.author.initials}</AvatarFallback>
+                  <AvatarFallback tone={personTone(deployment.author.name)}>{deployment.author.initials}</AvatarFallback>
                 </Avatar>
                 <p className="flex gap-x-2 text-caption @min-[44rem]/deploys:grid @min-[44rem]/deploys:text-right">
                   <span className="sr-only">{deployment.author.name}, </span>

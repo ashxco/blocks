@@ -22,15 +22,15 @@ const releases = [
 const environments = [
   { name: "Production", url: "lumen.app", status: "Ready" },
   { name: "Staging", url: "staging.lumen.app", status: "Ready" },
-  { name: "feat/preview-comments", url: "preview-comments.lumen.dev", status: "Building" },
-  { name: "chore/node-22", url: "node-22.lumen.dev", status: "Failed" },
-  { name: "content/regions", url: "regions.lumen.dev", status: "Ready" },
-  { name: "fix/apex-redirect", url: "apex-redirect.lumen.dev", status: "Ready" },
+  { name: "feat/preview-comments", url: "preview-comments.lumen.app", status: "Building" },
+  { name: "chore/node-22", url: "node-22.lumen.app", status: "Failed" },
+  { name: "content/regions", url: "regions.lumen.app", status: "Ready" },
+  { name: "fix/apex-redirect", url: "apex-redirect.lumen.app", status: "Ready" },
 ]
 
 const statusDot: Record<string, string> = {
   Ready: "bg-success",
-  Building: "bg-warning",
+  Building: "bg-info",
   Failed: "bg-destructive",
 }
 
@@ -97,9 +97,12 @@ export default function ScrollAreaDocs() {
         <ScrollArea className="w-full">
           <div className="flex w-max gap-3 pb-4">
             {environments.map((env) => (
-              <div key={env.name} className="grid w-60 gap-3 rounded-(--card-radius) border border-border bg-card p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="truncate text-sm font-semibold text-foreground">{env.name}</p>
+              <div
+                key={env.name}
+                className="grid w-64 grid-cols-1 gap-3 rounded-(--card-radius) border border-border bg-card p-4"
+              >
+                <div className="flex min-w-0 items-center justify-between gap-3">
+                  <p className="min-w-0 truncate text-sm font-semibold text-foreground">{env.name}</p>
                   <span className="inline-flex shrink-0 items-center gap-1.5 text-caption text-copy">
                     <span aria-hidden="true" className={`size-1.5 rounded-full ${statusDot[env.status]}`} />
                     {env.status}

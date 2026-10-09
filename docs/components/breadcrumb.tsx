@@ -25,7 +25,7 @@ export default function BreadcrumbDocs() {
     <Examples>
       <Example
         title="Default"
-        description="Muted links lead to the current page, which is in full ink and not a link."
+        description="Muted links lead to the current page, which is in full ink and not a link. The trail stays on one line; on a phone, drop the top level and keep the levels nearest the page."
         code={`<Breadcrumb>
   <BreadcrumbList>
     <BreadcrumbItem>
@@ -33,7 +33,7 @@ export default function BreadcrumbDocs() {
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
-      <BreadcrumbLink render={<Link href="/projects/web-app" />}>web-app</BreadcrumbLink>
+      <BreadcrumbLink render={<Link href="/projects/lumen-web" />}>lumen-web</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
@@ -44,16 +44,16 @@ export default function BreadcrumbDocs() {
       >
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#acme">Acme Inc.</BreadcrumbLink>
+            <BreadcrumbItem className="@max-sm:hidden">
+              <BreadcrumbLink href="#lumen-labs">Lumen Labs</BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
+            <BreadcrumbSeparator className="@max-sm:hidden" />
             <BreadcrumbItem>
               <BreadcrumbLink href="#projects">Projects</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="#web-app">web-app</BreadcrumbLink>
+              <BreadcrumbLink href="#lumen-web">lumen-web</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -75,7 +75,7 @@ export default function BreadcrumbDocs() {
     </DropdownMenuTrigger>
     <DropdownMenuContent>
       <DropdownMenuItem>Projects</DropdownMenuItem>
-      <DropdownMenuItem>web-app</DropdownMenuItem>
+      <DropdownMenuItem>lumen-web</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 </BreadcrumbItem>`}
@@ -83,7 +83,7 @@ export default function BreadcrumbDocs() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="#acme">Acme Inc.</BreadcrumbLink>
+              <BreadcrumbLink href="#lumen-labs">Lumen Labs</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -101,7 +101,7 @@ export default function BreadcrumbDocs() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>Projects</DropdownMenuItem>
-                  <DropdownMenuItem>web-app</DropdownMenuItem>
+                  <DropdownMenuItem>lumen-web</DropdownMenuItem>
                   <DropdownMenuItem>Deployments</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -152,14 +152,10 @@ export default function BreadcrumbDocs() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="#storage">
+              <BreadcrumbLink href="#backups">
                 <FolderIcon />
-                storage
+                backups
               </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#backups">backups</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -182,7 +178,7 @@ export default function BreadcrumbDocs() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="#web-app">web-app</BreadcrumbLink>
+                <BreadcrumbLink href="#lumen-web">lumen-web</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -193,7 +189,7 @@ export default function BreadcrumbDocs() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="grid gap-1.5">
               <h3 className="text-h2">Domains</h3>
-              <p className="text-body text-copy">Serve web-app from your own domains. Certificates renew on their own.</p>
+              <p className="text-body text-copy">Serve lumen-web from your own domains. Certificates renew on their own.</p>
             </div>
             <Button>Add domain</Button>
           </div>

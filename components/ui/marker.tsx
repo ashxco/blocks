@@ -43,9 +43,7 @@ function Marker({
     defaultTagName: "div",
     props: mergeProps<"div">(
       {
-        // text-caption is repeated outside cn(), which reads it as a colour
-        // and would drop it next to text-muted-foreground.
-        className: `text-caption ${cn(markerVariants({ variant, className }))}`,
+        className: cn(markerVariants({ variant, className })),
       },
       props
     ),

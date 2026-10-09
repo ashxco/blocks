@@ -4,7 +4,7 @@ import { Progress as ProgressPrimitive } from "@base-ui/react/progress"
 import { cn } from "@/lib/utils"
 
 /**
- * Blocks progress. A thin ink bar on a muted track. Put a ProgressLabel and
+ * Blocks progress. A thin ink bar on a bg-secondary track. Put a ProgressLabel and
  * ProgressValue inside to show them above the bar. Pass `value={null}` for
  * work of unknown length: the bar sweeps, or rests at low contrast when the
  * user prefers reduced motion.
@@ -34,7 +34,7 @@ function ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props) {
   return (
     <ProgressPrimitive.Track
       className={cn(
-        "relative flex h-1 w-full items-center overflow-hidden rounded-full bg-muted",
+        "relative flex h-1 w-full items-center overflow-hidden rounded-full bg-secondary",
         className
       )}
       data-slot="progress-track"

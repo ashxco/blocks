@@ -18,8 +18,12 @@ import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react
  * A clean grid of round day cells. The month title is bold and sits on the
  * left, the arrows on the right. Selected days fill with ink, ranges run as
  * an accent band between two ink ends, and today carries a small brand dot.
- * Cell size comes from --cell-size (40px); override it with a class such as
- * "[--cell-size:--spacing(9)]".
+ * Cell size comes from the --calendar-cell-size token. Set it on the
+ * calendar or an ancestor to change it: "[--calendar-cell-size:--spacing(9)]".
+ *
+ * Every label is formatted with the `locale` prop (English by default), never
+ * the environment's locale, so the server and the browser render the same
+ * markup. Pass a fixed `today` as well when the calendar renders on the server.
  */
 function Calendar({
   className,
@@ -43,7 +47,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn(
-        "group/calendar bg-background p-3 text-foreground [--cell-size:--spacing(10)]",
+        "group/calendar bg-background p-3 text-foreground [--cell-size:var(--calendar-cell-size)]",
         "in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
@@ -53,7 +57,7 @@ function Calendar({
       locale={locale}
       formatters={{
         formatMonthDropdown: (date) =>
-          date.toLocaleString(locale?.code, { month: "short" }),
+          date.toLocaleString(locale?.code ?? "en-US", { month: "short" }),
         ...formatters,
       }}
       classNames={{
@@ -86,7 +90,7 @@ function Calendar({
           defaultClassNames.dropdowns
         ),
         dropdown_root: cn(
-          "relative flex h-(--control-height-sm) items-center rounded-(--control-radius) border border-input bg-muted ps-3 pe-2",
+          "relative flex h-(--control-height-xs) items-center rounded-(--control-radius) border border-input bg-muted ps-3 pe-2",
           "transition-[border-color] duration-(--duration-fast) ease-standard hover:border-foreground/25",
           "has-focus-visible:border-ring has-focus-visible:focus-ring",
           defaultClassNames.dropdown_root
@@ -99,7 +103,7 @@ function Calendar({
           "select-none",
           captionLayout === "label"
             ? "text-title"
-            : "flex items-center gap-1 text-sm font-semibold [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
+            : "flex items-center gap-1 text-label [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
           defaultClassNames.caption_label
         ),
         month_grid: cn("w-full border-collapse", defaultClassNames.month_grid),
@@ -123,7 +127,10 @@ function Calendar({
             ? "[&:nth-child(2)[data-selected=true]]:rounded-s-full"
             : "[&:first-child[data-selected=true]]:rounded-s-full",
           "[&:last-child[data-selected=true]]:rounded-e-full",
-          multiMonth && "data-[outside=true]:bg-transparent",
+          // Outside days stay plain with several months, so close the band
+          // on the last and first in-month days next to them.
+          multiMonth &&
+            "data-[outside=true]:bg-transparent [&:has(+[data-outside=true])]:rounded-e-full [[data-outside=true]+&]:rounded-s-full",
           defaultClassNames.day
         ),
         range_start: cn("rounded-s-full bg-accent", defaultClassNames.range_start),
@@ -215,7 +222,7 @@ function CalendarDayButton({
       ref={ref}
       type="button"
       data-slot="calendar-day-button"
-      data-day={day.date.toLocaleDateString(locale?.code)}
+      data-day={day.date.toLocaleDateString(locale?.code ?? "en-US")}
       data-today={modifiers.today || undefined}
       data-selected-single={
         modifiers.selected &&

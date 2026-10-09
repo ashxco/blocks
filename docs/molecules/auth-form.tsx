@@ -2,6 +2,8 @@
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { AuthForm } from "@/components/blocks/auth-form"
+import { AuthShowcase, AuthShowcaseCompact } from "@/components/blocks/auth-form/showcase"
+import { Wordmark } from "@/components/blocks/wordmark"
 
 export default function AuthFormDocs() {
   return (
@@ -20,7 +22,7 @@ export default function AuthFormDocs() {
 
       <Example
         title="Sign up, framed"
-        description="Asks for a name too, checks the password length and ends on an email confirmation. Frame it when the page behind is tinted."
+        description="Asks for a name too, checks the password length (PASSWORD_MIN, shared with the security settings) and ends on an email confirmation. Frame it when the page behind is tinted. In narrow slots the heading steps down to the h3 role."
         layout="full"
         surface="subtle"
         minHeight="min-h-200"
@@ -33,32 +35,36 @@ export default function AuthFormDocs() {
 
       <Example
         title="Split with a panel"
-        description="How the auth templates use it: the form on the canvas, a dark panel beside it for one line of proof. The panel drops away in narrow containers."
+        description="How the auth templates use it: the wordmark and the form on the canvas, the Lumen showcase on a dark panel beside them, with a deploy streaming in and a customer quote. In narrow containers the panel gives way to the quote on its own, under the form."
         layout="full"
-        code={`<div className="@container">
-  <div className="grid overflow-hidden rounded-(--panel-radius) border @narrow:grid-cols-2">
-    <aside className="hidden flex-col justify-between bg-panel p-10 text-panel-muted @narrow:flex">
-      …
-    </aside>
-    <div className="flex justify-center px-6 py-14">
+        code={`import { AuthShowcase, AuthShowcaseCompact } from "@/components/blocks/auth-form/showcase"
+
+<div className="@container">
+  <div className="grid @min-[60rem]:grid-cols-2">
+    <div className="flex flex-col px-6">
+      <Wordmark />
       <AuthForm />
+      <AuthShowcaseCompact className="@min-[60rem]:hidden" />
+    </div>
+    <div className="hidden p-3 @min-[60rem]:flex">
+      <AuthShowcase />
     </div>
   </div>
 </div>`}
       >
         <div className="@container p-4 sm:p-6">
-          <div className="grid overflow-hidden rounded-(--panel-radius) border @narrow:grid-cols-2">
-            <aside className="hidden flex-col justify-between gap-16 bg-panel p-10 text-panel-muted @narrow:flex">
-              <p className="text-title text-panel-foreground">Lumen</p>
-              <figure className="grid gap-6">
-                <blockquote className="text-h3 text-panel-foreground">
-                  “We merged 40 pull requests last week and reviewed every one on its own preview URL.”
-                </blockquote>
-                <figcaption className="text-sm">Priya Raman, staff engineer at Halcyon Labs</figcaption>
-              </figure>
-            </aside>
-            <div className="flex justify-center px-(--card-padding) py-14">
-              <AuthForm as="h2" />
+          <div className="grid overflow-hidden rounded-(--panel-radius) border bg-background @min-[60rem]:grid-cols-2">
+            <div className="flex min-w-0 flex-col px-6 @min-[60rem]:px-10">
+              <div className="flex h-(--header-height) items-center">
+                <Wordmark href={null} />
+              </div>
+              <div className="flex flex-1 flex-col items-center justify-center py-10">
+                <AuthForm as="h2" />
+                <AuthShowcaseCompact className="mt-12 w-full max-w-104 @min-[60rem]:hidden" />
+              </div>
+            </div>
+            <div className="hidden min-w-0 p-3 @min-[60rem]:flex">
+              <AuthShowcase />
             </div>
           </div>
         </div>

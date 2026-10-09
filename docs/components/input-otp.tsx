@@ -6,6 +6,14 @@ import { CheckIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp"
 
@@ -27,6 +35,32 @@ function SixDigits({ defaultValue = "", value, onChange, ...props }: SixDigitsPr
         onChange?.(next)
       }}
       {...props}
+    >
+      <InputOTPGroup>
+        <InputOTPSlot index={0} />
+        <InputOTPSlot index={1} />
+        <InputOTPSlot index={2} />
+      </InputOTPGroup>
+      <InputOTPSeparator />
+      <InputOTPGroup>
+        <InputOTPSlot index={3} />
+        <InputOTPSlot index={4} />
+        <InputOTPSlot index={5} />
+      </InputOTPGroup>
+    </InputOTP>
+  )
+}
+
+function BackupCode() {
+  const [code, setCode] = React.useState("K7F2QX")
+  return (
+    <InputOTP
+      maxLength={6}
+      pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+      aria-label="Backup code"
+      value={code}
+      onChange={(next) => setCode(next.toUpperCase())}
+      pasteTransformer={(text) => text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()}
     >
       <InputOTPGroup>
         <InputOTPSlot index={0} />
@@ -66,82 +100,92 @@ function VerifySignIn() {
 
   if (status === "verified") {
     return (
-      <div role="status" className="grid w-full max-w-96 justify-items-start gap-5 rounded-(--card-radius) border bg-card p-(--card-padding)">
-        <span className="grid size-10 place-items-center rounded-full bg-success-subtle text-success">
-          <CheckIcon aria-hidden="true" className="size-5" strokeWidth={2.5} />
-        </span>
-        <div className="grid gap-1">
-          <h3 className="text-h4">You’re signed in</h3>
-          <p className="text-body text-copy">This device stays trusted for 30 days.</p>
-        </div>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setCode("")
-            setStatus("idle")
-          }}
-        >
-          Try again
-        </Button>
-      </div>
+      <Card role="status" className="w-full max-w-md">
+        <CardHeader className="justify-items-center text-center">
+          <span className="mb-3 grid size-10 place-items-center rounded-full bg-success-subtle text-success">
+            <CheckIcon aria-hidden="true" className="size-5" strokeWidth={2.5} />
+          </span>
+          <CardTitle>You’re signed in</CardTitle>
+          <CardDescription className="text-pretty">This device stays trusted for 30 days.</CardDescription>
+        </CardHeader>
+        <CardFooter className="justify-center">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setCode("")
+              setStatus("idle")
+            }}
+          >
+            Try again
+          </Button>
+        </CardFooter>
+      </Card>
     )
   }
 
   return (
-    <form
-      noValidate
-      onSubmit={(e) => {
-        e.preventDefault()
-        verify(code)
-      }}
-      className="grid w-full max-w-96 gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)"
-    >
-      <div className="grid gap-1">
-        <h3 className="text-h4">Check your email</h3>
-        <p className="text-body text-copy">
-          We sent a code to <span className="font-semibold text-foreground">jamie@halcyon.dev</span>. It expires in 10
-          minutes.
-        </p>
-      </div>
-      <Field data-invalid={Boolean(error)}>
-        <FieldLabel htmlFor={`${id}-code`}>Verification code</FieldLabel>
-        <SixDigits
-          id={`${id}-code`}
-          value={code}
-          onChange={(value) => {
-            setCode(value)
-            if (error) setError(null)
-          }}
-          onComplete={verify}
-          autoComplete="one-time-code"
-          aria-invalid={Boolean(error)}
-          aria-describedby={error ? `${id}-error` : undefined}
-          containerClassName="w-fit"
-        />
-        <FieldError id={`${id}-error`}>{error}</FieldError>
-      </Field>
-      <div className="grid gap-3">
-        <Button type="submit" className="w-full">
-          Verify and sign in
-        </Button>
-        <p className="text-center text-caption text-muted-foreground" aria-live="polite">
-          {resent ? (
-            "We sent a new code. Check your spam folder too."
-          ) : (
-            <>
-              Didn’t get it?{" "}
-              <button
-                type="button"
-                className="rounded-xs font-semibold text-foreground underline underline-offset-4 outline-none hover:text-brand focus-visible:focus-ring"
-                onClick={() => setResent(true)}
-              >
-                Send a new code
-              </button>
-            </>
-          )}
-        </p>
-      </div>
-    </form>
+    <Card className="w-full max-w-md">
+      <form
+        noValidate
+        onSubmit={(e) => {
+          e.preventDefault()
+          verify(code)
+        }}
+        className="contents"
+      >
+        <CardHeader className="justify-items-center text-center">
+          <CardTitle>Check your email</CardTitle>
+          <CardDescription className="text-balance">
+            We sent a code to <span className="font-semibold whitespace-nowrap text-foreground">jamie@acme.dev</span>.
+            It expires in 10&nbsp;minutes.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Field data-invalid={Boolean(error)}>
+            <FieldLabel htmlFor={`${id}-code`} className="justify-center">
+              Verification code
+            </FieldLabel>
+            <SixDigits
+              id={`${id}-code`}
+              value={code}
+              onChange={(value) => {
+                setCode(value)
+                if (error) setError(null)
+              }}
+              onComplete={verify}
+              autoComplete="one-time-code"
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? `${id}-error` : undefined}
+              containerClassName="justify-center"
+            />
+            <FieldError id={`${id}-error`} className="justify-center text-center">
+              {error}
+            </FieldError>
+          </Field>
+        </CardContent>
+        <CardFooter className="flex-col items-stretch">
+          <Button type="submit" className="w-full">
+            Verify and sign in
+          </Button>
+          <p className="text-center text-caption text-muted-foreground" aria-live="polite">
+            {resent ? (
+              "We sent a new code. Check your spam folder too."
+            ) : (
+              <>
+                Didn’t get it?{" "}
+                <button
+                  type="button"
+                  className="rounded-xs font-semibold text-foreground underline underline-offset-4 outline-none hover:text-brand focus-visible:focus-ring"
+                  onClick={() => setResent(true)}
+                >
+                  Send a new code
+                </button>
+              </>
+            )}
+          </p>
+        </CardFooter>
+      </form>
+    </Card>
   )
 }
 
@@ -150,7 +194,7 @@ export default function InputOTPDocs() {
     <Examples>
       <Example
         title="Six digits"
-        description="Each character gets its own slot. The active slot shows a caret and the violet focus border; filled slots turn to the canvas colour."
+        description="Each character gets its own slot with the same fill as Input, empty or not. The active slot turns to the canvas colour with a caret and the violet focus border."
         code={`import { REGEXP_ONLY_DIGITS } from "input-otp"
 
 <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS}>
@@ -175,38 +219,71 @@ export default function InputOTPDocs() {
         description="Backup codes mix letters and digits. Split them into two groups of three so they are easy to read back."
         code={`import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 
-<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
-  <InputOTPGroup>…3 slots…</InputOTPGroup>
+const [code, setCode] = React.useState("")
+
+<InputOTP
+  maxLength={6}
+  pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+  aria-label="Backup code"
+  value={code}
+  onChange={(next) => setCode(next.toUpperCase())}
+  pasteTransformer={(text) => text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()}
+>
+  <InputOTPGroup>
+    <InputOTPSlot index={0} />
+    <InputOTPSlot index={1} />
+    <InputOTPSlot index={2} />
+  </InputOTPGroup>
   <InputOTPSeparator />
-  <InputOTPGroup>…3 slots…</InputOTPGroup>
+  <InputOTPGroup>
+    <InputOTPSlot index={3} />
+    <InputOTPSlot index={4} />
+    <InputOTPSlot index={5} />
+  </InputOTPGroup>
 </InputOTP>`}
       >
-        <InputOTP
-          maxLength={6}
-          pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-          aria-label="Backup code"
-          pasteTransformer={(text) => text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()}
-        >
-          <InputOTPGroup>
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-          </InputOTPGroup>
-          <InputOTPSeparator />
-          <InputOTPGroup>
-            <InputOTPSlot index={3} />
-            <InputOTPSlot index={4} />
-            <InputOTPSlot index={5} />
-          </InputOTPGroup>
-        </InputOTP>
+        <BackupCode />
       </Example>
 
       <Example
         title="States"
         layout="stack"
         description="Set aria-invalid on InputOTP and every slot turns destructive. Disabled codes dim as a whole."
-        code={`<InputOTP maxLength={6} aria-invalid aria-describedby="code-error">…</InputOTP>
-<FieldError id="code-error">That code is incorrect. Check the latest email.</FieldError>`}
+        code={`<Field data-invalid className="w-fit">
+  <FieldLabel htmlFor="code">Verification code</FieldLabel>
+  <InputOTP id="code" maxLength={6} pattern={REGEXP_ONLY_DIGITS} defaultValue="481920" aria-invalid aria-describedby="code-error">
+    <InputOTPGroup>
+      <InputOTPSlot index={0} />
+      <InputOTPSlot index={1} />
+      <InputOTPSlot index={2} />
+    </InputOTPGroup>
+    <InputOTPSeparator />
+    <InputOTPGroup>
+      <InputOTPSlot index={3} />
+      <InputOTPSlot index={4} />
+      <InputOTPSlot index={5} />
+    </InputOTPGroup>
+  </InputOTP>
+  <FieldError id="code-error">That code is incorrect. Check the latest email from Lumen.</FieldError>
+</Field>
+
+<Field className="w-fit">
+  <FieldLabel htmlFor="code-locked">Verification code</FieldLabel>
+  <InputOTP id="code-locked" maxLength={6} pattern={REGEXP_ONLY_DIGITS} defaultValue="4819" disabled>
+    <InputOTPGroup>
+      <InputOTPSlot index={0} />
+      <InputOTPSlot index={1} />
+      <InputOTPSlot index={2} />
+    </InputOTPGroup>
+    <InputOTPSeparator />
+    <InputOTPGroup>
+      <InputOTPSlot index={3} />
+      <InputOTPSlot index={4} />
+      <InputOTPSlot index={5} />
+    </InputOTPGroup>
+  </InputOTP>
+  <FieldDescription>Too many attempts. Try again in 5 minutes.</FieldDescription>
+</Field>`}
       >
         <div className="grid gap-8">
           <Field data-invalid className="w-fit">
@@ -225,18 +302,38 @@ export default function InputOTPDocs() {
       <Example
         title="Verify sign-in"
         description="Verify as soon as the last digit lands, and keep a button for people who paste or use a screen reader. Enter 000000 to see the expired-code error."
+        surface="subtle"
         code={`<Field data-invalid={!!error}>
-  <FieldLabel htmlFor="code">Verification code</FieldLabel>
+  <FieldLabel htmlFor="code" className="justify-center">
+    Verification code
+  </FieldLabel>
   <InputOTP
     id="code"
     maxLength={6}
+    pattern={REGEXP_ONLY_DIGITS}
     value={code}
     onChange={setCode}
     onComplete={verify}
     autoComplete="one-time-code"
     aria-invalid={!!error}
-  >…</InputOTP>
-  <FieldError>{error}</FieldError>
+    aria-describedby={error ? "code-error" : undefined}
+    containerClassName="justify-center"
+  >
+    <InputOTPGroup>
+      <InputOTPSlot index={0} />
+      <InputOTPSlot index={1} />
+      <InputOTPSlot index={2} />
+    </InputOTPGroup>
+    <InputOTPSeparator />
+    <InputOTPGroup>
+      <InputOTPSlot index={3} />
+      <InputOTPSlot index={4} />
+      <InputOTPSlot index={5} />
+    </InputOTPGroup>
+  </InputOTP>
+  <FieldError id="code-error" className="justify-center text-center">
+    {error}
+  </FieldError>
 </Field>`}
       >
         <VerifySignIn />

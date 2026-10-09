@@ -29,19 +29,27 @@ function PopoverContent({
   alignOffset = 0,
   side = "bottom",
   sideOffset = 8,
+  collisionAvoidance,
+  collisionBoundary,
+  container,
   ...props
 }: PopoverPrimitive.Popup.Props &
   Pick<
     PopoverPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset"
-  >) {
+    "align" | "alignOffset" | "side" | "sideOffset" | "collisionAvoidance" | "collisionBoundary"
+  > & {
+    /** Element to portal into instead of <body>, e.g. a preview stage. */
+    container?: PopoverPrimitive.Portal.Props["container"]
+  }) {
   return (
-    <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Portal container={container}>
       <PopoverPrimitive.Positioner
         align={align}
         alignOffset={alignOffset}
         side={side}
         sideOffset={sideOffset}
+        collisionAvoidance={collisionAvoidance}
+        collisionBoundary={collisionBoundary}
         className="isolate z-(--z-overlay) outline-none"
       >
         <PopoverPrimitive.Popup

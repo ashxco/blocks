@@ -31,8 +31,9 @@ const bubbleVariants = cva(
           "*:data-[slot=bubble-content]:bg-primary *:data-[slot=bubble-content]:text-primary-foreground [&>[data-slot=bubble-content]:is(button,a):hover]:bg-primary/85",
         secondary:
           "*:data-[slot=bubble-content]:bg-secondary *:data-[slot=bubble-content]:text-secondary-foreground [&>[data-slot=bubble-content]:is(button,a):hover]:bg-secondary/65",
+        // A system note: a quiet fill, a hairline and muted text, so it never reads as either speaker.
         muted:
-          "*:data-[slot=bubble-content]:bg-muted *:data-[slot=bubble-content]:text-foreground [&>[data-slot=bubble-content]:is(button,a):hover]:bg-accent",
+          "*:data-[slot=bubble-content]:border-border *:data-[slot=bubble-content]:bg-muted *:data-[slot=bubble-content]:text-muted-foreground [&>[data-slot=bubble-content]:is(button,a):hover]:bg-accent [&>[data-slot=bubble-content]:is(button,a):hover]:text-foreground",
         tinted:
           "*:data-[slot=bubble-content]:bg-brand-subtle *:data-[slot=bubble-content]:text-brand-subtle-foreground [&>[data-slot=bubble-content]:is(button,a):hover]:border-brand/30",
         outline:

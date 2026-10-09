@@ -5,11 +5,11 @@ import { ArchiveRestoreIcon, CableIcon, DatabaseIcon, GaugeIcon, GitBranchIcon }
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import {
   AvatarStack,
+  EdgeRegions,
   FeatureBento,
   LiveMetrics,
   MaskedSecrets,
   PreviewUrls,
-  RegionMap,
   Sparkline,
   TrafficShift,
 } from "@/components/blocks/feature-bento"
@@ -110,7 +110,7 @@ export default function FeatureBentoDocs() {
 <Sparkline className="text-brand" />
 <TrafficShift />
 <MaskedSecrets />
-<RegionMap />
+<EdgeRegions />
 <AvatarStack />
 <LiveMetrics /> // on a dark panel`}
       >
@@ -132,8 +132,8 @@ export default function FeatureBentoDocs() {
             <MaskedSecrets />
           </div>
           <div className="grid content-start gap-3 rounded-(--card-radius) bg-brand-subtle p-5">
-            <p className="text-label text-foreground">RegionMap</p>
-            <RegionMap />
+            <p className="text-label text-foreground">EdgeRegions</p>
+            <EdgeRegions />
           </div>
           <div className="grid content-start gap-3">
             <p className="text-label text-foreground">AvatarStack</p>

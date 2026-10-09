@@ -5,6 +5,7 @@ import { ArrowDownIcon } from "lucide-react"
 
 import { PricingPlans, type BillingPeriod } from "@/components/blocks/pricing-plans"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Kern } from "@/components/ui/kern"
 
 /**
  * The top of the pricing page: a split hero with the page title on the left
@@ -20,7 +21,9 @@ export function PricingOverview() {
       <section className="container-page pt-section-sm">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-end lg:gap-16">
           <h1 className="max-w-narrow text-display text-foreground">
-            Pay for traffic, not <span className="text-brand">teammates.</span>
+            <Kern>
+              Pay for traffic, not <span className="text-brand">teammates</span>.
+            </Kern>
           </h1>
 
           <div className="grid justify-items-start gap-8 lg:pb-2">

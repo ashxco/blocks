@@ -9,7 +9,7 @@ export default function SiteFooterDocs() {
       <Example
         title="Default"
         layout="full"
-        description="Wordmark and newsletter sign-up on the left, three link columns on the right, and a bottom row with legal links and live status."
+        description="Wordmark and a monthly release-notes sign-up on the left, three columns of long-tail links on the right, and a bottom row with legal links and live status."
         code={`<SiteFooter />`}
       >
         <SiteFooter />
@@ -26,15 +26,24 @@ export default function SiteFooterDocs() {
       </Example>
 
       <Example
+        title="Without the sign-up"
+        layout="full"
+        description="On pages that already ask for an email, such as a blog with its own newsletter band, turn the footer form off. A short line about the product takes its place."
+        code={`<SiteFooter newsletter={false} />`}
+      >
+        <SiteFooter newsletter={false} />
+      </Example>
+
+      <Example
         title="Four columns"
         layout="full"
-        description="Pass your own columns. The grid holds up to four and drops to two columns on narrow screens."
+        description="Pass your own columns. The grid holds up to four and drops to two columns on narrow screens. Fill them with the long tail, not the header links."
         code={`<SiteFooter
   columns={[
-    { title: "Product", links: [{ label: "Features", href: "/live/features" }, …] },
+    { title: "Product", links: [{ label: "Integrations", href: "/integrations" }, …] },
     { title: "Developers", links: […] },
     { title: "Company", links: […] },
-    { title: "Legal", links: […] },
+    { title: "Resources", links: […] },
   ]}
 />`}
       >
@@ -43,9 +52,9 @@ export default function SiteFooterDocs() {
             {
               title: "Product",
               links: [
-                { label: "Features", href: "/live/features" },
-                { label: "Pricing", href: "/live/pricing" },
-                { label: "Changelog", href: "/live/changelog" },
+                { label: "Integrations", href: "#" },
+                { label: "Self-hosting", href: "#" },
+                { label: "Security", href: "#" },
               ],
             },
             {
@@ -53,23 +62,23 @@ export default function SiteFooterDocs() {
               links: [
                 { label: "Documentation", href: "#" },
                 { label: "CLI reference", href: "#" },
-                { label: "Status", href: "#" },
+                { label: "API", href: "#" },
               ],
             },
             {
               title: "Company",
               links: [
-                { label: "About", href: "/live/about" },
-                { label: "Blog", href: "/live/blog" },
-                { label: "Contact", href: "/live/contact" },
+                { label: "Careers", href: "/live/about#careers" },
+                { label: "Customers", href: "#" },
+                { label: "Press", href: "#" },
               ],
             },
             {
-              title: "Legal",
+              title: "Resources",
               links: [
-                { label: "Privacy", href: "#" },
-                { label: "Terms", href: "#" },
-                { label: "DPA", href: "#" },
+                { label: "Guides", href: "/live/blog" },
+                { label: "Templates", href: "#" },
+                { label: "Partners", href: "#" },
               ],
             },
           ]}
@@ -80,7 +89,7 @@ export default function SiteFooterDocs() {
         do={[
           "Group links by what people are looking for: product, developers, company.",
           "Keep the status link honest and point it at your real status page.",
-          "Use the same footer on every marketing page.",
+          "Use the same footer on every marketing page; only the sign-up comes and goes.",
         ]}
         dont={[
           "Don’t repeat every header link; the footer is for the long tail.",
@@ -91,7 +100,8 @@ export default function SiteFooterDocs() {
 
       <ApiTable
         rows={[
-          { prop: "columns", type: "{ title: string; links: { label: string; href: string }[] }[]", default: "Product, Developers, Company", description: "Link columns beside the newsletter form." },
+          { prop: "columns", type: "{ title: string; links: { label: string; href: string }[] }[]", default: "Product, Developers, Company", description: "Link columns beside the newsletter form. The defaults hold long-tail pages, none of the header links." },
+          { prop: "newsletter", type: "boolean", default: "true", description: "Show the newsletter sign-up. Turn it off on pages with their own sign-up." },
           { prop: "className", type: "string", description: "Classes for the <footer> element." },
         ]}
       />

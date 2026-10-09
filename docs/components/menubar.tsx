@@ -29,17 +29,70 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar"
+import { cn } from "@/lib/utils"
 
-function LumenMenubar() {
+type Stage = HTMLDivElement | null
+
+/**
+ * The first examples show one menu already open, portalled into a stage inside
+ * the example so it follows the example's theme and stays under the site
+ * header. A click anywhere else closes it, as in an app.
+ */
+function MenubarStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
+  const [container, setContainer] = React.useState<Stage>(null)
+  useReturnFocus(container)
+  return (
+    <div ref={setContainer} className={cn("relative flex w-full items-start justify-center", className)}>
+      {children(container)}
+    </div>
+  )
+}
+
+/** A menu focuses itself when it opens. These open on load, so hand focus back to the page. */
+function useReturnFocus(container: Stage) {
+  React.useEffect(() => {
+    if (!container) return
+    const timer = window.setTimeout(() => {
+      const active = document.activeElement
+      if (active instanceof HTMLElement && container.contains(active)) active.blur()
+    }, 250)
+    return () => window.clearTimeout(timer)
+  }, [container])
+}
+
+/**
+ * The menu that is open on load. It only opens once the stage exists, so it is
+ * placed inside the stage from its first frame instead of against <body>, and
+ * it keeps its side and full height as the page scrolls.
+ */
+function useShownMenu(shown: boolean, container: Stage | undefined) {
+  const [open, setOpen] = React.useState(shown)
+  const ready = !shown || container != null
+  const content = shown
+    ? ({ collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined, className: "max-h-none" } as const)
+    : undefined
+  return { menu: { open: open && ready, onOpenChange: setOpen }, content }
+}
+
+interface DemoMenubarProps {
+  /** The menu that is open on load. */
+  openMenu?: string
+  /** Where the menus portal to. */
+  container?: Stage
+  className?: string
+}
+
+function LumenMenubar({ openMenu, container, className }: DemoMenubarProps) {
   const [sidebar, setSidebar] = React.useState(true)
   const [logs, setLogs] = React.useState(false)
   const [density, setDensity] = React.useState("comfortable")
+  const file = useShownMenu(openMenu === "file", container)
 
   return (
-    <Menubar>
-      <MenubarMenu>
+    <Menubar modal={false} className={className}>
+      <MenubarMenu {...file.menu}>
         <MenubarTrigger>File</MenubarTrigger>
-        <MenubarContent>
+        <MenubarContent container={container} {...file.content}>
           <MenubarGroup>
             <MenubarItem>
               <FilePlusIcon />
@@ -73,7 +126,7 @@ function LumenMenubar() {
 
       <MenubarMenu>
         <MenubarTrigger>Edit</MenubarTrigger>
-        <MenubarContent>
+        <MenubarContent container={container}>
           <MenubarItem>
             Undo
             <MenubarShortcut>⌘Z</MenubarShortcut>
@@ -100,7 +153,7 @@ function LumenMenubar() {
 
       <MenubarMenu>
         <MenubarTrigger>View</MenubarTrigger>
-        <MenubarContent>
+        <MenubarContent container={container}>
           <MenubarCheckboxItem checked={sidebar} onCheckedChange={setSidebar}>
             Sidebar
             <MenubarShortcut>⌘B</MenubarShortcut>
@@ -122,7 +175,7 @@ function LumenMenubar() {
 
       <MenubarMenu>
         <MenubarTrigger>Deploy</MenubarTrigger>
-        <MenubarContent>
+        <MenubarContent container={container}>
           <MenubarGroup>
             <MenubarItem>
               <RotateCcwIcon />
@@ -150,17 +203,18 @@ function LumenMenubar() {
   )
 }
 
-function LogsMenubar() {
+function LogsMenubar({ openMenu, container }: DemoMenubarProps) {
   const [timestamps, setTimestamps] = React.useState(true)
   const [wrap, setWrap] = React.useState(false)
   const [follow, setFollow] = React.useState(true)
   const [level, setLevel] = React.useState("all")
+  const view = useShownMenu(openMenu === "view", container)
 
   return (
-    <Menubar>
-      <MenubarMenu>
+    <Menubar modal={false}>
+      <MenubarMenu {...view.menu}>
         <MenubarTrigger>View</MenubarTrigger>
-        <MenubarContent>
+        <MenubarContent container={container} {...view.content}>
           <MenubarCheckboxItem checked={timestamps} onCheckedChange={setTimestamps}>
             Timestamps
             <MenubarShortcut>⌘T</MenubarShortcut>
@@ -176,7 +230,7 @@ function LogsMenubar() {
       </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger>Level</MenubarTrigger>
-        <MenubarContent>
+        <MenubarContent container={container}>
           <MenubarGroup>
             <MenubarLabel>Show</MenubarLabel>
             <MenubarRadioGroup value={level} onValueChange={(value) => setLevel(String(value))}>
@@ -218,7 +272,9 @@ export default function MenubarDocs() {
   <MenubarMenu>…</MenubarMenu>
 </Menubar>`}
       >
-        <LumenMenubar />
+        <MenubarStage className="min-h-72">
+          {(container) => <LumenMenubar openMenu="file" container={container} />}
+        </MenubarStage>
       </Example>
 
       <Example
@@ -232,19 +288,22 @@ export default function MenubarDocs() {
   <MenubarRadioItem value="error">Errors only</MenubarRadioItem>
 </MenubarRadioGroup>`}
       >
-        <LogsMenubar />
+        <MenubarStage className="min-h-60">
+          {(container) => <LogsMenubar openMenu="view" container={container} />}
+        </MenubarStage>
       </Example>
 
       <Example
         title="In an app window"
-        description="A realistic composition: the menubar sits in the window chrome of a desktop app, next to the project name."
+        description="A realistic composition: in the window chrome of a desktop app, the menubar drops its own frame so the menus sit on the bar, right after the project name."
         layout="full"
       >
         <div className="p-6 sm:p-10">
           <div className="overflow-hidden rounded-(--card-radius) border bg-background">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b bg-subtle px-3 py-2">
-              <LumenMenubar />
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b bg-subtle px-3 py-1.5">
               <p className="px-2 text-label text-foreground">lumen-web</p>
+              <span aria-hidden="true" className="h-4 w-px bg-border" />
+              <LumenMenubar className="border-0 bg-transparent p-0" />
             </div>
             <div className="grid gap-2 p-6">
               <p className="text-title text-foreground">Deployments</p>

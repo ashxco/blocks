@@ -53,8 +53,8 @@ export default function PipelineShowcaseDocs() {
                 "→ Alert: error rate 4.2% on web (threshold 1%)",
                 "→ Started 3 minutes after deploy c3e88a0",
                 "$ lumen deploys --limit 2",
-                "→ c3e88a0  main  live    3m ago",
-                "→ a41c9e2  main  ready  2h ago",
+                "→ c3e88a0  live   3m ago",
+                "→ a41c9e2  ready  2h ago",
               ],
             },
             {

@@ -44,8 +44,8 @@ function FieldLegend({
       data-variant={variant}
       className={cn(
         "mb-3 text-foreground",
-        "data-[variant=legend]:text-lg data-[variant=legend]:leading-snug data-[variant=legend]:font-bold data-[variant=legend]:tracking-tight",
-        "data-[variant=label]:mb-2.5 data-[variant=label]:text-sm data-[variant=label]:leading-snug data-[variant=label]:font-semibold",
+        "data-[variant=legend]:text-title",
+        "data-[variant=label]:mb-2.5 data-[variant=label]:text-label",
         className
       )}
       {...props}
@@ -80,9 +80,9 @@ const fieldVariants = cva("group/field flex w-full gap-2", {
       ],
       responsive: [
         "flex-col *:w-full [&>.sr-only]:w-auto",
-        "@prose/field-group:flex-row @prose/field-group:items-center @prose/field-group:gap-3 @prose/field-group:*:w-auto",
-        "@prose/field-group:has-[>[data-slot=field-content]]:items-start @prose/field-group:*:data-[slot=field-label]:flex-auto",
-        "@prose/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox]]:mt-px @prose/field-group:has-[>[data-slot=field-content]]:[&>[role=radio]]:mt-px",
+        "@md/field-group:flex-row @md/field-group:items-center @md/field-group:gap-3 @md/field-group:*:w-auto",
+        "@md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto",
+        "@md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox]]:mt-px @md/field-group:has-[>[data-slot=field-content]]:[&>[role=radio]]:mt-px",
       ],
     },
   },
@@ -112,7 +112,7 @@ function FieldContent({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-content"
       className={cn(
-        "group/field-content flex min-w-0 flex-1 flex-col gap-1 leading-snug",
+        "group/field-content flex min-w-0 flex-1 flex-col gap-1",
         className
       )}
       {...props}
@@ -128,7 +128,7 @@ function FieldLabel({
     <Label
       data-slot="field-label"
       className={cn(
-        "group/field-label peer/field-label flex w-fit gap-2 leading-snug",
+        "group/field-label peer/field-label flex w-fit gap-2",
         "group-data-[disabled=true]/field:opacity-50",
         // Choice card: a label that wraps a <Field>.
         "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:gap-0",
@@ -152,7 +152,7 @@ function FieldTitle({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-label"
       className={cn(
-        "flex w-fit items-center gap-2 text-sm leading-snug font-semibold text-foreground",
+        "flex w-fit items-center gap-2 text-label text-foreground",
         "group-data-[disabled=true]/field:opacity-50",
         className
       )}
@@ -166,8 +166,8 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="field-description"
       className={cn(
-        "text-left text-(length:--text-caption) leading-(--text-caption--line-height) font-normal text-pretty text-muted-foreground",
-        "group-has-data-horizontal/field:text-balance",
+        "text-left text-caption font-normal text-pretty text-muted-foreground",
+        "group-data-[orientation=horizontal]/field:text-balance",
         "[[data-slot=field-legend]+&]:-mt-2 [[data-slot=field]>[data-slot=field-label]+&]:-mt-1",
         "[&>a]:font-semibold [&>a]:text-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-brand",
         className
@@ -189,7 +189,7 @@ function FieldSeparator({
       data-slot="field-separator"
       data-content={!!children}
       className={cn(
-        "flex items-center gap-3 py-1 text-(length:--text-caption) leading-(--text-caption--line-height) font-medium text-muted-foreground",
+        "flex items-center gap-3 py-1 text-caption font-medium text-muted-foreground",
         className
       )}
       {...props}
@@ -251,7 +251,7 @@ function FieldError({
       role="alert"
       data-slot="field-error"
       className={cn(
-        "flex items-start gap-1.5 text-(length:--text-caption) leading-(--text-caption--line-height) font-medium text-destructive",
+        "flex items-start gap-1.5 text-caption font-medium text-pretty text-destructive",
         className
       )}
       {...props}

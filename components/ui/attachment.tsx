@@ -150,7 +150,8 @@ function AttachmentDescription({
       data-slot="attachment-description"
       className={cn(
         "block max-w-full min-w-0 truncate text-xs text-muted-foreground tabular-nums",
-        "group-data-[state=error]/attachment:text-destructive",
+        // An error says what went wrong and how to fix it, so it wraps instead of truncating.
+        "group-data-[state=error]/attachment:text-destructive group-data-[state=error]/attachment:whitespace-normal",
         className
       )}
       {...props}
@@ -226,7 +227,7 @@ function AttachmentGroup({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="attachment-group"
       className={cn(
-        "flex min-w-0 snap-x snap-mandatory scroll-px-1 scrollbar-none gap-2 overflow-x-auto overscroll-x-contain p-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start",
+        "flex min-w-0 no-scrollbar snap-x snap-mandatory scroll-px-1 gap-2 overflow-x-auto overscroll-x-contain p-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start",
         className
       )}
       {...props}

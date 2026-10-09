@@ -4,11 +4,11 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import { Wordmark } from "@/components/blocks/site-header/wordmark"
+import { Wordmark } from "@/components/blocks/wordmark"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-export { Wordmark } from "@/components/blocks/site-header/wordmark"
+export { Wordmark } from "@/components/blocks/wordmark"
 
 export interface SiteHeaderLink {
   label: string
@@ -21,6 +21,10 @@ export interface SiteHeaderProps {
   links?: SiteHeaderLink[]
   /** Start in the solid state instead of waiting for the page to scroll. */
   solid?: boolean
+  /** Label of the primary button. Use the same label as the hero and closing call to action. */
+  ctaLabel?: string
+  /** Render with the menu open, for documentation. Below lg only. */
+  defaultOpen?: boolean
 }
 
 export const siteHeaderLinks: SiteHeaderLink[] = [
@@ -57,18 +61,40 @@ function getScrollRoot(node: HTMLElement | null): HTMLElement | null {
 }
 
 /**
+ * Locks scrolling on the scroll root (or the body for the window) and pads it
+ * by the scrollbar width so the layout doesn't shift. Returns the undo.
+ */
+function lockScroll(root: HTMLElement | null) {
+  const locked = root ?? document.body
+  const gap = root ? root.offsetWidth - root.clientWidth : window.innerWidth - document.documentElement.clientWidth
+  const previous = { overflow: locked.style.overflow, paddingRight: locked.style.paddingRight }
+  locked.style.overflow = "hidden"
+  if (gap > 0) locked.style.paddingRight = `${gap}px`
+  return () => {
+    locked.style.overflow = previous.overflow
+    locked.style.paddingRight = previous.paddingRight
+  }
+}
+
+/**
  * Full-width site header. Transparent at the top of the page; once the page
  * scrolls it turns into frosted glass with a hairline. Below lg, a menu button
  * opens a full-screen menu.
  */
-export function SiteHeader({ className, links = siteHeaderLinks, solid = false }: SiteHeaderProps) {
+export function SiteHeader({
+  className,
+  links = siteHeaderLinks,
+  solid = false,
+  ctaLabel = "Start free trial",
+  defaultOpen = false,
+}: SiteHeaderProps) {
   const pathname = usePathname()
   const menuId = React.useId()
   const headerRef = React.useRef<HTMLElement>(null)
   const barRef = React.useRef<HTMLDivElement>(null)
   const toggleRef = React.useRef<HTMLButtonElement>(null)
   const scrollRoot = React.useRef<HTMLElement | null>(null)
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(defaultOpen)
 
   // Close the menu when the route changes.
   const [lastPathname, setLastPathname] = React.useState(pathname)
@@ -96,12 +122,7 @@ export function SiteHeader({ className, links = siteHeaderLinks, solid = false }
   // While open: lock scroll, close on Escape, close when the bar grows wide.
   React.useEffect(() => {
     if (!open) return
-    const root = scrollRoot.current
-    const locked = root ?? document.body
-    const gap = root ? root.offsetWidth - root.clientWidth : window.innerWidth - document.documentElement.clientWidth
-    const previous = { overflow: locked.style.overflow, paddingRight: locked.style.paddingRight }
-    locked.style.overflow = "hidden"
-    if (gap > 0) locked.style.paddingRight = `${gap}px`
+    const restoreScroll = lockScroll(getScrollRoot(headerRef.current))
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return
@@ -117,8 +138,7 @@ export function SiteHeader({ className, links = siteHeaderLinks, solid = false }
     if (barRef.current) observer.observe(barRef.current)
 
     return () => {
-      locked.style.overflow = previous.overflow
-      locked.style.paddingRight = previous.paddingRight
+      restoreScroll()
       document.removeEventListener("keydown", onKeyDown)
       observer.disconnect()
     }
@@ -174,20 +194,22 @@ export function SiteHeader({ className, links = siteHeaderLinks, solid = false }
             </ul>
           </nav>
 
-          <div className="flex items-center justify-end gap-5">
+          <div className="flex items-center justify-end gap-3 @min-[64rem]/bar:gap-5">
             <Link
               href="/live/sign-in"
               className="hidden rounded-xs text-label text-copy outline-none transition-colors duration-(--duration-fast) hover:text-foreground focus-visible:focus-ring @min-[64rem]/bar:inline"
             >
               Log in
             </Link>
+            {/* The primary action stays in the bar on phones, beside the menu button. */}
             <Button
               size="sm"
               nativeButton={false}
               render={<Link href="/live/sign-up" />}
-              className="hidden @min-[64rem]/bar:inline-flex"
+              // The open menu repeats it full width, so the bar copy steps aside.
+              className={cn("hidden @min-[22rem]/bar:inline-flex", open && "invisible")}
             >
-              Get started
+              {ctaLabel}
             </Button>
             <Button
               ref={toggleRef}
@@ -224,7 +246,7 @@ export function SiteHeader({ className, links = siteHeaderLinks, solid = false }
         id={menuId}
         inert={!open}
         className={cn(
-          "fixed inset-0 z-0 flex flex-col overflow-y-auto bg-background pt-(--header-height)",
+          "@container/menu fixed inset-0 z-0 flex flex-col overflow-y-auto bg-background pt-(--header-height)",
           "transition-[opacity,visibility] duration-(--duration-base) ease-out",
           open ? "visible opacity-100" : "invisible opacity-0"
         )}
@@ -262,7 +284,7 @@ export function SiteHeader({ className, links = siteHeaderLinks, solid = false }
         <div
           style={{ transitionDelay: open ? `${60 + links.length * 35}ms` : "0ms" }}
           className={cn(
-            "container-page grid gap-3 pt-8 pb-10 transition-[opacity,translate] duration-(--duration-slow) ease-out sm:grid-cols-2",
+            "container-page grid gap-3 pt-8 pb-10 transition-[opacity,translate] duration-(--duration-slow) ease-out @min-[40rem]/menu:grid-cols-2",
             open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
           )}
         >
@@ -272,7 +294,7 @@ export function SiteHeader({ className, links = siteHeaderLinks, solid = false }
             render={<Link href="/live/sign-up" onClick={() => setOpen(false)} />}
             className="w-full"
           >
-            Get started
+            {ctaLabel}
           </Button>
           <Button
             size="lg"

@@ -68,13 +68,12 @@ function MessageHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="message-header"
-      // text-caption stays outside cn(), which would read it as a colour.
-      className={`text-caption ${cn(
-        "flex min-h-(--avatar-size-sm) max-w-full min-w-0 items-center gap-2 px-4 text-muted-foreground",
+      className={cn(
+        "flex min-h-(--avatar-size-sm) max-w-full min-w-0 items-center gap-2 px-4 text-caption text-muted-foreground",
         "*:[strong]:font-semibold *:[strong]:text-foreground",
         "group-has-data-[variant=ghost]/message:px-0",
         className
-      )}`}
+      )}
       {...props}
     />
   )
@@ -84,11 +83,11 @@ function MessageFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="message-footer"
-      className={`text-caption ${cn(
-        "flex max-w-full min-w-0 items-center gap-1 px-4 text-muted-foreground",
+      className={cn(
+        "flex max-w-full min-w-0 items-center gap-1 px-4 text-caption text-muted-foreground",
         "group-has-data-[variant=ghost]/message:px-0 group-data-[align=end]/message:justify-end",
         className
-      )}`}
+      )}
       {...props}
     />
   )

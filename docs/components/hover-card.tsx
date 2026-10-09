@@ -1,14 +1,121 @@
 "use client"
 
+import * as React from "react"
 import { CalendarIcon, GitCommitHorizontalIcon, GlobeIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import { cn } from "@/lib/utils"
 
 const linkClass =
   "rounded-xs font-semibold text-brand underline-offset-4 outline-none hover:underline focus-visible:focus-ring"
+
+type Stage = HTMLDivElement | null
+
+/**
+ * A stage the example's card opens into, so the page shows the card itself.
+ * It is open on load and stays open while people click elsewhere on the page;
+ * hovering the trigger and leaving it closes it as usual.
+ */
+function HoverCardStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
+  const [container, setContainer] = React.useState<Stage>(null)
+  return (
+    <div ref={setContainer} className={cn("relative flex w-full items-start justify-center pt-2", className)}>
+      {children(container)}
+    </div>
+  )
+}
+
+/**
+ * Open on load, and kept open when people click elsewhere. It only opens once
+ * the stage exists, so the card is placed inside the stage from its first frame.
+ */
+function usePinnedOpen(container: Stage) {
+  const [open, setOpen] = React.useState(true)
+  const onOpenChange = React.useCallback((next: boolean, details: { reason: string }) => {
+    if (!next && (details.reason === "outside-press" || details.reason === "focus-out")) return
+    setOpen(next)
+  }, [])
+  return { open: open && container !== null, onOpenChange }
+}
+
+/**
+ * The pinned cards open below the trigger, from its start edge, and keep that
+ * side as the page scrolls. Each sentence ends at its trigger, so the card
+ * never covers the rest of it.
+ */
+function pinnedTo(container: Stage) {
+  return { side: "bottom", align: "start", collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined } as const
+}
+
+function ProfileCard({ container }: { container: Stage }) {
+  const pinned = usePinnedOpen(container)
+  return (
+    <p className="max-w-96 text-center text-body text-copy">
+      Deployment approved by{" "}
+      <HoverCard {...pinned}>
+        <HoverCardTrigger href="#priya" className={linkClass}>
+          @priya
+        </HoverCardTrigger>
+        <HoverCardContent className="w-80" container={container} {...pinnedTo(container)}>
+          <div className="flex gap-3">
+            <Avatar size="lg">
+              <AvatarFallback>PR</AvatarFallback>
+            </Avatar>
+            <div className="grid gap-1">
+              <p className="text-title text-foreground">Priya Raman</p>
+              <p className="text-sm text-copy">Platform engineer. Owns builds, caching and the edge network.</p>
+              <p className="mt-1 flex items-center gap-1.5 text-caption text-muted-foreground">
+                <CalendarIcon aria-hidden="true" className="size-3.5" />
+                Joined March 2024
+              </p>
+            </div>
+          </div>
+        </HoverCardContent>
+      </HoverCard>
+      .
+    </p>
+  )
+}
+
+function CommitCard({ container }: { container: Stage }) {
+  const pinned = usePinnedOpen(container)
+  return (
+    <p className="max-w-96 text-center text-body text-copy">
+      Production is running main at{" "}
+      <HoverCard {...pinned}>
+        <HoverCardTrigger href="#8f2c1a9" className={`${linkClass} font-mono text-code`}>
+          8f2c1a9
+        </HoverCardTrigger>
+        <HoverCardContent className="w-80" container={container} {...pinnedTo(container)}>
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-title text-foreground">Add usage-based billing page</p>
+            <Badge variant="success">Ready</Badge>
+          </div>
+          <div className="flex items-center gap-2 text-caption text-muted-foreground">
+            <Avatar size="sm">
+              <AvatarFallback>MO</AvatarFallback>
+            </Avatar>
+            Mateo Ortiz committed 2 hours ago
+          </div>
+          <dl className="grid grid-cols-2 gap-3 border-t pt-3">
+            <div className="grid gap-0.5">
+              <dt className="text-caption text-muted-foreground">Files changed</dt>
+              <dd className="text-sm font-semibold text-foreground tabular">14</dd>
+            </div>
+            <div className="grid gap-0.5">
+              <dt className="text-caption text-muted-foreground">Build time</dt>
+              <dd className="text-sm font-semibold text-foreground tabular">38s</dd>
+            </div>
+          </dl>
+        </HoverCardContent>
+      </HoverCard>
+      .
+    </p>
+  )
+}
 
 export default function HoverCardDocs() {
   return (
@@ -29,67 +136,14 @@ export default function HoverCardDocs() {
   </HoverCardContent>
 </HoverCard>`}
       >
-        <p className="max-w-96 text-center text-body text-copy">
-          Deployment approved by{" "}
-          <HoverCard>
-            <HoverCardTrigger href="#priya" className={linkClass}>
-              @priya
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80">
-              <div className="flex gap-3">
-                <Avatar size="lg">
-                  <AvatarFallback>PR</AvatarFallback>
-                </Avatar>
-                <div className="grid gap-1">
-                  <p className="text-title text-foreground">Priya Raman</p>
-                  <p className="text-sm text-copy">Platform engineer. Owns builds, caching and the edge network.</p>
-                  <p className="mt-1 flex items-center gap-1.5 text-caption text-muted-foreground">
-                    <CalendarIcon aria-hidden="true" className="size-3.5" />
-                    Joined March 2024
-                  </p>
-                </div>
-              </div>
-            </HoverCardContent>
-          </HoverCard>{" "}
-          after the checks passed.
-        </p>
+        <HoverCardStage className="min-h-48">{(container) => <ProfileCard container={container} />}</HoverCardStage>
       </Example>
 
       <Example
         title="Commit preview"
         description="Preview a linked object, such as a commit or a deployment, with its status and the one detail people check most."
       >
-        <p className="max-w-96 text-center text-body text-copy">
-          Production is running{" "}
-          <HoverCard>
-            <HoverCardTrigger href="#8f2c1a9" className={`${linkClass} font-mono text-code`}>
-              8f2c1a9
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80">
-              <div className="flex items-start justify-between gap-3">
-                <p className="text-title text-foreground">Add usage-based billing page</p>
-                <Badge variant="success">Ready</Badge>
-              </div>
-              <div className="flex items-center gap-2 text-caption text-muted-foreground">
-                <Avatar size="sm">
-                  <AvatarFallback>ML</AvatarFallback>
-                </Avatar>
-                Marcus Lee committed 2 hours ago
-              </div>
-              <dl className="grid grid-cols-2 gap-3 border-t pt-3">
-                <div className="grid gap-0.5">
-                  <dt className="text-caption text-muted-foreground">Files changed</dt>
-                  <dd className="text-sm font-semibold text-foreground tabular">14</dd>
-                </div>
-                <div className="grid gap-0.5">
-                  <dt className="text-caption text-muted-foreground">Build time</dt>
-                  <dd className="text-sm font-semibold text-foreground tabular">38s</dd>
-                </div>
-              </dl>
-            </HoverCardContent>
-          </HoverCard>{" "}
-          from the main branch.
-        </p>
+        <HoverCardStage className="min-h-64">{(container) => <CommitCard container={container} />}</HoverCardStage>
       </Example>
 
       <Example

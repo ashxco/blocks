@@ -68,7 +68,7 @@ function MenubarTrigger({
     <DropdownMenuTrigger
       data-slot="menubar-trigger"
       className={cn(
-        "flex h-full min-h-8 items-center gap-1.5 rounded-(--overlay-item-radius) px-3 text-label text-foreground outline-none select-none",
+        "flex h-full min-h-(--control-height-xs) items-center gap-1.5 rounded-(--overlay-item-radius) px-3 text-label text-foreground outline-none select-none",
         "transition-colors duration-(--duration-fast) ease-standard",
         "hover:bg-accent focus-visible:bg-accent focus-visible:focus-ring data-popup-open:bg-accent",
         "data-disabled:pointer-events-none data-disabled:opacity-50",

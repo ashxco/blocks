@@ -1,5 +1,7 @@
 import * as React from "react"
 
+import { cn } from "@/lib/utils"
+
 /**
  * Long-form article typography, driven entirely by Blocks type roles and
  * colour tokens. Styles apply to direct children (paragraphs, headings,
@@ -31,5 +33,5 @@ const proseClasses = [
 ].join(" ")
 
 export function Prose({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="prose" className={`${proseClasses} ${className ?? ""}`} {...props} />
+  return <div data-slot="prose" className={cn(proseClasses, className)} {...props} />
 }

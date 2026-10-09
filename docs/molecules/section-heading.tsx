@@ -34,8 +34,8 @@ export default function SectionHeadingDocs() {
         description="For sections that stand alone, such as pricing or a closing pitch. Actions go in children."
         code={`<SectionHeading
   align="center"
-  title="Pricing that scales with servers, not seats."
-  description="Every plan includes unlimited projects, preview URLs and teammates."
+  title="Pay for traffic, not teammates."
+  description="Every plan includes unlimited deploys, automatic HTTPS and a preview URL for every branch."
 >
   <Button nativeButton={false} render={<Link href="/live/pricing" />}>
     See pricing <ArrowRightIcon data-icon="inline-end" />
@@ -48,8 +48,8 @@ export default function SectionHeadingDocs() {
         <div className="p-8 sm:p-12">
           <SectionHeading
             align="center"
-            title="Pricing that scales with servers, not seats."
-            description="Every plan includes unlimited projects, preview URLs and teammates."
+            title="Pay for traffic, not teammates."
+            description="Every plan includes unlimited deploys, automatic HTTPS and a preview URL for every branch."
           >
             <Button nativeButton={false} render={<Link href="/live/pricing" />}>
               See pricing
@@ -82,14 +82,14 @@ export default function SectionHeadingDocs() {
         layout="full"
         description="Brand colour on one word draws the eye. Use it once per page at most."
         code={`<SectionHeading
-  title={<>Ship anything. Own <span className="text-brand">everything.</span></>}
+  title={<>Ship anything. Own <span className="text-brand">everything</span>.</>}
 />`}
       >
         <div className="p-8 sm:p-12">
           <SectionHeading
             title={
               <>
-                Ship anything. Own <span className="text-brand">everything.</span>
+                Ship anything. Own <span className="text-brand">everything</span>.
               </>
             }
             description="Run on our cloud today and move to your own servers tomorrow, with the same pipeline."

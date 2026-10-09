@@ -32,10 +32,10 @@ function NotificationGroup() {
   const some = selected.length > 0 && !all
 
   return (
-    <FieldSet className="w-full max-w-112">
+    <FieldSet className="w-full max-w-md">
       <FieldLegend variant="label">Email me about</FieldLegend>
       <FieldGroup data-slot="checkbox-group">
-        <Field orientation="horizontal" className="border-b pb-3.5">
+        <Field orientation="horizontal">
           <Checkbox
             id="cb-all"
             checked={all}
@@ -46,7 +46,8 @@ function NotificationGroup() {
           <FieldLabel htmlFor="cb-all">All activity</FieldLabel>
         </Field>
         {events.map((event) => (
-          <Field key={event.id} orientation="horizontal">
+          // Children sit one box and one gap in, under the parent's label.
+          <Field key={event.id} orientation="horizontal" className="ps-[calc(var(--selection-size)+--spacing(3))]">
             <Checkbox
               id={`cb-${event.id}`}
               checked={selected.includes(event.id)}
@@ -78,7 +79,9 @@ export default function CheckboxDocs() {
         description="A hairline square that fills with ink when checked. Violet appears only as the focus outline."
         code={`<div className="flex items-center gap-2">
   <Checkbox id="failures" defaultChecked />
-  <Label htmlFor="failures">Email me when a build fails</Label>
+  <Label htmlFor="failures" className="font-medium">
+    Email me when a build fails
+  </Label>
 </div>`}
       >
         <div className="flex items-center gap-2">
@@ -92,13 +95,14 @@ export default function CheckboxDocs() {
       <Example
         title="States"
         description="Unchecked, checked and indeterminate, each with its disabled and invalid forms. Indeterminate shows a dash for a partly selected group."
-        code={`<Checkbox />
-<Checkbox defaultChecked />
-<Checkbox indeterminate />
-<Checkbox disabled />
-<Checkbox aria-invalid />`}
+        code={`<Checkbox aria-label="Off" />
+<Checkbox aria-label="On" defaultChecked />
+<Checkbox aria-label="Mixed" indeterminate />
+<Checkbox aria-label="Disabled" disabled />
+<Checkbox aria-label="Disabled on" disabled defaultChecked />
+<Checkbox aria-label="Invalid" aria-invalid />`}
       >
-        <div className="grid grid-cols-3 gap-x-10 gap-y-6 sm:grid-cols-6">
+        <div className="grid grid-cols-3 gap-x-10 gap-y-6 @xl:grid-cols-6">
           {[
             { label: "Off", props: {} },
             { label: "On", props: { defaultChecked: true } },
@@ -119,15 +123,24 @@ export default function CheckboxDocs() {
         title="With a description"
         layout="stack"
         description="Wrap the label and description in FieldContent. The box aligns to the first line of the label."
-        code={`<Field orientation="horizontal">
-  <Checkbox id="protect" defaultChecked />
-  <FieldContent>
-    <FieldLabel htmlFor="protect">Protect preview deployments</FieldLabel>
-    <FieldDescription>Visitors sign in with Lumen before they see a preview.</FieldDescription>
-  </FieldContent>
-</Field>`}
+        code={`<FieldGroup>
+  <Field orientation="horizontal">
+    <Checkbox id="protect" defaultChecked />
+    <FieldContent>
+      <FieldLabel htmlFor="protect">Protect preview deployments</FieldLabel>
+      <FieldDescription>Visitors sign in with Lumen before they see a preview.</FieldDescription>
+    </FieldContent>
+  </Field>
+  <Field orientation="horizontal">
+    <Checkbox id="skew" />
+    <FieldContent>
+      <FieldLabel htmlFor="skew">Skew protection</FieldLabel>
+      <FieldDescription>Keep each visitor on the build they loaded until they refresh.</FieldDescription>
+    </FieldContent>
+  </Field>
+</FieldGroup>`}
       >
-        <FieldGroup className="max-w-112">
+        <FieldGroup className="max-w-md">
           <Field orientation="horizontal">
             <Checkbox id="cb-protect" defaultChecked />
             <FieldContent>
@@ -148,12 +161,37 @@ export default function CheckboxDocs() {
       <Example
         title="Select all"
         layout="stack"
-        description="A parent checkbox is indeterminate while only some children are on, and toggles all of them."
-        code={`<Checkbox
-  checked={all}
-  indeterminate={some}
-  onCheckedChange={(checked) => setSelected(checked ? allIds : [])}
-/>`}
+        description="A parent checkbox is indeterminate while only some children are on, and toggles all of them. The children sit indented under it."
+        code={`const [selected, setSelected] = React.useState(["deploys", "failures"])
+const all = selected.length === events.length
+const some = selected.length > 0 && !all
+
+<FieldSet>
+  <FieldLegend variant="label">Email me about</FieldLegend>
+  <FieldGroup data-slot="checkbox-group">
+    <Field orientation="horizontal">
+      <Checkbox
+        id="all"
+        checked={all}
+        indeterminate={some}
+        onCheckedChange={(checked) => setSelected(checked ? events.map((e) => e.id) : [])}
+      />
+      <FieldLabel htmlFor="all">All activity</FieldLabel>
+    </Field>
+    {events.map((event) => (
+      <Field key={event.id} orientation="horizontal" className="ps-[calc(var(--selection-size)+--spacing(3))]">
+        <Checkbox
+          id={event.id}
+          checked={selected.includes(event.id)}
+          onCheckedChange={(checked) =>
+            setSelected((current) => (checked ? [...current, event.id] : current.filter((id) => id !== event.id)))
+          }
+        />
+        <FieldLabel htmlFor={event.id}>{event.label}</FieldLabel>
+      </Field>
+    ))}
+  </FieldGroup>
+</FieldSet>`}
       >
         <NotificationGroup />
       </Example>
@@ -162,17 +200,25 @@ export default function CheckboxDocs() {
         title="Choice cards"
         layout="stack"
         description="For options that need more than a line, wrap a horizontal field in FieldLabel. Checked cards take an ink border."
-        code={`<FieldLabel>
-  <Field orientation="horizontal">
-    <Checkbox value="speed" />
-    <FieldContent>
-      <FieldTitle>Speed insights</FieldTitle>
-      <FieldDescription>Core Web Vitals from real visits, by route.</FieldDescription>
-    </FieldContent>
-  </Field>
-</FieldLabel>`}
+        code={`<FieldSet>
+  <FieldLegend variant="label">Add-ons</FieldLegend>
+  <div className="grid gap-3">
+    {addons.map((addon, index) => (
+      <FieldLabel key={addon.value}>
+        <Field orientation="horizontal">
+          <Checkbox name="addons" value={addon.value} defaultChecked={index === 0} />
+          <FieldContent>
+            <FieldTitle>{addon.title}</FieldTitle>
+            <FieldDescription>{addon.description}</FieldDescription>
+          </FieldContent>
+          <span className="shrink-0 text-caption font-semibold text-foreground tabular">{addon.price}</span>
+        </Field>
+      </FieldLabel>
+    ))}
+  </div>
+</FieldSet>`}
       >
-        <FieldSet className="w-full max-w-128">
+        <FieldSet className="w-full max-w-md">
           <FieldLegend variant="label">Add-ons</FieldLegend>
           <div className="grid gap-3">
             {addons.map((addon, index) => (
@@ -198,16 +244,20 @@ export default function CheckboxDocs() {
         code={`<Field orientation="horizontal" data-invalid>
   <Checkbox id="terms" aria-invalid aria-describedby="terms-error" />
   <FieldContent>
-    <FieldLabel htmlFor="terms">I understand this deletes every deployment</FieldLabel>
-    <FieldError id="terms-error">Confirm to delete the project.</FieldError>
+    <FieldLabel htmlFor="terms">I understand this deletes every deployment of acme-web</FieldLabel>
+    <FieldError id="terms-error">Tick the box to confirm, then delete the project.</FieldError>
   </FieldContent>
 </Field>`}
       >
-        <div className="w-full max-w-112">
+        <div className="w-full max-w-md">
           <Field orientation="horizontal" data-invalid>
             <Checkbox id="cb-terms" aria-invalid aria-describedby="cb-terms-error" />
             <FieldContent>
-              <FieldLabel htmlFor="cb-terms">I understand this deletes every deployment of acme-web</FieldLabel>
+              <FieldLabel htmlFor="cb-terms">
+                <span>
+                  I understand this deletes every deployment of <span className="whitespace-nowrap">acme-web</span>
+                </span>
+              </FieldLabel>
               <FieldError id="cb-terms-error">Tick the box to confirm, then delete the project.</FieldError>
             </FieldContent>
           </Field>

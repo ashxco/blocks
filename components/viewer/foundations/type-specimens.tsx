@@ -5,8 +5,7 @@ import { RotateCcwIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-
-import { cx } from "./layout"
+import { cn } from "@/lib/utils"
 
 export interface RoleSpec {
   /** Role key, e.g. "display". */
@@ -21,6 +20,7 @@ export interface RoleSpec {
 
 /* Literal class names so Tailwind generates every role. */
 const roleClass: Record<string, string> = {
+  hero: "text-hero text-foreground",
   display: "text-display text-foreground",
   h1: "text-h1 text-foreground",
   h2: "text-h2 text-foreground",
@@ -35,6 +35,7 @@ const roleClass: Record<string, string> = {
 }
 
 const defaultSample: Record<string, string> = {
+  hero: "Push to ship",
   display: "Ship on every push",
   h1: "Preview every pull request",
   h2: "Logs that keep up with you",
@@ -85,23 +86,17 @@ export function TypeSpecimens({ roles }: { roles: RoleSpec[] }) {
         {roles.map((role) => (
           <li
             key={role.key}
-            className="grid gap-5 border-t py-8 @narrow:grid-cols-[14rem_minmax(0,1fr)] @narrow:gap-10 @narrow:py-10"
+            className="grid gap-4 border-t py-6 @narrow:grid-cols-[16rem_minmax(0,1fr)] @narrow:items-baseline @narrow:gap-10 @narrow:py-8"
           >
-            <div className="grid content-start gap-3">
+            <div className="grid content-start gap-1">
               <code className="font-mono text-label text-foreground">{role.utility}</code>
-              <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-caption">
-                <dt className="text-muted-foreground">Size</dt>
-                <dd className="font-mono text-xs text-foreground tabular">{role.size}</dd>
-                <dt className="text-muted-foreground">Line height</dt>
-                <dd className="font-mono text-xs text-foreground tabular">{role.lineHeight}</dd>
-                <dt className="text-muted-foreground">Tracking</dt>
-                <dd className="font-mono text-xs text-foreground tabular">{role.tracking}</dd>
-                <dt className="text-muted-foreground">Weight</dt>
-                <dd className="font-mono text-xs text-foreground tabular">{role.weight}</dd>
-              </dl>
-              {role.description ? <p className="text-caption text-copy">{role.description}</p> : null}
+              {/* Size · line height · tracking · weight. A size range means the role is fluid. */}
+              <span className="font-mono text-xs text-muted-foreground tabular" title="Size · line height · tracking · weight">
+                {[role.size.replace(/ fluid$/, ""), role.lineHeight, role.tracking, role.weight].join(" · ")}
+              </span>
+              {role.description ? <p className="mt-1 text-caption text-copy">{role.description}</p> : null}
             </div>
-            <p className={cx("min-w-0 self-center break-words", roleClass[role.key] ?? "text-body")}>
+            <p className={cn("min-w-0 break-words", roleClass[role.key] ?? "text-body text-copy")}>
               {text || defaultSample[role.key] || "Lumen deploys your app on every push"}
             </p>
           </li>

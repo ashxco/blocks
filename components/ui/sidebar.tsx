@@ -27,10 +27,12 @@ import {
 
 /**
  * Blocks sidebar. A quiet app sidebar on bg-sidebar with a hairline edge.
- * Widths come from the --sidebar-width and --sidebar-width-icon tokens;
- * the active item is an ink row (bg-sidebar-primary), hover is
- * bg-sidebar-accent. Collapses to icons or off canvas on desktop, and opens
- * as a sheet below the md breakpoint. Toggle with Cmd/Ctrl+B.
+ * Widths come from the --sidebar-width, --sidebar-width-icon and
+ * --sidebar-width-mobile tokens; override one for a single app with
+ * style={{ "--sidebar-width": "18rem" }} on SidebarProvider. The active item
+ * is an ink row (bg-sidebar-primary), hover is bg-sidebar-accent. Collapses
+ * to icons or off canvas on desktop, and opens as a sheet below the md
+ * breakpoint. Toggle with Cmd/Ctrl+B.
  */
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
@@ -60,6 +62,7 @@ function useSidebar() {
 
 function SidebarProvider({
   defaultOpen = true,
+  defaultOpenMobile = false,
   open: openProp,
   onOpenChange: setOpenProp,
   className,
@@ -68,11 +71,13 @@ function SidebarProvider({
   ...props
 }: React.ComponentProps<"div"> & {
   defaultOpen?: boolean
+  /** Open the mobile sheet on first render, e.g. in a preview of the phone layout. */
+  defaultOpenMobile?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
 }) {
   const isMobile = useIsMobile()
-  const [openMobile, setOpenMobile] = React.useState(false)
+  const [openMobile, setOpenMobile] = React.useState(defaultOpenMobile)
 
   // Internal state, unless the sidebar is controlled with open/onOpenChange.
   const [_open, _setOpen] = React.useState(defaultOpen)
@@ -148,6 +153,7 @@ function Sidebar({
   side = "left",
   variant = "sidebar",
   collapsible = "offcanvas",
+  container,
   className,
   children,
   dir,
@@ -156,6 +162,12 @@ function Sidebar({
   side?: "left" | "right"
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
+  /**
+   * Element to portal the mobile sheet into instead of <body>, e.g. a preview
+   * stage. The sheet is then non-modal, so the page around the stage keeps
+   * scrolling.
+   */
+  container?: React.ComponentProps<typeof SheetContent>["container"]
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
@@ -178,19 +190,26 @@ function Sidebar({
 
   if (isMobile) {
     return (
-      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+      <Sheet
+        open={openMobile}
+        onOpenChange={setOpenMobile}
+        modal={container !== undefined ? false : undefined}
+        {...props}
+      >
         <SheetContent
+          container={container}
+          initialFocus={container !== undefined ? false : undefined}
           dir={dir}
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
           showCloseButton={false}
-          className="w-[min(calc(var(--sidebar-width)+--spacing(8)),85vw)]! gap-0 bg-sidebar p-0 text-sidebar-foreground"
+          className="w-[min(var(--sidebar-width-mobile),85vw)]! gap-0 bg-sidebar p-0 text-sidebar-foreground"
           side={side}
         >
           <SheetHeader className="sr-only">
             <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+            <SheetDescription>Navigation for this app.</SheetDescription>
           </SheetHeader>
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
@@ -267,7 +286,7 @@ function SidebarTrigger({
       {...props}
     >
       <PanelLeftIcon />
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className="sr-only">Toggle sidebar</span>
     </Button>
   )
 }
@@ -279,10 +298,10 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
     <button
       data-sidebar="rail"
       data-slot="sidebar-rail"
-      aria-label="Toggle Sidebar"
+      aria-label="Toggle sidebar"
       tabIndex={-1}
       onClick={toggleSidebar}
-      title="Toggle Sidebar"
+      title="Toggle sidebar"
       className={cn(
         "absolute inset-y-0 z-20 hidden w-4 transition-all duration-(--duration-fast) ease-standard group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex ltr:-translate-x-1/2 rtl:-translate-x-1/2",
         "after:absolute after:inset-y-0 after:start-1/2 after:w-0.5 after:transition-colors after:duration-(--duration-fast) hover:after:bg-border-strong",
@@ -494,11 +513,11 @@ const sidebarMenuButtonVariants = cva(
       variant: {
         default: "",
         outline:
-          "border border-sidebar-border bg-background hover:border-border-strong data-active:border-sidebar-primary",
+          "border border-sidebar-border hover:border-border-strong data-active:border-sidebar-primary",
       },
       size: {
         default: "h-(--control-height-sm)",
-        sm: "h-8 text-caption font-semibold",
+        sm: "h-(--control-height-xs) text-caption font-semibold",
         lg: "h-(--control-height-lg) group-data-[collapsible=icon]:p-1!",
       },
     },
@@ -642,14 +661,15 @@ function SidebarMenuSkeleton({
       )}
       {...props}
     >
+      {/* bg-sidebar-border: bg-secondary barely shows on the sidebar tint. */}
       {showIcon && (
         <Skeleton
-          className="size-4 rounded-xs"
+          className="size-4 rounded-xs bg-sidebar-border"
           data-sidebar="menu-skeleton-icon"
         />
       )}
       <Skeleton
-        className="h-3.5 max-w-(--skeleton-width) flex-1"
+        className="h-3.5 max-w-(--skeleton-width) flex-1 bg-sidebar-border"
         data-sidebar="menu-skeleton-text"
         style={
           {
@@ -710,7 +730,7 @@ function SidebarMenuSubButton({
           "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:focus-ring",
           "active:bg-sidebar-accent active:text-sidebar-accent-foreground",
           "aria-disabled:pointer-events-none aria-disabled:opacity-50",
-          "data-[size=md]:h-8 data-[size=md]:text-sm data-[size=sm]:h-(--button-height-xs) data-[size=sm]:text-caption",
+          "data-[size=md]:h-(--control-height-xs) data-[size=md]:text-sm data-[size=sm]:h-(--button-height-xs) data-[size=sm]:text-caption",
           // The active sub-item is marked on the guide line, not with a fill.
           "data-active:font-semibold data-active:text-sidebar-foreground",
           "data-active:before:absolute data-active:before:inset-y-1.5 data-active:before:-left-2.75 data-active:before:w-0.5 data-active:before:rounded-full data-active:before:bg-sidebar-foreground",

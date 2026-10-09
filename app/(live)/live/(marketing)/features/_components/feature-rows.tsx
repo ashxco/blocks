@@ -4,6 +4,7 @@ import { CheckIcon } from "lucide-react"
 import { CodeWindow } from "@/components/blocks/code-window"
 
 import { AuditCard, DatabaseCard, LatencyCard, PreviewCard } from "./row-visuals"
+import { Kern } from "@/components/ui/kern"
 
 interface Feature {
   id: string
@@ -51,11 +52,11 @@ const features: Feature[] = [
     windowTitle: "lumen logs — acme/api",
     lines: [
       "$ lumen logs --tail --service api",
-      "12:04:01  GET   /v1/projects   200   23ms",
-      "12:04:01  POST  /v1/deploys    201   88ms",
-      "12:04:02  GET   /v1/health     200    3ms",
-      "12:04:03  POST  /v1/sessions   401   12ms",
-      "12:04:03  GET   /v1/usage      200   41ms",
+      "12:04:01 GET  /v1/projects 200 23ms",
+      "12:04:01 POST /v1/deploys  201 88ms",
+      "12:04:02 GET  /v1/health   200  3ms",
+      "12:04:03 POST /v1/sessions 401 12ms",
+      "12:04:03 GET  /v1/usage    200 41ms",
       "→ Streaming from 4 replicas in fra-1 and iad-1",
     ],
     card: <LatencyCard />,
@@ -111,7 +112,7 @@ function FeatureRow({ feature, reverse }: { feature: Feature; reverse: boolean }
     >
       <div className={reverse ? "min-w-0 lg:order-last" : "min-w-0"}>
         <h2 id={headingId} className="max-w-prose text-h2 text-foreground">
-          {feature.title}
+          <Kern>{feature.title}</Kern>
         </h2>
         <p className="mt-6 max-w-prose text-lead text-copy">{feature.description}</p>
         <ul className="mt-8 max-w-prose border-t">
@@ -125,7 +126,7 @@ function FeatureRow({ feature, reverse }: { feature: Feature; reverse: boolean }
       </div>
 
       <div className="min-w-0 rounded-(--panel-radius) bg-subtle p-3 sm:p-8 xl:p-10">
-        <CodeWindow title={feature.windowTitle} lines={feature.lines} className="pb-14" />
+        <CodeWindow wrap title={feature.windowTitle} lines={feature.lines} className="pb-14" />
         <div aria-hidden="true" className="relative -mt-12 flex justify-end pr-3 pl-8 sm:pr-6 sm:pl-16">
           {feature.card}
         </div>

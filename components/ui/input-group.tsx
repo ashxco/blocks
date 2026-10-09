@@ -39,9 +39,24 @@ const inputGroupVariants = cva(
     "has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col",
     "has-[>textarea]:h-auto",
     // Inline addons tighten the control's padding on their side.
-    "has-[>[data-align=inline-start]]:[&>input]:pl-2 has-[>[data-align=inline-end]]:[&>input]:pr-2",
-    // Text prefixes and suffixes read as part of the value, so they sit closer.
-    "has-[>[data-align=inline-start]>[data-slot=input-group-text]]:[&>input]:pl-1 has-[>[data-align=inline-end]>[data-slot=input-group-text]]:[&>input]:pr-1",
+    "has-[>[data-align=inline-start]]:[&>input]:ps-2 has-[>[data-align=inline-end]]:[&>input]:pe-2",
+    // A text prefix (an addon holding only InputGroupText) is part of the
+    // value, so the value starts right after it: "lumen.app/acme".
+    "has-[>[data-align=inline-start]>[data-slot=input-group-text]:only-child]:[&>input]:ps-0",
+    // A text suffix follows the value instead of sitting at the far edge: the
+    // input sizes to its content and the suffix addon takes the rest of the
+    // width, so "acme-web" + ".lumen.app" reads as one URL.
+    "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input]:w-auto",
+    "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input]:flex-initial",
+    "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input]:min-w-8",
+    "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input]:field-sizing-content",
+    "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input]:pe-px",
+    // A number with a unit ("30 seconds") keeps a word space before the unit
+    // and drops the spin buttons so the unit sits right after it; arrow keys
+    // still step the value.
+    "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input[type=number]]:pe-1",
+    "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input[type=number]]:[appearance:textfield]",
+    "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input::-webkit-inner-spin-button]:appearance-none",
     "has-[>[data-align^=block]]:[&>input]:h-(--control-height-sm)",
   ],
   {
@@ -74,9 +89,18 @@ function InputGroup({
   )
 }
 
+/**
+ * Inline addon text matches the value next to it at every group size: 16px
+ * on phones and 14px from md in a medium group (the same recipe as <Input>,
+ * which also keeps iOS from zooming on focus), 14px in a small group and
+ * 16px in a large one. InputGroupText inherits it.
+ */
+const inlineText =
+  "text-base md:text-sm group-data-[size=sm]/input-group:text-sm group-data-[size=lg]/input-group:text-base"
+
 const inputGroupAddonVariants = cva(
   [
-    "flex h-auto cursor-text items-center justify-center gap-2 text-sm font-medium text-muted-foreground select-none",
+    "flex h-auto cursor-text items-center justify-center gap-2 font-medium text-muted-foreground select-none",
     "group-has-[[data-slot=input-group-control]:disabled]/input-group:pointer-events-none",
     "[&>svg:not([class*='size-'])]:size-4 [&>svg]:shrink-0",
     "[&>kbd]:rounded-xs",
@@ -84,14 +108,20 @@ const inputGroupAddonVariants = cva(
   {
     variants: {
       align: {
-        "inline-start":
-          "order-first pl-(--control-padding-x) has-[>button]:pl-2 has-[>kbd]:pl-2 has-[>[data-size=icon-sm]]:pl-1 has-[>[data-size=sm]]:pl-1",
-        "inline-end":
-          "order-last pr-(--control-padding-x) has-[>button]:pr-2 has-[>kbd]:pr-2 has-[>[data-size=icon-sm]]:pr-1 has-[>[data-size=sm]]:pr-1",
+        "inline-start": [
+          "order-first ps-(--control-padding-x) has-[>button]:ps-2 has-[>kbd]:ps-2 has-[>[data-size=icon-sm]]:ps-1 has-[>[data-size=sm]]:ps-1",
+          inlineText,
+        ],
+        "inline-end": [
+          "order-last pe-(--control-padding-x) has-[>button]:pe-2 has-[>kbd]:pe-2 has-[>[data-size=icon-sm]]:pe-1 has-[>[data-size=sm]]:pe-1",
+          // A text suffix fills the rest of the group, so a click after the value still focuses it.
+          "has-[>[data-slot=input-group-text]:only-child]:flex-1 has-[>[data-slot=input-group-text]:only-child]:justify-start",
+          inlineText,
+        ],
         "block-start":
-          "order-first w-full justify-start px-(--control-padding-x) pt-3 [.border-b]:pb-3",
+          "order-first w-full justify-start px-(--control-padding-x) pt-3 text-sm [.border-b]:pb-3",
         "block-end":
-          "order-last w-full justify-start px-(--control-padding-x) pb-3 has-[>button]:pr-2 has-[>button]:pb-2 [.border-t]:pt-3 has-[>button]:[.border-t]:pt-2",
+          "order-last w-full justify-start px-(--control-padding-x) pb-3 text-sm has-[>button]:pe-2 has-[>button]:pb-2 [.border-t]:pt-3 has-[>button]:[.border-t]:pt-2",
       },
     },
     defaultVariants: {
@@ -115,9 +145,19 @@ function InputGroupAddon({
         if ((e.target as HTMLElement).closest("button")) {
           return
         }
-        e.currentTarget.parentElement
-          ?.querySelector<HTMLElement>("[data-slot=input-group-control]")
-          ?.focus()
+        const control = e.currentTarget.parentElement?.querySelector<
+          HTMLInputElement | HTMLTextAreaElement
+        >("[data-slot=input-group-control]")
+        if (!control) return
+        control.focus()
+        // A click on a suffix lands after the value, so put the caret at the end.
+        if (align === "inline-end") {
+          try {
+            control.setSelectionRange(control.value.length, control.value.length)
+          } catch {
+            // Number and email inputs do not support selection ranges.
+          }
+        }
       }}
       {...props}
     />
@@ -155,7 +195,7 @@ function InputGroupText({ className, ...props }: React.ComponentProps<"span">) {
     <span
       data-slot="input-group-text"
       className={cn(
-        "flex items-center gap-2 text-sm font-medium whitespace-nowrap text-muted-foreground",
+        "flex items-center gap-2 font-medium whitespace-nowrap text-muted-foreground",
         "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
         className
       )}
@@ -173,7 +213,8 @@ function InputGroupInput({
       data-slot="input-group-control"
       className={cn(
         "w-full min-w-0 flex-1 self-stretch rounded-none border-0 bg-transparent px-(--control-padding-x)",
-        "text-base text-foreground outline-none placeholder:text-muted-foreground md:text-sm",
+        // Long values, such as a read-only URL, end in an ellipsis while unfocused.
+        "text-base text-ellipsis text-foreground outline-none placeholder:text-muted-foreground md:text-sm",
         "disabled:cursor-not-allowed",
         className
       )}

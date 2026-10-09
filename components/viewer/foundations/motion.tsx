@@ -1,9 +1,7 @@
 import * as React from "react"
 
-import { Guidelines } from "@/docs/kit"
-
 import { leafName, tokensIn } from "./data"
-import { FoundationPage, Section } from "./layout"
+import { DoDont, FoundationPage, Section } from "./layout"
 import { DurationDemos, EasingDemos, type DurationItem, type EasingItem } from "./motion-demos"
 
 function durations(): DurationItem[] {
@@ -59,9 +57,9 @@ export function MotionFoundation({ title, description }: { title: string; descri
       <Section
         id="principles"
         title="Principles"
-        description="Motion explains a change; it never decorates. When people turn motion down, Blocks removes it entirely and nothing is lost."
+        description="Motion explains a change; it never decorates. When people turn motion down, transitions finish instantly: state still changes, nothing travels."
       >
-        <Guidelines
+        <DoDont
           do={[
             "Fade, slide 4px, or scale from 98% when overlays open.",
             "Use fast for hover and colour, base for menus and tabs, slow for dialogs and sheets.",
@@ -69,9 +67,9 @@ export function MotionFoundation({ title, description }: { title: string; descri
             "Read durations and easings from tokens, never hard-code milliseconds.",
           ]}
           dont={[
-            "Don’t bounce, loop or pulse to attract attention.",
-            "Don’t animate width, height or position on large surfaces when opacity or a small translate will do.",
-            "Don’t rely on motion alone to show that something changed.",
+            "Bounce, loop or pulse to attract attention.",
+            "Animate width, height or position on large surfaces when opacity or a small translate will do.",
+            "Rely on motion alone to show that something changed.",
           ]}
         />
       </Section>

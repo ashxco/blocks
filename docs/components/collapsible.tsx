@@ -8,13 +8,13 @@ import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 const buildLog = [
-  "12:04:12  Cloning acme/web-app at a41c9e2",
+  "12:04:12  Cloning lumen-labs/lumen-web at a41c9e2",
   "12:04:14  Restored build cache (412 MB)",
   "12:04:15  Running npm ci",
   "12:04:21  Running npm run build",
   "12:04:39  Compiled 184 routes in 17.6s",
   "12:04:41  Uploading output to 2 regions",
-  "12:04:44  Deployment ready at web-app-a41c9e2.lumen.app",
+  "12:04:44  Deployment ready at lumen-web-a41c9e2.lumen.app",
 ]
 
 const variables = [

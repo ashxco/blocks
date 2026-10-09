@@ -3,7 +3,16 @@
 @import "shadcn/tailwind.css";
 @import "./styles/tokens.css";
 
-@custom-variant dark (&:is(.dark *));
+/* dark: follows the nearest theme scope, so a .light subtree inside a dark
+   page (or a .dark one inside a light page) gets the right variant. */
+@custom-variant dark {
+  &:where(.dark, .dark *):not(:where(.light, .light *)) {
+    @slot;
+  }
+  &:where(.light .dark, .light .dark *):not(:where(.light .dark .light, .light .dark .light *)) {
+    @slot;
+  }
+}
 
 /* ---------------------------------------------------------------------------
    Blocks base layer. Every value comes from tokens (app/styles/tokens.css).

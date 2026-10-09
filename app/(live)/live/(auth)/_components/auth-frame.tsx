@@ -4,12 +4,18 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import { Wordmark } from "@/components/blocks/site-header/wordmark"
+import { Wordmark } from "@/components/blocks/wordmark"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 /** Routes that need the full width instead of the split screen. */
 const WIDE_ROUTES = ["/live/onboarding"]
+
+/** Routes that end on the form below lg: a testimonial is off-key for someone locked out. */
+const NO_COMPACT_ROUTES = ["/live/forgot-password"]
+
+const matches = (pathname: string, routes: string[]) =>
+  routes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
 
 const legalLinks = [
   { label: "Terms", href: "#" },
@@ -21,9 +27,23 @@ const legalLinks = [
  * Picks the frame for the current account route. The aside is rendered on the
  * server and passed in, so only the frame switch runs on the client.
  */
-export function AuthFrame({ aside, children }: { aside: React.ReactNode; children: React.ReactNode }) {
+export function AuthFrame({
+  aside,
+  asideByRoute = {},
+  compact,
+  children,
+}: {
+  aside: React.ReactNode
+  /** A different aside for some routes, keyed by route, e.g. { "/live/sign-up": <AuthShowcase variant="sign-up" /> }. */
+  asideByRoute?: Record<string, React.ReactNode>
+  /** Smaller brand moment shown under the form below lg, where the aside is hidden. */
+  compact?: React.ReactNode
+  children: React.ReactNode
+}) {
   const pathname = usePathname() ?? ""
-  const wide = WIDE_ROUTES.some((route) => pathname === route || pathname.startsWith(`${route}/`))
+  const wide = matches(pathname, WIDE_ROUTES)
+  const showCompact = !matches(pathname, NO_COMPACT_ROUTES)
+  const routeAside = Object.entries(asideByRoute).find(([route]) => matches(pathname, [route]))?.[1]
 
   return (
     <div data-slot="auth-frame" data-layout={wide ? "wide" : "split"} className="min-h-dvh bg-background">
@@ -33,12 +53,26 @@ export function AuthFrame({ aside, children }: { aside: React.ReactNode; childre
       >
         Skip to content
       </a>
-      {wide ? <WideFrame>{children}</WideFrame> : <SplitFrame aside={aside}>{children}</SplitFrame>}
+      {wide ? (
+        <WideFrame>{children}</WideFrame>
+      ) : (
+        <SplitFrame aside={routeAside ?? aside} compact={showCompact ? compact : null}>
+          {children}
+        </SplitFrame>
+      )}
     </div>
   )
 }
 
-function SplitFrame({ aside, children }: { aside: React.ReactNode; children: React.ReactNode }) {
+function SplitFrame({
+  aside,
+  compact,
+  children,
+}: {
+  aside: React.ReactNode
+  compact?: React.ReactNode
+  children: React.ReactNode
+}) {
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
       <div className="flex min-w-0 flex-col px-gutter lg:px-10 xl:px-14">
@@ -47,10 +81,16 @@ function SplitFrame({ aside, children }: { aside: React.ReactNode; children: Rea
         </header>
         <main id="main" className="flex flex-1 flex-col items-center justify-center py-12 sm:py-16">
           <div className="w-full max-w-104">{children}</div>
+          {compact ? <div className="mt-14 w-full max-w-104 lg:hidden">{compact}</div> : null}
         </main>
         <AuthFooter />
       </div>
-      <aside aria-label="Lumen in production" className="hidden min-w-0 p-3 lg:block">
+      {/* Sticky and one viewport tall (or its content's height on short screens), so the headline, the log and
+          the quote stay in view beside long forms instead of stretching with them. */}
+      <aside
+        aria-label="Lumen in production"
+        className="hidden min-w-0 p-3 lg:sticky lg:top-0 lg:flex lg:min-h-dvh lg:flex-col lg:self-start"
+      >
         {aside}
       </aside>
     </div>
@@ -60,13 +100,21 @@ function SplitFrame({ aside, children }: { aside: React.ReactNode; children: Rea
 function WideFrame({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="container-wide flex h-(--header-height) shrink-0 items-center justify-between gap-6">
+      {/* Header, content and footer share container-page, so their edges line up. */}
+      <header className="container-page flex h-(--header-height) shrink-0 items-center justify-between gap-6">
         <Wordmark />
         <div className="flex min-w-0 items-center gap-4">
           <span className="hidden truncate text-caption text-muted-foreground sm:inline">
-            Signed in as <span className="font-semibold text-foreground">maya@halcyon.dev</span>
+            Signed in as <span className="font-semibold text-foreground">maya@acme.dev</span>
           </span>
-          <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/live/sign-in" />}>
+          {/* The negative margin cancels the ghost padding, so the label sits on the gutter. */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="-mr-(--button-padding-x-sm)"
+            nativeButton={false}
+            render={<Link href="/live/sign-in" />}
+          >
             Sign out
           </Button>
         </div>
@@ -74,7 +122,7 @@ function WideFrame({ children }: { children: React.ReactNode }) {
       <main id="main" className="flex-1">
         {children}
       </main>
-      <div className="container-wide">
+      <div className="container-page">
         <AuthFooter />
       </div>
     </div>

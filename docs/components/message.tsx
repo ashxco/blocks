@@ -250,8 +250,8 @@ export default function MessageDocs() {
       <ApiTable
         rows={[
           { prop: "align", type: '"start" | "end"', default: '"start"', description: "Message: which side the message sits on. end mirrors the layout." },
-          { prop: "children", type: "ReactNode", description: "MessageAvatar: an Avatar, or an icon on a round fill." },
-          { prop: "children", type: "ReactNode", description: "MessageHeader: wrap the name in <strong> to set it in semibold ink; the rest stays muted." },
+          { prop: "MessageAvatar children", type: "ReactNode", description: "An Avatar, or an icon on a round fill." },
+          { prop: "MessageHeader children", type: "ReactNode", description: "Wrap the name in <strong> to set it in semibold ink; the rest stays muted." },
           { prop: "className", type: "string", description: "Every part. MessageGroup spaces messages 24px apart." },
         ]}
       />

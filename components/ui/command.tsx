@@ -47,7 +47,8 @@ function hasCommandRoot(children: React.ReactNode) {
 }
 
 /**
- * A command menu in a dialog, placed in the upper third of the screen.
+ * A command menu in a dialog, placed in the upper third of the screen and as
+ * wide as a size="lg" dialog (--container-prose).
  * Children may be wrapped in <Command> (to pass props such as `loop`) or be
  * the parts directly; a <Command> root is added when it is missing.
  */
@@ -57,23 +58,32 @@ function CommandDialog({
   children,
   className,
   showCloseButton = false,
+  container,
+  initialFocus,
   ...props
 }: Omit<React.ComponentProps<typeof Dialog>, "children"> & {
   title?: string
   description?: string
   className?: string
   showCloseButton?: boolean
+  /** Element to portal into instead of <body>, e.g. a preview stage. */
+  container?: React.ComponentProps<typeof DialogContent>["container"]
+  /** The element to focus when the dialog opens. Defaults to the search field. */
+  initialFocus?: React.ComponentProps<typeof DialogContent>["initialFocus"]
   children: React.ReactNode
 }) {
   return (
     <Dialog {...props}>
       <DialogContent
         data-variant="command"
+        size="lg"
         className={cn(
-          "top-[min(14vh,8rem)] translate-y-0 gap-0 overflow-hidden p-0 sm:max-w-144",
+          "top-[min(14vh,8rem)] translate-y-0 gap-0 overflow-hidden p-0",
           className
         )}
         showCloseButton={showCloseButton}
+        container={container}
+        initialFocus={initialFocus}
       >
         <DialogTitle className="sr-only">{title}</DialogTitle>
         <DialogDescription className="sr-only">{description}</DialogDescription>

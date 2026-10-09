@@ -50,8 +50,11 @@ export interface ChartCardProps {
   showComparison?: boolean
   /** How values are formatted in the summary, axis and tooltip. */
   valueFormat?: "compact" | "number" | "ms" | "percent"
-  /** Which chart token colours the series. */
-  color?: 1 | 2 | 3 | 4
+  /**
+   * Which chart token colours the series. "ink" draws it in a neutral grey,
+   * for single-series charts that sit next to the one brand chart.
+   */
+  color?: 1 | 2 | 3 | 4 | "ink"
   /** Which direction is good news for the summary change. */
   goodWhen?: "up" | "down"
   className?: string
@@ -62,7 +65,27 @@ const swatch = {
   2: "bg-chart-2",
   3: "bg-chart-3",
   4: "bg-chart-4",
+  ink: "bg-muted-foreground",
 } as const
+
+/* "ink" is the neutral mid grey of muted text: it reads in both themes without outweighing the brand chart. */
+const seriesColor = (color: NonNullable<ChartCardProps["color"]>) =>
+  color === "ink" ? "var(--muted-foreground)" : `var(--chart-${color})`
+
+/**
+ * Round axis ticks from zero: steps of 1, 2, 2.5 or 5 times a power of ten,
+ * so the axis reads 0, 50, 100, 150 rather than 0, 35, 70, 105.
+ */
+function niceTicks(max: number, count = 4) {
+  if (!Number.isFinite(max) || max <= 0) return [0, 1]
+  const rough = max / count
+  const power = 10 ** Math.floor(Math.log10(rough))
+  const step =
+    [1, 2, 2.5, 5, 10].map((factor) => factor * power).find((candidate) => candidate >= rough) ??
+    10 * power
+  const top = Math.ceil(max / step) * step
+  return Array.from({ length: Math.round(top / step) + 1 }, (_, index) => index * step)
+}
 
 const periodDays: Record<ChartPeriod, number> = {
   "7d": 7,
@@ -87,7 +110,8 @@ function seeded(seed: number) {
 
 function buildDefaultData(): ChartPoint[] {
   const random = seeded(20261006)
-  const end = Date.UTC(2026, 9, 6)
+  // Today in the Lumen data set is October 9 (billing, uptime and activity agree).
+  const end = Date.UTC(2026, 9, 9)
   const day = 24 * 60 * 60 * 1000
   return Array.from({ length: 90 }, (_, index) => {
     const time = end - (89 - index) * day
@@ -139,8 +163,14 @@ function formatDay(date: string, long = false) {
 
 /**
  * A titled chart with a 7, 30 and 90 day switch, a summary figure and the
- * change against the previous period. Fills are flat; colours come from the
- * chart tokens. Rendered with no props it shows Lumen edge requests.
+ * change against the previous period. Fills are flat (a 6% wash under areas);
+ * colours come from the chart tokens. Axis ticks are round numbers from zero.
+ * Rendered with no props it shows Lumen edge requests.
+ *
+ * Series draw without Recharts' entry animation. That animation reveals the
+ * series through a clip path driven by requestAnimationFrame, which ignores
+ * reduced motion and stalls wherever frames are throttled (background tabs,
+ * previews, screenshots), leaving only the comparison line on screen.
  */
 export function ChartCard({
   title = "Edge requests",
@@ -181,9 +211,32 @@ export function ChartCard({
   const comparison = type === "area" && showComparison && hasPrevious
 
   const config = {
-    value: { label: seriesLabel, color: `var(--chart-${color})` },
+    value: { label: seriesLabel, color: seriesColor(color) },
     previous: { label: "Previous period", color: "var(--chart-5)" },
   } satisfies ChartConfig
+
+  const ticks = React.useMemo(() => {
+    const values = visible.flatMap((point) =>
+      comparison && point.previous !== undefined ? [point.value, point.previous] : [point.value]
+    )
+    return niceTicks(Math.max(0, ...values))
+  }, [visible, comparison])
+  // Evenly stepped date labels, counted back from the latest day so it is always labelled.
+  const dateTicks = React.useMemo(() => {
+    const step = Math.max(1, Math.ceil(visible.length / 6))
+    return visible.filter((_, index) => (visible.length - 1 - index) % step === 0).map((point) => point.date)
+  }, [visible])
+  const yAxis = {
+    tickLine: false,
+    axisLine: false,
+    ticks,
+    domain: [0, ticks[ticks.length - 1]] as [number, number],
+    interval: 0 as const,
+    // Units make the labels longer: give them room so "140 ms" stays on one line.
+    width: valueFormat === "ms" || valueFormat === "percent" ? 60 : 48,
+    tickFormatter: (value: number) =>
+      formatValue(value, valueFormat === "number" ? "compact" : valueFormat),
+  }
 
   return (
     <Card
@@ -279,107 +332,99 @@ export function ChartCard({
         </div>
       </div>
 
-      <ChartContainer
-        config={config}
-        className="aspect-auto h-64 w-full px-2 pb-4 @min-[40rem]/chart:h-72"
-      >
-        {type === "bar" ? (
-          <BarChart
-            data={visible}
-            margin={{ top: 12, right: 16, bottom: 0, left: 4 }}
-            accessibilityLayer
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={10}
-              minTickGap={24}
-              tickFormatter={(value: string) => formatDay(value)}
-            />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              width={48}
-              tickFormatter={(value: number) =>
-                formatValue(
-                  value,
-                  valueFormat === "number" ? "compact" : valueFormat
-                )
-              }
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(value) => formatDay(String(value), true)}
-                />
-              }
-            />
-            <Bar
-              dataKey="value"
-              fill="var(--color-value)"
-              radius={[4, 4, 0, 0]}
-              maxBarSize={24}
-            />
-          </BarChart>
-        ) : (
-          <AreaChart
-            data={visible}
-            margin={{ top: 12, right: 16, bottom: 0, left: 4 }}
-            accessibilityLayer
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={10}
-              minTickGap={24}
-              tickFormatter={(value: string) => formatDay(value)}
-            />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              width={48}
-              tickFormatter={(value: number) =>
-                formatValue(
-                  value,
-                  valueFormat === "number" ? "compact" : valueFormat
-                )
-              }
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  indicator="line"
-                  labelFormatter={(value) => formatDay(String(value), true)}
-                />
-              }
-            />
-            {comparison ? (
-              <Area
-                dataKey="previous"
-                type="monotone"
-                stroke="var(--color-previous)"
-                strokeWidth={1.5}
-                strokeDasharray="4 4"
-                fill="none"
+      {/* The chart fills whatever height the card gets (a grid row next to a
+          taller card, say) and never less than its own minimum. It is
+          positioned absolutely so its measured size can't hold the row open. */}
+      <div className="relative min-h-64 flex-1 @min-[40rem]/chart:min-h-72">
+        <ChartContainer
+          config={config}
+          className="absolute inset-0 aspect-auto px-2 pb-4"
+        >
+          {type === "bar" ? (
+            <BarChart
+              data={visible}
+              margin={{ top: 12, right: 16, bottom: 0, left: 4 }}
+              accessibilityLayer
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={10}
+                ticks={dateTicks}
+                interval="preserveEnd"
+                minTickGap={8}
+                tickFormatter={(value: string) => formatDay(value)}
+              />
+              <YAxis {...yAxis} />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={(value) => formatDay(String(value), true)}
+                  />
+                }
+              />
+              <Bar
+                dataKey="value"
+                fill="var(--color-value)"
+                fillOpacity={1}
+                radius={[4, 4, 0, 0]}
+                maxBarSize={24}
                 isAnimationActive={false}
               />
-            ) : null}
-            <Area
-              dataKey="value"
-              type="monotone"
-              stroke="var(--color-value)"
-              strokeWidth={2}
-              fill="var(--color-value)"
-              fillOpacity={0.1}
-              activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--card)" }}
-            />
-          </AreaChart>
-        )}
-      </ChartContainer>
+            </BarChart>
+          ) : (
+            <AreaChart
+              data={visible}
+              margin={{ top: 12, right: 16, bottom: 0, left: 4 }}
+              accessibilityLayer
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={10}
+                ticks={dateTicks}
+                interval="preserveEnd"
+                minTickGap={8}
+                tickFormatter={(value: string) => formatDay(value)}
+              />
+              <YAxis {...yAxis} />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    indicator="line"
+                    labelFormatter={(value) => formatDay(String(value), true)}
+                  />
+                }
+              />
+              {comparison ? (
+                <Area
+                  dataKey="previous"
+                  type="monotone"
+                  stroke="var(--color-previous)"
+                  strokeWidth={1.5}
+                  strokeDasharray="4 4"
+                  fill="none"
+                  isAnimationActive={false}
+                />
+              ) : null}
+              <Area
+                dataKey="value"
+                type="monotone"
+                stroke="var(--color-value)"
+                strokeWidth={2}
+                fill="var(--color-value)"
+                fillOpacity={0.06}
+                activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--card)" }}
+                isAnimationActive={false}
+              />
+            </AreaChart>
+          )}
+        </ChartContainer>
+      </div>
     </Card>
   )
 }

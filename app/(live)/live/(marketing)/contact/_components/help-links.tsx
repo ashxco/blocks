@@ -50,7 +50,7 @@ export function HelpLinks({ className }: { className?: string }) {
               <li key={link.href} className="bg-background">
                 <Link
                   href={link.href}
-                  className="group/help flex h-full flex-col gap-10 p-6 transition-colors duration-(--duration-fast) ease-standard hover:bg-subtle focus-visible:-outline-offset-2 sm:p-8"
+                  className="group/help flex h-full flex-col gap-10 p-6 outline-none transition-colors duration-(--duration-fast) ease-standard hover:bg-subtle focus-visible:focus-ring focus-visible:-outline-offset-2 sm:p-8"
                 >
                   <span className="flex items-center justify-between">
                     <span className="grid size-10 place-items-center rounded-md border bg-background text-foreground">

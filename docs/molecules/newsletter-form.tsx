@@ -46,14 +46,36 @@ export default function NewsletterFormDocs() {
       </Example>
 
       <Example
-        title="Errors"
-        description="Submit an empty or malformed address to see validation. Here the handler always fails, to show the request error."
-        code={`<NewsletterForm onSubscribe={async (email) => {
-  const res = await fetch("/api/subscribe", { method: "POST", body: email })
-  if (!res.ok) throw new Error("Subscribe failed")
-}} />`}
+        title="Invalid address"
+        description="Submitting an empty or malformed address keeps the field, turns its border destructive and says what a valid address looks like. Typing clears the message."
+        code={`<NewsletterForm defaultValue="ana@acme" defaultStatus="invalid" />`}
       >
-        <NewsletterForm onSubscribe={failingSubscribe} />
+        <NewsletterForm defaultValue="ana@acme" defaultStatus="invalid" />
+      </Example>
+
+      <Example
+        title="Request failed"
+        description="Throw from onSubscribe and the form keeps the address and asks people to try again. This handler always fails, so pressing Subscribe shows the same state."
+        code={`<NewsletterForm
+  onSubscribe={async (email) => {
+    const res = await fetch("/api/subscribe", { method: "POST", body: email })
+    if (!res.ok) throw new Error("Subscribe failed")
+  }}
+/>
+
+// The failed state on its own, as shown here:
+<NewsletterForm defaultValue="ana@acme.dev" defaultStatus="error" />`}
+      >
+        <NewsletterForm defaultValue="ana@acme.dev" defaultStatus="error" onSubscribe={failingSubscribe} />
+      </Example>
+
+      <Example
+        title="Subscribed"
+        surface="subtle"
+        description="After a successful request the field gives way to the confirmation, with a way back to enter another address."
+        code={`<NewsletterForm defaultValue="ana@acme.dev" defaultStatus="success" />`}
+      >
+        <NewsletterForm defaultValue="ana@acme.dev" defaultStatus="success" />
       </Example>
 
       <Guidelines
@@ -77,6 +99,8 @@ export default function NewsletterFormDocs() {
           { prop: "label", type: "string", default: '"Email address"', description: "Accessible label for the field." },
           { prop: "successMessage", type: "(email: string) => ReactNode", description: "Confirmation shown after subscribing." },
           { prop: "tone", type: '"default" | "panel"', default: '"default"', description: "Use panel on dark panels." },
+          { prop: "defaultValue", type: "string", default: '""', description: "Initial email address." },
+          { prop: "defaultStatus", type: '"idle" | "invalid" | "error" | "success"', default: '"idle"', description: "Initial state, for docs and screenshots." },
           { prop: "className", type: "string", description: "Classes for the form." },
         ]}
       />

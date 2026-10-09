@@ -13,6 +13,7 @@ import {
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ButtonGroup,
   ButtonGroupSeparator,
@@ -101,34 +102,37 @@ export default function ButtonGroupDocs() {
       <Example
         title="Sizes"
         description="Every button in a group shares one size. Small groups suit dense toolbars and table rows."
+        code={`<ButtonGroup aria-label="Domain actions">
+  <Button variant="outline" size="sm">Edit</Button>
+  <Button variant="outline" size="sm">Verify</Button>
+  <Button variant="outline" size="sm">Remove</Button>
+</ButtonGroup>
+
+<ButtonGroup aria-label="Domain actions">
+  <Button variant="outline">Edit</Button>
+  <Button variant="outline">Verify</Button>
+  <Button variant="outline">Remove</Button>
+</ButtonGroup>
+
+<ButtonGroup aria-label="Domain actions">
+  <Button variant="outline" size="lg">Edit</Button>
+  <Button variant="outline" size="lg">Verify</Button>
+  <Button variant="outline" size="lg">Remove</Button>
+</ButtonGroup>`}
       >
-        <ButtonGroup aria-label="Small">
-          <Button variant="outline" size="sm">
-            Day
-          </Button>
-          <Button variant="outline" size="sm">
-            Week
-          </Button>
-          <Button variant="outline" size="sm">
-            Month
-          </Button>
-        </ButtonGroup>
-        <ButtonGroup aria-label="Medium">
-          <Button variant="outline">Day</Button>
-          <Button variant="outline">Week</Button>
-          <Button variant="outline">Month</Button>
-        </ButtonGroup>
-        <ButtonGroup aria-label="Large">
-          <Button variant="outline" size="lg">
-            Day
-          </Button>
-          <Button variant="outline" size="lg">
-            Week
-          </Button>
-          <Button variant="outline" size="lg">
-            Month
-          </Button>
-        </ButtonGroup>
+        {(["sm", "default", "lg"] as const).map((size) => (
+          <ButtonGroup key={size} aria-label={`Domain actions, ${size === "default" ? "medium" : size === "sm" ? "small" : "large"}`}>
+            <Button variant="outline" size={size}>
+              Edit
+            </Button>
+            <Button variant="outline" size={size}>
+              Verify
+            </Button>
+            <Button variant="outline" size={size}>
+              Remove
+            </Button>
+          </ButtonGroup>
+        ))}
       </Example>
 
       <Example
@@ -153,6 +157,7 @@ export default function ButtonGroupDocs() {
         code={`<ButtonGroup orientation="vertical" aria-label="Zoom">
   <Button variant="outline" size="icon-sm" aria-label="Zoom in"><PlusIcon /></Button>
   <Button variant="outline" size="icon-sm" aria-label="Zoom out"><MinusIcon /></Button>
+  <Button variant="outline" size="icon-sm" aria-label="Reset zoom"><RotateCcwIcon /></Button>
 </ButtonGroup>`}
       >
         <ButtonGroup orientation="vertical" aria-label="Zoom">
@@ -171,35 +176,40 @@ export default function ButtonGroupDocs() {
       <Example
         title="Deployment toolbar"
         description="Nest groups to keep related actions together while separating them from the rest of the toolbar."
-        layout="stack"
-        code={`<ButtonGroup aria-label="Deployment toolbar">
-  <ButtonGroup>
-    <Button variant="outline" size="sm" nativeButton={false} render={<a href="https://lumen-web.lumen.app" />}>
-      <ExternalLinkIcon data-icon="inline-start" />
-      Visit
-    </Button>
+        surface="subtle"
+        code={`<Card size="sm" className="flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4">
+  <CardHeader className="min-w-48 flex-1 gap-1">
+    <CardTitle>acme-web</CardTitle>
+    <CardDescription>Production · main · deployed 4 minutes ago</CardDescription>
+  </CardHeader>
+  <ButtonGroup aria-label="Deployment toolbar" className="flex-wrap">
+    <ButtonGroup>
+      <Button variant="outline" size="sm" nativeButton={false} render={<a href="#visit" />}>
+        <ExternalLinkIcon data-icon="inline-start" />
+        Visit
+      </Button>
+    </ButtonGroup>
+    <ButtonGroup>
+      <Button variant="outline" size="sm">Redeploy</Button>
+      <Button variant="outline" size="sm">
+        <UndoIcon data-icon="inline-start" />
+        Roll back
+      </Button>
+      <Button variant="outline" size="icon-sm" aria-label="More actions">
+        <MoreHorizontalIcon />
+      </Button>
+    </ButtonGroup>
   </ButtonGroup>
-  <ButtonGroup>
-    <Button variant="outline" size="sm">Redeploy</Button>
-    <Button variant="outline" size="sm">Roll back</Button>
-  </ButtonGroup>
-</ButtonGroup>`}
+</Card>`}
       >
-        <div className="flex flex-col gap-5 rounded-(--card-radius) border bg-card p-(--card-padding) sm:flex-row sm:items-center sm:justify-between">
-          <div className="grid gap-1">
-            <p className="text-title text-foreground">lumen-web</p>
-            <p className="text-sm text-muted-foreground">
-              Production · main · deployed 4 minutes ago
-            </p>
-          </div>
-          <ButtonGroup aria-label="Deployment toolbar">
+        <Card size="sm" className="w-full max-w-2xl flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4">
+          <CardHeader className="min-w-48 flex-1 gap-1">
+            <CardTitle>acme-web</CardTitle>
+            <CardDescription>Production · main · deployed 4 minutes ago</CardDescription>
+          </CardHeader>
+          <ButtonGroup aria-label="Deployment toolbar" className="flex-wrap">
             <ButtonGroup>
-              <Button
-                variant="outline"
-                size="sm"
-                nativeButton={false}
-                render={<a href="#visit" />}
-              >
+              <Button variant="outline" size="sm" nativeButton={false} render={<a href="#visit" />}>
                 <ExternalLinkIcon data-icon="inline-start" />
                 Visit
               </Button>
@@ -217,7 +227,7 @@ export default function ButtonGroupDocs() {
               </Button>
             </ButtonGroup>
           </ButtonGroup>
-        </div>
+        </Card>
       </Example>
 
       <Guidelines

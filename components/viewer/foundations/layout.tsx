@@ -1,19 +1,11 @@
 /**
  * Layout pieces shared by the Foundations pages. Server-safe.
- *
- * Classes are joined with `cx` rather than `cn`: the class merger treats
- * Blocks type roles (text-h2, text-caption…) as colours and would drop them
- * when a text colour sits in the same call.
  */
 import * as React from "react"
+import { CheckIcon, XIcon } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { DocHeader } from "@/components/viewer/doc-header"
-
-import { lightColor } from "./data"
-
-export function cx(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(" ")
-}
 
 /** Page frame: doc header, then sections with generous rhythm. */
 export function FoundationPage({
@@ -33,7 +25,10 @@ export function FoundationPage({
   )
 }
 
-/** A titled section. Heading on the left, supporting copy on the right on wide screens. */
+/**
+ * A titled section. Heading on the left, supporting copy on the right on wide
+ * screens; both columns share a top edge.
+ */
 export function Section({
   id,
   title,
@@ -55,10 +50,10 @@ export function Section({
       id={id}
       data-slot="foundation-section"
       aria-labelledby={headingId}
-      className={cx("grid min-w-0 scroll-mt-24 gap-10 border-t pt-10", className)}
+      className={cn("grid min-w-0 scroll-mt-24 gap-10 border-t pt-10", className)}
     >
-      <header className="grid gap-4 @narrow:grid-cols-2 @narrow:items-end @narrow:gap-10">
-        <h2 id={headingId} className="text-h2">
+      <header className="grid gap-4 @narrow:grid-cols-2 @narrow:items-start @narrow:gap-10">
+        <h2 id={headingId} className="text-h2 text-foreground">
           {title}
         </h2>
         {description || actions ? (
@@ -73,46 +68,143 @@ export function Section({
   )
 }
 
+/**
+ * Heading for a group inside a section ("Status", "Widths"). One full step
+ * above the text-title item titles under it, so groups stay distinct on long
+ * pages.
+ */
 export function SubHeading({ children, id }: { children: React.ReactNode; id?: string }) {
   return (
-    <h3 id={id} className="text-h4">
+    <h3 id={id} className="text-h3 text-foreground">
       {children}
     </h3>
   )
 }
 
+/**
+ * Do and don't lists for a Principles section. The section heading names
+ * them, so unlike the docs kit's Guidelines there is no extra heading.
+ */
+export function DoDont({ do: dos, dont }: { do: string[]; dont: string[] }) {
+  return (
+    <div className="grid gap-x-10 gap-y-12 @narrow:grid-cols-2">
+      <RuleList tone="do" title="Do" items={dos} />
+      <RuleList tone="dont" title="Don’t" items={dont} />
+    </div>
+  )
+}
+
+function RuleList({ tone, title, items }: { tone: "do" | "dont"; title: string; items: string[] }) {
+  const Icon = tone === "do" ? CheckIcon : XIcon
+  const color = tone === "do" ? "text-success" : "text-destructive"
+  return (
+    <div
+      className={cn(
+        "grid content-start border-t-(length:--border-width-strong) pt-5",
+        tone === "do" ? "border-success" : "border-destructive"
+      )}
+    >
+      <h3 className="flex items-center gap-2.5 text-title text-foreground">
+        <span
+          className={cn(
+            "grid size-6 place-items-center rounded-full",
+            tone === "do" ? "bg-success-subtle" : "bg-destructive-subtle",
+            color
+          )}
+        >
+          <Icon aria-hidden className="size-3.5" strokeWidth={2.75} />
+        </span>
+        {title}
+      </h3>
+      <ul className="mt-3 grid divide-y">
+        {items.map((item) => (
+          <li key={item} className="flex gap-3 py-4 text-body text-copy last:pb-0">
+            <Icon aria-hidden className={cn("mt-1.5 size-3.5 shrink-0", color)} strokeWidth={2.5} />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 /** Inline code-ish label for utilities and variables. */
 export function Code({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <code className={cx("font-mono text-code text-foreground", className)}>{children}</code>
+  return <code className={cn("font-mono text-code text-foreground", className)}>{children}</code>
+}
+
+/**
+ * A " · "-separated list of utilities or variables. Wraps between entries
+ * only, never inside one.
+ */
+export function CodeList({ value, className }: { value: string; className?: string }) {
+  return (
+    <span className="flex flex-wrap gap-x-3 gap-y-0.5">
+      {value.split(" · ").map((item) => (
+        <code key={item} className={cn("font-mono text-code whitespace-nowrap", className)}>
+          {item}
+        </code>
+      ))}
+    </span>
+  )
 }
 
 /** Meta text in mono, for values such as 16px or oklch numbers. */
 export function Meta({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <span className={cx("font-mono text-xs text-muted-foreground tabular", className)}>{children}</span>
+  return <span className={cn("font-mono text-xs text-muted-foreground tabular", className)}>{children}</span>
 }
 
-/** Children resolve semantic colours to their dark values, whatever theme the page is in. */
-export function DarkScope({
+/**
+ * Children resolve semantic colours to one theme's values, whatever theme the
+ * page is in (`.light` and `.dark` are both scoping classes in tokens.css).
+ */
+export function ThemeScope({
+  theme,
   children,
   className,
   style,
 }: {
+  theme: "light" | "dark"
   children: React.ReactNode
   className?: string
   style?: React.CSSProperties
 }) {
   return (
-    <div className={cx("dark", className)} style={style}>
+    <div className={cn(theme, className)} style={style}>
       {children}
     </div>
   )
 }
 
 /**
- * One theme's swatch of a semantic colour. Translucent colours are painted
- * over the theme's canvas (or the panel, for panel roles) so the swatch shows
- * what people actually see. The dark swatch resolves the live CSS variable
- * inside a .dark scope; the light swatch uses the light primitive directly.
+ * A small chip of a semantic colour as one theme resolves it. The hairline
+ * comes from the page's own theme, so the chip stays visible whatever its
+ * value: a dark value on a dark page, a white value on a white page.
+ */
+export function ScopedChip({
+  cssVar,
+  theme,
+  base = "background",
+  className,
+}: {
+  cssVar: string
+  theme: "light" | "dark"
+  base?: "background" | "panel"
+  className?: string
+}) {
+  return (
+    <span aria-hidden className={cn("block size-5 shrink-0 overflow-hidden rounded-xs border border-border-strong", className)}>
+      <span className={cn(theme, "block size-full", base === "panel" ? "bg-panel" : "bg-background")}>
+        <span className="block size-full" style={{ backgroundColor: `var(${cssVar})` }} />
+      </span>
+    </span>
+  )
+}
+
+/**
+ * One theme's swatch of a semantic colour, read from the live CSS variable
+ * inside a theme scope. Translucent colours are painted over that theme's
+ * canvas (or the panel, for panel roles) so the swatch shows what people see.
  */
 export function ThemeSwatch({
   cssVar,
@@ -125,16 +217,9 @@ export function ThemeSwatch({
   base?: "background" | "panel"
   className?: string
 }) {
-  if (theme === "light") {
-    return (
-      <div className={className} style={{ backgroundColor: lightColor(`--${base}`) }}>
-        <div className="size-full" style={{ backgroundColor: lightColor(cssVar) }} />
-      </div>
-    )
-  }
   return (
-    <DarkScope className={cx(base === "panel" ? "bg-panel" : "bg-background", className)}>
+    <ThemeScope theme={theme} className={cn(base === "panel" ? "bg-panel" : "bg-background", className)}>
       <div className="size-full" style={{ backgroundColor: `var(${cssVar})` }} />
-    </DarkScope>
+    </ThemeScope>
   )
 }

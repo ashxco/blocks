@@ -4,6 +4,7 @@ import { CheckIcon, MinusIcon } from "lucide-react"
 
 import { SectionHeading } from "@/components/blocks/section-heading"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Table,
   TableBody,
@@ -98,11 +99,12 @@ export const defaultMatrixGroups: PlanMatrixGroup[] = [
   },
 ]
 
-function Value({ value }: { value: PlanMatrixValue | undefined }) {
+function Value({ value, align = "center" }: { value: PlanMatrixValue | undefined; align?: "center" | "end" }) {
+  const icon = align === "center" ? "mx-auto" : "ml-auto"
   if (value === true) {
     return (
       <>
-        <CheckIcon aria-hidden="true" className="mx-auto size-4.5 text-foreground" />
+        <CheckIcon aria-hidden="true" className={cn(icon, "size-4.5 text-foreground")} />
         <span className="sr-only">Included</span>
       </>
     )
@@ -110,7 +112,7 @@ function Value({ value }: { value: PlanMatrixValue | undefined }) {
   if (value === false || value === undefined) {
     return (
       <>
-        <MinusIcon aria-hidden="true" className="mx-auto size-4 text-muted-foreground/60" />
+        <MinusIcon aria-hidden="true" className={cn(icon, "size-4 text-muted-foreground/60")} />
         <span className="sr-only">Not included</span>
       </>
     )
@@ -118,44 +120,134 @@ function Value({ value }: { value: PlanMatrixValue | undefined }) {
   return <span className="text-sm font-medium text-foreground">{value}</span>
 }
 
+/**
+ * Below 42rem a four-column table only shows a plan and a half, so the
+ * matrix shows one plan at a time: a segmented switch, then that plan's
+ * values beside the feature names at full width.
+ */
+function PlanMatrixStacked({
+  columns,
+  groups,
+  className,
+}: {
+  columns: PlanMatrixColumn[]
+  groups: PlanMatrixGroup[]
+  className?: string
+}) {
+  const initial = (columns.find((c) => c.featured) ?? columns[0])?.name
+
+  return (
+    <Tabs defaultValue={initial} className={cn("gap-6", className)}>
+      <TabsList variant="segmented" aria-label="Plan to show" className="w-full">
+        {columns.map((col) => (
+          <TabsTrigger key={col.name} value={col.name} className="min-w-0 px-2">
+            {col.name}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+
+      {columns.map((col, index) => (
+        <TabsContent key={col.name} value={col.name} className="text-foreground">
+          <div className="overflow-hidden rounded-(--card-radius) border">
+            <div
+              className={cn(
+                "flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-5",
+                col.featured ? "bg-panel text-panel-foreground" : "border-b bg-subtle"
+              )}
+            >
+              <h3 className={cn("text-title", col.featured ? "text-panel-foreground" : "text-foreground")}>
+                {col.name}
+              </h3>
+              {col.price ? (
+                <p className={cn("text-caption", col.featured ? "text-panel-muted" : "text-muted-foreground")}>
+                  {col.price}
+                </p>
+              ) : null}
+            </div>
+
+            {groups.map((group) => (
+              <div key={group.title} className="px-5 pt-6 last:pb-2">
+                <h4 className="text-label text-foreground">{group.title}</h4>
+                <dl className="mt-2 divide-y">
+                  {group.rows.map((row) => (
+                    <div key={row.feature} className="flex items-center justify-between gap-6 py-3.5">
+                      <dt className="text-sm text-copy">{row.feature}</dt>
+                      <dd className="shrink-0 text-right">
+                        <Value value={row.values[index]} align="end" />
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            ))}
+
+            {col.cta ? (
+              <div className="border-t p-5">
+                <Button
+                  variant={col.featured ? "default" : "secondary"}
+                  className="w-full"
+                  nativeButton={false}
+                  render={<Link href={col.cta.href} />}
+                >
+                  {col.cta.label}
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        </TabsContent>
+      ))}
+    </Tabs>
+  )
+}
+
 /* Shared cell styles. Borders live on cells so the sticky column keeps its hairline. */
 const stickyCell =
   "sticky left-0 z-10 border-r border-b bg-background px-5 text-left whitespace-normal group-hover/row:bg-subtle"
 const valueCell = "border-b px-3 text-center whitespace-normal"
-const featuredCell = "bg-subtle group-hover/row:bg-accent"
+/* bg-muted, not bg-subtle: in dark mode subtle matches the canvas closely, muted keeps the column visible. */
+const featuredCell = "bg-muted group-hover/row:bg-accent"
+/* Group titles run as one clean line: no column divider, only the featured column's tint carries through. */
+const groupCell = "sticky left-0 z-10 border-b bg-background px-5 text-left whitespace-normal"
 
 /**
  * A feature-by-plan comparison table. Checks and dashes for yes and no,
- * plain text for limits. The feature column stays put while the plans
- * scroll sideways on small screens.
+ * plain text for limits. With three or more plans, narrow slots show one
+ * plan at a time behind a segmented switch; from 42rem the full table
+ * shows, and its feature column stays put if the plans still need to scroll.
  */
 export function PlanMatrix({
   columns = defaultMatrixColumns,
   groups = defaultMatrixGroups,
-  title = "Compare every plan",
+  title = "Compare every plan.",
   description = "Every plan includes automatic HTTPS, DDoS protection and unlimited deployments. Limits reset on the first of each month.",
   caption = "Features included in each plan",
   contained = true,
   className,
 }: PlanMatrixProps) {
   const hasCtas = columns.some((c) => c.cta)
+  // Two plans fit side by side on a phone; three or more switch to one at a time.
+  const stacked = columns.length > 2
 
   return (
     <section data-slot="plan-matrix" className={cn(contained && "container-page py-section", className)}>
       <div className="@container grid gap-12">
         {title != null ? <SectionHeading title={title} description={description} /> : null}
 
-        <div className="overflow-hidden rounded-(--card-radius) border">
+        {stacked ? <PlanMatrixStacked columns={columns} groups={groups} className="@prose:hidden" /> : null}
+
+        <div className={cn("overflow-hidden rounded-(--card-radius) border", stacked && "hidden @prose:block")}>
           <Table
             className={cn(
-              "min-w-152 table-fixed border-separate border-spacing-0 text-sm",
+              // Wide enough for four plans; a two-plan table fits a phone as it is.
+              stacked ? "min-w-184" : "min-w-0",
+              "table-fixed border-separate border-spacing-0 text-sm",
               !hasCtas && "[&_tbody:last-of-type_tr:last-child>*]:border-b-0"
             )}
           >
             <caption className="sr-only">{caption}</caption>
             <TableHeader className="[&_tr]:border-0">
               <TableRow className="border-0 hover:bg-transparent">
-                <TableHead scope="col" className={cn(stickyCell, "h-auto w-40 py-6 align-bottom @narrow:w-1/3")}>
+                <TableHead scope="col" className={cn(stickyCell, "h-auto w-32 py-6 align-bottom @prose:w-40 @narrow:w-1/3")}>
                   <span className="text-caption font-semibold text-muted-foreground">Plans</span>
                 </TableHead>
                 {columns.map((col) => (
@@ -165,17 +257,19 @@ export function PlanMatrix({
                     className={cn(
                       valueCell,
                       "h-auto py-6 align-bottom",
+                      // The emphasis panel, which stays dark in both themes.
                       col.featured && "border-panel bg-panel"
                     )}
                   >
-                    <span className={`block text-title ${col.featured ? "text-panel-foreground" : "text-foreground"}`}>
+                    <span className={cn("block text-title", col.featured ? "text-panel-foreground" : "text-foreground")}>
                       {col.name}
                     </span>
                     {col.price ? (
                       <span
-                        className={`mt-0.5 block text-caption font-normal ${
+                        className={cn(
+                          "mt-0.5 block text-caption font-normal",
                           col.featured ? "text-panel-muted" : "text-muted-foreground"
-                        }`}
+                        )}
                       >
                         {col.price}
                       </span>
@@ -188,17 +282,14 @@ export function PlanMatrix({
             {groups.map((group) => (
               <TableBody key={group.title}>
                 <TableRow className="border-0 hover:bg-transparent">
-                  <TableHead
-                    scope="rowgroup"
-                    className={cn(stickyCell, "h-auto pt-8 pb-3")}
-                  >
+                  <TableHead scope="rowgroup" className={cn(groupCell, "h-auto pt-8 pb-3")}>
                     <span className="text-label text-foreground">{group.title}</span>
                   </TableHead>
                   {columns.map((col) => (
                     <TableCell
                       key={col.name}
                       aria-hidden="true"
-                      className={cn(valueCell, "pt-8 pb-3", col.featured && "bg-subtle")}
+                      className={cn("border-b pt-8 pb-3", col.featured && "bg-muted")}
                     />
                   ))}
                 </TableRow>
@@ -236,12 +327,13 @@ export function PlanMatrix({
                   {columns.map((col) => (
                     <TableCell
                       key={col.name}
-                      className={cn(valueCell, "border-b-0 py-6", col.featured && "bg-subtle")}
+                      className={cn(valueCell, "border-b-0 py-6", col.featured && "bg-muted")}
                     >
                       {col.cta ? (
                         <Button
                           size="sm"
                           variant={col.featured ? "default" : "secondary"}
+                          className="px-3"
                           nativeButton={false}
                           render={<Link href={col.cta.href} />}
                         >

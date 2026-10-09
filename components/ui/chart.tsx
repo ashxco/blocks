@@ -16,11 +16,14 @@ import type { TooltipValueType } from "recharts"
  *
  * Grid and axis lines use the border colour, tick labels the muted colour,
  * and the tooltip is styled like an overlay. Area fills are flat at low
- * opacity (fillOpacity={0.12}); never add gradient defs.
+ * opacity (fillOpacity={0.12}); never add gradient defs. Series animate with
+ * chartMotion, which follows the motion tokens.
  */
 
-// Format: { THEME_NAME: CSS_SELECTOR }
-const THEMES = { light: "", dark: ".dark" } as const
+// Theme names a config can set colours for. Per-theme colours resolve with
+// light-dark(), which follows the nearest .light or .dark scope (both set
+// color-scheme), so a .light subtree on a dark page gets its light colours.
+const THEMES = { light: "", dark: "" } as const
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const
 type TooltipNameType = number | string
@@ -116,29 +119,38 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
+  const declarations = colorConfig
+    .map(([key, itemConfig]) => {
+      const color = itemConfig.theme
+        ? `light-dark(${itemConfig.theme.light}, ${itemConfig.theme.dark})`
+        : itemConfig.color
+      return color ? `  --color-${key}: ${color};` : null
+    })
+    .filter(Boolean)
+    .join("\n")
+
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
-${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ??
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
-}
-`
-          )
-          .join("\n"),
+        __html: `[data-chart=${id}] {\n${declarations}\n}`,
       }}
     />
   )
 }
+
+/**
+ * Series motion from the motion tokens: --duration-slower (560ms) on an
+ * ease-out curve, instead of Recharts' 1.5s default. Spread it on every
+ * Area, Bar and Line:
+ *
+ *   <Area dataKey="requests" {...chartMotion} />
+ *
+ * Recharts already skips the animation when people ask for reduced motion.
+ */
+const chartMotion = {
+  animationDuration: 560,
+  animationEasing: "ease-out",
+} as const
 
 const ChartTooltip = RechartsPrimitive.Tooltip
 
@@ -228,7 +240,7 @@ function ChartTooltipContent({
     <div
       data-slot="chart-tooltip"
       className={cn(
-        "grid min-w-36 items-start gap-2 rounded-(--overlay-radius) border border-border bg-popover px-3 py-2.5 text-xs text-popover-foreground tabular-nums",
+        "grid min-w-36 items-start gap-2 rounded-(--overlay-radius) border border-input bg-popover px-3 py-2.5 text-xs text-popover-foreground tabular-nums",
         "animate-in duration-(--duration-fast) ease-out fade-in-0",
         className
       )}
@@ -329,12 +341,11 @@ function ChartLegendContent({
   return (
     <div
       data-slot="chart-legend"
-      // text-caption stays outside cn(), which would read it as a colour.
-      className={`text-caption ${cn(
-        "flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-copy",
+      className={cn(
+        "flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-caption text-copy",
         verticalAlign === "top" ? "pb-4" : "pt-4",
         className
-      )}`}
+      )}
     >
       {payload
         .filter((item) => item.type !== "none")
@@ -405,6 +416,7 @@ function getPayloadConfigFromPayload(
 }
 
 export {
+  chartMotion,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,

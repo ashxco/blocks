@@ -15,12 +15,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupText,
-} from "@/components/ui/input-group"
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -30,6 +24,7 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/toast"
+import { WorkspaceUrlInput } from "@/components/blocks/onboarding-steps/workspace-url-input"
 
 export interface SettingsSectionProps {
   /** Section title in the left column. */
@@ -46,6 +41,10 @@ export interface SettingsSectionProps {
   hideFooter?: boolean
   /** Called when people save. Without it, the section simulates a short request. */
   onSave?: () => void | Promise<void>
+  /** Toast title after a successful save. Say what changed: "Profile saved". */
+  successTitle?: string
+  /** Optional toast line after a successful save: what happens next. */
+  successDescription?: string
   /** Heading level of the title. */
   as?: "h2" | "h3"
   className?: string
@@ -61,6 +60,8 @@ export function SettingsSection({
   saveLabel = "Save changes",
   hideFooter = false,
   onSave,
+  successTitle = "Changes saved",
+  successDescription,
   as: Heading = "h2",
   className,
 }: SettingsSectionProps) {
@@ -80,7 +81,7 @@ export function SettingsSection({
     try {
       await (onSave ? onSave() : wait(700))
       setState("saved")
-      toast.add({ title: "Changes saved", description: "Your settings are live for everyone in the workspace." })
+      toast.add({ title: successTitle, description: successDescription })
     } catch {
       setState("idle")
       toast.add({ type: "error", title: "Couldn’t save changes", description: "Check your connection and try again." })
@@ -154,24 +155,17 @@ function WorkspaceFields() {
     <FieldGroup>
       <Field>
         <FieldLabel htmlFor={`${id}-name`}>Workspace name</FieldLabel>
-        <Input id={`${id}-name`} name="workspaceName" defaultValue="Halcyon Labs" autoComplete="organization" />
+        <Input id={`${id}-name`} name="workspaceName" defaultValue="Acme Inc." autoComplete="organization" />
       </Field>
 
       <Field>
         <FieldLabel htmlFor={`${id}-url`}>Workspace URL</FieldLabel>
-        <InputGroup>
-          <InputGroupAddon>
-            <InputGroupText>lumen.app/</InputGroupText>
-          </InputGroupAddon>
-          <InputGroupInput
-            id={`${id}-url`}
-            name="workspaceSlug"
-            defaultValue="halcyon-labs"
-            spellCheck={false}
-            autoCapitalize="none"
-            aria-describedby={`${id}-url-hint`}
-          />
-        </InputGroup>
+        <WorkspaceUrlInput
+          id={`${id}-url`}
+          name="workspaceSlug"
+          defaultValue="acme"
+          aria-describedby={`${id}-url-hint`}
+        />
         <FieldDescription id={`${id}-url-hint`}>
           Changing the URL breaks links people have bookmarked. Old links redirect for 30 days.
         </FieldDescription>

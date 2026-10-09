@@ -8,7 +8,24 @@ import { Button } from "@/components/ui/button"
 import {
   CommandMenu,
   CommandMenuButton,
+  CommandMenuPanel,
 } from "@/components/blocks/command-menu"
+import { Notifications } from "@/components/blocks/notifications"
+import { UserMenu } from "@/components/blocks/user-menu"
+
+/** A slice of the app top bar, so the trigger reads in the place it lives. */
+function TopBarSlice({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex h-(--header-height-sm) w-full max-w-xl items-center gap-3 rounded-(--card-radius) border bg-background pr-2 pl-5">
+      <span className="text-label text-muted-foreground">Acme Inc.</span>
+      <span aria-hidden="true" className="text-label text-muted-foreground">
+        /
+      </span>
+      <span className="text-label text-foreground">Overview</span>
+      <div className="ml-auto flex items-center gap-1">{children}</div>
+    </div>
+  )
+}
 
 function ControlledExample() {
   const [open, setOpen] = React.useState(false)
@@ -37,7 +54,29 @@ export default function CommandMenuDocs() {
         minHeight="min-h-56"
         code={`<CommandMenu />`}
       >
-        <CommandMenu hotkey={false} />
+        <TopBarSlice>
+          <CommandMenu hotkey={false} className="mr-1" />
+          <Notifications />
+          <UserMenu />
+        </TopBarSlice>
+      </Example>
+
+      <Example
+        title="Open"
+        description="What the trigger opens: one search field over three groups, Navigation, Actions and Theme. Arrow keys move, Enter runs the item, Esc closes. Shown inline here with CommandMenuPanel; in the app it opens in a dialog in the upper third of the screen."
+        layout="full"
+        surface="subtle"
+        code={`// The open state on its own surface, for previews or a page that keeps search open
+<CommandMenuPanel />`}
+      >
+        <div className="grid justify-items-center gap-3 px-4 py-10 sm:px-10">
+          <TopBarSlice>
+            <CommandMenu hotkey={false} className="mr-1" />
+            <Notifications />
+            <UserMenu />
+          </TopBarSlice>
+          <CommandMenuPanel />
+        </div>
       </Example>
 
       <Example
@@ -66,14 +105,20 @@ export default function CommandMenuDocs() {
         <ControlledExample />
       </Example>
 
-      <Example title="On a tinted band" surface="subtle" minHeight="min-h-56">
-        <CommandMenuButton className="w-80" />
+      <Example
+        title="On a tinted band"
+        description="The field’s muted fill matches bg-subtle, so on a tinted band give it the card fill with className to keep its edge."
+        surface="subtle"
+        minHeight="min-h-56"
+        code={`<CommandMenuButton className="w-80 bg-card" />`}
+      >
+        <CommandMenuButton className="w-80 bg-card" />
       </Example>
 
       <Guidelines
         do={[
           "Keep one command menu per page with the hotkey on. Turn it off for extra instances, or where the page already uses Cmd+K.",
-          "Name actions as verbs: “Create project”, “Invite a teammate”.",
+          "Name actions as verbs: “Create project”, “Invite members”.",
           "Add keywords so people find an action by the word they think of first.",
         ]}
         dont={[
@@ -118,6 +163,23 @@ export default function CommandMenuDocs() {
             prop: "className",
             type: "string",
             description: "Classes for the trigger.",
+          },
+        ]}
+      />
+      <ApiTable
+        title="CommandMenuPanel"
+        rows={[
+          {
+            prop: "placeholder",
+            type: "string",
+            default: '"Search pages and actions"',
+            description:
+              "The palette inline, on a bordered surface as wide as a dialog, without a trigger or the dialog.",
+          },
+          {
+            prop: "className",
+            type: "string",
+            description: "Classes for the surface.",
           },
         ]}
       />

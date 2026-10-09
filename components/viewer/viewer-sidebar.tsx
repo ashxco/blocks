@@ -24,7 +24,6 @@ export function ViewerSidebar() {
       container.scrollTop = Math.max(0, top - container.clientHeight / 3)
     }
     // Only on mount: later navigations happen from the sidebar itself.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (pathname === "/") return null

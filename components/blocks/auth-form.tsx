@@ -7,8 +7,6 @@ import {
   CircleCheckIcon,
   EyeIcon,
   EyeOffIcon,
-  GitBranchIcon,
-  GlobeIcon,
   MailCheckIcon,
 } from "lucide-react"
 
@@ -29,6 +27,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 import { Spinner } from "@/components/ui/spinner"
+import { Kern } from "@/components/ui/kern"
 
 export type AuthMode = "sign-in" | "sign-up"
 
@@ -81,7 +80,7 @@ const COPY = {
   },
   "sign-up": {
     title: "Create your account",
-    description: "Ship your first project in under a minute. Free for personal projects.",
+    description: "Deploy from your first Git push. 14 days of Pro, no card needed.",
     submit: "Create account",
     pending: "Creating account",
     switchPrompt: "Already have an account?",
@@ -92,16 +91,19 @@ const COPY = {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
+/** Shortest password Lumen accepts. Sign-up and the security settings both read it. */
+export const PASSWORD_MIN = 12
+
 function validate(values: AuthFormValues, mode: AuthMode) {
   const errors: Partial<Record<FieldName, string>> = {}
   if (mode === "sign-up" && !values.name.trim()) errors.name = "Enter your name."
   if (!values.email.trim()) errors.email = "Enter your email address."
   else if (!EMAIL_PATTERN.test(values.email.trim()))
-    errors.email = "Enter an email address like maya@halcyon.dev."
+    errors.email = "Enter an email address like maya@acme.dev."
   if (!values.password)
     errors.password = mode === "sign-in" ? "Enter your password." : "Choose a password."
-  else if (mode === "sign-up" && values.password.length < 8)
-    errors.password = "Use at least 8 characters."
+  else if (mode === "sign-up" && values.password.length < PASSWORD_MIN)
+    errors.password = `Use at least ${PASSWORD_MIN} characters.`
   return errors
 }
 
@@ -131,11 +133,9 @@ export function AuthForm({
   const [status, setStatus] = React.useState<Status>({ state: "idle" })
   const [formError, setFormError] = React.useState<string | null>(null)
 
-  const refs = {
-    name: React.useRef<HTMLInputElement>(null),
-    email: React.useRef<HTMLInputElement>(null),
-    password: React.useRef<HTMLInputElement>(null),
-  }
+  const nameRef = React.useRef<HTMLInputElement>(null)
+  const emailRef = React.useRef<HTMLInputElement>(null)
+  const passwordRef = React.useRef<HTMLInputElement>(null)
 
   const errors = validate(values, mode)
   const errorFor = (field: FieldName) =>
@@ -178,7 +178,8 @@ export function AuthForm({
     setAttempted(true)
     const first = (Object.keys(validate(values, mode)) as FieldName[])[0]
     if (first) {
-      refs[first].current?.focus()
+      const target = { name: nameRef, email: emailRef, password: passwordRef }[first]
+      target.current?.focus()
       return
     }
     void run("email")
@@ -218,13 +219,16 @@ export function AuthForm({
       ) : (
         <>
           <header className="grid gap-3">
-            <Heading className="text-h2 text-foreground">{title ?? copy.title}</Heading>
+            {/* Steps down a role in narrow slots (a framed card in a sidebar, a phone), like PageHeader. */}
+            <Heading className="text-h2 text-foreground @max-[22rem]:text-h3">
+              <Kern>{title ?? copy.title}</Kern>
+            </Heading>
             <p className="text-body text-copy">{description ?? copy.description}</p>
           </header>
 
           <div className="mt-8 grid grid-cols-2 gap-3">
             {(["GitHub", "Google"] as const).map((provider) => {
-              const Icon = provider === "GitHub" ? GitBranchIcon : GlobeIcon
+              const Icon = provider === "GitHub" ? GitHubMark : GoogleMark
               const busy = status.state === "pending" && status.via === provider
               return (
                 <Button
@@ -255,7 +259,7 @@ export function AuthForm({
                 <Field data-invalid={Boolean(errorFor("name"))}>
                   <FieldLabel htmlFor={`${id}-name`}>Full name</FieldLabel>
                   <Input
-                    ref={refs.name}
+                    ref={nameRef}
                     id={`${id}-name`}
                     name="name"
                     autoComplete="name"
@@ -273,14 +277,14 @@ export function AuthForm({
               <Field data-invalid={Boolean(errorFor("email"))}>
                 <FieldLabel htmlFor={`${id}-email`}>Work email</FieldLabel>
                 <Input
-                  ref={refs.email}
+                  ref={emailRef}
                   id={`${id}-email`}
                   name="email"
                   type="email"
                   inputMode="email"
                   autoComplete="email"
                   spellCheck={false}
-                  placeholder="maya@halcyon.dev"
+                  placeholder="maya@acme.dev"
                   value={values.email}
                   onChange={update("email")}
                   onBlur={blur("email")}
@@ -304,12 +308,12 @@ export function AuthForm({
                 </div>
                 <InputGroup>
                   <InputGroupInput
-                    ref={refs.password}
+                    ref={passwordRef}
                     id={`${id}-password`}
                     name="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
-                    placeholder={mode === "sign-in" ? "Your password" : "At least 8 characters"}
+                    placeholder={mode === "sign-in" ? "Your password" : `At least ${PASSWORD_MIN} characters`}
                     value={values.password}
                     onChange={update("password")}
                     onBlur={blur("password")}
@@ -330,7 +334,7 @@ export function AuthForm({
                   <FieldError id={`${id}-password-error`}>{errorFor("password")}</FieldError>
                 ) : mode === "sign-up" ? (
                   <FieldDescription id={`${id}-password-hint`}>
-                    Use 8 or more characters. A passphrase works well.
+                    Use {PASSWORD_MIN} or more characters. A few unrelated words work well.
                   </FieldDescription>
                 ) : null}
               </Field>
@@ -380,6 +384,29 @@ export function AuthForm({
   )
 }
 
+/*
+ * Provider marks, drawn in currentColor so they follow the button's ink in
+ * both themes. Sized by the button's data-icon rules, like Lucide icons.
+ */
+function GitHubMark(props: React.ComponentProps<"svg">) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false" {...props}>
+      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.96c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
+    </svg>
+  )
+}
+
+function GoogleMark(props: React.ComponentProps<"svg">) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false" {...props}>
+      <path d="M21.6 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-2 3.02v2.5h3.24c1.9-1.75 2.98-4.32 2.98-7.35Z" />
+      <path d="M12 22c2.7 0 4.96-.9 6.62-2.42l-3.24-2.5c-.9.6-2.04.95-3.38.95-2.6 0-4.8-1.76-5.59-4.12H3.07v2.59A10 10 0 0 0 12 22Z" />
+      <path d="M6.41 13.91a6 6 0 0 1 0-3.82V7.5H3.07a10 10 0 0 0 0 9l3.34-2.59Z" />
+      <path d="M12 5.98c1.47 0 2.79.5 3.83 1.5l2.87-2.88A9.97 9.97 0 0 0 12 2a10 10 0 0 0-8.93 5.5l3.34 2.59C7.2 7.74 9.4 5.98 12 5.98Z" />
+    </svg>
+  )
+}
+
 function LegalLink({ href, children }: { href?: string; children: React.ReactNode }) {
   if (!href) return <span className="font-semibold text-foreground">{children}</span>
   return (
@@ -419,7 +446,7 @@ function AuthSuccess({
         <Icon className="size-5" aria-hidden="true" />
       </span>
       <div className="grid gap-3">
-        <Heading ref={headingRef} tabIndex={-1} className="text-h2 text-foreground outline-none">
+        <Heading ref={headingRef} tabIndex={-1} className="text-h2 text-foreground outline-none @max-[22rem]:text-h3">
           {verifyEmail ? "Check your inbox" : mode === "sign-up" ? "Account created" : "You’re signed in"}
         </Heading>
         <p className="text-body text-copy">
@@ -428,6 +455,8 @@ function AuthSuccess({
               We sent a confirmation link to <span className="font-semibold text-foreground">{email}</span>.
               Open it to verify your address, then set up your workspace.
             </>
+          ) : mode === "sign-up" && provider ? (
+            <>Your Lumen account is linked to {provider}. Set up a workspace to deploy your first project.</>
           ) : provider ? (
             <>Signed in with {provider}. Your projects and previews are ready where you left them.</>
           ) : (

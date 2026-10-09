@@ -4,20 +4,20 @@ import { ActivityIcon, GitBranchIcon, GlobeIcon, KeyRoundIcon, RefreshCwIcon, Us
 import { SectionHeading } from "@/components/blocks/section-heading"
 import {
   AvatarStack,
+  EdgeRegions,
   LiveMetrics,
   MaskedSecrets,
   PreviewUrls,
-  RegionMap,
   TrafficShift,
 } from "@/components/blocks/feature-bento/visuals"
 import { cn } from "@/lib/utils"
 
 export {
   AvatarStack,
+  EdgeRegions,
   LiveMetrics,
   MaskedSecrets,
   PreviewUrls,
-  RegionMap,
   Sparkline,
   TrafficShift,
 } from "@/components/blocks/feature-bento/visuals"
@@ -27,7 +27,7 @@ export interface BentoFeature {
   description: string
   /** A lucide icon element, e.g. <GitBranchIcon />. */
   icon?: React.ReactNode
-  /** "dark" is a panel tile for emphasis (one per grid). "tint" is a brand-subtle tile. */
+  /** "dark" is a panel tile for emphasis (one per grid). "tint" is a flat tinted tile. */
   tone?: "default" | "dark" | "tint"
   /** Spans two columns from the two-column layout up. */
   wide?: boolean
@@ -74,11 +74,11 @@ export const defaultBentoFeatures: BentoFeature[] = [
   },
   {
     title: "Global edge",
-    description: "TLS, caching and rate limits run at the edge in 38 regions, close to your users.",
+    description: "TLS, caching and rate limits run in 38 edge regions, close to your users.",
     icon: <GlobeIcon />,
     tone: "tint",
     wide: true,
-    visual: <RegionMap />,
+    visual: <EdgeRegions />,
   },
   {
     title: "Teams and roles",
@@ -96,14 +96,16 @@ const tileTone = {
     body: "mt-2 text-body text-copy",
   },
   dark: {
-    tile: "border-panel-border bg-panel text-panel-foreground",
-    icon: "border-panel-border bg-panel-raised text-panel-foreground",
+    // In dark mode the cards are near-black too, so the emphasis tile steps up to the raised panel.
+    tile: "border-panel-border bg-panel text-panel-foreground dark:bg-panel-raised",
+    icon: "border-panel-border bg-panel-raised text-panel-foreground dark:bg-panel",
     title: "text-h4 text-panel-foreground",
     body: "mt-2 text-body text-panel-muted",
   },
   tint: {
-    tile: "border-transparent bg-brand-subtle",
-    icon: "border-transparent bg-background text-brand",
+    // A flat decorative tint, not brand violet: the page keeps violet for its one highlighted word.
+    tile: "border-transparent bg-tint-sky",
+    icon: "border-transparent bg-background text-foreground",
     title: "text-h4 text-foreground",
     body: "mt-2 text-body text-copy",
   },
@@ -156,9 +158,11 @@ export function FeatureBento({
   return (
     <section
       data-slot="feature-bento"
-      className={cn(contained && "container-page py-section", className)}
+      className={cn("@container/bento-section", contained && "container-page py-section", className)}
     >
-      {title ? <SectionHeading title={title} description={description} className="mb-12 md:mb-16" /> : null}
+      {title ? (
+        <SectionHeading title={title} description={description} className="mb-12 @3xl/bento-section:mb-16" />
+      ) : null}
       <div className="@container/bento">
         <div className="grid grid-flow-row-dense gap-4 @min-[34rem]/bento:grid-cols-2 @min-[60rem]/bento:grid-cols-4">
           {features.map((f) => (

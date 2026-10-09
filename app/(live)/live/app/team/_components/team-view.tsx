@@ -26,8 +26,8 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 /**
  * The team page. Members and pending invitations are separate lists, so the
  * page header owns the one "Invite members" action and new invites land in
- * the pending list. MembersList's own invite button is hidden here for that
- * reason; it would add invited rows to the members list instead.
+ * the pending list. MembersList gets inviteAction={null} for that reason; its
+ * own button would add invited rows to the members list instead.
  */
 export function TeamView() {
   const [members, setMembers] = React.useState(MEMBERS)
@@ -130,7 +130,7 @@ export function TeamView() {
             onRoleChange={(member, role) =>
               setMembers((list) => list.map((m) => (m.id === member.id ? { ...m, role } : m)))
             }
-            className="**:data-[slot=card-action]:hidden **:data-[slot=card-header]:grid-cols-1!"
+            inviteAction={null}
           />
           <PendingInvitations invitations={invitations} onResend={resend} onRevoke={revoke} />
         </div>

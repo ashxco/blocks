@@ -4,11 +4,11 @@ import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { PagerLink } from "@/components/viewer/nav"
 
-/** Previous and next pages inside the same group, at the foot of a doc page. */
+/** Previous and next pages in the section, at the foot of a doc page. */
 export function DocPager({ prev, next }: { prev?: PagerLink; next?: PagerLink }) {
   if (!prev && !next) return null
   return (
-    <nav aria-label="More in this group" className="grid gap-3 border-t pt-10 sm:grid-cols-2">
+    <nav aria-label="More in this section" className="grid gap-3 border-t pt-10 sm:grid-cols-2">
       {prev ? <PagerCard link={prev} direction="prev" /> : null}
       {next ? <PagerCard link={next} direction="next" /> : null}
     </nav>
@@ -31,9 +31,9 @@ function PagerCard({ link, direction }: { link: PagerLink; direction: "prev" | "
         <Icon aria-hidden="true" className="size-4" />
       </span>
       <span className="grid min-w-0 gap-0.5">
-        <span className="truncate text-h4">{link.title}</span>
+        <span className="truncate text-h4 text-foreground">{link.title}</span>
         <span className="text-caption text-muted-foreground">
-          {direction === "prev" ? "Previous" : "Next"} in {link.group}
+          {link.caption ?? `${direction === "prev" ? "Previous" : "Next"} in ${link.group}`}
         </span>
       </span>
     </Link>

@@ -84,20 +84,28 @@ function DropdownMenuContent({
   side = "bottom",
   sideOffset = 6,
   className,
+  collisionAvoidance,
+  collisionBoundary,
+  container,
   ...props
 }: MenuPrimitive.Popup.Props &
   Pick<
     MenuPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset"
-  >) {
+    "align" | "alignOffset" | "side" | "sideOffset" | "collisionAvoidance" | "collisionBoundary"
+  > & {
+    /** Element to portal into instead of <body>, e.g. a preview stage. */
+    container?: MenuPrimitive.Portal.Props["container"]
+  }) {
   return (
-    <MenuPrimitive.Portal>
+    <MenuPrimitive.Portal container={container}>
       <MenuPrimitive.Positioner
         className={menuStyles.positioner}
         align={align}
         alignOffset={alignOffset}
         side={side}
         sideOffset={sideOffset}
+        collisionAvoidance={collisionAvoidance}
+        collisionBoundary={collisionBoundary}
       >
         <MenuPrimitive.Popup
           data-slot="dropdown-menu-content"

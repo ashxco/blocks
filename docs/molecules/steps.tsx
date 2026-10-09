@@ -1,6 +1,6 @@
 "use client"
 
-import { CreditCardIcon, ServerIcon, TerminalIcon } from "lucide-react"
+import { RocketIcon, ServerIcon, TerminalIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Steps } from "@/components/blocks/steps"
@@ -11,7 +11,7 @@ export default function StepsDocs() {
       <Example
         title="Default"
         layout="full"
-        description="Four cards with icons, joined by a hairline on wide layouts. Two columns in narrow slots, one on phones."
+        description="Four steps on one strip, joined by hairlines. Four columns on wide layouts, two in narrow slots, one on phones."
         code={`<Steps />`}
       >
         <Steps />
@@ -21,7 +21,7 @@ export default function StepsDocs() {
         title="On a tinted band"
         layout="full"
         surface="subtle"
-        description="Cards stay on the card surface, so the band can sit between two white sections."
+        description="Steps stay on the card surface, so the band can sit between two white sections."
         code={`<section className="bg-subtle">
   <Steps />
 </section>`}
@@ -48,7 +48,7 @@ export default function StepsDocs() {
   steps={[
     { title: "Install", description: "Run one command on any Linux server with SSH access.", icon: <TerminalIcon /> },
     { title: "Attach", description: "Add the server to a project. Lumen sets up Docker, TLS and logging.", icon: <ServerIcon /> },
-    { title: "Pay per server", description: "A flat monthly price per server, however many people deploy to it.", icon: <CreditCardIcon /> },
+    { title: "Deploy", description: "Push as usual. Builds run on your servers and Lumen routes traffic to them.", icon: <RocketIcon /> },
   ]}
 />`}
       >
@@ -58,7 +58,7 @@ export default function StepsDocs() {
           steps={[
             { title: "Install", description: "Run one command on any Linux server with SSH access.", icon: <TerminalIcon /> },
             { title: "Attach", description: "Add the server to a project. Lumen sets up Docker, TLS and logging.", icon: <ServerIcon /> },
-            { title: "Pay per server", description: "A flat monthly price per server, however many people deploy to it.", icon: <CreditCardIcon /> },
+            { title: "Deploy", description: "Push as usual. Builds run on your servers and Lumen routes traffic to them.", icon: <RocketIcon /> },
           ]}
         />
       </Example>
@@ -67,7 +67,7 @@ export default function StepsDocs() {
         do={[
           "Use three or four steps, each a single verb and one sentence.",
           "Pick icons that show the action, not the step’s position.",
-          "Keep the order meaningful: the hairline reads as a sequence.",
+          "Keep the order meaningful: the strip reads left to right as a sequence.",
         ]}
         dont={[
           "Don’t number the steps or add “Step 1 of 4” labels.",
@@ -78,7 +78,7 @@ export default function StepsDocs() {
 
       <ApiTable
         rows={[
-          { prop: "title", type: "ReactNode | null", default: '"From repo to production in four moves."', description: "Section heading. Pass null to render the cards alone." },
+          { prop: "title", type: "ReactNode | null", default: '"From repo to production in four moves."', description: "Section heading. Pass null to render the steps alone." },
           { prop: "description", type: "ReactNode", description: "Supporting text beside the heading." },
           { prop: "steps", type: "{ title: string; description: string; icon: ReactNode }[]", default: "Connect, Configure, Deploy, Grow", description: "The steps, in order. Up to four per row." },
           { prop: "tone", type: '"default" | "panel"', default: '"default"', description: "Render the section on a dark panel." },

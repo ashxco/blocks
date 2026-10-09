@@ -6,7 +6,7 @@ import { Faq } from "@/components/blocks/faq"
 const billingItems = [
   {
     question: "When am I charged?",
-    answer: "On the first of each month, for the servers you ran and any usage above your plan in the month before.",
+    answer: "On the first of each month, for your plan and any usage above it in the month before.",
   },
   {
     question: "Can I set a spending limit?",
@@ -14,11 +14,11 @@ const billingItems = [
   },
   {
     question: "Do you offer annual billing?",
-    answer: "Yes. Pay yearly and get two months free on any paid plan. You can switch at your next renewal.",
+    answer: "Yes. Pay yearly and save 20% on any plan. You can switch at your next renewal.",
   },
   {
     question: "Which payment methods do you accept?",
-    answer: "Cards from Visa, Mastercard and American Express, and invoices with bank transfer on the Business plan.",
+    answer: "Cards from Visa, Mastercard and American Express, and invoices with bank transfer on yearly Scale plans.",
   },
 ]
 

@@ -2,10 +2,10 @@
 
 import {
   ActivityIcon,
-  DatabaseIcon,
   GaugeIcon,
   RocketIcon,
   TriangleAlertIcon,
+  ZapIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
@@ -16,7 +16,7 @@ export default function StatCardDocs() {
     <Examples>
       <Example
         title="Default"
-        description="A label, the headline figure, the change against the previous period and a twelve-point trend."
+        description="A label, the headline figure, the change against the previous period and a twelve-point trend in quiet ink. The change carries the colour, so the trend line never contradicts it."
         code={`<StatCard
   label="Edge requests"
   value="2.41M"
@@ -30,14 +30,16 @@ export default function StatCardDocs() {
 
       <Example
         title="A row of metrics"
-        description="Four cards across on wide screens, two on tablets and one on phones. Each card reads its own width, so the sparkline drops out when it gets too narrow."
+        description="Four cards across on wide screens, two on tablets and one on phones, from a container query on the row. Each card reads its own width, so the sparkline drops out when it gets too narrow."
         layout="full"
         surface="subtle"
-        code={`<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-  <StatCard label="Edge requests" value="2.41M" change={18.2} />
-  <StatCard label="Deployments" value="148" change={12} />
-  <StatCard label="p95 latency" value="112" unit="ms" change={-8.4} goodWhen="down" />
-  <StatCard label="Error rate" value="0.04" unit="%" change={21.5} goodWhen="down" />
+        code={`<div className="@container">
+  <div className="grid gap-4 @min-[36rem]:grid-cols-2 @min-[68rem]:grid-cols-4">
+    <StatCard label="Edge requests" value="2.41M" change={18.2} />
+    <StatCard label="Deployments" value="148" change={12} />
+    <StatCard label="p95 latency" value="112" unit="ms" change={-8.4} goodWhen="down" />
+    <StatCard label="Error rate" value="0.04" unit="%" change={21.5} goodWhen="down" />
+  </div>
 </div>`}
       >
         <div className="@container">
@@ -91,13 +93,13 @@ export default function StatCardDocs() {
               trend={[9, 14, 11, 18, 16, 21, 19, 24, 22, 20, 27, 25]}
             />
             <StatCard
-              label="Database storage"
-              value="38.2"
-              unit="GB"
-              change={4.1}
-              changeLabel="vs last month"
-              icon={DatabaseIcon}
-              trend={[31, 32, 32, 33, 34, 34, 35, 36, 36, 37, 37, 38]}
+              label="Cache hit rate"
+              value="94.2"
+              unit="%"
+              change={1.8}
+              changeLabel="vs previous 7 days"
+              icon={ZapIcon}
+              trend={[88, 89, 89, 90, 91, 90, 92, 92, 93, 93, 94, 94]}
             />
             <StatCard
               label="Failed builds"
@@ -113,7 +115,7 @@ export default function StatCardDocs() {
 
       <Guidelines
         do={[
-          "Format the value before passing it: “2.41M”, “$1,284”, “112 ms”.",
+          "Format the number before passing it (“2.41M”, “$1,284”) and pass units through unit: value=\"112\" unit=\"ms\".",
           "Name the comparison period in changeLabel so the percentage means something.",
           'Set goodWhen="down" for latency, errors and cost, so a drop shows in green.',
         ]}

@@ -72,18 +72,36 @@ function Carousel({
     },
     plugins
   )
-  const [canScrollPrev, setCanScrollPrev] = React.useState(false)
-  const [canScrollNext, setCanScrollNext] = React.useState(false)
-  const [selectedIndex, setSelectedIndex] = React.useState(0)
-  const [snapCount, setSnapCount] = React.useState(0)
-
-  const onSelect = React.useCallback((api: CarouselApi) => {
-    if (!api) return
-    setCanScrollPrev(api.canScrollPrev())
-    setCanScrollNext(api.canScrollNext())
-    setSelectedIndex(api.selectedScrollSnap())
-    setSnapCount(api.scrollSnapList().length)
-  }, [])
+  // Embla is the source of truth: read its state as an external store, encoded
+  // as one string so the snapshot stays stable between events.
+  const subscribe = React.useCallback(
+    (onChange: () => void) => {
+      if (!api) return () => {}
+      api.on("reInit", onChange)
+      api.on("select", onChange)
+      return () => {
+        api.off("reInit", onChange)
+        api.off("select", onChange)
+      }
+    },
+    [api]
+  )
+  const snapshot = React.useSyncExternalStore(
+    subscribe,
+    () =>
+      api
+        ? [
+            Number(api.canScrollPrev()),
+            Number(api.canScrollNext()),
+            api.selectedScrollSnap(),
+            api.scrollSnapList().length,
+          ].join(":")
+        : "0:0:0:0",
+    () => "0:0:0:0"
+  )
+  const [prevFlag, nextFlag, selectedIndex, snapCount] = snapshot.split(":").map(Number)
+  const canScrollPrev = prevFlag === 1
+  const canScrollNext = nextFlag === 1
 
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev()
@@ -119,18 +137,6 @@ function Carousel({
     if (!api || !setApi) return
     setApi(api)
   }, [api, setApi])
-
-  React.useEffect(() => {
-    if (!api) return
-    onSelect(api)
-    api.on("reInit", onSelect)
-    api.on("select", onSelect)
-
-    return () => {
-      api?.off("reInit", onSelect)
-      api?.off("select", onSelect)
-    }
-  }, [api, onSelect])
 
   return (
     <CarouselContext.Provider

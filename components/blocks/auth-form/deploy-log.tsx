@@ -17,14 +17,14 @@ interface LogLine {
 }
 
 const LINES: LogLine[] = [
-  { at: "0.0s", kind: "prompt", text: "git push origin main", delay: 500 },
-  { at: "0.4s", kind: "note", text: "Building acme/storefront at 9f2c41e", delay: 700 },
-  { at: "1.1s", kind: "note", text: "Restored build cache (412 MB)", delay: 550 },
-  { at: "7.9s", kind: "ok", text: "Installed 1,284 packages", delay: 900 },
-  { at: "26.3s", kind: "ok", text: "Built 214 routes", delay: 1100 },
-  { at: "29.8s", kind: "note", text: "Rolling out to iad1, fra1, sin1", delay: 800 },
-  { at: "34.2s", kind: "ok", text: "Health checks passed (6/6)", delay: 950 },
-  { at: "34.6s", kind: "ok", text: "Live at storefront.acme.dev", delay: 500 },
+  { at: "0.0s", kind: "prompt", text: "git push origin main", delay: 400 },
+  { at: "0.4s", kind: "note", text: "Building acme/storefront at 9f2c41e", delay: 450 },
+  { at: "1.1s", kind: "note", text: "Restored build cache (412 MB)", delay: 400 },
+  { at: "7.9s", kind: "ok", text: "Installed 1,284 packages", delay: 600 },
+  { at: "26.3s", kind: "ok", text: "Built 214 routes", delay: 700 },
+  { at: "29.8s", kind: "note", text: "Rolling out to iad1, fra1, sin1", delay: 500 },
+  { at: "34.2s", kind: "ok", text: "Health checks passed (6/6)", delay: 550 },
+  { at: "34.6s", kind: "ok", text: "Live at storefront.acme.dev", delay: 350 },
 ]
 
 const symbol: Record<LineKind, { char: string; className: string }> = {
@@ -58,7 +58,8 @@ export function DeployLog({ className }: { className?: string }) {
   }, [])
 
   return (
-    <CodeWindow title="acme/storefront · production" className={className}>
+    // The terminal is dark in both themes, so the dark theme's status colours apply: they read on it in light mode too.
+    <CodeWindow title="acme/storefront · production" className={cn("dark", className)}>
       <ol className="grid gap-0.5">
         {LINES.map((line, index) => {
           const visible = index < shown

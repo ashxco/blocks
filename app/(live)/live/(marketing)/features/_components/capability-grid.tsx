@@ -33,14 +33,14 @@ const capabilities: Capability[] = [
   { title: "Zero-downtime deploys", description: "New versions take traffic only once they are healthy.", icon: RefreshCwIcon },
   { title: "Autoscaling", description: "Add replicas on CPU or request load, and scale down at night.", icon: ScalingIcon },
   { title: "Managed Postgres", description: "Nightly backups, point-in-time restore and read replicas.", icon: DatabaseIcon },
-  { title: "Edge protection", description: "TLS, rate limits and DDoS filtering in 38 regions.", icon: ShieldCheckIcon },
+  { title: "Edge protection", description: "TLS, rate limits and DDoS filtering in 38 edge regions.", icon: ShieldCheckIcon },
   { title: "Secrets vault", description: "Encrypted at rest and scoped to each environment.", icon: KeyRoundIcon },
   { title: "Roles and audit log", description: "Four roles, single sign-on and a record of every change.", icon: UsersIcon },
 ]
 
 /**
  * Every capability on one hairline grid, on a tinted band. Twelve cells fill
- * two, three and four columns evenly.
+ * two, three and four columns evenly; on phones they become a compact list.
  */
 export function CapabilityGrid() {
   return (
@@ -51,18 +51,21 @@ export function CapabilityGrid() {
             <>
               Twelve capabilities.
               <br />
-              One price.
+              Every plan.
             </>
           }
-          description="Every plan includes everything on this list. Limits grow with your plan; features never sit behind an upgrade."
+          description="Limits grow as you move up a plan, but features never sit behind an upgrade and there is no add-on store."
           className="mb-12 md:mb-16"
         />
         <ul className="grid gap-px overflow-hidden rounded-(--card-radius) border bg-border sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {capabilities.map(({ title, description, icon: Icon }) => (
-            <li key={title} className="flex flex-col gap-2 bg-background p-6 lg:p-7">
-              <Icon aria-hidden="true" className="mb-5 size-5 text-foreground" strokeWidth={1.75} />
-              <h3 className="text-title text-foreground">{title}</h3>
-              <p className="text-sm text-copy">{description}</p>
+            // On phones the icon sits beside the text, so twelve rows stay short.
+            <li key={title} className="flex gap-4 bg-background p-5 sm:flex-col sm:gap-0 sm:p-6 lg:p-7">
+              <Icon aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-foreground sm:mt-0 sm:mb-7" strokeWidth={1.75} />
+              <div className="grid gap-1 sm:gap-2">
+                <h3 className="text-title text-foreground">{title}</h3>
+                <p className="text-sm text-copy">{description}</p>
+              </div>
             </li>
           ))}
         </ul>

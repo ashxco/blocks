@@ -56,7 +56,6 @@ export default function PageHeaderDocs() {
                 <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="notifications">Notifications</TabsTrigger>
                 <TabsTrigger value="security">Security</TabsTrigger>
-                <TabsTrigger value="advanced">Advanced</TabsTrigger>
               </TabsList>
             </Tabs>
           </PageHeader>
@@ -72,14 +71,14 @@ export default function PageHeaderDocs() {
         <div className="p-6 md:p-10">
           <PageHeader
             title="Team"
-            description="Six people can deploy to Acme Inc. Invite more on the Pro plan."
+            description="Six people can open Acme Inc. Invite more on the Pro plan."
             actions={
               <Button
                 nativeButton={false}
                 render={<Link href="/live/app/team" />}
               >
                 <UserPlusIcon data-icon="inline-start" />
-                Invite member
+                Invite members
               </Button>
             }
           />
@@ -88,7 +87,7 @@ export default function PageHeaderDocs() {
 
       <Example
         title="In a narrow slot"
-        description="The header reads its own width with a container query, so actions wrap under the title in sheets and split views."
+        description="The header reads its own width with a container query: actions wrap under the title, and below 20rem the title steps down to the h3 role so it doesn’t crowd a sheet or split view."
         layout="center"
       >
         <div className="w-full max-w-80 rounded-lg border border-border bg-background p-5">
@@ -125,7 +124,7 @@ export default function PageHeaderDocs() {
             prop: "title",
             type: "ReactNode",
             description:
-              "Page title, set in the text-h2 role. Without a title the Lumen projects example renders.",
+              "Page title, set in the text-h2 role (text-h3 when the header is narrower than 20rem). Without a title the Lumen projects example renders.",
           },
           {
             prop: "description",

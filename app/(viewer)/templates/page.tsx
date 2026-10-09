@@ -17,7 +17,7 @@ export default function TemplatesPage() {
       <DocHeader
         section="Templates"
         title="Templates"
-        description={`${templates.length} full pages for Lumen, a deployment platform. Each one is built from molecules and runs live, so what you see below is the real page.`}
+        description="Full pages for Lumen, a deployment platform. Each one is built from molecules and runs live, so what you see below is the real page."
       />
       <div className="grid gap-16 sm:gap-20">
         {templateKinds.map(({ kind, title }) => {
@@ -34,9 +34,15 @@ export default function TemplatesPage() {
                   <p className="max-w-prose text-body text-copy">{groupDescriptions[title]}</p>
                 ) : null}
               </div>
-              <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 2xl:grid-cols-3">
-                {items.map((template) => (
-                  <TemplateCard key={template.slug} template={template} />
+              {/* Two columns. With an odd count, the first page leads across the
+                  whole row, so no card is left on its own at the end. */}
+              <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2">
+                {items.map((template, index) => (
+                  <TemplateCard
+                    key={template.slug}
+                    template={template}
+                    featured={index === 0 && items.length % 2 === 1}
+                  />
                 ))}
               </div>
             </section>

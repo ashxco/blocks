@@ -12,7 +12,7 @@ interface Fact {
 
 const facts: Fact[] = [
   { label: "Live deployment", value: "a41c9e2", detail: "Fix redirect loop on checkout, from main", mono: true },
-  { label: "Build time", value: "28.4s", detail: "92% of the build cache reused" },
+  { label: "Build time", value: "28s", detail: "92% of the build cache reused" },
   { label: "Healthy regions", value: "3 of 3", detail: "Frankfurt, Virginia, Singapore" },
   { label: "Response time", value: "112 ms", detail: "p95 over the last hour" },
 ]
@@ -25,17 +25,20 @@ const degradedDays = new Set([34, 72])
  * The dark emphasis panel at the top of the dashboard: the state of
  * production, the deployment that is serving traffic, four facts about it and
  * a 90 day uptime strip.
+ *
+ * Status colours on the panel sit in a `dark` scope, so they take the dark
+ * theme's lighter values and read the same on the panel in both themes.
  */
 export function ProductionPanel() {
   return (
     <section
       aria-labelledby="production-title"
-      className="@container/production grid gap-8 rounded-(--panel-radius) bg-panel p-6 text-panel-foreground sm:p-8 @min-[56rem]/production:gap-10"
+      className="@container/production grid gap-8 rounded-(--panel-radius) bg-panel p-(--panel-padding-sm) text-panel-foreground"
     >
       <div className="flex flex-col gap-6 @min-[48rem]/production:flex-row @min-[48rem]/production:items-end @min-[48rem]/production:justify-between @min-[48rem]/production:gap-10">
         <div className="grid min-w-0 gap-3">
           <h2 id="production-title" className="flex items-center gap-3 text-h3 text-panel-foreground">
-            <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full bg-success" />
+            <span aria-hidden="true" className="dark size-2.5 shrink-0 rounded-full bg-success" />
             Production is healthy
           </h2>
           <p className="max-w-prose text-body text-panel-muted">
@@ -75,7 +78,8 @@ export function ProductionPanel() {
         ))}
       </dl>
 
-      <div className="grid gap-3">
+      {/* Quiet days are plain ink, so only the incidents carry colour. */}
+      <div className="dark grid gap-3">
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
           <p className="text-label text-panel-foreground">
             <span className="tabular">99.98%</span> uptime
@@ -83,11 +87,11 @@ export function ProductionPanel() {
           </p>
           <ul aria-hidden="true" className="flex items-center gap-4 text-caption text-panel-muted">
             <li className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-success" />
+              <span className="h-3 w-1 rounded-full bg-panel-foreground/15" />
               Operational
             </li>
             <li className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-warning" />
+              <span className="h-3 w-1 rounded-full bg-warning" />
               Degraded
             </li>
           </ul>
@@ -96,14 +100,14 @@ export function ProductionPanel() {
           Production was operational on 88 of the last 90 days. It was degraded for 6 minutes on August 14 and for 14
           minutes on September 21.
         </p>
-        <div aria-hidden="true" className="flex h-9 items-stretch gap-px sm:gap-0.5">
+        <div aria-hidden="true" className="flex h-6 items-stretch gap-px sm:gap-0.5">
           {Array.from({ length: UPTIME_DAYS }, (_, day) => (
             <span
               key={day}
               className={
                 degradedDays.has(day)
                   ? "min-w-0 flex-1 rounded-full bg-warning"
-                  : "min-w-0 flex-1 rounded-full bg-success/80"
+                  : "min-w-0 flex-1 rounded-full bg-panel-foreground/15"
               }
             />
           ))}

@@ -11,7 +11,7 @@ export default function LogoCloudDocs() {
       <Example
         title="Default"
         layout="full"
-        description="A full-bleed band between hairlines. The label sits beside the row on wide screens and above it on narrow ones."
+        description="A full-bleed band between hairlines. The label sits beside the row on wide screens and above it on narrow ones. Six or more marks spread edge to edge; a shorter list, such as four investors, stays grouped beside the label."
         code={`<LogoCloud />`}
       >
         <LogoCloud />
@@ -32,12 +32,12 @@ export default function LogoCloudDocs() {
         layout="full"
         surface="panel"
         description="Inside dark panels, use the panel tone so the marks stay legible but quiet."
-        code={`<LogoCloud tone="panel" bare items={[…]} />`}
+        code={`<LogoCloud tone="panel" contained={false} items={[…]} />`}
       >
         <div className="p-8 sm:p-12">
           <LogoCloud
             tone="panel"
-            bare
+            contained={false}
             title="Runs anywhere you have a server"
             items={[
               { name: "Your servers", icon: ServerIcon },
@@ -52,7 +52,7 @@ export default function LogoCloudDocs() {
       <Guidelines
         do={[
           "Keep every mark the same colour and size so none shouts.",
-          "Show six to eight items; more turns into noise.",
+          "Show six to eight items; more turns into noise. Fewer is fine for investors or partners.",
           "Use real names people recognise.",
         ]}
         dont={[
@@ -68,7 +68,7 @@ export default function LogoCloudDocs() {
           { prop: "items", type: "{ name: string; icon?: LucideIcon }[]", default: "8 runtimes and services", description: "Names with optional monochrome marks." },
           { prop: "layout", type: '"split" | "center"', default: '"split"', description: "Label beside the row, or centred above it." },
           { prop: "tone", type: '"default" | "panel"', default: '"default"', description: "Use panel on dark panels." },
-          { prop: "bare", type: "boolean", default: "false", description: "Drop the page container, hairlines and padding." },
+          { prop: "contained", type: "boolean", default: "true", description: "Render the page container, hairlines and padding. Set to false inside your own layout." },
           { prop: "className", type: "string", description: "Classes for the section." },
         ]}
       />

@@ -39,6 +39,59 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { cn } from "@/lib/utils"
+
+type Stage = HTMLDivElement | null
+
+/**
+ * The examples show their menus already open, portalled into a stage inside
+ * the example so they follow its theme and stay under the site header. A
+ * shown menu stays open while people click elsewhere on the page; its trigger,
+ * an item or Escape close it.
+ */
+function MenuStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
+  const [container, setContainer] = React.useState<Stage>(null)
+  useReturnFocus(container)
+  return (
+    <div ref={setContainer} className={cn("relative flex w-full items-start justify-center", className)}>
+      {children(container)}
+    </div>
+  )
+}
+
+/** A menu focuses itself when it opens. These open on load, so hand focus back to the page. */
+function useReturnFocus(container: Stage) {
+  React.useEffect(() => {
+    if (!container) return
+    const timer = window.setTimeout(() => {
+      const active = document.activeElement
+      if (active instanceof HTMLElement && container.contains(active)) active.blur()
+    }, 250)
+    return () => window.clearTimeout(timer)
+  }, [container])
+}
+
+/**
+ * Open on load, non-modal, and kept open when people click or tab elsewhere.
+ * It only opens once the stage exists, so the menu is placed inside the stage
+ * from its first frame instead of against <body>.
+ */
+function useShownMenu(container: Stage) {
+  const [open, setOpen] = React.useState(true)
+  const onOpenChange = React.useCallback((next: boolean, details: { reason: string }) => {
+    if (!next && (details.reason === "outside-press" || details.reason === "focus-out")) return
+    setOpen(next)
+  }, [])
+  return { open: open && container !== null, onOpenChange, modal: false }
+}
+
+/**
+ * Shown menus keep their side and their full height as the page scrolls, so
+ * they never flip over the example's own text. Each stage leaves room below.
+ */
+function pinnedTo(container: Stage) {
+  return { collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined, className: "max-h-none" } as const
+}
 
 const columns = [
   { id: "status", label: "Status" },
@@ -48,7 +101,8 @@ const columns = [
   { id: "author", label: "Author" },
 ]
 
-function ColumnsMenu() {
+function ColumnsMenu({ container }: { container: Stage }) {
+  const shown = useShownMenu(container)
   const [visible, setVisible] = React.useState<Record<string, boolean>>({
     status: true,
     branch: true,
@@ -58,12 +112,12 @@ function ColumnsMenu() {
   })
 
   return (
-    <DropdownMenu>
+    <DropdownMenu {...shown}>
       <DropdownMenuTrigger render={<Button variant="outline" />}>
         <Columns3Icon data-icon="inline-start" />
         Columns
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent container={container} {...pinnedTo(container)}>
         <DropdownMenuGroup>
           <DropdownMenuLabel>Show columns</DropdownMenuLabel>
           {columns.map((column) => (
@@ -88,18 +142,19 @@ const sortOptions = [
   { value: "name", label: "Branch name" },
 ]
 
-function SortMenu() {
+function SortMenu({ container }: { container: Stage }) {
+  const shown = useShownMenu(container)
   const [sort, setSort] = React.useState("newest")
   const current = sortOptions.find((option) => option.value === sort)
 
   return (
-    <DropdownMenu>
+    <DropdownMenu {...shown}>
       <DropdownMenuTrigger render={<Button variant="outline" />}>
         <ArrowDownUpIcon data-icon="inline-start" />
         {current?.label}
         <ChevronDownIcon data-icon="inline-end" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent container={container} {...pinnedTo(container)}>
         <DropdownMenuGroup>
           <DropdownMenuLabel>Sort deployments</DropdownMenuLabel>
           <DropdownMenuRadioGroup value={sort} onValueChange={(value) => setSort(String(value))}>
@@ -115,11 +170,12 @@ function SortMenu() {
   )
 }
 
-function AccountMenu() {
+function AccountMenu({ container }: { container: Stage }) {
+  const shown = useShownMenu(container)
   const [theme, setTheme] = React.useState("system")
 
   return (
-    <DropdownMenu>
+    <DropdownMenu {...shown}>
       <DropdownMenuTrigger
         render={<Button variant="ghost" className="h-auto gap-3 rounded-full py-1.5 pr-3 pl-1.5" />}
       >
@@ -129,7 +185,7 @@ function AccountMenu() {
         Priya Raman
         <ChevronDownIcon data-icon="inline-end" className="text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-64">
+      <DropdownMenuContent align="end" container={container} {...pinnedTo(container)} className="w-64 max-h-none">
         <div className="grid gap-0.5 px-2.5 pt-2 pb-2.5">
           <p className="text-sm font-semibold text-foreground">Priya Raman</p>
           <p className="truncate text-caption text-muted-foreground">priya@lumen.app</p>
@@ -178,6 +234,86 @@ function AccountMenu() {
   )
 }
 
+function ActionsMenu({ container }: { container: Stage }) {
+  const shown = useShownMenu(container)
+
+  return (
+    <DropdownMenu {...shown}>
+      <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="Deployment options" />}>
+        <MoreHorizontalIcon />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" container={container} {...pinnedTo(container)}>
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <ExternalLinkIcon />
+            Visit
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <CopyIcon />
+            Copy URL
+            <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <RotateCcwIcon />
+            Redeploy
+            <DropdownMenuShortcut>⇧⌘R</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <PencilIcon />
+            Edit build settings
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive">
+          <Trash2Icon />
+          Delete deployment
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+function ProjectMenu({ container }: { container: Stage }) {
+  const shown = useShownMenu(container)
+
+  return (
+    <DropdownMenu {...shown}>
+      <DropdownMenuTrigger render={<Button variant="outline" />}>
+        Project
+        <ChevronDownIcon data-icon="inline-end" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent container={container} {...pinnedTo(container)}>
+        <DropdownMenuItem>
+          <PencilIcon />
+          Rename
+        </DropdownMenuItem>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <FolderInputIcon />
+            Move to team
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem>Lumen Labs</DropdownMenuItem>
+            <DropdownMenuItem>Marketing site</DropdownMenuItem>
+            <DropdownMenuItem>Internal tools</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Create a team</DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+        <DropdownMenuItem disabled>
+          <CopyIcon />
+          Duplicate
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive">
+          <Trash2Icon />
+          Delete project
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 export default function DropdownMenuDocs() {
   return (
     <Examples>
@@ -208,38 +344,7 @@ export default function DropdownMenuDocs() {
   </DropdownMenuContent>
 </DropdownMenu>`}
       >
-        <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="Deployment options" />}>
-            <MoreHorizontalIcon />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <ExternalLinkIcon />
-                Visit
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CopyIcon />
-                Copy URL
-                <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <RotateCcwIcon />
-                Redeploy
-                <DropdownMenuShortcut>⇧⌘R</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <PencilIcon />
-                Edit build settings
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
-              <Trash2Icon />
-              Delete deployment
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <MenuStage className="min-h-68">{(container) => <ActionsMenu container={container} />}</MenuStage>
       </Example>
 
       <Example
@@ -252,7 +357,7 @@ export default function DropdownMenuDocs() {
   Branch
 </DropdownMenuCheckboxItem>`}
       >
-        <ColumnsMenu />
+        <MenuStage className="min-h-72">{(container) => <ColumnsMenu container={container} />}</MenuStage>
       </Example>
 
       <Example
@@ -263,7 +368,7 @@ export default function DropdownMenuDocs() {
   <DropdownMenuRadioItem value="oldest">Oldest first</DropdownMenuRadioItem>
 </DropdownMenuRadioGroup>`}
       >
-        <SortMenu />
+        <MenuStage className="min-h-64">{(container) => <SortMenu container={container} />}</MenuStage>
       </Example>
 
       <Example
@@ -277,47 +382,14 @@ export default function DropdownMenuDocs() {
   </DropdownMenuSubContent>
 </DropdownMenuSub>`}
       >
-        <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="outline" />}>
-            Project
-            <ChevronDownIcon data-icon="inline-end" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>
-              <PencilIcon />
-              Rename
-            </DropdownMenuItem>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <FolderInputIcon />
-                Move to team
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>Lumen Labs</DropdownMenuItem>
-                <DropdownMenuItem>Marketing site</DropdownMenuItem>
-                <DropdownMenuItem>Internal tools</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Create a team</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-            <DropdownMenuItem disabled>
-              <CopyIcon />
-              Duplicate
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
-              <Trash2Icon />
-              Delete project
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <MenuStage className="min-h-72">{(container) => <ProjectMenu container={container} />}</MenuStage>
       </Example>
 
       <Example
         title="Account menu"
         description="A realistic composition: identity at the top, grouped links, a theme choice and sign out at the end."
       >
-        <AccountMenu />
+        <MenuStage className="min-h-128">{(container) => <AccountMenu container={container} />}</MenuStage>
       </Example>
 
       <Guidelines

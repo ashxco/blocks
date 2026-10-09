@@ -11,10 +11,11 @@ import {
   MoleculesMiniature,
   TemplatesMiniature,
 } from "@/components/viewer/overview"
+import { Kern, Punct } from "@/components/viewer/kern"
 import { sectionDescription } from "@/components/viewer/nav"
 import { SearchTrigger } from "@/components/viewer/search-trigger"
 import { tokens } from "@/design-system/generated/tokens"
-import { components, foundations, molecules, templates } from "@/lib/registry"
+import { components, molecules, templates } from "@/lib/registry"
 
 const counts = [
   { value: tokens.length, label: "Tokens", href: "/foundations/tokens" },
@@ -46,7 +47,7 @@ const principles = [
   },
   {
     icon: PanelsTopLeftIcon,
-    title: "Borders and panels for depth",
+    title: "Borders and panels, not depth",
     text: "Hairlines separate and tinted bands group. Dark panels carry emphasis and stay dark in both themes.",
   },
 ]
@@ -55,25 +56,36 @@ export default function Overview() {
   return (
     <div className="grid gap-section pb-section">
       {/* Statement */}
-      <section className="container-wide grid gap-12 pt-14 sm:gap-16 sm:pt-24">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-end lg:gap-16">
-          <h1 className="text-display">
-            Blocks<span className="text-brand">.</span>
-            <span className="mt-3 block text-h2 text-foreground">Build it once, in tokens.</span>
+      <section className="container-wide grid gap-12 pt-14 sm:gap-16 sm:pt-20 lg:pt-24">
+        <div className="grid gap-10 sm:gap-14">
+          <h1 className="text-hero">
+            <span className="block">
+              Build it once<Punct>,</Punct>
+            </span>
+            <span className="block">
+              in <span className="text-brand">tokens</span>
+              <Punct>.</Punct>
+            </span>
           </h1>
-          <div className="grid gap-8 lg:pb-2">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-16">
             <p className="max-w-prose text-lead text-copy">
-              A design system and template kit for Next.js. Foundations, components, molecules and full pages that all
-              answer to one set of tokens, so the whole product changes when the system does.
+              Blocks is a design system and template kit for Next.js. Foundations, components, molecules and full
+              pages all answer to one set of tokens, so the whole product changes when the system does.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid gap-3 sm:flex sm:flex-wrap">
               <Button size="lg" nativeButton={false} render={<Link href="/components" />}>
                 Browse components
                 <ArrowRightIcon data-icon="inline-end" />
               </Button>
-              <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/live" />}>
+              <Button
+                size="lg"
+                variant="outline"
+                nativeButton={false}
+                render={<a href="/live" target="_blank" rel="noopener" />}
+              >
                 Open live templates
                 <ArrowUpRightIcon data-icon="inline-end" />
+                <span className="sr-only">(opens in a new tab)</span>
               </Button>
             </div>
           </div>
@@ -107,19 +119,18 @@ export default function Overview() {
       <section aria-labelledby="explore" className="container-wide grid gap-10">
         <div className="grid gap-4 lg:grid-cols-2 lg:items-end lg:gap-16">
           <h2 id="explore" className="text-h2">
-            Four layers, one system.
+            <Kern>Four layers, one system.</Kern>
           </h2>
           <p className="max-w-prose text-lead text-copy">
             Tokens become components, components become molecules, molecules become pages. Start anywhere: each layer
-            only uses the one below it.
+            builds only on the layers below it.
           </p>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 md:gap-5">
+        <div className="grid gap-4 md:grid-cols-2 md:grid-rows-[repeat(2,minmax(0,1fr)_auto)] md:gap-5">
           <EntryTile
             href="/foundations"
             title="Foundations"
             description={sectionDescription.foundations}
-            meta={`${foundations.length} pages.`}
           >
             <FoundationsMiniature />
           </EntryTile>
@@ -127,7 +138,6 @@ export default function Overview() {
             href="/components"
             title="Components"
             description={sectionDescription.components}
-            meta={`${components.length} components.`}
           >
             <ComponentsMiniature />
           </EntryTile>
@@ -135,7 +145,6 @@ export default function Overview() {
             href="/molecules"
             title="Molecules"
             description={sectionDescription.molecules}
-            meta={`${molecules.length} molecules.`}
           >
             <MoleculesMiniature />
           </EntryTile>
@@ -143,7 +152,6 @@ export default function Overview() {
             href="/templates"
             title="Templates"
             description={sectionDescription.templates}
-            meta={`${templates.length} pages.`}
             tone="panel"
           >
             <TemplatesMiniature />
@@ -155,7 +163,7 @@ export default function Overview() {
       <section aria-labelledby="themes" className="container-wide grid gap-10">
         <div className="grid gap-4 lg:grid-cols-2 lg:items-end lg:gap-16">
           <h2 id="themes" className="text-h2">
-            One set of tokens. Two themes.
+            <Kern>One set of tokens. Two themes.</Kern>
           </h2>
           <p className="max-w-prose text-lead text-copy">
             Components read semantic roles, not colours. The markup below is identical on both sides: only the tokens
@@ -165,7 +173,7 @@ export default function Overview() {
         <div className="grid gap-4 md:grid-cols-2 md:gap-5">
           {(
             [
-              { scope: "bk-light", label: "Light" },
+              { scope: "light", label: "Light" },
               { scope: "dark", label: "Dark" },
             ] as const
           ).map(({ scope, label }) => (
@@ -188,7 +196,12 @@ export default function Overview() {
         <div className="grid gap-12 rounded-(--panel-radius) bg-panel p-(--panel-padding) text-panel-foreground lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:gap-20">
           <div className="grid content-start gap-5 lg:sticky lg:top-[calc(var(--viewer-bar)+2rem)]">
             <h2 id="principles" className="text-h2 text-panel-foreground">
-              Five rules. No exceptions.
+              <span className="block">
+                <Kern>Five rules.</Kern>
+              </span>
+              <span className="block">
+                <Kern>No exceptions.</Kern>
+              </span>
             </h2>
             <p className="max-w-prose text-lead text-panel-muted">
               The look comes from what the system leaves out. A lint check holds every file to these rules.
@@ -221,10 +234,11 @@ export default function Overview() {
         <div className="flex flex-col items-start gap-6 border-t pt-10 sm:flex-row sm:items-center sm:justify-between">
           <div className="grid gap-2">
             <h2 id="find" className="text-h3">
-              Looking for something specific?
+              <Kern>Looking for something specific?</Kern>
             </h2>
             <p className="text-body text-copy">
-              Search every foundation, component, molecule and template. Press D at any time to switch themes.
+              Search every foundation, component, molecule and template.
+              <span className="hidden sm:not-pointer-coarse:inline"> Press D at any time to switch themes.</span>
             </p>
           </div>
           <SearchTrigger />

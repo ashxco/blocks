@@ -33,7 +33,7 @@ function PlanPicker() {
   return (
     <FieldSet className="w-full">
       <FieldLegend variant="label">Plan</FieldLegend>
-      <RadioGroup value={plan} onValueChange={(v) => setPlan(v as string)} className="grid gap-3 md:grid-cols-3">
+      <RadioGroup value={plan} onValueChange={(v) => setPlan(v as string)} className="grid gap-3 @2xl:grid-cols-3">
         {plans.map((p) => (
           <FieldLabel key={p.value}>
             <Field orientation="horizontal">
@@ -63,13 +63,23 @@ export default function RadioGroupDocs() {
         title="Default"
         layout="stack"
         description="Pick exactly one option. The selected circle fills with ink and shows a canvas-coloured dot."
-        code={`<RadioGroup defaultValue="standard">
-  <div className="flex items-center gap-3">
-    <RadioGroupItem value="standard" id="standard" />
-    <Label htmlFor="standard">Standard</Label>
-  </div>
-  …
-</RadioGroup>`}
+        code={`<FieldSet>
+  <FieldLegend variant="label">Build machine</FieldLegend>
+  <RadioGroup defaultValue="standard" name="machine">
+    <div className="flex items-center gap-3">
+      <RadioGroupItem value="standard" id="standard" />
+      <Label htmlFor="standard" className="font-medium">Standard</Label>
+    </div>
+    <div className="flex items-center gap-3">
+      <RadioGroupItem value="enhanced" id="enhanced" />
+      <Label htmlFor="enhanced" className="font-medium">Enhanced</Label>
+    </div>
+    <div className="flex items-center gap-3">
+      <RadioGroupItem value="turbo" id="turbo" />
+      <Label htmlFor="turbo" className="font-medium">Turbo</Label>
+    </div>
+  </RadioGroup>
+</FieldSet>`}
       >
         <FieldSet>
           <FieldLegend variant="label">Build machine</FieldLegend>
@@ -90,17 +100,28 @@ export default function RadioGroupDocs() {
         title="With descriptions"
         layout="stack"
         description="Use horizontal fields when each option needs a line of explanation. The circle aligns to the first line."
-        code={`<RadioGroup defaultValue="enhanced">
-  <Field orientation="horizontal">
-    <RadioGroupItem value="enhanced" id="enhanced" />
-    <FieldContent>
-      <FieldLabel htmlFor="enhanced">Enhanced</FieldLabel>
-      <FieldDescription>8 vCPU, 16 GB memory.</FieldDescription>
-    </FieldContent>
-  </Field>
-</RadioGroup>`}
+        code={`const machines = [
+  { value: "standard", title: "Standard", description: "4 vCPU, 8 GB memory. Fine for most sites." },
+  { value: "enhanced", title: "Enhanced", description: "8 vCPU, 16 GB memory. Halves build time for large apps." },
+  { value: "turbo", title: "Turbo", description: "30 vCPU, 60 GB memory. For monorepos with many packages." },
+]
+
+<FieldSet>
+  <FieldLegend variant="label">Build machine</FieldLegend>
+  <RadioGroup defaultValue="enhanced" name="machine" className="gap-5">
+    {machines.map((m) => (
+      <Field key={m.value} orientation="horizontal">
+        <RadioGroupItem value={m.value} id={m.value} />
+        <FieldContent>
+          <FieldLabel htmlFor={m.value}>{m.title}</FieldLabel>
+          <FieldDescription>{m.description}</FieldDescription>
+        </FieldContent>
+      </Field>
+    ))}
+  </RadioGroup>
+</FieldSet>`}
       >
-        <FieldSet className="max-w-112">
+        <FieldSet className="max-w-md">
           <FieldLegend variant="label">Build machine</FieldLegend>
           <RadioGroup defaultValue="enhanced" name="machine-described" className="gap-5">
             {machines.map((m) => (
@@ -120,18 +141,30 @@ export default function RadioGroupDocs() {
         title="Choice cards"
         layout="stack"
         description="Cards suit options people compare side by side, such as plans. The whole card is the label; the selected card takes an ink border."
-        code={`<RadioGroup defaultValue="pro" className="md:grid-cols-3">
-  <FieldLabel>
-    <Field orientation="horizontal">
-      <FieldContent>
-        <FieldTitle>Pro</FieldTitle>
-        <FieldDescription>For teams in production.</FieldDescription>
-      </FieldContent>
-      <RadioGroupItem value="pro" />
-    </Field>
-  </FieldLabel>
-  …
-</RadioGroup>`}
+        code={`const plans = [
+  { value: "hobby", title: "Hobby", price: "$0", detail: "Personal projects and experiments." },
+  { value: "pro", title: "Pro", price: "$20", detail: "Per member, per month. For teams in production." },
+  { value: "enterprise", title: "Enterprise", price: "Custom", detail: "SSO, audit logs and a 99.99% SLA." },
+]
+
+<FieldSet>
+  <FieldLegend variant="label">Plan</FieldLegend>
+  <RadioGroup value={plan} onValueChange={(v) => setPlan(v as string)} className="grid gap-3 @2xl:grid-cols-3">
+    {plans.map((p) => (
+      <FieldLabel key={p.value}>
+        <Field orientation="horizontal">
+          <FieldContent className="gap-3">
+            <FieldTitle>{p.title}</FieldTitle>
+            <p className="text-h3 text-foreground tabular">{p.price}</p>
+            <FieldDescription>{p.detail}</FieldDescription>
+          </FieldContent>
+          <RadioGroupItem value={p.value} />
+        </Field>
+      </FieldLabel>
+    ))}
+  </RadioGroup>
+  <FieldDescription>You can change plans at any time. Changes apply to the next invoice.</FieldDescription>
+</FieldSet>`}
       >
         <PlanPicker />
       </Example>
@@ -140,7 +173,23 @@ export default function RadioGroupDocs() {
         title="Inline"
         layout="stack"
         description="Lay short options in a row with className. Keep it to three or four."
-        code={`<RadioGroup defaultValue="7d" className="flex flex-wrap gap-x-6 gap-y-3">…</RadioGroup>`}
+        code={`<FieldSet>
+  <FieldLegend variant="label">Log retention</FieldLegend>
+  <RadioGroup defaultValue="7d" name="retention" className="flex flex-wrap gap-x-6 gap-y-3">
+    <div className="flex items-center gap-2.5">
+      <RadioGroupItem value="1d" id="retention-1d" />
+      <Label htmlFor="retention-1d" className="font-medium">1 day</Label>
+    </div>
+    <div className="flex items-center gap-2.5">
+      <RadioGroupItem value="7d" id="retention-7d" />
+      <Label htmlFor="retention-7d" className="font-medium">7 days</Label>
+    </div>
+    <div className="flex items-center gap-2.5">
+      <RadioGroupItem value="30d" id="retention-30d" />
+      <Label htmlFor="retention-30d" className="font-medium">30 days</Label>
+    </div>
+  </RadioGroup>
+</FieldSet>`}
       >
         <FieldSet>
           <FieldLegend variant="label">Log retention</FieldLegend>
@@ -165,8 +214,37 @@ export default function RadioGroupDocs() {
         title="States"
         layout="stack"
         description="Disable single options with a reason nearby, or mark the group invalid when nothing is chosen."
+        code={`<RadioGroup defaultValue="fra1" name="region">
+  <Field orientation="horizontal">
+    <RadioGroupItem value="fra1" id="fra1" />
+    <FieldLabel htmlFor="fra1">Frankfurt (fra1)</FieldLabel>
+  </Field>
+  <Field orientation="horizontal">
+    <RadioGroupItem value="lhr1" id="lhr1" />
+    <FieldLabel htmlFor="lhr1">London (lhr1)</FieldLabel>
+  </Field>
+  <Field orientation="horizontal" data-disabled>
+    <RadioGroupItem value="gru1" id="gru1" disabled />
+    <FieldContent>
+      <FieldLabel htmlFor="gru1">São Paulo (gru1)</FieldLabel>
+      <FieldDescription>Available on Pro and above.</FieldDescription>
+    </FieldContent>
+  </Field>
+</RadioGroup>
+
+<RadioGroup name="rollback" aria-invalid aria-describedby="rollback-error">
+  <Field orientation="horizontal" data-invalid>
+    <RadioGroupItem value="previous" id="previous" aria-invalid />
+    <FieldLabel htmlFor="previous">Previous production build</FieldLabel>
+  </Field>
+  <Field orientation="horizontal" data-invalid>
+    <RadioGroupItem value="tagged" id="tagged" aria-invalid />
+    <FieldLabel htmlFor="tagged">Last tagged release</FieldLabel>
+  </Field>
+</RadioGroup>
+<FieldError id="rollback-error">Choose which build to roll back to.</FieldError>`}
       >
-        <div className="grid w-full max-w-168 gap-10 md:grid-cols-2">
+        <div className="grid w-full max-w-2xl gap-10 @xl:grid-cols-2">
           <FieldSet>
             <FieldLegend variant="label">Region</FieldLegend>
             <RadioGroup defaultValue="fra1" name="region-states">

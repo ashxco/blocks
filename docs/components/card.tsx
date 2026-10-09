@@ -5,6 +5,7 @@ import { ArrowRightIcon, GitBranchIcon, GlobeIcon, MoreHorizontalIcon } from "lu
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
 import {
   Card,
   CardAction,
@@ -16,12 +17,26 @@ import {
 } from "@/components/ui/card"
 
 const projects = [
-  { name: "web-app", domain: "lumen.app", branch: "main", status: "Ready", updated: "2m ago" },
-  { name: "api", domain: "api.lumen.app", branch: "main", status: "Building", updated: "9m ago" },
+  { name: "lumen-web", domain: "lumen.app", branch: "main", status: "Ready", updated: "2m ago" },
+  { name: "lumen-api", domain: "api.lumen.app", branch: "main", status: "Building", updated: "9m ago" },
   { name: "docs", domain: "docs.lumen.app", branch: "content/regions", status: "Failed", updated: "1h ago" },
 ] as const
 
-const statusVariant = { Ready: "success", Building: "warning", Failed: "destructive" } as const
+/* The same status reads the same everywhere: in progress is info, with a spinner. */
+const statusVariant = { Ready: "success", Building: "info", Failed: "destructive" } as const
+
+function StatusBadge({ status }: { status: keyof typeof statusVariant }) {
+  return (
+    <Badge variant={statusVariant[status]}>
+      {status === "Building" ? (
+        <Spinner className="size-3" />
+      ) : (
+        <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
+      )}
+      {status}
+    </Badge>
+  )
+}
 
 export default function CardDocs() {
   return (
@@ -49,7 +64,7 @@ export default function CardDocs() {
           </CardHeader>
           <CardContent>
             <p className="text-sm">
-              412 MB cached for web-app. The last build restored 1,284 packages and finished in 17.6 seconds.
+              412 MB cached for lumen-web. The last build restored 1,284 packages and finished in 17.6 seconds.
             </p>
           </CardContent>
           <CardFooter className="justify-between">
@@ -86,18 +101,18 @@ export default function CardDocs() {
             </CardAction>
           </CardHeader>
           <CardContent>
-            <ul className="-my-3 divide-y">
+            <ul className="@container -my-3 divide-y">
               {[
                 ["lumen.app", "Valid configuration"],
                 ["www.lumen.app", "Redirects to lumen.app"],
                 ["status.lumen.app", "Waiting for DNS"],
               ].map(([domain, note]) => (
-                <li key={domain} className="flex items-center justify-between gap-4 py-3">
+                <li key={domain} className="grid gap-0.5 py-3 @sm:flex @sm:items-center @sm:justify-between @sm:gap-4">
                   <span className="flex min-w-0 items-center gap-3">
                     <GlobeIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
                     <span className="truncate text-label text-foreground">{domain}</span>
                   </span>
-                  <span className="shrink-0 text-caption text-muted-foreground">{note}</span>
+                  <span className="pl-7 text-caption text-muted-foreground @sm:shrink-0 @sm:pl-0">{note}</span>
                 </li>
               ))}
             </ul>
@@ -158,10 +173,10 @@ export default function CardDocs() {
           {projects.slice(0, 2).map((p) => (
             <Card key={p.name} size="sm">
               <CardHeader>
-                <CardTitle className="font-mono">{p.name}</CardTitle>
+                <CardTitle>{p.name}</CardTitle>
                 <CardDescription>{p.domain}</CardDescription>
                 <CardAction>
-                  <Badge variant={statusVariant[p.status]}>{p.status}</Badge>
+                  <StatusBadge status={p.status} />
                 </CardAction>
               </CardHeader>
             </Card>
@@ -181,7 +196,7 @@ export default function CardDocs() {
               className="transition-colors duration-(--duration-fast) has-[a:hover]:border-border-strong has-[a:focus-visible]:focus-ring"
             >
               <CardHeader>
-                <CardTitle className="font-mono">
+                <CardTitle>
                   <a
                     href={`#${p.name}`}
                     className="outline-none after:absolute after:inset-0 after:rounded-(--card-radius)"
@@ -201,7 +216,7 @@ export default function CardDocs() {
                 <span className="truncate">{p.branch}</span>
               </CardContent>
               <CardFooter className="justify-between py-3">
-                <Badge variant={statusVariant[p.status]}>{p.status}</Badge>
+                <StatusBadge status={p.status} />
                 <span className="text-caption text-muted-foreground">{p.updated}</span>
               </CardFooter>
             </Card>

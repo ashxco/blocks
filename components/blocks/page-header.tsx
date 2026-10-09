@@ -1,12 +1,13 @@
 import * as React from "react"
 import Link from "next/link"
-import { DownloadIcon, PlusIcon } from "lucide-react"
+import { FolderGit2Icon, PlusIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { Kern } from "@/components/ui/kern"
 
 export interface PageHeaderProps {
-  /** Page title. Rendered as an h1 in the text-h2 role. */
+  /** Page title. Rendered as an h1 in the text-h2 role, or text-h3 when the header is narrower than 20rem. */
   title?: React.ReactNode
   /** One or two sentences under the title. */
   description?: React.ReactNode
@@ -45,7 +46,7 @@ export function PageHeader({
   const resolvedActions = demo ? (
     <>
       <Button variant="outline">
-        <DownloadIcon data-icon="inline-start" />
+        <FolderGit2Icon data-icon="inline-start" />
         Import repository
       </Button>
       <Button nativeButton={false} render={<Link href="/live/app/projects" />}>
@@ -68,7 +69,10 @@ export function PageHeader({
     >
       <div className="flex flex-col gap-5 @min-[40rem]/page-header:flex-row @min-[40rem]/page-header:items-end @min-[40rem]/page-header:justify-between @min-[40rem]/page-header:gap-10">
         <div className="grid min-w-0 gap-3">
-          <Heading className="text-h2 text-foreground">{resolvedTitle}</Heading>
+          {/* The role scales with the viewport, so in a narrow slot on a wide screen it steps down a size. */}
+          <Heading className="text-h2 text-foreground @max-xs/page-header:text-h3">
+            <Kern>{resolvedTitle}</Kern>
+          </Heading>
           {resolvedDescription ? (
             <p className="max-w-prose text-body text-copy">
               {resolvedDescription}

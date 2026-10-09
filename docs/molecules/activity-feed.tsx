@@ -14,19 +14,30 @@ export default function ActivityFeedDocs() {
     <Examples>
       <Example
         title="Default"
-        description="Who did what, to which project, and when. A small icon on the avatar says what kind of event it was."
+        description="Who did what, to which project, and when. A small icon on the avatar says what kind of event it was. Lumen’s own events carry the product mark, and branches and commits are set in mono."
         layout="full"
         code={`<ActivityFeed
   items={[
     {
       id: "a1",
-      actor: { name: "Maya Chen", tint: "violet" },
+      actor: { name: "Maya Chen" },
       action: "deployed",
       target: "web",
       context: "to production",
       detail: "a41c9e2  Fix redirect loop on checkout",
       time: "2 min ago",
       kind: "deploy",
+    },
+    {
+      id: "a2",
+      actor: { name: "Lumen", system: true },
+      action: "failed to build",
+      target: "api",
+      context: "on",
+      code: "feat/rate-limits",
+      detail: "npm run build exited with code 1",
+      time: "18 min ago",
+      kind: "failed",
     },
   ]}
 />`}
@@ -43,7 +54,12 @@ export default function ActivityFeedDocs() {
         surface="subtle"
         code={`<ActivityFeed
   limit={4}
-  action={<Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/live/app/projects" />}>View all</Button>}
+  action={
+    // The negative margin cancels the ghost padding, so the label lines up with the times below.
+    <Button variant="ghost" size="sm" className="-mr-(--button-padding-x-sm)" nativeButton={false} render={<Link href="/live/app/projects" />}>
+      View all
+    </Button>
+  }
 />`}
       >
         <div className="mx-auto max-w-prose p-6 md:p-10">
@@ -54,6 +70,7 @@ export default function ActivityFeedDocs() {
               <Button
                 variant="ghost"
                 size="sm"
+                className="-mr-(--button-padding-x-sm)"
                 nativeButton={false}
                 render={<Link href="/live/app/projects" />}
               >
@@ -75,9 +92,15 @@ export default function ActivityFeedDocs() {
             <div className="grid content-start gap-2">
               <h3 className="text-h4 text-foreground">api</h3>
               <p className="max-w-prose text-body text-copy">
-                The latest build on feat/rate-limits failed. Production still
-                serves 7f02b1d, the last deployment that passed its health
-                checks.
+                The latest build on{" "}
+                <code className="font-mono text-code text-foreground">
+                  feat/rate-limits
+                </code>{" "}
+                failed. Production still serves{" "}
+                <code className="font-mono text-code text-foreground">
+                  7f02b1d
+                </code>
+                , the last deployment that passed its health checks.
               </p>
             </div>
             <aside className="grid content-start gap-4 border-border @min-[44rem]:border-l @min-[44rem]:pl-6">
@@ -96,11 +119,12 @@ export default function ActivityFeedDocs() {
           "Write the action as a verb phrase that reads naturally after the name: “rolled back”, “added the domain”.",
           "Bold only the person and the object of the action.",
           "Use relative times for the last week and dates after that.",
+          "Pass branches and commits as code, so they read in mono like everywhere else in the app.",
         ]}
         dont={[
           "Don’t show more than about ten items without a way to see more.",
           "Don’t rely on the event icon alone; the sentence must say what happened.",
-          "Don’t truncate the sentence; let it wrap.",
+          "Don’t truncate the sentence or the detail; let them wrap.",
         ]}
       />
 
@@ -152,9 +176,9 @@ export default function ActivityFeedDocs() {
         rows={[
           {
             prop: "actor",
-            type: "{ name; initials?; image?; tint? }",
+            type: "{ name; initials?; image?; tone?; system? }",
             description:
-              "Who did it. Tint is a flat avatar fill: violet, mint, sand, sky or rose.",
+              "Who did it. The avatar fill comes from the shared people list, so a name keeps one colour on every page; tone overrides it. system draws the Lumen mark for the product’s own events.",
           },
           {
             prop: "action",
@@ -170,6 +194,12 @@ export default function ActivityFeedDocs() {
             prop: "context",
             type: "string",
             description: "The rest of the sentence.",
+          },
+          {
+            prop: "code",
+            type: "string",
+            description:
+              "A branch, commit or other code name that ends the sentence, set in mono.",
           },
           {
             prop: "detail",

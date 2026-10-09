@@ -36,7 +36,7 @@ const tones = {
     band: "border-y",
     grid: "bg-border",
     cell: "bg-background",
-    value: "text-h1 text-foreground tabular",
+    value: "text-foreground tabular",
     label: "text-label text-foreground",
     detail: "text-caption text-muted-foreground",
   },
@@ -44,7 +44,7 @@ const tones = {
     band: "rounded-(--panel-radius) bg-subtle px-(--card-padding) @min-[30rem]/stats:px-10",
     grid: "bg-border",
     cell: "bg-subtle",
-    value: "text-h1 text-foreground tabular",
+    value: "text-foreground tabular",
     label: "text-label text-foreground",
     detail: "text-caption text-muted-foreground",
   },
@@ -52,7 +52,7 @@ const tones = {
     band: "rounded-(--panel-radius) bg-panel px-(--card-padding) text-panel-foreground @min-[30rem]/stats:px-10",
     grid: "bg-panel-border",
     cell: "bg-panel",
-    value: "text-h1 text-panel-foreground tabular",
+    value: "text-panel-foreground tabular",
     label: "text-label text-panel-foreground",
     detail: "text-caption text-panel-muted",
   },
@@ -60,7 +60,7 @@ const tones = {
 
 /**
  * A band of headline numbers in big tabular figures, split by hairlines.
- * One column on phones, two in narrow slots, four when there is room.
+ * Two columns on phones and in narrow slots, four when there is room.
  */
 export function Stats({
   stats = defaultStats,
@@ -72,13 +72,19 @@ export function Stats({
 }: StatsProps) {
   const t = tones[tone]
   return (
-    <section data-slot="stats" data-tone={tone} className={cn(contained && "container-page py-section-sm", className)}>
-      {title ? <SectionHeading title={title} description={description} className="mb-10 md:mb-14" /> : null}
+    <section
+      data-slot="stats"
+      data-tone={tone}
+      className={cn("@container/stats-section", contained && "container-page py-section-sm", className)}
+    >
+      {title ? (
+        <SectionHeading title={title} description={description} className="mb-10 @3xl/stats-section:mb-14" />
+      ) : null}
       <div className={cn("@container/stats", t.band)}>
         {/* The 1px gap shows the grid colour through, drawing hairlines between cells. */}
         <dl
           className={cn(
-            "grid gap-px @min-[30rem]/stats:grid-cols-2 @min-[56rem]/stats:grid-cols-4",
+            "grid grid-cols-2 gap-px @min-[56rem]/stats:grid-cols-4",
             t.grid
           )}
         >
@@ -86,16 +92,24 @@ export function Stats({
             <div
               key={s.label}
               className={cn(
-                "flex flex-col gap-4 py-8 @min-[30rem]/stats:py-10",
-                "@min-[30rem]/stats:odd:pr-8 @min-[30rem]/stats:even:pl-8",
+                "flex min-w-0 flex-col gap-3 py-6 odd:pr-4 even:pl-4",
+                "@min-[30rem]/stats:gap-4 @min-[30rem]/stats:py-10 @min-[30rem]/stats:odd:pr-8 @min-[30rem]/stats:even:pl-8",
                 "@min-[56rem]/stats:px-8 @min-[56rem]/stats:first:pl-0 @min-[56rem]/stats:last:pr-0",
                 t.cell
               )}
             >
               {/* Label first in the DOM so it reads "label: value"; shown under the number. */}
-              <dt className={`order-2 ${t.label}`}>{s.label}</dt>
-              <dd className={`order-1 ${t.value}`}>{s.value}</dd>
-              {s.detail ? <dd className={`order-3 -mt-2 ${t.detail}`}>{s.detail}</dd> : null}
+              <dt className={cn("order-2", t.label)}>{s.label}</dt>
+              {/* Two columns on a phone and four below 72rem are narrow, so the figures step down a size there. */}
+              <dd
+                className={cn(
+                  "order-1 text-h2 @min-[30rem]/stats:text-h1 @min-[56rem]/stats:text-h2 @min-[72rem]/stats:text-h1",
+                  t.value
+                )}
+              >
+                {s.value}
+              </dd>
+              {s.detail ? <dd className={cn("order-3 -mt-2", t.detail)}>{s.detail}</dd> : null}
             </div>
           ))}
         </dl>
