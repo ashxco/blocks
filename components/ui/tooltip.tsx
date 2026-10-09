@@ -2,6 +2,7 @@
 
 import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip"
 import { cn } from "@/lib/utils"
+import { ScopedPortal } from "@/lib/portal-container"
 
 /**
  * Blocks tooltip. A compact ink label (bg-primary, text-caption, rounded-xs)
@@ -50,7 +51,7 @@ function TooltipContent({
     container?: TooltipPrimitive.Portal.Props["container"]
   }) {
   return (
-    <TooltipPrimitive.Portal container={container}>
+    <ScopedPortal portal={TooltipPrimitive.Portal} container={container}>
       <TooltipPrimitive.Positioner
         align={align}
         alignOffset={alignOffset}
@@ -63,7 +64,7 @@ function TooltipContent({
         <TooltipPrimitive.Popup
           data-slot="tooltip-content"
           className={cn(
-            "inline-flex w-fit max-w-64 origin-(--transform-origin) items-center gap-2 rounded-xs bg-primary px-2 py-1",
+            "inline-flex w-fit max-w-(--tooltip-max-width) origin-(--transform-origin) items-center gap-2 rounded-xs bg-primary px-2 py-1",
             "text-caption font-medium text-pretty text-primary-foreground",
             "has-data-[slot=kbd]:py-0.5 has-data-[slot=kbd]:pr-0.5",
             "transition-[opacity,scale] duration-(--duration-base) ease-out",
@@ -77,7 +78,7 @@ function TooltipContent({
           {children}
         </TooltipPrimitive.Popup>
       </TooltipPrimitive.Positioner>
-    </TooltipPrimitive.Portal>
+    </ScopedPortal>
   )
 }
 

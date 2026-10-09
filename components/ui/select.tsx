@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Select as SelectPrimitive } from "@base-ui/react/select"
 import { cn } from "@/lib/utils"
+import { ScopedPortal } from "@/lib/portal-container"
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
 /**
@@ -26,7 +27,7 @@ const Select = SelectPrimitive.Root
  */
 const selectStyles = {
   /** The list surface: popover colour, hairline border, overlay radius. */
-  list: "rounded-(--overlay-radius) border border-border bg-popover p-(--overlay-padding) text-popover-foreground outline-none",
+  list: "rounded-(--overlay-radius) border border-popover-border bg-popover p-(--overlay-padding) text-popover-foreground outline-none",
   label: "flex h-8 items-end px-2.5 pb-1.5 text-caption font-semibold text-muted-foreground select-none",
   item: cn(
     "group/select-item relative flex min-h-(--overlay-item-height) w-full cursor-default items-center gap-2 rounded-(--overlay-item-radius) py-1.5 ps-2.5 pe-9 text-sm text-foreground outline-none select-none",
@@ -116,14 +117,18 @@ function SelectContent({
   align = "start",
   alignOffset = 0,
   alignItemWithTrigger = false,
+  container,
   ...props
 }: SelectPrimitive.Popup.Props &
   Pick<
     SelectPrimitive.Positioner.Props,
     "align" | "alignOffset" | "side" | "sideOffset" | "alignItemWithTrigger"
-  >) {
+  > & {
+    /** Element to portal into instead of <body>, e.g. a preview stage. */
+    container?: SelectPrimitive.Portal.Props["container"]
+  }) {
   return (
-    <SelectPrimitive.Portal>
+    <ScopedPortal portal={SelectPrimitive.Portal} container={container}>
       <SelectPrimitive.Positioner
         side={side}
         sideOffset={sideOffset}
@@ -152,7 +157,7 @@ function SelectContent({
           <SelectScrollDownButton />
         </SelectPrimitive.Popup>
       </SelectPrimitive.Positioner>
-    </SelectPrimitive.Portal>
+    </ScopedPortal>
   )
 }
 

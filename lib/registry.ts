@@ -62,7 +62,7 @@ export const components: RegistryEntry[] = [
   { slug: "dropdown-menu", title: "Dropdown menu", group: "Overlays", description: "Actions and options from a button." },
   { slug: "context-menu", title: "Context menu", group: "Overlays", description: "Actions on right-click or long-press." },
   { slug: "menubar", title: "Menubar", group: "Overlays", description: "Desktop-style application menus." },
-  { slug: "command", title: "Command menu", group: "Overlays", description: "Searchable list of commands, usually on ⌘K." },
+  { slug: "command", title: "Command", group: "Overlays", description: "Searchable list of commands, the building block of a ⌘K menu." },
   // Navigation
   { slug: "tabs", title: "Tabs", group: "Navigation", description: "Switch between views in the same place." },
   { slug: "breadcrumb", title: "Breadcrumb", group: "Navigation", description: "Where the current page sits in the hierarchy." },

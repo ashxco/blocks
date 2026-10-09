@@ -112,6 +112,68 @@
         "$value": "2.25rem"
       }
     },
+    "popover": {
+      "$type": "dimension",
+      "width-sm": {
+        "$value": "14rem",
+        "$description": "Narrow popovers: a short form or a picker."
+      },
+      "width": {
+        "$value": "18rem",
+        "$description": "Default popover width."
+      },
+      "width-lg": {
+        "$value": "24rem",
+        "$description": "Wide popovers: notification lists, share panels."
+      }
+    },
+    "hover-card": {
+      "$type": "dimension",
+      "width": {
+        "$value": "18rem",
+        "$description": "Hover card width."
+      }
+    },
+    "menu": {
+      "$type": "dimension",
+      "min-width": {
+        "$value": "12rem",
+        "$description": "Dropdown, context and sub menus. Menus also grow to their trigger width."
+      },
+      "min-width-lg": {
+        "$value": "14rem",
+        "$description": "Menubar menus and combobox lists."
+      }
+    },
+    "tooltip": {
+      "$type": "dimension",
+      "max-width": {
+        "$value": "16rem",
+        "$description": "Tooltips wrap beyond this width."
+      }
+    },
+    "toast": {
+      "$type": "dimension",
+      "width": {
+        "$value": "24rem",
+        "$description": "Toast width from sm up; full width minus the gutter below."
+      }
+    },
+    "command": {
+      "$type": "dimension",
+      "input-height": {
+        "$value": "3.5rem",
+        "$description": "Search row of the command dialog."
+      },
+      "item-height": {
+        "$value": "2.5rem",
+        "$description": "Result rows in the command dialog."
+      },
+      "footer-height": {
+        "$value": "2.75rem",
+        "$description": "Key-hint footer of the command dialog."
+      }
+    },
     "dialog": {
       "radius": {
         "$type": "dimension",
@@ -124,6 +186,16 @@
       "width": {
         "$type": "dimension",
         "$value": "32rem"
+      },
+      "width-sm": {
+        "$type": "dimension",
+        "$value": "24rem",
+        "$description": "Small dialogs: confirmations."
+      },
+      "width-lg": {
+        "$type": "dimension",
+        "$value": "{container.prose}",
+        "$description": "Large dialogs: forms and long content."
       }
     },
     "badge": {

@@ -11,7 +11,7 @@
  * Run with `npm run tokens`. Never edit the generated files by hand.
  */
 import StyleDictionary from "style-dictionary"
-import { mkdir, writeFile } from "node:fs/promises"
+import { mkdir, readFile, writeFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -57,21 +57,29 @@ function describe(t) {
     case "light":
     case "dark": {
       const name = join(p.slice(1))
-      return { tier: "semantic", group: semanticGroup(p[1]), cssVar: `--${name}`, scope: "mode", utility: `bg-${name} · text-${name} · border-${name}` }
+      return { tier: "semantic", group: semanticGroup(p[1]), cssVar: `--${name}`, scope: "mode", utility: semanticUtility(name) }
     }
     case "typography":
       return { tier: "typography", group: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl", "7xl"].includes(p[1]) ? "scale" : "roles", cssVar: `--text-${p[1]}`, scope: "theme", utility: `text-${p[1]}` }
     case "layout": {
       const [head, ...rest] = p
       if (head === "spacing") return { tier: "layout", group: "spacing", cssVar: "--spacing", scope: "theme", utility: "p-4 = 4 × spacing" }
-      if (head === "space") return { tier: "layout", group: "spacing", cssVar: `--spacing-${join(rest)}`, scope: "theme", utility: `p-${join(rest)} · gap-${join(rest)}` }
+      if (head === "space") {
+        // Each named space has one intended axis.
+        const axis = { gutter: "px", section: "py", "section-sm": "py", stack: "gap" }[join(rest)] ?? "p"
+        return { tier: "layout", group: "spacing", cssVar: `--spacing-${join(rest)}`, scope: "theme", utility: `${axis}-${join(rest)}` }
+      }
       if (head === "radius") return { tier: "layout", group: "radius", cssVar: `--radius-${join(rest)}`, scope: "theme", utility: `rounded-${join(rest)}` }
-      if (head === "container") return { tier: "layout", group: "container", cssVar: `--container-${join(rest)}`, scope: "theme", utility: `max-w-${join(rest)}` }
+      if (head === "container") {
+        // max-w-prose is Tailwind's fixed 65ch, so the prose width is read through its variable.
+        const utility = join(rest) === "prose" ? "max-w-(--container-prose) · @prose:" : `max-w-${join(rest)} · @${join(rest)}:`
+        return { tier: "layout", group: "container", cssVar: `--container-${join(rest)}`, scope: "theme", utility }
+      }
       if (head === "breakpoint") return { tier: "layout", group: "breakpoint", cssVar: `--breakpoint-${join(rest)}`, scope: "theme", utility: `${join(rest)}:` }
       if (head === "motion" && rest[0] === "ease") return { tier: "layout", group: "easing", cssVar: `--ease-${join(rest.slice(1))}`, scope: "theme", utility: `ease-${join(rest.slice(1))}` }
       if (head === "motion") return { tier: "layout", group: "duration", cssVar: `--duration-${join(rest.slice(1))}`, scope: "root", utility: `duration-(--duration-${join(rest.slice(1))})` }
       if (head === "blur") return { tier: "layout", group: "blur", cssVar: `--blur-${join(rest)}`, scope: "theme", utility: `backdrop-blur-${join(rest)}` }
-      if (head === "border") return { tier: "layout", group: "border-width", cssVar: `--border-width-${join(rest)}`, scope: "root", utility: `border-(length:--border-width-${join(rest)})` }
+      if (head === "border") return { tier: "layout", group: "border-width", cssVar: `--border-width-${join(rest)}`, scope: "root", utility: join(rest) === "hairline" ? "border" : `border-(length:--border-width-${join(rest)})` }
       if (head === "focus") return { tier: "layout", group: "focus", cssVar: `--focus-${join(rest)}`, scope: "root", utility: "focus-visible:focus-ring" }
       if (head === "z") return { tier: "layout", group: "z-index", cssVar: `--z-${join(rest)}`, scope: "root", utility: `z-(--z-${join(rest)})` }
       return { tier: "layout", group: head, cssVar: `--${join(p)}`, scope: "root" }
@@ -79,11 +87,21 @@ function describe(t) {
     case "components": {
       const name = join(p.slice(1))
       const prop = p.slice(2).join("-")
-      const prefix = /radius/.test(prop) ? "rounded" : /padding-x/.test(prop) ? "px" : /padding/.test(prop) ? "p" : /width/.test(prop) ? "w" : /size/.test(prop) ? "size" : "h"
+      const prefix = /radius/.test(prop) ? "rounded" : /padding-x/.test(prop) ? "px" : /padding/.test(prop) ? "p" : /min-width/.test(prop) ? "min-w" : /max-width/.test(prop) ? "max-w" : /width/.test(prop) ? "w" : /size/.test(prop) ? "size" : "h"
       return { tier: "component", group: p[1], cssVar: `--${name}`, scope: "root", utility: `${prefix}-(--${name})` }
     }
   }
   throw new Error(`No naming rule for token ${p.join(".")} in ${t.filePath}`)
+}
+
+/** The utilities a semantic colour is meant for, e.g. text-copy or border-input. */
+function semanticUtility(name) {
+  if (name === "copy" || name.endsWith("foreground") || name === "panel-muted") return `text-${name}`
+  if (["border", "border-strong", "input", "popover-border", "panel-border", "sidebar-border"].includes(name)) return `border-${name}`
+  if (name === "ring" || name === "sidebar-ring") return `outline-${name} · focus-visible:focus-ring`
+  if (name.startsWith("chart-")) return `fill-${name} · stroke-${name} · var(--${name})`
+  if (/^(panel-)?(brand|destructive|success|warning|info)$/.test(name)) return `text-${name} · bg-${name}`
+  return `bg-${name}`
 }
 
 function semanticGroup(head) {
@@ -91,7 +109,7 @@ function semanticGroup(head) {
   if (["primary", "primary-foreground", "secondary", "secondary-foreground", "muted", "accent", "accent-foreground"].includes(head)) return "interactive"
   if (head.startsWith("brand")) return "brand"
   if (/^(destructive|success|warning|info)/.test(head)) return "status"
-  if (["border", "border-strong", "input", "ring", "overlay"].includes(head)) return "lines & focus"
+  if (["border", "border-strong", "input", "popover-border", "ring", "overlay"].includes(head)) return "lines & focus"
   if (head.startsWith("panel") || head.startsWith("terminal")) return "panel"
   return head
 }
@@ -264,6 +282,21 @@ export const typeRoles = ${JSON.stringify(all.filter((t) => t.meta.tier === "typ
 
 await mkdir(path.join(root, "app/styles"), { recursive: true })
 await mkdir(path.join(root, "design-system/generated"), { recursive: true })
-await writeFile(path.join(root, "app/styles/tokens.css"), css)
-await writeFile(path.join(root, "design-system/generated/tokens.ts"), ts)
-console.log(`Blocks tokens: ${list.length} tokens → app/styles/tokens.css, design-system/generated/tokens.ts`)
+/**
+ * Writes only when the content changed. Every write makes the dev server
+ * rebuild and fully reload each open tab (tokens.ts is imported outside React),
+ * so `npm run check` with unchanged tokens must leave the files alone.
+ */
+async function writeIfChanged(file, content) {
+  const target = path.join(root, file)
+  const current = await readFile(target, "utf8").catch(() => null)
+  if (current === content) return false
+  await writeFile(target, content)
+  return true
+}
+
+const changed = [
+  await writeIfChanged("app/styles/tokens.css", css),
+  await writeIfChanged("design-system/generated/tokens.ts", ts),
+].some(Boolean)
+console.log(`Blocks tokens: ${list.length} tokens → app/styles/tokens.css, design-system/generated/tokens.ts${changed ? "" : " (unchanged)"}`)

@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Drawer as DrawerPrimitive } from "@base-ui/react/drawer"
 import { cn } from "@/lib/utils"
+import { ScopedPortal } from "@/lib/portal-container"
 
 /**
  * Blocks drawer. A touch-first panel with swipe to dismiss and snap points
@@ -72,7 +73,7 @@ function DrawerTrigger({ ...props }: DrawerPrimitive.Trigger.Props) {
 }
 
 function DrawerPortal({ ...props }: DrawerPrimitive.Portal.Props) {
-  return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />
+  return <ScopedPortal portal={DrawerPrimitive.Portal} data-slot="drawer-portal" {...props} />
 }
 
 function DrawerClose({ ...props }: DrawerPrimitive.Close.Props) {

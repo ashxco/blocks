@@ -2,6 +2,7 @@
 
 import { PreviewCard as PreviewCardPrimitive } from "@base-ui/react/preview-card"
 import { cn } from "@/lib/utils"
+import { ScopedPortal } from "@/lib/portal-container"
 
 /**
  * Blocks hover card. A preview that opens on hover or keyboard focus, after a
@@ -39,7 +40,7 @@ function HoverCardContent({
     container?: PreviewCardPrimitive.Portal.Props["container"]
   }) {
   return (
-    <PreviewCardPrimitive.Portal data-slot="hover-card-portal" container={container}>
+    <ScopedPortal portal={PreviewCardPrimitive.Portal} data-slot="hover-card-portal" container={container}>
       <PreviewCardPrimitive.Positioner
         align={align}
         alignOffset={alignOffset}
@@ -52,8 +53,8 @@ function HoverCardContent({
         <PreviewCardPrimitive.Popup
           data-slot="hover-card-content"
           className={cn(
-            "flex w-72 max-w-(--available-width) origin-(--transform-origin) flex-col gap-3",
-            "rounded-(--overlay-radius) border border-input bg-popover p-(--card-padding-sm) text-sm text-popover-foreground outline-none",
+            "flex w-(--hover-card-width) max-w-(--available-width) origin-(--transform-origin) flex-col gap-3",
+            "rounded-(--overlay-radius) border border-popover-border bg-popover p-(--card-padding-sm) text-sm text-popover-foreground outline-none",
             "transition-[opacity,scale] duration-(--duration-base) ease-out",
             "data-starting-style:scale-98 data-starting-style:opacity-0",
             "data-ending-style:scale-98 data-ending-style:opacity-0 data-ending-style:duration-(--duration-fast) data-ending-style:ease-in",
@@ -63,7 +64,7 @@ function HoverCardContent({
           {...props}
         />
       </PreviewCardPrimitive.Positioner>
-    </PreviewCardPrimitive.Portal>
+    </ScopedPortal>
   )
 }
 

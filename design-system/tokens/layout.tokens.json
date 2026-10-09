@@ -25,7 +25,7 @@
   },
   "container": {
     "$type": "dimension",
-    "prose": { "$value": "42rem", "$description": "Long-form reading width. Use max-w-prose." },
+    "prose": { "$value": "42rem", "$description": "Long-form reading width. Use max-w-(--container-prose) or @prose:; max-w-prose is Tailwind's fixed 65ch." },
     "narrow": { "$value": "52rem", "$description": "Focused content: forms, FAQs. Use max-w-narrow." },
     "page": { "$value": "75rem", "$description": "Default page width. Use max-w-page." },
     "wide": { "$value": "85rem", "$description": "Wide layouts and app shells. Use max-w-wide." }

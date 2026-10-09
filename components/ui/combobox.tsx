@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Combobox as ComboboxPrimitive } from "@base-ui/react"
 import { cn } from "@/lib/utils"
+import { ScopedPortal } from "@/lib/portal-container"
 import { CheckIcon, ChevronDownIcon, SearchIcon, XIcon } from "lucide-react"
 
 /**
@@ -33,7 +34,7 @@ const Combobox = ComboboxPrimitive.Root
  */
 const comboboxStyles = {
   /** The popup surface: popover colour, hairline border, overlay radius. */
-  popup: "rounded-(--overlay-radius) border border-border bg-popover text-popover-foreground outline-none",
+  popup: "rounded-(--overlay-radius) border border-popover-border bg-popover text-popover-foreground outline-none",
   /** The scrolling list inside the popup. */
   list: "no-scrollbar max-h-80 min-h-0 scroll-py-(--overlay-padding) overflow-y-auto overscroll-contain p-(--overlay-padding) outline-none data-empty:p-0",
   label: "flex h-8 items-end px-2.5 pb-1.5 text-caption font-semibold text-muted-foreground select-none",
@@ -172,15 +173,19 @@ function ComboboxContent({
   align = "start",
   alignOffset = 0,
   anchor,
+  container,
   ...props
 }: ComboboxPrimitive.Popup.Props &
   Pick<
     ComboboxPrimitive.Positioner.Props,
     "side" | "align" | "sideOffset" | "alignOffset" | "anchor"
-  >) {
+  > & {
+    /** Element to portal into instead of <body>, e.g. a preview stage. */
+    container?: ComboboxPrimitive.Portal.Props["container"]
+  }) {
   return (
     <ComboboxContentContext.Provider value={true}>
-      <ComboboxPrimitive.Portal>
+      <ScopedPortal portal={ComboboxPrimitive.Portal} container={container}>
         <ComboboxPrimitive.Positioner
           side={side}
           sideOffset={sideOffset}
@@ -193,7 +198,7 @@ function ComboboxContent({
             data-slot="combobox-content"
             data-chips={!!anchor}
             className={cn(
-              "group/combobox-content relative flex max-h-[min(var(--available-height),--spacing(96))] w-(--anchor-width) max-w-(--available-width) min-w-56 origin-(--transform-origin) flex-col overflow-hidden",
+              "group/combobox-content relative flex max-h-[min(var(--available-height),--spacing(96))] w-(--anchor-width) max-w-(--available-width) min-w-(--menu-min-width-lg) origin-(--transform-origin) flex-col overflow-hidden",
               comboboxStyles.popup,
               "data-[chips=true]:min-w-(--anchor-width)",
               "duration-(--duration-base) ease-out data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
@@ -204,7 +209,7 @@ function ComboboxContent({
             {...props}
           />
         </ComboboxPrimitive.Positioner>
-      </ComboboxPrimitive.Portal>
+      </ScopedPortal>
     </ComboboxContentContext.Provider>
   )
 }

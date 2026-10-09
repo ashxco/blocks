@@ -137,17 +137,21 @@
       "$value": "{color.ink.200}",
       "$description": "Form control borders."
     },
+    "popover-border": {
+      "$value": "{color.ink.200}",
+      "$description": "Edge of menus, popovers, selects, hover cards, toasts and chart tooltips: anchored overlays that float over content without a shadow."
+    },
     "ring": {
       "$value": "{color.violet.600}",
       "$description": "Focus outline."
     },
     "overlay": {
-      "$value": "oklch(0.135 0.008 286 / 0.4)",
+      "$value": "oklch(0.135 0.008 286 / 0.28)",
       "$description": "Backdrop behind dialogs and sheets."
     },
     "panel": {
       "$value": "{color.ink.900}",
-      "$description": "Dark emphasis surface for feature bands, CTAs and code. Stays dark in both themes."
+      "$description": "Dark emphasis surface for feature bands, CTAs and code. Stays dark in both themes, and in dark mode sits clearly above the canvas and cards."
     },
     "panel-foreground": {
       "$value": "{color.ink.0}",
@@ -254,6 +258,18 @@
     "panel-brand": {
       "$value": "{color.violet.400}",
       "$description": "Brand accent on dark panels: links, active indicators and highlights inside bg-panel."
+    },
+    "panel-success": {
+      "$value": "{color.green.400}",
+      "$description": "Success accent on dark panels: status dots, checks and positive change inside bg-panel."
+    },
+    "panel-warning": {
+      "$value": "{color.amber.400}",
+      "$description": "Warning accent on dark panels: pending and degraded states inside bg-panel."
+    },
+    "panel-destructive": {
+      "$value": "{color.red.400}",
+      "$description": "Error accent on dark panels: failed states and negative change inside bg-panel."
     }
   }
 }
