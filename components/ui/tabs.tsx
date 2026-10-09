@@ -1,9 +1,23 @@
 "use client"
 
+import * as React from "react"
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
 
+import { cn } from "@/components/viewer/cn"
+
+/**
+ * Blocks tabs.
+ *
+ * - `variant="default"`: underline tabs on a full-width hairline. A 2px ink
+ *   indicator slides to the active tab.
+ * - `variant="line"`: the same underline without the hairline track, for
+ *   tabs that sit on an existing border (a page header, a card edge).
+ * - `variant="segmented"`: a pill track where the active tab turns ink,
+ *   matching the segmented toggle group.
+ *
+ * Heights come from --tabs-height (default) and --control-height-sm (sm).
+ */
 function Tabs({
   className,
   orientation = "horizontal",
@@ -13,8 +27,9 @@ function Tabs({
     <TabsPrimitive.Root
       data-slot="tabs"
       data-orientation={orientation}
+      orientation={orientation}
       className={cn(
-        "group/tabs flex gap-2 data-horizontal:flex-col",
+        "group/tabs flex gap-6 data-horizontal:flex-col data-vertical:flex-row",
         className
       )}
       {...props}
@@ -23,46 +38,119 @@ function Tabs({
 }
 
 const tabsListVariants = cva(
-  "group/tabs-list inline-flex w-fit items-center justify-center rounded-lg p-[3px] text-muted-foreground group-data-horizontal/tabs:h-8 group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none",
+  "group/tabs-list relative isolate flex shrink-0 text-muted-foreground data-vertical:h-fit data-vertical:flex-col data-vertical:items-stretch",
   {
     variants: {
       variant: {
-        default: "bg-muted",
-        line: "gap-1 bg-transparent",
+        default:
+          "gap-6 border-border data-horizontal:w-full data-horizontal:items-stretch data-horizontal:border-b data-vertical:gap-0.5 data-vertical:border-l",
+        line: "w-fit gap-6 border-transparent data-horizontal:items-stretch data-horizontal:border-b data-vertical:gap-0.5 data-vertical:border-l",
+        segmented:
+          "w-fit items-center gap-1 rounded-(--button-radius) border border-border bg-muted p-0.75 data-vertical:rounded-(--card-radius)",
+      },
+      size: {
+        default: "data-horizontal:h-(--tabs-height)",
+        sm: "data-horizontal:h-(--control-height-sm)",
       },
     },
     defaultVariants: {
       variant: "default",
+      size: "default",
+    },
+  }
+)
+
+type TabsListVariant = NonNullable<VariantProps<typeof tabsListVariants>["variant"]>
+type TabsListSize = NonNullable<VariantProps<typeof tabsListVariants>["size"]>
+
+const TabsListContext = React.createContext<{ variant: TabsListVariant; size: TabsListSize }>({
+  variant: "default",
+  size: "default",
+})
+
+const tabsIndicatorVariants = cva(
+  "pointer-events-none absolute top-0 left-0 -z-10 transition-[translate,width,height] duration-(--duration-base) ease-out",
+  {
+    variants: {
+      variant: {
+        // A 2px ink bar laid over the hairline.
+        default:
+          "bg-foreground data-horizontal:top-auto data-horizontal:-bottom-px data-horizontal:h-0.5 data-horizontal:w-(--active-tab-width) data-horizontal:translate-x-(--active-tab-left) data-vertical:-left-px data-vertical:h-(--active-tab-height) data-vertical:w-0.5 data-vertical:translate-y-(--active-tab-top)",
+        line: "bg-foreground data-horizontal:top-auto data-horizontal:-bottom-px data-horizontal:h-0.5 data-horizontal:w-(--active-tab-width) data-horizontal:translate-x-(--active-tab-left) data-vertical:-left-px data-vertical:h-(--active-tab-height) data-vertical:w-0.5 data-vertical:translate-y-(--active-tab-top)",
+        // An ink pill behind the active tab.
+        segmented:
+          "h-(--active-tab-height) w-(--active-tab-width) translate-x-(--active-tab-left) translate-y-(--active-tab-top) rounded-(--button-radius) bg-primary data-vertical:rounded-(--control-radius)",
+      },
     },
   }
 )
 
 function TabsList({
   className,
-  variant = "default",
+  variant,
+  size,
+  children,
   ...props
 }: TabsPrimitive.List.Props & VariantProps<typeof tabsListVariants>) {
+  const resolved = React.useMemo(
+    () => ({ variant: variant ?? "default", size: size ?? "default" }),
+    [variant, size]
+  )
+
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
-      data-variant={variant}
-      className={cn(tabsListVariants({ variant }), className)}
+      data-variant={resolved.variant}
+      data-size={resolved.size}
+      className={cn(tabsListVariants(resolved), className)}
       {...props}
-    />
+    >
+      <TabsListContext.Provider value={resolved}>{children}</TabsListContext.Provider>
+      <TabsPrimitive.Indicator
+        data-slot="tabs-indicator"
+        renderBeforeHydration
+        className={tabsIndicatorVariants({ variant: resolved.variant })}
+      />
+    </TabsPrimitive.List>
   )
 }
 
+const tabsTriggerVariants = cva(
+  [
+    "relative inline-flex shrink-0 items-center justify-center gap-2 text-label whitespace-nowrap text-muted-foreground select-none",
+    "transition-colors duration-(--duration-fast) ease-standard outline-none",
+    "hover:text-foreground focus-visible:focus-ring data-active:text-foreground",
+    "data-disabled:pointer-events-none data-disabled:opacity-40",
+    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  ],
+  {
+    variants: {
+      variant: {
+        default:
+          "rounded-xs data-vertical:h-(--control-height-sm) data-vertical:justify-start data-vertical:px-4",
+        line: "rounded-xs data-vertical:h-(--control-height-sm) data-vertical:justify-start data-vertical:px-4",
+        segmented:
+          "h-full flex-1 rounded-(--button-radius) data-active:text-primary-foreground data-active:hover:text-primary-foreground data-vertical:h-(--control-height-sm) data-vertical:flex-none data-vertical:justify-start data-vertical:rounded-(--control-radius)",
+      },
+      size: {
+        default: "",
+        sm: "",
+      },
+    },
+    compoundVariants: [
+      { variant: "segmented", size: "default", className: "px-4" },
+      { variant: "segmented", size: "sm", className: "px-3" },
+    ],
+  }
+)
+
 function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
+  const { variant, size } = React.useContext(TabsListContext)
+
   return (
     <TabsPrimitive.Tab
       data-slot="tabs-trigger"
-      className={cn(
-        "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground group-data-[variant=default]/tabs-list:data-active:shadow-sm group-data-[variant=line]/tabs-list:data-active:shadow-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-transparent dark:group-data-[variant=line]/tabs-list:data-active:border-transparent dark:group-data-[variant=line]/tabs-list:data-active:bg-transparent",
-        "data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground",
-        "after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-horizontal/tabs:after:inset-x-0 group-data-horizontal/tabs:after:bottom-[-5px] group-data-horizontal/tabs:after:h-0.5 group-data-vertical/tabs:after:inset-y-0 group-data-vertical/tabs:after:-right-1 group-data-vertical/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-active:after:opacity-100",
-        className
-      )}
+      className={cn(tabsTriggerVariants({ variant, size }), className)}
       {...props}
     />
   )
@@ -72,7 +160,11 @@ function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   return (
     <TabsPrimitive.Panel
       data-slot="tabs-content"
-      className={cn("flex-1 text-sm outline-none", className)}
+      className={cn(
+        "min-w-0 flex-1 text-body text-copy outline-none focus-visible:focus-ring",
+        "transition-opacity duration-(--duration-base) ease-out data-starting-style:opacity-0",
+        className
+      )}
       {...props}
     />
   )

@@ -4,19 +4,29 @@ import * as React from "react"
 import { Avatar as AvatarPrimitive } from "@base-ui/react/avatar"
 import { cn } from "cn"
 
+type AvatarSize = "sm" | "default" | "lg" | "xl"
+type AvatarTone = "violet" | "mint" | "sand" | "sky" | "rose" | "muted"
+
+/**
+ * Blocks avatar. Sizes come from --avatar-size-*. Images get a faint
+ * hairline so light photos keep their edge; fallbacks sit on flat tint fills.
+ * In an AvatarGroup, avatars overlap with a cut-out in the page colour.
+ */
 function Avatar({
   className,
   size = "default",
   ...props
 }: AvatarPrimitive.Root.Props & {
-  size?: "default" | "sm" | "lg"
+  size?: AvatarSize
 }) {
   return (
     <AvatarPrimitive.Root
       data-slot="avatar"
       data-size={size}
       className={cn(
-        "group/avatar relative flex size-8 shrink-0 rounded-full select-none after:absolute after:inset-0 after:rounded-full after:border after:border-border after:mix-blend-darken data-[size=lg]:size-10 data-[size=sm]:size-6 dark:after:mix-blend-lighten",
+        "group/avatar relative flex size-(--avatar-size-md) shrink-0 rounded-full select-none",
+        "data-[size=sm]:size-(--avatar-size-sm) data-[size=lg]:size-(--avatar-size-lg) data-[size=xl]:size-(--avatar-size-xl)",
+        "after:pointer-events-none after:absolute after:inset-0 after:rounded-full after:border after:border-foreground/8",
         className
       )}
       {...props}
@@ -37,31 +47,66 @@ function AvatarImage({ className, ...props }: AvatarPrimitive.Image.Props) {
   )
 }
 
+const toneClasses: Record<AvatarTone, string> = {
+  violet: "bg-tint-violet",
+  mint: "bg-tint-mint",
+  sand: "bg-tint-sand",
+  sky: "bg-tint-sky",
+  rose: "bg-tint-rose",
+  muted: "bg-muted",
+}
+
+const autoTones: AvatarTone[] = ["violet", "mint", "sand", "sky", "rose"]
+
+/** Picks the same tint for the same initials on every render and server. */
+function toneFor(children: React.ReactNode): AvatarTone {
+  if (typeof children !== "string" || children.length === 0) return "violet"
+  let hash = 0
+  for (let i = 0; i < children.length; i++) {
+    hash = (hash * 31 + children.charCodeAt(i)) >>> 0
+  }
+  return autoTones[hash % autoTones.length]
+}
+
 function AvatarFallback({
   className,
+  tone,
+  children,
   ...props
-}: AvatarPrimitive.Fallback.Props) {
+}: AvatarPrimitive.Fallback.Props & {
+  /** Tint behind the initials. Defaults to a stable tint picked from the initials. */
+  tone?: AvatarTone
+}) {
+  const resolvedTone = tone ?? toneFor(children)
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
+      data-tone={resolvedTone}
       className={cn(
-        "flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground group-data-[size=sm]/avatar:text-xs",
+        "flex size-full items-center justify-center rounded-full text-sm font-bold tracking-tight text-foreground uppercase",
+        "group-data-[size=sm]/avatar:text-xs group-data-[size=lg]/avatar:text-base group-data-[size=xl]/avatar:text-2xl",
+        "[&>svg]:size-[45%] [&>svg]:text-muted-foreground",
+        toneClasses[resolvedTone],
         className
       )}
       {...props}
-    />
+    >
+      {children}
+    </AvatarPrimitive.Fallback>
   )
 }
 
+/** A status dot or small icon on the avatar's lower edge. Colour it with bg-success, bg-warning… */
 function AvatarBadge({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="avatar-badge"
       className={cn(
-        "absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground bg-blend-color ring-2 ring-background select-none",
+        "absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground outline-2 outline-background select-none",
+        "size-2.5 [&>svg]:size-2",
         "group-data-[size=sm]/avatar:size-2 group-data-[size=sm]/avatar:[&>svg]:hidden",
-        "group-data-[size=default]/avatar:size-2.5 group-data-[size=default]/avatar:[&>svg]:size-2",
-        "group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>svg]:size-2",
+        "group-data-[size=lg]/avatar:size-3.5 group-data-[size=lg]/avatar:[&>svg]:size-2.5",
+        "group-data-[size=xl]/avatar:right-0.5 group-data-[size=xl]/avatar:bottom-0.5 group-data-[size=xl]/avatar:size-4.5 group-data-[size=xl]/avatar:outline-3 group-data-[size=xl]/avatar:[&>svg]:size-3",
         className
       )}
       {...props}
@@ -69,12 +114,15 @@ function AvatarBadge({ className, ...props }: React.ComponentProps<"span">) {
   )
 }
 
+/** Overlapping avatars. Each one is cut out from the next with a ring in the page colour. */
 function AvatarGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="avatar-group"
       className={cn(
-        "group/avatar-group flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-background",
+        "group/avatar-group flex items-center -space-x-1.5",
+        "has-data-[size=sm]:-space-x-1 has-data-[size=lg]:-space-x-2 has-data-[size=xl]:-space-x-3",
+        "*:data-[slot=avatar]:outline-2 *:data-[slot=avatar]:outline-background",
         className
       )}
       {...props}
@@ -82,6 +130,7 @@ function AvatarGroup({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/** The "+4" at the end of a group. */
 function AvatarGroupCount({
   className,
   ...props
@@ -90,7 +139,11 @@ function AvatarGroupCount({
     <div
       data-slot="avatar-group-count"
       className={cn(
-        "relative flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm text-muted-foreground ring-2 ring-background group-has-data-[size=lg]/avatar-group:size-10 group-has-data-[size=sm]/avatar-group:size-6 [&>svg]:size-4 group-has-data-[size=lg]/avatar-group:[&>svg]:size-5 group-has-data-[size=sm]/avatar-group:[&>svg]:size-3",
+        "relative flex size-(--avatar-size-md) shrink-0 items-center justify-center rounded-full border border-border bg-muted text-xs font-semibold text-muted-foreground tabular-nums outline-2 outline-background",
+        "group-has-data-[size=sm]/avatar-group:size-(--avatar-size-sm)",
+        "group-has-data-[size=lg]/avatar-group:size-(--avatar-size-lg) group-has-data-[size=lg]/avatar-group:text-sm",
+        "group-has-data-[size=xl]/avatar-group:size-(--avatar-size-xl) group-has-data-[size=xl]/avatar-group:text-lg",
+        "[&>svg]:size-4 group-has-data-[size=sm]/avatar-group:[&>svg]:size-3 group-has-data-[size=lg]/avatar-group:[&>svg]:size-5",
         className
       )}
       {...props}

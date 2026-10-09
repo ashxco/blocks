@@ -1,9 +1,13 @@
 import * as React from "react"
-import { cn } from "cn"
-
-import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
 
+import { cn } from "@/components/viewer/cn"
+import { Button } from "@/components/ui/button"
+
+/**
+ * Blocks pagination. Round ghost page links; the current page is a solid
+ * ink circle. Sizes come from the button tokens.
+ */
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
     <nav
@@ -23,7 +27,7 @@ function PaginationContent({
   return (
     <ul
       data-slot="pagination-content"
-      className={cn("flex items-center gap-0.5", className)}
+      className={cn("flex flex-wrap items-center gap-1", className)}
       {...props}
     />
   )
@@ -46,9 +50,13 @@ function PaginationLink({
 }: PaginationLinkProps) {
   return (
     <Button
-      variant={isActive ? "outline" : "ghost"}
+      variant={isActive ? "default" : "ghost"}
       size={size}
-      className={cn(className)}
+      className={cn(
+        "tabular",
+        !isActive && "text-copy hover:text-foreground",
+        className
+      )}
       nativeButton={false}
       render={
         <a
@@ -65,13 +73,18 @@ function PaginationLink({
 function PaginationPrevious({
   className,
   text = "Previous",
+  size = "default",
   ...props
 }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
   return (
     <PaginationLink
       aria-label="Go to previous page"
-      size="default"
-      className={cn("pl-1.5!", className)}
+      size={size}
+      className={cn(
+        "max-sm:px-0!",
+        size === "sm" ? "max-sm:w-(--button-height-sm)" : "max-sm:w-(--button-height-md)",
+        className
+      )}
       {...props}
     >
       <ChevronLeftIcon data-icon="inline-start" />
@@ -83,13 +96,18 @@ function PaginationPrevious({
 function PaginationNext({
   className,
   text = "Next",
+  size = "default",
   ...props
 }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
   return (
     <PaginationLink
       aria-label="Go to next page"
-      size="default"
-      className={cn("pr-1.5!", className)}
+      size={size}
+      className={cn(
+        "max-sm:px-0!",
+        size === "sm" ? "max-sm:w-(--button-height-sm)" : "max-sm:w-(--button-height-md)",
+        className
+      )}
       {...props}
     >
       <span className="hidden sm:block">{text}</span>
@@ -107,13 +125,12 @@ function PaginationEllipsis({
       aria-hidden
       data-slot="pagination-ellipsis"
       className={cn(
-        "flex size-8 items-center justify-center [&_svg:not([class*='size-'])]:size-4",
+        "flex size-(--button-height-md) items-center justify-center text-muted-foreground [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
     >
-      <MoreHorizontalIcon
-      />
+      <MoreHorizontalIcon />
       <span className="sr-only">More pages</span>
     </span>
   )

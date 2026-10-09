@@ -9,6 +9,15 @@ import useEmblaCarousel, {
 import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
+/**
+ * Blocks carousel, on Embla. Slides sit edge to edge with a 16px gap; the
+ * previous and next controls are outline pill icon buttons and CarouselDots
+ * shows where you are, with the current slide drawn as a short ink pill.
+ *
+ * Controls hang outside the slides by default. To place them elsewhere (for
+ * example in a header row), pass className="static" and lay them out yourself.
+ */
+
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
 type CarouselOptions = UseCarouselParameters[0]
@@ -26,8 +35,13 @@ type CarouselContextProps = {
   api: ReturnType<typeof useEmblaCarousel>[1]
   scrollPrev: () => void
   scrollNext: () => void
+  scrollTo: (index: number) => void
   canScrollPrev: boolean
   canScrollNext: boolean
+  /** Index of the selected snap point. */
+  selectedIndex: number
+  /** Number of snap points (pages), not necessarily the number of slides. */
+  snapCount: number
 } & CarouselProps
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
@@ -60,11 +74,15 @@ function Carousel({
   )
   const [canScrollPrev, setCanScrollPrev] = React.useState(false)
   const [canScrollNext, setCanScrollNext] = React.useState(false)
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const [snapCount, setSnapCount] = React.useState(0)
 
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return
     setCanScrollPrev(api.canScrollPrev())
     setCanScrollNext(api.canScrollNext())
+    setSelectedIndex(api.selectedScrollSnap())
+    setSnapCount(api.scrollSnapList().length)
   }, [])
 
   const scrollPrev = React.useCallback(() => {
@@ -75,17 +93,26 @@ function Carousel({
     api?.scrollNext()
   }, [api])
 
+  const scrollTo = React.useCallback(
+    (index: number) => {
+      api?.scrollTo(index)
+    },
+    [api]
+  )
+
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "ArrowLeft") {
+      const prevKey = orientation === "vertical" ? "ArrowUp" : "ArrowLeft"
+      const nextKey = orientation === "vertical" ? "ArrowDown" : "ArrowRight"
+      if (event.key === prevKey) {
         event.preventDefault()
         scrollPrev()
-      } else if (event.key === "ArrowRight") {
+      } else if (event.key === nextKey) {
         event.preventDefault()
         scrollNext()
       }
     },
-    [scrollPrev, scrollNext]
+    [orientation, scrollPrev, scrollNext]
   )
 
   React.useEffect(() => {
@@ -100,6 +127,7 @@ function Carousel({
     api.on("select", onSelect)
 
     return () => {
+      api?.off("reInit", onSelect)
       api?.off("select", onSelect)
     }
   }, [api, onSelect])
@@ -114,16 +142,20 @@ function Carousel({
           orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
         scrollPrev,
         scrollNext,
+        scrollTo,
         canScrollPrev,
         canScrollNext,
+        selectedIndex,
+        snapCount,
       }}
     >
       <div
         onKeyDownCapture={handleKeyDown}
-        className={cn("relative", className)}
+        className={cn("group/carousel relative", className)}
         role="region"
         aria-roledescription="carousel"
         data-slot="carousel"
+        data-orientation={orientation}
         {...props}
       >
         {children}
@@ -185,7 +217,7 @@ function CarouselPrevious({
       variant={variant}
       size={size}
       className={cn(
-        "absolute touch-manipulation rounded-full",
+        "absolute touch-manipulation disabled:opacity-35",
         orientation === "horizontal"
           ? "inset-y-0 -left-12 my-auto"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -215,7 +247,7 @@ function CarouselNext({
       variant={variant}
       size={size}
       className={cn(
-        "absolute touch-manipulation rounded-full",
+        "absolute touch-manipulation disabled:opacity-35",
         orientation === "horizontal"
           ? "inset-y-0 -right-12 my-auto"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -231,6 +263,61 @@ function CarouselNext({
   )
 }
 
+/**
+ * One dot per page. The current page stretches into a short ink pill.
+ * On a dark panel pass tone="inverse".
+ */
+function CarouselDots({
+  className,
+  tone = "default",
+  ...props
+}: React.ComponentProps<"div"> & { tone?: "default" | "inverse" }) {
+  const { snapCount, selectedIndex, scrollTo } = useCarousel()
+
+  if (snapCount < 2) return null
+
+  return (
+    <div
+      data-slot="carousel-dots"
+      data-tone={tone}
+      className={cn("flex items-center justify-center gap-1", className)}
+      {...props}
+    >
+      {Array.from({ length: snapCount }, (_, index) => {
+        const selected = index === selectedIndex
+        return (
+          <button
+            key={index}
+            type="button"
+            data-slot="carousel-dot"
+            data-selected={selected || undefined}
+            aria-label={`Go to slide ${index + 1} of ${snapCount}`}
+            aria-current={selected ? "true" : undefined}
+            onClick={() => scrollTo(index)}
+            className={cn(
+              "group/dot grid h-6 min-w-4 place-items-center rounded-full outline-none focus-visible:focus-ring"
+            )}
+          >
+            <span
+              aria-hidden="true"
+              className={cn(
+                "block h-1.5 w-1.5 rounded-full transition-[width,background-color] duration-(--duration-base) ease-out",
+                tone === "inverse"
+                  ? "bg-panel-foreground/30 group-hover/dot:bg-panel-foreground/60"
+                  : "bg-border-strong group-hover/dot:bg-muted-foreground",
+                selected &&
+                  (tone === "inverse"
+                    ? "w-5 bg-panel-foreground group-hover/dot:bg-panel-foreground"
+                    : "w-5 bg-foreground group-hover/dot:bg-foreground")
+              )}
+            />
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 export {
   type CarouselApi,
   Carousel,
@@ -238,5 +325,6 @@ export {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
   useCarousel,
 }

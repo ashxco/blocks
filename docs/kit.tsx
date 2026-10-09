@@ -10,102 +10,70 @@
  * may restyle these components, but must keep their props.
  */
 import * as React from "react"
+import { CheckIcon, PenLineIcon, XIcon } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/components/viewer/cn"
 
-export interface ExampleProps {
-  /** Short name of the example, e.g. "Variants". */
-  title: string
-  /** One sentence on when to use this example. */
-  description?: string
-  /** Source shown in the Code tab. Optional. */
-  code?: string
-  /**
-   * How the preview canvas lays out its children.
-   * - center: centred, wrapping row (default)
-   * - stack: left-aligned column
-   * - full: no padding, children fill the canvas (molecules, sections)
-   */
-  layout?: "center" | "stack" | "full"
-  /** Canvas surface. Use "panel" to preview components that sit on dark panels. */
-  surface?: "default" | "subtle" | "panel"
-  /** Minimum canvas height, as a Tailwind class (e.g. "min-h-96"). */
-  minHeight?: string
-  children: React.ReactNode
-}
-
-export function Example({
-  title,
-  description,
-  code,
-  layout = "center",
-  surface = "default",
-  minHeight,
-  children,
-}: ExampleProps) {
-  return (
-    <section data-slot="example" className="grid gap-4">
-      <header className="grid gap-1">
-        <h3 className="text-title">{title}</h3>
-        {description ? (
-          <p className="max-w-prose text-sm text-muted-foreground">{description}</p>
-        ) : null}
-      </header>
-      <div
-        data-surface={surface}
-        className={cn(
-          "overflow-hidden rounded-lg border",
-          surface === "subtle" && "bg-subtle",
-          surface === "panel" && "border-panel-border bg-panel text-panel-foreground",
-          surface === "default" && "bg-background"
-        )}
-      >
-        <div
-          className={cn(
-            minHeight,
-            layout === "center" && "flex flex-wrap items-center justify-center gap-4 p-10",
-            layout === "stack" && "grid gap-4 p-8",
-            layout === "full" && "w-full"
-          )}
-        >
-          {children}
-        </div>
-        {code ? (
-          <pre className="overflow-x-auto border-t bg-muted p-5 font-mono text-code text-foreground">
-            <code>{code}</code>
-          </pre>
-        ) : null}
-      </div>
-    </section>
-  )
-}
+/**
+ * One example on a preview canvas, with Preview and Code tabs, a copy button,
+ * a per-example light/dark switch and, for layout="full", a width switch.
+ * Implemented as a client component in components/viewer/example-canvas.tsx.
+ */
+export { Example, type ExampleProps } from "@/components/viewer/example-canvas"
 
 /** Wraps a page's examples with consistent spacing. */
 export function Examples({ children }: { children: React.ReactNode }) {
-  return <div className="grid gap-14">{children}</div>
+  return <div className="grid gap-16 sm:gap-20">{children}</div>
 }
 
 /** Do / don't guidance for a component or molecule. */
 export function Guidelines({ do: dos = [], dont = [] }: { do?: string[]; dont?: string[] }) {
   return (
-    <section data-slot="guidelines" className="grid gap-4 md:grid-cols-2">
-      <div className="rounded-lg border p-6">
-        <h3 className="mb-3 text-title">Do</h3>
-        <ul className="grid gap-2 text-sm">
-          {dos.map((d) => (
-            <li key={d}>{d}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="rounded-lg border p-6">
-        <h3 className="mb-3 text-title">Don’t</h3>
-        <ul className="grid gap-2 text-sm">
-          {dont.map((d) => (
-            <li key={d}>{d}</li>
-          ))}
-        </ul>
+    <section data-slot="guidelines" aria-labelledby="guidelines" className="grid scroll-mt-24 gap-5">
+      <h2 id="guidelines" className="text-h3">
+        Guidelines
+      </h2>
+      <div className="grid gap-4 md:grid-cols-2">
+        <GuidelineList tone="do" title="Do" items={dos} />
+        <GuidelineList tone="dont" title="Don’t" items={dont} />
       </div>
     </section>
+  )
+}
+
+function GuidelineList({ tone, title, items }: { tone: "do" | "dont"; title: string; items: string[] }) {
+  const Icon = tone === "do" ? CheckIcon : XIcon
+  return (
+    <div
+      className={cn(
+        "grid content-start overflow-hidden rounded-(--card-radius) border border-t-2",
+        tone === "do" ? "border-t-success" : "border-t-destructive"
+      )}
+    >
+      <div className="flex items-center gap-3 px-5 pt-5 pb-3 sm:px-6">
+        <span
+          className={cn(
+            "grid size-7 place-items-center rounded-full",
+            tone === "do" ? "bg-success-subtle text-success" : "bg-destructive-subtle text-destructive"
+          )}
+        >
+          <Icon aria-hidden="true" className="size-4" strokeWidth={2.5} />
+        </span>
+        <h3 className="text-title">{title}</h3>
+      </div>
+      <ul className="grid divide-y px-5 sm:px-6">
+        {items.map((item) => (
+          <li key={item} className="flex gap-3 py-3.5 text-body text-copy last:pb-5">
+            <Icon
+              aria-hidden="true"
+              className={cn("mt-1.5 size-3.5 shrink-0", tone === "do" ? "text-success" : "text-destructive")}
+              strokeWidth={2.5}
+            />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -116,28 +84,65 @@ export interface ApiRow {
   description: string
 }
 
-/** Props reference table. */
+/** Props reference table. Becomes a list of cards on small screens. */
 export function ApiTable({ title = "API", rows }: { title?: string; rows: ApiRow[] }) {
+  const id = `api-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`
   return (
-    <section data-slot="api" className="grid gap-4">
-      <h3 className="text-title">{title}</h3>
-      <div className="overflow-x-auto rounded-lg border">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-subtle text-foreground">
-            <tr>
-              <th className="px-4 py-3 font-semibold">Prop</th>
-              <th className="px-4 py-3 font-semibold">Type</th>
-              <th className="px-4 py-3 font-semibold">Default</th>
-              <th className="px-4 py-3 font-semibold">Description</th>
+    <section data-slot="api" aria-labelledby={id} className="grid scroll-mt-24 gap-5">
+      <h2 id={id} className="text-h3">
+        {title}
+      </h2>
+
+      {/* Small screens: one card per prop. */}
+      <dl className="grid divide-y rounded-(--card-radius) border md:hidden">
+        {rows.map((r) => (
+          <div key={r.prop} className="grid gap-2 p-5">
+            <dt className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+              <code className="font-mono text-code font-semibold text-foreground">{r.prop}</code>
+              {r.default ? (
+                <span className="font-mono text-code text-muted-foreground">= {r.default}</span>
+              ) : null}
+            </dt>
+            <dd className="grid gap-2">
+              <code className="font-mono text-code break-words text-copy">{r.type}</code>
+              <p className="text-body text-copy">{r.description}</p>
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* Larger screens: a hairline table. */}
+      <div className="hidden overflow-x-auto rounded-(--card-radius) border md:block">
+        <table className="w-full border-collapse text-left">
+          <thead>
+            <tr className="border-b bg-subtle">
+              <th scope="col" className="h-11 px-5 text-caption font-semibold text-muted-foreground">
+                Prop
+              </th>
+              <th scope="col" className="h-11 px-5 text-caption font-semibold text-muted-foreground">
+                Type
+              </th>
+              <th scope="col" className="h-11 px-5 text-caption font-semibold text-muted-foreground">
+                Default
+              </th>
+              <th scope="col" className="h-11 px-5 text-caption font-semibold text-muted-foreground">
+                Description
+              </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y">
             {rows.map((r) => (
-              <tr key={r.prop} className="border-t align-top">
-                <td className="px-4 py-3 font-mono text-code text-foreground">{r.prop}</td>
-                <td className="px-4 py-3 font-mono text-code">{r.type}</td>
-                <td className="px-4 py-3 font-mono text-code">{r.default ?? "—"}</td>
-                <td className="px-4 py-3">{r.description}</td>
+              <tr key={r.prop} className="align-top">
+                <td className="px-5 py-4 whitespace-nowrap">
+                  <code className="font-mono text-code font-semibold text-foreground">{r.prop}</code>
+                </td>
+                <td className="max-w-80 px-5 py-4">
+                  <code className="font-mono text-code break-words text-copy">{r.type}</code>
+                </td>
+                <td className="px-5 py-4 whitespace-nowrap">
+                  <code className="font-mono text-code text-muted-foreground">{r.default ?? "–"}</code>
+                </td>
+                <td className="min-w-64 px-5 py-4 text-sm text-copy">{r.description}</td>
               </tr>
             ))}
           </tbody>
@@ -150,8 +155,14 @@ export function ApiTable({ title = "API", rows }: { title?: string; rows: ApiRow
 /** Placeholder rendered until a docs module is written. */
 export function Pending() {
   return (
-    <div className="rounded-lg border border-dashed p-10 text-sm text-muted-foreground">
-      Documentation for this entry is being written.
+    <div className="flex flex-col items-start gap-4 rounded-(--card-radius) border border-dashed border-border-strong bg-subtle p-8 sm:flex-row sm:items-center sm:p-10">
+      <span className="grid size-10 shrink-0 place-items-center rounded-full border bg-background text-muted-foreground">
+        <PenLineIcon aria-hidden="true" className="size-4" />
+      </span>
+      <div className="grid gap-1">
+        <p className="text-title text-foreground">Documentation in progress</p>
+        <p className="text-body text-copy">Examples and guidance for this entry are being written.</p>
+      </div>
     </div>
   )
 }

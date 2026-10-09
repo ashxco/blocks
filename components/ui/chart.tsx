@@ -5,6 +5,20 @@ import { cn } from "cn"
 import * as RechartsPrimitive from "recharts"
 import type { TooltipValueType } from "recharts"
 
+/**
+ * Blocks chart. A themed wrapper around Recharts.
+ *
+ * Colour every series from the chart tokens through the config, then read it
+ * back as var(--color-<key>):
+ *
+ *   const config = { deploys: { label: "Deploys", color: "var(--chart-1)" } } satisfies ChartConfig
+ *   <Bar dataKey="deploys" fill="var(--color-deploys)" />
+ *
+ * Grid and axis lines use the border colour, tick labels the muted colour,
+ * and the tooltip is styled like an overlay. Area fills are flat at low
+ * opacity (fillOpacity={0.12}); never add gradient defs.
+ */
+
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
 
@@ -64,7 +78,20 @@ function ChartContainer({
         data-slot="chart"
         data-chart={chartId}
         className={cn(
-          "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
+          "flex aspect-video justify-center font-sans text-xs tabular-nums",
+          // Axes: muted labels, hairline lines.
+          "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-polar-angle-axis-tick_text]:fill-muted-foreground [&_.recharts-polar-radius-axis-tick_text]:fill-muted-foreground",
+          "[&_.recharts-cartesian-axis-line]:stroke-border [&_.recharts-cartesian-axis-tick-line]:stroke-border",
+          // Grid and reference lines in the border colour.
+          "[&_.recharts-cartesian-grid_line]:stroke-border [&_.recharts-polar-grid_line]:stroke-border [&_.recharts-polar-grid_path]:stroke-border [&_.recharts-polar-grid_polygon]:stroke-border",
+          "[&_.recharts-reference-line_line]:stroke-border-strong",
+          // Hover cursor: a hairline for lines and areas, a muted band for bars.
+          "[&_.recharts-curve.recharts-tooltip-cursor]:stroke-border-strong [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted",
+          // Dots and slices cut out in the canvas colour.
+          "[&_.recharts-dot[stroke='#fff']]:stroke-background [&_.recharts-sector[stroke='#fff']]:stroke-background",
+          "[&_.recharts-radial-bar-background-sector]:fill-muted",
+          "[&_.recharts-label]:fill-foreground [&_.recharts-label-list_text]:fill-foreground",
+          "[&_.recharts-layer]:outline-hidden [&_.recharts-sector]:outline-hidden [&_.recharts-surface]:outline-hidden",
           className
         )}
         {...props}
@@ -160,7 +187,10 @@ function ChartTooltipContent({
 
     if (labelFormatter) {
       return (
-        <div className={cn("font-medium", labelClassName)}>
+        <div
+          data-slot="chart-tooltip-label"
+          className={cn("font-semibold text-foreground", labelClassName)}
+        >
           {labelFormatter(value, payload)}
         </div>
       )
@@ -170,7 +200,14 @@ function ChartTooltipContent({
       return null
     }
 
-    return <div className={cn("font-medium", labelClassName)}>{value}</div>
+    return (
+      <div
+        data-slot="chart-tooltip-label"
+        className={cn("font-semibold text-foreground", labelClassName)}
+      >
+        {value}
+      </div>
+    )
   }, [
     label,
     labelFormatter,
@@ -189,8 +226,10 @@ function ChartTooltipContent({
 
   return (
     <div
+      data-slot="chart-tooltip"
       className={cn(
-        "grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
+        "grid min-w-36 items-start gap-2 rounded-(--overlay-radius) border border-border bg-popover px-3 py-2.5 text-xs text-popover-foreground tabular-nums",
+        "animate-in duration-(--duration-fast) ease-out fade-in-0",
         className
       )}
     >
@@ -207,7 +246,7 @@ function ChartTooltipContent({
               <div
                 key={index}
                 className={cn(
-                  "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
+                  "flex w-full flex-wrap items-stretch gap-2 [&>svg]:size-3 [&>svg]:text-muted-foreground",
                   indicator === "dot" && "items-center"
                 )}
               >
@@ -220,11 +259,12 @@ function ChartTooltipContent({
                     ) : (
                       !hideIndicator && (
                         <div
+                          data-slot="chart-tooltip-indicator"
                           className={cn(
-                            "shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg)",
+                            "shrink-0 border-(--indicator) bg-(--indicator)",
                             {
-                              "h-2.5 w-2.5": indicator === "dot",
-                              "w-1": indicator === "line",
+                              "size-2 rounded-full": indicator === "dot",
+                              "w-0.75 rounded-full": indicator === "line",
                               "w-0 border-[1.5px] border-dashed bg-transparent":
                                 indicator === "dashed",
                               "my-0.5": nestLabel && indicator === "dashed",
@@ -232,8 +272,7 @@ function ChartTooltipContent({
                           )}
                           style={
                             {
-                              "--color-bg": indicatorColor,
-                              "--color-border": indicatorColor,
+                              "--indicator": indicatorColor,
                             } as React.CSSProperties
                           }
                         />
@@ -241,7 +280,7 @@ function ChartTooltipContent({
                     )}
                     <div
                       className={cn(
-                        "flex flex-1 justify-between leading-none",
+                        "flex flex-1 justify-between gap-4 leading-none",
                         nestLabel ? "items-end" : "items-center"
                       )}
                     >
@@ -252,7 +291,7 @@ function ChartTooltipContent({
                         </span>
                       </div>
                       {item.value != null && (
-                        <span className="font-mono font-medium text-foreground tabular-nums">
+                        <span className="font-semibold text-foreground tabular-nums">
                           {typeof item.value === "number"
                             ? item.value.toLocaleString()
                             : String(item.value)}
@@ -289,11 +328,13 @@ function ChartLegendContent({
 
   return (
     <div
-      className={cn(
-        "flex items-center justify-center gap-4",
-        verticalAlign === "top" ? "pb-3" : "pt-3",
+      data-slot="chart-legend"
+      // text-caption stays outside cn(), which would read it as a colour.
+      className={`text-caption ${cn(
+        "flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-copy",
+        verticalAlign === "top" ? "pb-4" : "pt-4",
         className
-      )}
+      )}`}
     >
       {payload
         .filter((item) => item.type !== "none")
@@ -304,18 +345,19 @@ function ChartLegendContent({
           return (
             <div
               key={index}
-              className={cn(
-                "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
-              )}
+              data-slot="chart-legend-item"
+              className="flex items-center gap-2 [&>svg]:size-3 [&>svg]:text-muted-foreground"
             >
               {itemConfig?.icon && !hideIcon ? (
                 <itemConfig.icon />
               ) : (
                 <div
-                  className="h-2 w-2 shrink-0 rounded-[2px]"
-                  style={{
-                    backgroundColor: item.color,
-                  }}
+                  className="size-2 shrink-0 rounded-full bg-(--indicator)"
+                  style={
+                    {
+                      "--indicator": item.color,
+                    } as React.CSSProperties
+                  }
                 />
               )}
               {itemConfig?.label}

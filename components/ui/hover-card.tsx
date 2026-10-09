@@ -1,7 +1,14 @@
 "use client"
 
 import { PreviewCard as PreviewCardPrimitive } from "@base-ui/react/preview-card"
-import { cn } from "cn"
+import { cn } from "@/components/viewer/cn"
+
+/**
+ * Blocks hover card. A preview that opens on hover or keyboard focus, after a
+ * short delay. Same surface as Popover: bg-popover, a crisp 1px border,
+ * --overlay-radius and no shadow. Never put the only path to an action in it:
+ * touch screens can't hover.
+ */
 
 function HoverCard({ ...props }: PreviewCardPrimitive.Root.Props) {
   return <PreviewCardPrimitive.Root data-slot="hover-card" {...props} />
@@ -16,9 +23,9 @@ function HoverCardTrigger({ ...props }: PreviewCardPrimitive.Trigger.Props) {
 function HoverCardContent({
   className,
   side = "bottom",
-  sideOffset = 4,
+  sideOffset = 8,
   align = "center",
-  alignOffset = 4,
+  alignOffset = 0,
   ...props
 }: PreviewCardPrimitive.Popup.Props &
   Pick<
@@ -32,12 +39,17 @@ function HoverCardContent({
         alignOffset={alignOffset}
         side={side}
         sideOffset={sideOffset}
-        className="isolate z-50"
+        className="isolate z-(--z-overlay) outline-none"
       >
         <PreviewCardPrimitive.Popup
           data-slot="hover-card-content"
           className={cn(
-            "z-50 w-64 origin-(--transform-origin) rounded-lg bg-popover p-2.5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+            "flex w-72 max-w-(--available-width) origin-(--transform-origin) flex-col gap-3",
+            "rounded-(--overlay-radius) border border-input bg-popover p-(--card-padding-sm) text-sm text-popover-foreground outline-none",
+            "transition-[opacity,scale] duration-(--duration-base) ease-out",
+            "data-starting-style:scale-98 data-starting-style:opacity-0",
+            "data-ending-style:scale-98 data-ending-style:opacity-0 data-ending-style:duration-(--duration-fast) data-ending-style:ease-in",
+            "data-instant:transition-none",
             className
           )}
           {...props}

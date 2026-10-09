@@ -3,21 +3,44 @@ import { useRender } from "@base-ui/react/use-render"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 
+/**
+ * Blocks badge. Status and counts in app UI only ("Ready", "3 new").
+ * Never a section label or an eyebrow above a heading.
+ *
+ * Height and radius come from --badge-height and --badge-radius. Status
+ * variants use the -subtle fills with the matching status colour for text.
+ * Single characters render as a circle, so counts line up.
+ */
 const badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  [
+    "group/badge inline-flex h-(--badge-height) w-fit min-w-(--badge-height) shrink-0 items-center justify-center gap-1.5 overflow-hidden rounded-(--badge-radius) border border-transparent px-2.5",
+    "text-xs font-semibold tracking-tight whitespace-nowrap tabular-nums",
+    "transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard",
+    "outline-none focus-visible:focus-ring",
+    "has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+    "aria-invalid:border-destructive",
+    "[&>svg]:pointer-events-none [&>svg]:shrink-0 [&>svg:not([class*='size-'])]:size-3",
+  ],
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        default: "bg-primary text-primary-foreground [a&]:hover:bg-primary/85",
         secondary:
-          "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
-        destructive:
-          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
+          "bg-secondary text-secondary-foreground [a&]:hover:bg-accent",
         outline:
-          "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
+          "border-input bg-transparent text-foreground [a&]:hover:border-foreground/40",
+        success:
+          "bg-success-subtle text-success [a&]:hover:border-success/30",
+        warning:
+          "bg-warning-subtle text-warning [a&]:hover:border-warning/30",
+        destructive:
+          "bg-destructive-subtle text-destructive [a&]:hover:border-destructive/30",
+        info: "bg-info-subtle text-info [a&]:hover:border-info/30",
+        brand:
+          "bg-brand-subtle text-brand-subtle-foreground [a&]:hover:border-brand/30",
         ghost:
-          "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-transparent text-muted-foreground [a&]:hover:bg-accent [a&]:hover:text-foreground",
+        link: "h-auto min-w-0 rounded-none px-0 text-brand underline-offset-4 [a&]:hover:underline",
       },
     },
     defaultVariants: {
