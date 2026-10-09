@@ -3,6 +3,7 @@ import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/toast"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
@@ -39,7 +40,9 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider defaultTheme="light">
-          <TooltipProvider>{children}</TooltipProvider>
+          <Toaster>
+            <TooltipProvider>{children}</TooltipProvider>
+          </Toaster>
         </ThemeProvider>
       </body>
     </html>
