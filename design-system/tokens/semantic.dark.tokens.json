@@ -1,0 +1,255 @@
+{
+  "color": {
+    "$type": "color",
+    "background": {
+      "$value": "{color.ink.1000}",
+      "$description": "Page canvas."
+    },
+    "foreground": {
+      "$value": "{color.ink.25}",
+      "$description": "Headings and primary text. Always full strength."
+    },
+    "copy": {
+      "$value": "{color.ink.300}",
+      "$description": "Paragraph and long-form text."
+    },
+    "muted-foreground": {
+      "$value": "{color.ink.400}",
+      "$description": "Meta text, captions, placeholders and inactive icons."
+    },
+    "subtle": {
+      "$value": "{color.ink.950}",
+      "$description": "Tinted section background, used to separate page bands."
+    },
+    "card": {
+      "$value": "{color.ink.900}",
+      "$description": "Card and tile surface."
+    },
+    "card-foreground": {
+      "$value": "{color.ink.25}",
+      "$description": "Text on cards."
+    },
+    "popover": {
+      "$value": "{color.ink.900}",
+      "$description": "Menus, popovers, tooltips and dialogs."
+    },
+    "popover-foreground": {
+      "$value": "{color.ink.25}",
+      "$description": "Text in overlays."
+    },
+    "primary": {
+      "$value": "{color.ink.0}",
+      "$description": "Primary actions. Buttons are ink, not brand."
+    },
+    "primary-foreground": {
+      "$value": "{color.ink.950}",
+      "$description": "Text on primary actions."
+    },
+    "secondary": {
+      "$value": "{color.ink.850}",
+      "$description": "Secondary buttons and filled controls."
+    },
+    "secondary-foreground": {
+      "$value": "{color.ink.25}",
+      "$description": "Text on secondary surfaces."
+    },
+    "muted": {
+      "$value": "{color.ink.900}",
+      "$description": "Input fills, code chips and quiet fills."
+    },
+    "accent": {
+      "$value": "{color.ink.850}",
+      "$description": "Hover and selected rows in menus and lists."
+    },
+    "accent-foreground": {
+      "$value": "{color.ink.25}",
+      "$description": "Text on hovered or selected rows."
+    },
+    "brand": {
+      "$value": "{color.violet.400}",
+      "$description": "Brand violet. Links, focus, active indicators and highlights."
+    },
+    "brand-foreground": {
+      "$value": "{color.ink.1000}",
+      "$description": "Text on brand fills."
+    },
+    "brand-subtle": {
+      "$value": "{color.violet.950}",
+      "$description": "Quiet brand fill."
+    },
+    "brand-subtle-foreground": {
+      "$value": "{color.violet.200}",
+      "$description": "Text on quiet brand fills."
+    },
+    "destructive": {
+      "$value": "{color.red.400}",
+      "$description": "Destructive actions and errors."
+    },
+    "destructive-foreground": {
+      "$value": "{color.ink.1000}",
+      "$description": "Text on destructive fills."
+    },
+    "destructive-subtle": {
+      "$value": "{color.red.950}",
+      "$description": "Quiet error fill."
+    },
+    "success": {
+      "$value": "{color.green.400}",
+      "$description": "Success and positive change."
+    },
+    "success-foreground": {
+      "$value": "{color.ink.1000}",
+      "$description": "Text on success fills."
+    },
+    "success-subtle": {
+      "$value": "{color.green.950}",
+      "$description": "Quiet success fill."
+    },
+    "warning": {
+      "$value": "{color.amber.400}",
+      "$description": "Warnings and pending states."
+    },
+    "warning-foreground": {
+      "$value": "{color.ink.1000}",
+      "$description": "Text on warning fills."
+    },
+    "warning-subtle": {
+      "$value": "{color.amber.950}",
+      "$description": "Quiet warning fill."
+    },
+    "info": {
+      "$value": "{color.sky.400}",
+      "$description": "Informational states."
+    },
+    "info-subtle": {
+      "$value": "{color.sky.950}",
+      "$description": "Quiet informational fill."
+    },
+    "border": {
+      "$value": "oklch(1 0 0 / 0.09)",
+      "$description": "Hairline dividers and component outlines."
+    },
+    "border-strong": {
+      "$value": "oklch(1 0 0 / 0.16)",
+      "$description": "Emphasised outlines: inputs, outline buttons, selected cards."
+    },
+    "input": {
+      "$value": "oklch(1 0 0 / 0.14)",
+      "$description": "Form control borders."
+    },
+    "ring": {
+      "$value": "{color.violet.400}",
+      "$description": "Focus outline."
+    },
+    "overlay": {
+      "$value": "oklch(0 0 0 / 0.6)",
+      "$description": "Backdrop behind dialogs and sheets."
+    },
+    "panel": {
+      "$value": "{color.ink.850}",
+      "$description": "Dark emphasis surface for feature bands, CTAs and code. Stays dark in both themes."
+    },
+    "panel-foreground": {
+      "$value": "{color.ink.0}",
+      "$description": "Headings and text on panels."
+    },
+    "panel-muted": {
+      "$value": "oklch(1 0 0 / 0.64)",
+      "$description": "Secondary text on panels."
+    },
+    "panel-raised": {
+      "$value": "{color.ink.800}",
+      "$description": "Raised element inside a panel: selected tabs, inner cards."
+    },
+    "panel-border": {
+      "$value": "oklch(1 0 0 / 0.1)",
+      "$description": "Hairlines on panels."
+    },
+    "terminal": {
+      "$value": "{color.ink.1000}",
+      "$description": "Terminal and code block background."
+    },
+    "terminal-foreground": {
+      "$value": "{color.ink.150}",
+      "$description": "Text in terminals and code blocks."
+    },
+    "tint": {
+      "violet": {
+        "$value": "{color.violet.950}",
+        "$description": "Decorative fill for covers and avatars."
+      },
+      "mint": {
+        "$value": "{color.green.950}",
+        "$description": "Decorative fill for covers and avatars."
+      },
+      "sand": {
+        "$value": "{color.amber.950}",
+        "$description": "Decorative fill for covers and avatars."
+      },
+      "sky": {
+        "$value": "{color.sky.950}",
+        "$description": "Decorative fill for covers and avatars."
+      },
+      "rose": {
+        "$value": "{color.red.950}",
+        "$description": "Decorative fill for covers and avatars."
+      }
+    },
+    "chart": {
+      "1": {
+        "$value": "{color.violet.400}",
+        "$description": "Data series 1."
+      },
+      "2": {
+        "$value": "{color.sky.400}",
+        "$description": "Data series 2."
+      },
+      "3": {
+        "$value": "{color.green.400}",
+        "$description": "Data series 3."
+      },
+      "4": {
+        "$value": "{color.amber.400}",
+        "$description": "Data series 4."
+      },
+      "5": {
+        "$value": "{color.ink.500}",
+        "$description": "Data series 5 and comparison baselines."
+      }
+    },
+    "sidebar": {
+      "DEFAULT": {
+        "$value": "{color.ink.950}",
+        "$description": "App sidebar surface."
+      },
+      "foreground": {
+        "$value": "{color.ink.25}",
+        "$description": "Sidebar text."
+      },
+      "primary": {
+        "$value": "{color.ink.0}",
+        "$description": "Active sidebar item fill."
+      },
+      "primary-foreground": {
+        "$value": "{color.ink.950}",
+        "$description": "Active sidebar item text."
+      },
+      "accent": {
+        "$value": "{color.ink.850}",
+        "$description": "Hovered sidebar item."
+      },
+      "accent-foreground": {
+        "$value": "{color.ink.25}",
+        "$description": "Hovered sidebar item text."
+      },
+      "border": {
+        "$value": "oklch(1 0 0 / 0.09)",
+        "$description": "Sidebar dividers."
+      },
+      "ring": {
+        "$value": "{color.violet.400}",
+        "$description": "Sidebar focus outline."
+      }
+    }
+  }
+}
