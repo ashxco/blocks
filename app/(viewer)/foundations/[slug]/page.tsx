@@ -41,16 +41,38 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const entry = foundations.find((e) => e.slug === slug)
-  return entry ? { title: entry.title, description: entry.description } : {}
+  /* A moved slug redirects before anything renders; any other unknown slug is a 404 and is titled as one. */
+  return entry ? { title: entry.title, description: entry.description } : { title: "Page not found" }
 }
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+type SearchParams = Record<string, string | string[] | undefined>
+
+/** The query string to carry across a redirect, so ?theme=dark survives the move. */
+function queryString(params: SearchParams) {
+  const qs = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    for (const v of Array.isArray(value) ? value : value === undefined ? [] : [value]) qs.append(key, v)
+  }
+  const s = qs.toString()
+  return s ? `?${s}` : ""
+}
+
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<SearchParams>
+}) {
   const { slug } = await params
   const entry = foundations.find((e) => e.slug === slug)
   const Foundation = pages[slug]
   if (!entry) {
     const target = movedTo[slug]
-    if (target && foundations.some((e) => e.slug === target)) permanentRedirect(`/foundations/${target}`)
+    /* Search params are read only here, so the registry pages stay static. */
+    if (target && foundations.some((e) => e.slug === target)) {
+      permanentRedirect(`/foundations/${target}${queryString(await searchParams)}`)
+    }
     notFound()
   }
   if (!Foundation) notFound()

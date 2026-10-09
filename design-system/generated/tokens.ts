@@ -2931,7 +2931,8 @@ export const tokens: DesignToken[] = [
     "group": "dialog",
     "type": "dimension",
     "value": "32rem",
-    "utility": "w-(--dialog-width)"
+    "utility": "max-w-(--dialog-width)",
+    "description": "Default dialog width: forms and settings."
   },
   {
     "name": "component.dialog.width-sm",
@@ -2940,7 +2941,7 @@ export const tokens: DesignToken[] = [
     "group": "dialog",
     "type": "dimension",
     "value": "24rem",
-    "utility": "w-(--dialog-width-sm)",
+    "utility": "max-w-(--dialog-width-sm)",
     "description": "Small dialogs: confirmations."
   },
   {
@@ -2951,7 +2952,7 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "42rem",
     "ref": "container.prose",
-    "utility": "w-(--dialog-width-lg)",
+    "utility": "max-w-(--dialog-width-lg)",
     "description": "Large dialogs: forms and long content."
   },
   {
@@ -3154,7 +3155,7 @@ export const tokens: DesignToken[] = [
     "group": "sheet",
     "type": "dimension",
     "value": "28rem",
-    "utility": "w-(--sheet-width)",
+    "utility": "max-w-(--sheet-width)",
     "description": "Side sheet and drawer width."
   },
   {

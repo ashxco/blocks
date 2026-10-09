@@ -28,7 +28,7 @@ export default function BlogPage() {
               Notes from the team building <span className="text-brand">Lumen</span>.
             </>
           }
-          description="Product updates, engineering deep dives and practical guides for shipping on Lumen. A new post every other Tuesday."
+          description="Product updates, engineering deep dives and practical guides for shipping on Lumen. A new post every week or two."
         >
           <Button nativeButton={false} render={<Link href="#newsletter" />}>
             Get posts by email

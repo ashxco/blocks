@@ -227,7 +227,7 @@ function TerminalShape() {
           <span className="text-terminal-foreground/50">$ </span>lumen deploy
         </span>
         <span className="text-terminal-foreground/50">→ build 12s</span>
-        <span className="text-success">✓ live</span>
+        <span className="text-panel-success">✓ live</span>
       </div>
     </div>
   )
@@ -331,7 +331,7 @@ function CompareShape({ tone, figures }: { tone: Tone; figures: CoverFigure[] })
             </span>
             <div className="flex items-center gap-3 @3xl/cover:gap-5">
               <span
-                className={cn("h-7 shrink-0 rounded-md @lg/cover:h-10 @4xl/cover:h-14", last ? tone.ink : tone.paper)}
+                className={cn("h-7 shrink-0 rounded-md @lg/cover:h-10 @4xl/cover:h-14", last ? tone.ink : tone.mid)}
                 // The figure needs about 6rem beside the longest bar.
                 style={{ width: `calc(${share} * (100% - 6rem))` }}
               />
@@ -479,7 +479,7 @@ const logFields = [
   { key: "route", value: "\"/api/checkout\"", highlight: true },
   { key: "status", value: "502" },
   { key: "duration_ms", value: "1210" },
-  { key: "region", value: "\"gru-1\"" },
+  { key: "region", value: "\"gru1\"" },
 ]
 
 /** One structured log line, pretty-printed, with a field picked out. */

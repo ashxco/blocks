@@ -116,13 +116,33 @@ function UserButton() {
   )
 }
 
+/**
+ * Whether the preview frame is narrower than the md breakpoint (48rem), so the
+ * Mobile preview width shows the layout a phone gets on a desktop window.
+ * Undefined until the frame is measured.
+ */
+function useNarrowFrame(frame: HTMLElement | null) {
+  const [narrow, setNarrow] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    if (!frame) return
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+    const observer = new ResizeObserver(([entry]) => setNarrow(entry.contentRect.width < 48 * rem))
+    observer.observe(frame)
+    return () => observer.disconnect()
+  }, [frame])
+  return narrow
+}
+
 function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset" | "floating" }) {
   const [active, setActive] = React.useState("Overview")
   const [frame, setFrame] = React.useState<HTMLDivElement | null>(null)
+  // A narrow frame forces the phone layout. Otherwise the window decides, since
+  // the desktop sidebar itself shows from the md breakpoint of the window.
+  const narrow = useNarrowFrame(frame)
 
   return (
     // On a phone the sidebar is a sheet. The preview opens it in the frame, so the page shows the sidebar.
-    <SidebarProvider ref={setFrame} defaultOpenMobile className={framed}>
+    <SidebarProvider ref={setFrame} mobile={narrow || undefined} defaultOpenMobile className={framed}>
       <Sidebar collapsible="icon" variant={variant} container={frame}>
         <SidebarHeader>
           <WorkspaceButton />
@@ -283,7 +303,7 @@ export default function SidebarDocs() {
 
       <Example
         title="Inset"
-        description="The page sits in a bordered, rounded frame on the sidebar colour. Use floating for a sidebar that is itself a bordered card."
+        description="From the md breakpoint up, the page sits in a bordered, rounded frame on the sidebar colour. On phones there is no frame: the sidebar opens as a sheet, as in the first example. Use floating for a sidebar that is itself a bordered card."
         layout="full"
         code={`<Sidebar variant="inset" collapsible="icon">…</Sidebar>
 <Sidebar variant="floating">…</Sidebar>`}
@@ -350,7 +370,7 @@ export default function SidebarDocs() {
 
       <Example
         title="Menu states"
-        description="Hover fills with bg-sidebar-accent; the active item is an ink row. Badges count, actions appear on hover, and variant=“outline” frames an add action, here dashed. Skeletons hold the space while items load."
+        description={`Hover fills with bg-sidebar-accent; the active item is an ink row. Badges count, actions appear on hover, and variant="outline" frames an add action, here dashed. Skeletons hold the space while items load.`}
         layout="full"
       >
         <SidebarProvider className="min-h-0 justify-center bg-subtle p-6 sm:p-10">
@@ -425,6 +445,7 @@ export default function SidebarDocs() {
         rows={[
           { prop: "defaultOpen", type: "boolean", default: "true", description: "SidebarProvider: open on first render, when uncontrolled." },
           { prop: "open / onOpenChange", type: "boolean / (open) => void", description: "SidebarProvider: control the desktop open state." },
+          { prop: "mobile", type: "boolean", default: "below md", description: "SidebarProvider: force the phone layout (a sheet) or the desktop one, for a sidebar in a frame narrower than the window." },
           { prop: "side", type: '"left" | "right"', default: '"left"', description: "Sidebar: which edge it sits on." },
           { prop: "variant", type: '"sidebar" | "floating" | "inset"', default: '"sidebar"', description: "Sidebar: a hairline edge, a bordered card, or an inset page frame." },
           { prop: "collapsible", type: '"offcanvas" | "icon" | "none"', default: '"offcanvas"', description: "Sidebar: slide out of view, shrink to --sidebar-width-icon, or stay put." },

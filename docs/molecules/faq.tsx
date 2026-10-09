@@ -67,7 +67,7 @@ export default function FaqDocs() {
         description="Below the split width the heading stacks above the answers and stops being sticky."
         code={`<Faq contained={false} action={null} items={billingItems} />`}
       >
-        <div className="max-w-prose p-6 sm:p-10">
+        <div className="max-w-prose p-6 @2xl:p-10">
           <Faq contained={false} action={null} items={billingItems} />
         </div>
       </Example>

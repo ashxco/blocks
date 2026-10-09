@@ -48,7 +48,9 @@ const defaultTitle = (
   <>
     Ship anything.
     <br />
-    Own <span className="text-brand">everything</span>.
+    {/* A no-break space keeps "Own" with the highlighted word on narrow columns. */}
+    Own{"\u00a0"}
+    <span className="text-brand">everything</span>.
   </>
 )
 

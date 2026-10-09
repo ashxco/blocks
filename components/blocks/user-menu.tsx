@@ -49,6 +49,16 @@ export interface UserMenuProps {
   align?: "start" | "center" | "end"
   /** Where "Sign out" leads. */
   signOutHref?: string
+  /**
+   * Start with the menu open, for previews of the open state. The menu is
+   * then non-modal, so the rest of the page stays usable.
+   */
+  defaultOpen?: boolean
+  /**
+   * Element to portal the menu into instead of <body>, e.g. a preview stage.
+   * The menu then keeps to its side of the trigger inside it.
+   */
+  container?: HTMLElement | null
   className?: string
 }
 
@@ -99,6 +109,8 @@ export function UserMenu({
   side = "bottom",
   align = "end",
   signOutHref = "/live/sign-in",
+  defaultOpen = false,
+  container,
   className,
 }: UserMenuProps) {
   // A page can force a theme (?theme=dark in previews); the radio shows the one on screen.
@@ -124,7 +136,7 @@ export function UserMenu({
     )
 
   return (
-    <DropdownMenu>
+    <DropdownMenu defaultOpen={defaultOpen} modal={defaultOpen ? false : undefined}>
       <DropdownMenuTrigger render={trigger}>
         {variant === "full" ? (
           <>
@@ -150,7 +162,11 @@ export function UserMenu({
         side={side}
         align={align}
         sideOffset={8}
-        className="w-64"
+        container={container}
+        // In a preview stage the popup keeps below its trigger and within the stage.
+        collisionAvoidance={container ? { side: "none" } : undefined}
+        collisionBoundary={container ?? undefined}
+        className="w-(--popover-width-sm)"
       >
         <div className="flex items-center gap-3 px-2 py-2.5">
           <UserAvatar user={user} />

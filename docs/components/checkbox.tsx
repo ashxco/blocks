@@ -76,15 +76,16 @@ export default function CheckboxDocs() {
     <Examples>
       <Example
         title="Default"
+        layout="stack"
         description="A hairline square that fills with ink when checked. Violet appears only as the focus outline."
-        code={`<div className="flex items-center gap-2">
+        code={`<div className="flex items-center gap-3">
   <Checkbox id="failures" defaultChecked />
   <Label htmlFor="failures" className="font-medium">
     Email me when a build fails
   </Label>
 </div>`}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Checkbox id="cb-default" defaultChecked />
           <Label htmlFor="cb-default" className="font-medium">
             Email me when a build fails
@@ -199,19 +200,19 @@ const some = selected.length > 0 && !all
       <Example
         title="Choice cards"
         layout="stack"
-        description="For options that need more than a line, wrap a horizontal field in FieldLabel. Checked cards take an ink border."
+        description="For options that need more than a line, wrap a horizontal field in FieldLabel. As on every choice card, the text leads and the box sits at the top right; checked cards take an ink border."
         code={`<FieldSet>
   <FieldLegend variant="label">Add-ons</FieldLegend>
   <div className="grid gap-3">
     {addons.map((addon, index) => (
       <FieldLabel key={addon.value}>
         <Field orientation="horizontal">
-          <Checkbox name="addons" value={addon.value} defaultChecked={index === 0} />
           <FieldContent>
             <FieldTitle>{addon.title}</FieldTitle>
             <FieldDescription>{addon.description}</FieldDescription>
+            <p className="mt-1 text-label text-foreground tabular">{addon.price}</p>
           </FieldContent>
-          <span className="shrink-0 text-caption font-semibold text-foreground tabular">{addon.price}</span>
+          <Checkbox name="addons" value={addon.value} defaultChecked={index === 0} />
         </Field>
       </FieldLabel>
     ))}
@@ -224,12 +225,12 @@ const some = selected.length > 0 && !all
             {addons.map((addon, index) => (
               <FieldLabel key={addon.value}>
                 <Field orientation="horizontal">
-                  <Checkbox name="addons" value={addon.value} defaultChecked={index === 0} />
                   <FieldContent>
                     <FieldTitle>{addon.title}</FieldTitle>
                     <FieldDescription>{addon.description}</FieldDescription>
+                    <p className="mt-1 text-label text-foreground tabular">{addon.price}</p>
                   </FieldContent>
-                  <span className="shrink-0 text-caption font-semibold text-foreground tabular">{addon.price}</span>
+                  <Checkbox name="addons" value={addon.value} defaultChecked={index === 0} />
                 </Field>
               </FieldLabel>
             ))}
@@ -269,7 +270,7 @@ const some = selected.length > 0 && !all
           "Use checkboxes for independent options and for settings saved with a button.",
           "Write labels as positive statements: “Email me about failed builds”.",
           "Use indeterminate only for a parent whose children are partly selected.",
-          "Put the box before the label, and let the label toggle it too.",
+          "Put the box before a one-line label and let the label toggle it too. In choice cards it moves to the top right.",
         ]}
         dont={[
           "Don’t use a checkbox for a setting that applies immediately. Use a switch.",

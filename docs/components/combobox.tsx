@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, GitBranchIcon } from "lucide-react"
+import { CheckIcon, GitBranchIcon, SearchIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -67,7 +67,7 @@ const regionGroups = [
   {
     value: "Americas",
     items: [
-      { label: "Washington, D.C. (iad1)", value: "iad1" },
+      { label: "Virginia (iad1)", value: "iad1" },
       { label: "San Francisco (sfo1)", value: "sfo1" },
       { label: "São Paulo (gru1)", value: "gru1" },
     ],
@@ -125,7 +125,7 @@ function TeammatePicker() {
   const anchor = useComboboxAnchor()
 
   return (
-    <Field className="w-full max-w-md">
+    <Field className="w-full max-w-sm">
       <FieldLabel htmlFor="notify-teammates">Notify on failed deploys</FieldLabel>
       <Combobox items={teammates} multiple defaultValue={["Maya Chen", "Priya Raman"]}>
         <ComboboxChips ref={anchor}>
@@ -144,7 +144,7 @@ function TeammatePicker() {
           </ComboboxValue>
         </ComboboxChips>
         <ComboboxContent anchor={anchor}>
-          <ComboboxEmpty>No teammates match that name.</ComboboxEmpty>
+          <ComboboxEmpty>No teammates match. Invite them from Team settings.</ComboboxEmpty>
           <ComboboxList>
             {(item: string) => (
               <ComboboxItem key={item} value={item}>
@@ -159,39 +159,75 @@ function TeammatePicker() {
   )
 }
 
+/**
+ * Project switcher with the search inside the popup. As in RegionPicker, a
+ * picture of the open popup sits under the button so readers see the search
+ * row without opening it; it steps aside while the real popup is showing.
+ */
 function ProjectSwitcher() {
+  const [value, setValue] = React.useState<Project | null>(projects[0])
+  const [open, setOpen] = React.useState(false)
   return (
-    <Combobox items={projects} defaultValue={projects[0]}>
-      <ComboboxTrigger
-        render={<Button variant="outline" className="w-64 justify-between ps-3" />}
-        aria-label="Switch project"
+    <div className="grid w-64 gap-1.5">
+      <Combobox
+        items={projects}
+        value={value}
+        onValueChange={(next) => setValue(next as Project | null)}
+        onOpenChange={setOpen}
       >
-        <ComboboxValue>
-          {(project: Project | null) =>
-            project ? (
-              <span className="flex min-w-0 items-center gap-2.5">
+        <ComboboxTrigger
+          render={<Button variant="outline" className="w-64 justify-between ps-3" />}
+          aria-label="Switch project"
+        >
+          <ComboboxValue>
+            {(project: Project | null) =>
+              project ? (
+                <span className="flex min-w-0 items-center gap-2.5">
+                  <ProjectMark project={project} />
+                  <span className="truncate">{project.label}</span>
+                </span>
+              ) : (
+                "Choose a project"
+              )
+            }
+          </ComboboxValue>
+        </ComboboxTrigger>
+        <ComboboxContent>
+          <ComboboxInput showTrigger={false} placeholder="Find a project" aria-label="Find a project" />
+          <ComboboxEmpty>No projects match. Search by name, like acme-api.</ComboboxEmpty>
+          <ComboboxList>
+            {(project: Project) => (
+              <ComboboxItem key={project.value} value={project}>
                 <ProjectMark project={project} />
-                <span className="truncate">{project.label}</span>
-              </span>
-            ) : (
-              "Choose a project"
+                {project.label}
+              </ComboboxItem>
+            )}
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
+      <div aria-hidden="true" inert className={cn(comboboxStyles.popup, "flex flex-col overflow-hidden", open && "invisible")}>
+        <div className={cn(comboboxStyles.search, "text-base text-muted-foreground md:text-sm")}>
+          <SearchIcon className="size-4 shrink-0" />
+          Find a project
+        </div>
+        <div className={cn(comboboxStyles.list, "max-h-none")}>
+          {projects.map((project) => {
+            const selected = project.value === value?.value
+            return (
+              <div key={project.value} className={comboboxStyles.item} data-selected={selected ? "" : undefined}>
+                <ProjectMark project={project} />
+                {project.label}
+                {selected ? (
+                  <span className={comboboxStyles.itemIndicator}>
+                    <CheckIcon className="size-4 text-foreground" strokeWidth={2.5} />
+                  </span>
+                ) : null}
+              </div>
             )
-          }
-        </ComboboxValue>
-      </ComboboxTrigger>
-      <ComboboxContent>
-        <ComboboxInput showTrigger={false} placeholder="Find a project" aria-label="Find a project" />
-        <ComboboxEmpty>No projects match.</ComboboxEmpty>
-        <ComboboxList>
-          {(project: Project) => (
-            <ComboboxItem key={project.value} value={project}>
-              <ProjectMark project={project} />
-              {project.label}
-            </ComboboxItem>
-          )}
-        </ComboboxList>
-      </ComboboxContent>
-    </Combobox>
+          })}
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -275,7 +311,7 @@ export default function ComboboxDocs() {
   <Combobox items={frameworks}>
     <ComboboxInput id="framework" placeholder="Search frameworks" />
     <ComboboxContent>
-      <ComboboxEmpty>No frameworks found.</ComboboxEmpty>
+      <ComboboxEmpty>No frameworks match. Try Next.js, Astro or Remix.</ComboboxEmpty>
       <ComboboxList>
         {(item) => (
           <ComboboxItem key={item} value={item}>
@@ -292,7 +328,7 @@ export default function ComboboxDocs() {
           <Combobox items={frameworks}>
             <ComboboxInput id="combobox-framework" placeholder="Search frameworks" />
             <ComboboxContent>
-              <ComboboxEmpty>No frameworks found.</ComboboxEmpty>
+              <ComboboxEmpty>No frameworks match. Try Next.js, Astro or Remix.</ComboboxEmpty>
               <ComboboxList>
                 {(item: string) => (
                   <ComboboxItem key={item} value={item}>
@@ -316,7 +352,7 @@ export default function ComboboxDocs() {
       <GitBranchIcon className="order-first me-1.5" />
     </ComboboxInput>
     <ComboboxContent>
-      <ComboboxEmpty>No branches match.</ComboboxEmpty>
+      <ComboboxEmpty>No branches match. Check the spelling, or push the branch first.</ComboboxEmpty>
       <ComboboxList>
         {(item) => (
           <ComboboxItem key={item} value={item}>
@@ -335,7 +371,7 @@ export default function ComboboxDocs() {
               <GitBranchIcon className="order-first me-1.5" />
             </ComboboxInput>
             <ComboboxContent>
-              <ComboboxEmpty>No branches match.</ComboboxEmpty>
+              <ComboboxEmpty>No branches match. Check the spelling, or push the branch first.</ComboboxEmpty>
               <ComboboxList>
                 {(item: string) => (
                   <ComboboxItem key={item} value={item}>
@@ -397,7 +433,7 @@ export default function ComboboxDocs() {
     </ComboboxValue>
   </ComboboxChips>
   <ComboboxContent anchor={anchor}>
-    <ComboboxEmpty>No teammates match that name.</ComboboxEmpty>
+    <ComboboxEmpty>No teammates match. Invite them from Team settings.</ComboboxEmpty>
     <ComboboxList>
       {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
     </ComboboxList>
@@ -409,7 +445,8 @@ export default function ComboboxDocs() {
 
       <Example
         title="Search in the popup"
-        description="A button shows the current value and the search field lives in the popup. Good for switchers in a toolbar."
+        layout="stack"
+        description="A button shows the current value and the search field lives in the popup. Good for switchers in a toolbar. The open popup is drawn under the button."
         code={`<Combobox items={projects} defaultValue={projects[0]}>
   <ComboboxTrigger
     render={<Button variant="outline" className="w-64 justify-between ps-3" />}
@@ -419,7 +456,7 @@ export default function ComboboxDocs() {
   </ComboboxTrigger>
   <ComboboxContent>
     <ComboboxInput showTrigger={false} placeholder="Find a project" aria-label="Find a project" />
-    <ComboboxEmpty>No projects match.</ComboboxEmpty>
+    <ComboboxEmpty>No projects match. Search by name, like acme-api.</ComboboxEmpty>
     <ComboboxList>
       {(project) => (
         <ComboboxItem key={project.value} value={project}>
@@ -455,7 +492,7 @@ export default function ComboboxDocs() {
   <Combobox items={branches}>
     <ComboboxInput id="branch" placeholder="Search branches" aria-invalid />
     <ComboboxContent>
-      <ComboboxEmpty>No branches match.</ComboboxEmpty>
+      <ComboboxEmpty>No branches match. Check the spelling, or push the branch first.</ComboboxEmpty>
       <ComboboxList>
         {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
       </ComboboxList>
@@ -486,7 +523,7 @@ export default function ComboboxDocs() {
             <Combobox items={branches}>
               <ComboboxInput id="combobox-invalid" placeholder="Search branches" aria-invalid="true" />
               <ComboboxContent>
-                <ComboboxEmpty>No branches match.</ComboboxEmpty>
+                <ComboboxEmpty>No branches match. Check the spelling, or push the branch first.</ComboboxEmpty>
                 <ComboboxList>
                   {(item: string) => (
                     <ComboboxItem key={item} value={item}>
@@ -525,6 +562,7 @@ export default function ComboboxDocs() {
           { prop: "ComboboxInput showTrigger", type: "boolean", default: "true", description: "Show the chevron that opens the full list." },
           { prop: "ComboboxInput showClear", type: "boolean", default: "false", description: "Show a clear button once a value is picked. It replaces the chevron." },
           { prop: "ComboboxContent anchor", type: "RefObject<HTMLElement>", description: "Element the popup lines up with. Pass the chips ref for multiple." },
+          { prop: "ComboboxContent container", type: "HTMLElement | ShadowRoot | RefObject | null", description: "Element the popup portals into instead of <body>, such as a preview stage. Inside a PortalScope the popup already takes that region’s theme." },
           { prop: "ComboboxChip showRemove", type: "boolean", default: "true", description: "Show the remove button on a chip." },
           { prop: "useComboboxAnchor", type: "() => RefObject<HTMLDivElement>", description: "Creates the ref shared by ComboboxChips and ComboboxContent." },
         ]}

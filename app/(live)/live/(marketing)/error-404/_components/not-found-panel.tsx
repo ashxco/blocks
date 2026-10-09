@@ -48,7 +48,7 @@ export function NotFoundPanel({ className }: { className?: string }) {
             lines={[
               "$ curl -I lumen.dev/docs/v1",
               "HTTP/2 404",
-              "x-lumen-region: fra-1",
+              "x-lumen-region: fra1",
               "x-lumen-route: no match",
               "→ No deployment serves this path",
               "→ Checked 12 redirects and 3 rewrites",

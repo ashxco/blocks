@@ -87,7 +87,10 @@ function describe(t) {
     case "components": {
       const name = join(p.slice(1))
       const prop = p.slice(2).join("-")
-      const prefix = /radius/.test(prop) ? "rounded" : /padding-x/.test(prop) ? "px" : /padding/.test(prop) ? "p" : /min-width/.test(prop) ? "min-w" : /max-width/.test(prop) ? "max-w" : /width/.test(prop) ? "w" : /size/.test(prop) ? "size" : "h"
+      // A token can name the utility its components write, e.g. "max-w" for
+      // dialog and sheet widths, which are caps so they shrink on phones.
+      const hint = t.$extensions?.blocks?.utility ?? t.original?.$extensions?.blocks?.utility
+      const prefix = hint ?? (/radius/.test(prop) ? "rounded" : /padding-x/.test(prop) ? "px" : /padding/.test(prop) ? "p" : /min-width/.test(prop) ? "min-w" : /max-width/.test(prop) ? "max-w" : /width/.test(prop) ? "w" : /size/.test(prop) ? "size" : "h")
       return { tier: "component", group: p[1], cssVar: `--${name}`, scope: "root", utility: `${prefix}-(--${name})` }
     }
   }

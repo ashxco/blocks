@@ -158,7 +158,7 @@ export function ContactPanel({
 
             {hours ? (
               <p className="mt-auto flex items-center gap-2.5 border-t border-panel-border pt-6 text-caption text-panel-muted">
-                <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-success" />
+                <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-panel-success" />
                 {hours}
               </p>
             ) : null}

@@ -69,7 +69,7 @@ function TierChain() {
           <div className="grid gap-1">
             <p className="text-title text-panel-foreground">Semantic</p>
             <code className="font-mono text-code text-panel-muted">
-              {brand.cssVar} · bg-brand
+              {[brand.cssVar, brand.utility].filter(Boolean).join(" · ")}
             </code>
             <span className="font-mono text-xs text-panel-muted">
               {refLabel(brand.ref)} light · {refLabel(brand.dark?.ref)} dark

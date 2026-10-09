@@ -121,22 +121,29 @@ export default function BadgeDocs() {
   main
 </Badge>`}
       >
-        <Badge variant="outline">
-          <GitBranchIcon data-icon="inline-start" />
-          main
-        </Badge>
-        <Badge variant="secondary">
-          <LockIcon data-icon="inline-start" />
-          Private
-        </Badge>
-        <Badge variant="info">
-          <GlobeIcon data-icon="inline-start" />
-          3 regions
-        </Badge>
-        <Badge variant="success">
-          <CheckIcon data-icon="inline-start" />
-          Verified
-        </Badge>
+        {/* Two pairs that wrap together, so no badge is left alone on a line. */}
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3">
+          <span className="flex gap-2">
+            <Badge variant="outline">
+              <GitBranchIcon data-icon="inline-start" />
+              main
+            </Badge>
+            <Badge variant="secondary">
+              <LockIcon data-icon="inline-start" />
+              Private
+            </Badge>
+          </span>
+          <span className="flex gap-2">
+            <Badge variant="info">
+              <GlobeIcon data-icon="inline-start" />
+              3 regions
+            </Badge>
+            <Badge variant="success">
+              <CheckIcon data-icon="inline-start" />
+              Verified
+            </Badge>
+          </span>
+        </div>
       </Example>
 
       <Example

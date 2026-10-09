@@ -292,7 +292,7 @@ export function EasingDemos({ items, durationVar }: { items: EasingItem[]; durat
       <ul className="grid gap-6 @prose:grid-cols-2">
         {items.map((item) => (
           <li key={item.cssVar} className="grid content-start gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)">
-            {/* Muted, not subtle: inside a card, subtle matches the card in dark mode. */}
+            {/* Muted: the curve well reads clearly against the card in both themes. */}
             <div className="grid place-items-center rounded-lg bg-muted p-6">
               <Curve points={item.points} />
             </div>

@@ -9,7 +9,7 @@ import {
   tokensIn,
   toPx,
   toRem,
-  utilityFor,
+  tokens,
   withoutUsage,
   type DesignToken,
 } from "./data"
@@ -72,21 +72,24 @@ function SpacingLadder() {
 
 /*
  * Each diagram sits in a stage tall enough for the largest section value, so
- * the cards line up. Muted, not subtle: inside a card, subtle matches the card
- * in dark mode.
+ * the cards line up. Muted, the fill for wells inside a card: it stands clear
+ * of the card in both themes.
  */
 const stage = "grid h-48 content-center rounded-md bg-muted px-4"
+
+/* The highlighted space: a brand wash with dashed edges, which keeps its violet in both themes. */
+const highlight = "border-dashed border-brand/60 bg-brand/25"
 
 function GutterDiagram() {
   return (
     <div aria-hidden className={stage}>
       <div className="flex h-24 overflow-hidden rounded-sm border bg-background">
-        <span className="bg-tint-violet" style={{ width: "var(--spacing-gutter)" }} />
+        <span className={cn(highlight, "border-r")} style={{ width: "var(--spacing-gutter)" }} />
         <span className="grid flex-1 content-center gap-2 px-3">
           <span className="h-2 w-3/4 rounded-full bg-muted" />
           <span className="h-2 w-1/2 rounded-full bg-muted" />
         </span>
-        <span className="bg-tint-violet" style={{ width: "var(--spacing-gutter)" }} />
+        <span className={cn(highlight, "border-l")} style={{ width: "var(--spacing-gutter)" }} />
       </div>
     </div>
   )
@@ -97,10 +100,7 @@ function GapDiagram({ cssVar, block }: { cssVar: string; block: string }) {
     <div aria-hidden className={stage}>
       <div className="grid overflow-hidden rounded-sm border bg-background">
         <span className={block} />
-        <span
-          className="border-y border-dashed border-border-strong bg-tint-violet"
-          style={{ height: `var(${cssVar})` }}
-        />
+        <span className={cn(highlight, "border-y")} style={{ height: `var(${cssVar})` }} />
         <span className={block} />
       </div>
     </div>
@@ -113,12 +113,6 @@ function NamedSpacing() {
     if (t.name === "space.gutter") return <GutterDiagram />
     return <GapDiagram cssVar={t.cssVar} block={t.name === "space.stack" ? "h-10" : "h-4"} />
   }
-  const utility: Record<string, string> = {
-    "space.gutter": "px-gutter",
-    "space.section": "py-section",
-    "space.section-sm": "py-section-sm",
-    "space.stack": "gap-stack",
-  }
   return (
     <ul className="grid gap-6 @prose:grid-cols-2">
       {named.map((t) => (
@@ -129,7 +123,7 @@ function NamedSpacing() {
               <h3 className="text-title text-foreground">{leafName(t.name)}</h3>
               <Meta>{describeSize(t.value)}</Meta>
             </div>
-            <Code className="text-muted-foreground">{utility[t.name] ?? t.utility}</Code>
+            {t.utility ? <Code className="text-muted-foreground">{t.utility}</Code> : null}
             {withoutUsage(t.description) ? (
               <p className="text-caption text-copy">{withoutUsage(t.description)}</p>
             ) : null}
@@ -210,7 +204,7 @@ function Containers() {
                 </div>
                 <div className="grid gap-1">
                   <CodeList
-                    value={[centred[name], utilityFor(c) ?? `max-w-${name}`].filter(Boolean).join(" · ")}
+                    value={[centred[name], c.utility ?? `max-w-(${c.cssVar})`].filter(Boolean).join(" · ")}
                     className="text-muted-foreground"
                   />
                   {withoutUsage(c.description) ? (
@@ -295,6 +289,72 @@ function Breakpoints() {
 }
 
 /* ------------------------------------------------------------------------ */
+/* Overlay widths, drawn to scale against the widest                         */
+/* ------------------------------------------------------------------------ */
+
+/* Component groups that size a floating surface, in the order people meet them. */
+const overlayGroups = ["menu", "tooltip", "popover", "hover-card", "toast", "dialog", "sheet"]
+
+/* Width tokens only (not the radius or padding in the same groups), smallest first within each component. */
+function overlayWidths() {
+  const rem = (t: DesignToken) => toRem(String(t.value)) ?? 0
+  return overlayGroups.flatMap((group) =>
+    tokens
+      .filter((t) => t.tier === "component" && t.group === group && /^(min-|max-)?w-/.test(t.utility ?? ""))
+      .sort((a, b) => rem(a) - rem(b))
+  )
+}
+
+/* What the bar's end means: menus start at their width and grow, tooltips and dialogs stop at theirs. */
+function bound(utility?: string) {
+  if (utility?.startsWith("min-w-")) return "min"
+  if (utility?.startsWith("max-w-")) return "max"
+  return null
+}
+
+function OverlayWidths() {
+  const items = overlayWidths()
+  const max = Math.max(...items.map((t) => toRem(String(t.value)) ?? 0), 1)
+  return (
+    <ul className="grid">
+      {items.map((t, i) => {
+        const rem = toRem(String(t.value)) ?? 0
+        const utility = t.utility
+        const kind = bound(utility)
+        const caption = t.description
+        return (
+          <li
+            key={t.name}
+            className={cn(
+              "grid gap-3 py-4 @narrow:grid-cols-[17rem_minmax(0,1fr)] @narrow:items-center @narrow:gap-8",
+              i > 0 && "border-t"
+            )}
+          >
+            <div className="grid gap-0.5">
+              <Code>{utility ?? t.cssVar}</Code>
+              <Meta>
+                {[kind, `${round(rem)}rem`, `${round(rem * 16)}px`].filter(Boolean).join(" · ")}
+              </Meta>
+            </div>
+            <div className="grid gap-2">
+              <span
+                aria-hidden
+                className={cn(
+                  "block h-6 rounded-sm border bg-muted",
+                  kind ? "border-dashed border-muted-foreground" : "border-border-strong"
+                )}
+                style={{ width: `${(rem / max) * 100}%` }}
+              />
+              {caption ? <p className="text-caption text-copy">{caption}</p> : null}
+            </div>
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
+/* ------------------------------------------------------------------------ */
 /* Page                                                                      */
 /* ------------------------------------------------------------------------ */
 
@@ -338,6 +398,14 @@ export function SpacingFoundation({ title, description }: { title: string; descr
         description="Mobile first: unprefixed utilities apply everywhere, prefixed ones from that width up. Inside variable-width slots, prefer container queries."
       >
         <Breakpoints />
+      </Section>
+
+      <Section
+        id="overlays"
+        title="Overlay widths"
+        description="Menus, popovers, toasts and dialogs take their width from tokens, drawn here to scale. A dashed bar is a bound, not a size: menus start at theirs and grow with their content, tooltips wrap once they reach theirs, and dialogs and sheets stop at theirs and shrink to fit a phone."
+      >
+        <OverlayWidths />
       </Section>
     </FoundationPage>
   )

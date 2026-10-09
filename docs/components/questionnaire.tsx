@@ -335,7 +335,7 @@ export default function QuestionnaireDocs() {
         title="Choice states"
         minHeight="min-h-80"
         description="Rows darken on hover and take an ink edge and a filled indicator when picked. Disabled choices fade; an invalid question edges its choices in the destructive colour and explains what is missing."
-        code={`<QuestionnaireChoice value="iad" defaultChecked>Washington, D.C.</QuestionnaireChoice>
+        code={`<QuestionnaireChoice value="iad" defaultChecked>Virginia</QuestionnaireChoice>
 <QuestionnaireChoice value="gru" disabled>São Paulo</QuestionnaireChoice>
 
 <QuestionnaireItem name="alerts" multiple required invalid>
@@ -352,7 +352,7 @@ export default function QuestionnaireDocs() {
               <QuestionnaireTitle size="sm">Primary region</QuestionnaireTitle>
               <QuestionnaireChoices>
                 <QuestionnaireChoice value="iad" defaultChecked>
-                  Washington, D.C.
+                  Virginia
                   <QuestionnaireChoiceDescription>iad1 · closest to most visitors</QuestionnaireChoiceDescription>
                 </QuestionnaireChoice>
                 <QuestionnaireChoice value="fra">

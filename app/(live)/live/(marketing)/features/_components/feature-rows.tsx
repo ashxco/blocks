@@ -57,7 +57,7 @@ const features: Feature[] = [
       "12:04:02 GET  /v1/health   200  3ms",
       "12:04:03 POST /v1/sessions 401 12ms",
       "12:04:03 GET  /v1/usage    200 41ms",
-      "→ Streaming from 4 replicas in fra-1 and iad-1",
+      "→ Streaming from 4 replicas in fra1 and iad1",
     ],
     card: <LatencyCard />,
   },
@@ -65,11 +65,11 @@ const features: Feature[] = [
     id: "secure",
     title: "Safe by default.",
     description:
-      "TLS, encrypted secrets, roles and edge protection are on from the first deploy. There is nothing to switch on and no security add-on to buy.",
+      "TLS, encrypted secrets and edge protection are on from the first deploy. There is nothing to switch on and no security upgrade to buy.",
     points: [
       "Automatic TLS for every domain",
       "Secrets encrypted and scoped per environment",
-      "Roles, single sign-on and a full audit log",
+      "Roles and audit log from Pro, SAML on Scale",
     ],
     windowTitle: "lumen — acme/api",
     lines: [
@@ -85,17 +85,17 @@ const features: Feature[] = [
     id: "data",
     title: "Databases next to your app.",
     description:
-      "Create Postgres and Redis in the same region as your services. Lumen wires up the connection string, backs up every night and gives each preview its own copy of the data.",
+      "Create Postgres and Redis in the same region as your services. Lumen wires up the connection string, takes backups on a schedule and gives each preview its own copy of the data.",
     points: [
       "Managed Postgres 17 and Redis 7",
-      "Point-in-time restore for the last 14 days",
+      "Point-in-time restore from Pro",
       "A database branch for every preview deploy",
     ],
     windowTitle: "lumen — acme",
     lines: [
       "$ lumen db create orders --engine postgres@17",
-      "→ Provisioning 2 vCPU, 4 GB RAM and 50 GB in fra-1",
-      "→ Creating a read replica in iad-1",
+      "→ Provisioning 2 vCPU, 4 GB RAM and 50 GB in fra1",
+      "→ Creating a read replica in iad1",
       "✓ orders is ready (38s)",
       "✓ Added DATABASE_URL to acme/web and acme/worker",
     ],

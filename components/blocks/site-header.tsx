@@ -23,7 +23,7 @@ export interface SiteHeaderProps {
   solid?: boolean
   /** Label of the primary button. Use the same label as the hero and closing call to action. */
   ctaLabel?: string
-  /** Render with the menu open, for documentation. Below lg only. */
+  /** Render with the menu open, for documentation. Only while the bar is under 64rem. */
   defaultOpen?: boolean
 }
 
@@ -78,8 +78,9 @@ function lockScroll(root: HTMLElement | null) {
 
 /**
  * Full-width site header. Transparent at the top of the page; once the page
- * scrolls it turns into frosted glass with a hairline. Below lg, a menu button
- * opens a full-screen menu.
+ * scrolls it turns into frosted glass with a hairline. When the bar is under
+ * 64rem wide (a container query, so previews match), a menu button opens a
+ * full-screen menu.
  */
 export function SiteHeader({
   className,
@@ -241,7 +242,7 @@ export function SiteHeader({
         </div>
       </div>
 
-      {/* Full-screen menu, below lg. */}
+      {/* Full-screen menu, while the bar is under 64rem. */}
       <div
         id={menuId}
         inert={!open}

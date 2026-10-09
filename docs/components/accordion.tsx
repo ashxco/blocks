@@ -144,7 +144,7 @@ export default function AccordionDocs() {
             </AccordionTrigger>
             <AccordionContent>
               <p>The build stopped because tsc found two errors.</p>
-              <pre className="overflow-x-auto rounded-(--control-radius) bg-terminal p-4 font-mono text-code text-terminal-foreground">
+              <pre className="overflow-x-auto rounded-(--control-radius) border bg-terminal p-4 font-mono text-code text-terminal-foreground">
                 {`app/deployments/page.tsx:42:7  Type 'string' is not assignable to type 'Status'.
 lib/regions.ts:18:3             Property 'fra1' is missing in type 'Regions'.`}
               </pre>

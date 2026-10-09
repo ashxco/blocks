@@ -3,7 +3,7 @@
 import * as React from "react"
 import { CheckIcon, CpuIcon, GaugeIcon, RocketIcon } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, tokenPx } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -26,18 +26,11 @@ import {
   SelectValue,
   selectStyles,
 } from "@/components/ui/select"
-import { tokens } from "@/design-system/generated/tokens"
 import { cn } from "@/lib/utils"
-
-/** A dimension token in px, read from the generated tokens so the copy follows the system. */
-function tokenPx(cssVar: string) {
-  const value = tokens.find((token) => token.cssVar === cssVar)?.value
-  return typeof value === "string" && value.endsWith("rem") ? `${parseFloat(value) * 16}px` : String(value ?? "")
-}
 
 const regions = [
   { label: "Frankfurt (fra1)", value: "fra1" },
-  { label: "Washington, D.C. (iad1)", value: "iad1" },
+  { label: "Virginia (iad1)", value: "iad1" },
   { label: "San Francisco (sfo1)", value: "sfo1" },
   { label: "São Paulo (gru1)", value: "gru1" },
   { label: "Singapore (sin1)", value: "sin1" },
@@ -206,9 +199,9 @@ function MachineSelect() {
 }
 
 const sizes = [
-  { size: "sm", label: "Small", height: tokenPx("--control-height-sm") },
-  { size: "default", label: "Medium", height: tokenPx("--control-height-md") },
-  { size: "lg", label: "Large", height: tokenPx("--control-height-lg") },
+  { size: "sm", label: "Small", height: `${tokenPx("--control-height-sm")}px` },
+  { size: "default", label: "Medium", height: `${tokenPx("--control-height-md")}px` },
+  { size: "lg", label: "Large", height: `${tokenPx("--control-height-lg")}px` },
 ] as const
 
 export default function SelectDocs() {
@@ -220,7 +213,7 @@ export default function SelectDocs() {
         description="Pass the options as items so the trigger shows the label of the chosen value, not the raw value."
         code={`const regions = [
   { label: "Frankfurt (fra1)", value: "fra1" },
-  { label: "Washington, D.C. (iad1)", value: "iad1" },
+  { label: "Virginia (iad1)", value: "iad1" },
 ]
 
 <Field>
@@ -596,11 +589,13 @@ export default function SelectDocs() {
           { prop: "value / defaultValue", type: "Value | null", description: "Controlled or initial value on Select." },
           { prop: "onValueChange", type: "(value, details) => void", description: "Called on Select when a new option is picked." },
           { prop: "multiple", type: "boolean", default: "false", description: "Allow more than one value. The value becomes an array." },
-          { prop: "disabled", type: "boolean", default: "false", description: "On Select or a single SelectItem." },
+          { prop: "disabled", type: "boolean", default: "false", description: "Fades the whole Select and stops it opening. Set it on a SelectItem instead to block just that option." },
           { prop: "SelectTrigger size", type: '"sm" | "default" | "lg"', default: '"default"', description: "Height from --control-height-*." },
           { prop: "SelectValue placeholder", type: "ReactNode", description: "Shown, muted, while nothing is selected." },
-          { prop: "SelectContent side / align", type: '"top" | "bottom" | … / "start" | "center" | "end"', default: '"bottom" / "start"', description: "Where the list opens relative to the trigger." },
+          { prop: "SelectContent side", type: '"top" | "bottom" | "left" | "right" | "inline-start" | "inline-end"', default: '"bottom"', description: "Which side of the trigger the list opens on. It flips when there is no room." },
+          { prop: "SelectContent align", type: '"start" | "center" | "end"', default: '"start"', description: "How the list lines up with the trigger along that side." },
           { prop: "SelectContent alignItemWithTrigger", type: "boolean", default: "false", description: "Overlap the trigger so the chosen item sits on top of it, macOS style." },
+          { prop: "SelectContent container", type: "HTMLElement | ShadowRoot | RefObject | null", description: "Element the list portals into instead of <body>, such as a preview stage. Inside a PortalScope the list already takes that region’s theme." },
           { prop: "SelectItem value", type: "Value", description: "The value this option selects." },
         ]}
       />

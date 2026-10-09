@@ -11,7 +11,7 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
  * height and radius); the list is a flat overlay (popover surface, hairline
  * border, overlay radius) that fades in with a 4px slide. No shadows.
  *
- *   <Select items={regions} defaultValue="fra-1">
+ *   <Select items={regions} defaultValue="fra1">
  *     <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
  *     <SelectContent>
  *       {regions.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}

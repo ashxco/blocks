@@ -27,7 +27,7 @@ export default function PostCardDocs() {
   cover={{ pattern: "branch", tint: "mint" }}
 />`}
       >
-        <div className="grid w-full max-w-narrow gap-8 sm:grid-cols-2">
+        <div className="grid w-full max-w-narrow gap-8 @xl:grid-cols-2">
           <PostCard />
           <PostCard {...defaultPosts[3]} />
         </div>
@@ -39,7 +39,7 @@ export default function PostCardDocs() {
         description="The lead story at the top of the blog: a large cover beside the title, excerpt and author. Stacks in narrow slots."
         code={`<FeaturedPost />`}
       >
-        <div className="p-6 sm:p-10">
+        <div className="p-6 @2xl:p-10">
           <FeaturedPost />
         </div>
       </Example>
@@ -50,7 +50,7 @@ export default function PostCardDocs() {
         description="Set tone to panel to give the lead story a dark emphasis surface. Use it once per page."
         code={`<FeaturedPost tone="panel" cover={{ pattern: "uptime", tint: "sky" }} />`}
       >
-        <div className="p-6 sm:p-10">
+        <div className="p-6 @2xl:p-10">
           <FeaturedPost
             tone="panel"
             title="Zero-downtime deploys, explained"
@@ -107,7 +107,7 @@ export default function PostCardDocs() {
   ]}
 />`}
       >
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 @xl:grid-cols-2 @4xl:grid-cols-3">
           {coverPatterns.map((pattern, i) => (
             <figure key={pattern} className="grid gap-2">
               <PostCover pattern={pattern} tint={coverTints[i % coverTints.length]} />

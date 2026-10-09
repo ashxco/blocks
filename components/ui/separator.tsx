@@ -5,13 +5,13 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 /**
- * Blocks separator. A 1px hairline, never a shadow or a fade.
+ * Blocks separator. A --border-width-hairline line, never a shadow or a fade.
  * Use `variant="panel"` on dark panels and `variant="strong"` where a line
  * needs more presence, such as the end of a group: it takes the border-strong
  * colour at --border-width-strong.
  */
 const separatorVariants = cva(
-  "shrink-0 data-horizontal:h-px data-horizontal:w-full data-vertical:w-px data-vertical:self-stretch",
+  "shrink-0 data-horizontal:h-(--border-width-hairline) data-horizontal:w-full data-vertical:w-(--border-width-hairline) data-vertical:self-stretch",
   {
     variants: {
       variant: {

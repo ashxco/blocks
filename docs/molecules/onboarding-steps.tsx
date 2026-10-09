@@ -13,7 +13,7 @@ export default function OnboardingStepsDocs() {
         minHeight="min-h-200"
         code={`<OnboardingSteps dashboardHref="/live/app" />`}
       >
-        <div className="p-(--card-padding) sm:p-10">
+        <div className="p-(--card-padding) @prose:p-10">
           <OnboardingSteps />
         </div>
       </Example>
@@ -26,13 +26,13 @@ export default function OnboardingStepsDocs() {
         minHeight="min-h-200"
         code={`<OnboardingSteps
   defaultStep={2}
-  defaultValues={{ workspaceName: "Acme Inc.", repositoryId: "acme/web" }}
+  defaultValues={{ workspaceName: "Acme Inc.", workspaceSlug: "acme", repositoryId: "acme/web" }}
 />`}
       >
-        <div className="p-(--card-padding) sm:p-10">
+        <div className="p-(--card-padding) @prose:p-10">
           <OnboardingSteps
             defaultStep={2}
-            defaultValues={{ workspaceName: "Acme Inc.", repositoryId: "acme/web" }}
+            defaultValues={{ workspaceName: "Acme Inc.", workspaceSlug: "acme", repositoryId: "acme/web" }}
           />
         </div>
       </Example>
@@ -45,16 +45,18 @@ export default function OnboardingStepsDocs() {
   defaultDone
   defaultValues={{
     workspaceName: "Acme Inc.",
+    workspaceSlug: "acme",
     invites: [{ id: "sam", email: "sam@acme.dev", role: "developer" }],
     repositoryId: "acme/web",
   }}
 />`}
       >
-        <div className="p-(--card-padding) sm:p-10">
+        <div className="p-(--card-padding) @prose:p-10">
           <OnboardingSteps
             defaultDone
             defaultValues={{
               workspaceName: "Acme Inc.",
+              workspaceSlug: "acme",
               invites: [
                 { id: "sam", email: "sam@acme.dev", role: "developer" },
                 { id: "ana", email: "ana@acme.dev", role: "viewer" },

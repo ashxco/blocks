@@ -8,14 +8,12 @@ const facts = [
 
 /**
  * The product screen on a wide dark panel, with three headline numbers
- * under it. Sits directly under the features hero. In dark mode the app
- * itself is dark, so the stage steps up to the raised panel to keep the
- * window framed.
+ * under it. Sits directly under the features hero.
  */
 export function ProductStage() {
   return (
     <div className="container-wide">
-      <div className="rounded-(--panel-radius) bg-panel p-2 text-panel-foreground sm:p-6 lg:p-12 dark:bg-panel-raised">
+      <div className="rounded-(--panel-radius) bg-panel p-2 text-panel-foreground sm:p-6 lg:p-12">
         <AppMockup contained={false} stage={false} />
         <dl className="mt-2 grid divide-y divide-panel-border px-4 sm:mt-10 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-0 lg:mt-12">
           {facts.map((fact) => (

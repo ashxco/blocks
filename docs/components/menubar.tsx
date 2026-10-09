@@ -11,7 +11,7 @@ import {
   XCircleIcon,
 } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, useReturnFocus } from "@/docs/kit"
 import {
   Menubar,
   MenubarCheckboxItem,
@@ -35,41 +35,31 @@ type Stage = HTMLDivElement | null
 
 /**
  * The first examples show one menu already open, portalled into a stage inside
- * the example so it follows the example's theme and stays under the site
- * header. A click anywhere else closes it, as in an app.
+ * the example so it follows the example's theme, and isolate keeps its
+ * z-index inside the example so it scrolls under the site header. A click
+ * anywhere else closes it, as in an app.
  */
 function MenubarStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
   const [container, setContainer] = React.useState<Stage>(null)
   useReturnFocus(container)
   return (
-    <div ref={setContainer} className={cn("relative flex w-full items-start justify-center", className)}>
+    <div ref={setContainer} className={cn("relative isolate flex w-full items-start justify-center", className)}>
       {children(container)}
     </div>
   )
 }
 
-/** A menu focuses itself when it opens. These open on load, so hand focus back to the page. */
-function useReturnFocus(container: Stage) {
-  React.useEffect(() => {
-    if (!container) return
-    const timer = window.setTimeout(() => {
-      const active = document.activeElement
-      if (active instanceof HTMLElement && container.contains(active)) active.blur()
-    }, 250)
-    return () => window.clearTimeout(timer)
-  }, [container])
-}
-
 /**
  * The menu that is open on load. It only opens once the stage exists, so it is
- * placed inside the stage from its first frame instead of against <body>, and
- * it keeps its side and full height as the page scrolls.
+ * placed inside the stage from its first frame instead of against <body>. It
+ * keeps its side and full height as the page scrolls, and the wheel carries on
+ * to the page over it.
  */
 function useShownMenu(shown: boolean, container: Stage | undefined) {
   const [open, setOpen] = React.useState(shown)
   const ready = !shown || container != null
   const content = shown
-    ? ({ collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined, className: "max-h-none" } as const)
+    ? ({ collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined, className: "max-h-none overscroll-auto" } as const)
     : undefined
   return { menu: { open: open && ready, onOpenChange: setOpen }, content }
 }
@@ -209,6 +199,7 @@ function LogsMenubar({ openMenu, container }: DemoMenubarProps) {
   const [follow, setFollow] = React.useState(true)
   const [level, setLevel] = React.useState("all")
   const view = useShownMenu(openMenu === "view", container)
+  const levelMenu = useShownMenu(openMenu === "level", container)
 
   return (
     <Menubar modal={false}>
@@ -228,9 +219,9 @@ function LogsMenubar({ openMenu, container }: DemoMenubarProps) {
           </MenubarCheckboxItem>
         </MenubarContent>
       </MenubarMenu>
-      <MenubarMenu>
+      <MenubarMenu {...levelMenu.menu}>
         <MenubarTrigger>Level</MenubarTrigger>
-        <MenubarContent container={container}>
+        <MenubarContent container={container} {...levelMenu.content}>
           <MenubarGroup>
             <MenubarLabel>Show</MenubarLabel>
             <MenubarRadioGroup value={level} onValueChange={(value) => setLevel(String(value))}>
@@ -278,18 +269,35 @@ export default function MenubarDocs() {
       </Example>
 
       <Example
-        title="Checkbox and radio items"
-        description="Checkboxes for options people can turn on and off, a radio group for one-of-many settings. Both keep the menu open so people can change several at once."
-        code={`<MenubarCheckboxItem checked={wrap} onCheckedChange={setWrap}>
-  Wrap long lines
+        title="Checkbox items"
+        description="Checkboxes for options people can turn on and off. They keep the menu open, so people can change several in a row."
+        code={`<MenubarCheckboxItem checked={timestamps} onCheckedChange={setTimestamps}>
+  Timestamps
+  <MenubarShortcut>⌘T</MenubarShortcut>
 </MenubarCheckboxItem>
-<MenubarRadioGroup value={level} onValueChange={setLevel}>
-  <MenubarRadioItem value="all">All lines</MenubarRadioItem>
-  <MenubarRadioItem value="error">Errors only</MenubarRadioItem>
-</MenubarRadioGroup>`}
+<MenubarCheckboxItem checked={wrap} onCheckedChange={setWrap}>
+  Wrap long lines
+</MenubarCheckboxItem>`}
+      >
+        <MenubarStage className="min-h-56">
+          {(container) => <LogsMenubar openMenu="view" container={container} />}
+        </MenubarStage>
+      </Example>
+
+      <Example
+        title="Radio items"
+        description="A radio group for one-of-many settings, under a label that names the choice. The dot moves to the new item and the menu stays open."
+        code={`<MenubarGroup>
+  <MenubarLabel>Show</MenubarLabel>
+  <MenubarRadioGroup value={level} onValueChange={setLevel}>
+    <MenubarRadioItem value="all">All lines</MenubarRadioItem>
+    <MenubarRadioItem value="warn">Warnings and errors</MenubarRadioItem>
+    <MenubarRadioItem value="error">Errors only</MenubarRadioItem>
+  </MenubarRadioGroup>
+</MenubarGroup>`}
       >
         <MenubarStage className="min-h-60">
-          {(container) => <LogsMenubar openMenu="view" container={container} />}
+          {(container) => <LogsMenubar openMenu="level" container={container} />}
         </MenubarStage>
       </Example>
 
@@ -333,7 +341,8 @@ export default function MenubarDocs() {
           { prop: "disabled", type: "boolean", default: "false", description: "On Menubar or MenubarMenu. Turns off the whole bar or one menu." },
           { prop: "variant", type: '"default" | "destructive"', default: '"default"', description: "On MenubarItem. Destructive items use text-destructive." },
           { prop: "inset", type: "boolean", default: "false", description: "On items and labels. Indents text to line up with items that have an icon." },
-          { prop: "align / sideOffset", type: "string / number", default: '"start" / 9', description: "On MenubarContent. Opens the menu just under the bar, lined up with the trigger label." },
+          { prop: "align", type: '"start" | "center" | "end"', default: '"start"', description: "On MenubarContent. Lines the menu up with the trigger label." },
+          { prop: "sideOffset", type: "number", default: "9", description: "On MenubarContent. Distance in pixels from the trigger, so the menu opens just under the bar." },
         ]}
       />
     </Examples>

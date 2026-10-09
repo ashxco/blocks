@@ -119,9 +119,9 @@ export default function AlertDocs() {
           <InfoIcon />
           <AlertTitle>Scheduled maintenance on Sunday, 02:00 to 03:00 UTC.</AlertTitle>
         </Alert>
-        <Alert variant="success">
-          <CircleCheckIcon />
-          <AlertTitle>Environment variables saved. They apply to the next deployment.</AlertTitle>
+        <Alert variant="warning">
+          <TriangleAlertIcon />
+          <AlertTitle>Preview deployments are paused while billing is past due.</AlertTitle>
         </Alert>
       </Example>
 

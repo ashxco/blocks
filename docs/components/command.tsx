@@ -106,11 +106,11 @@ function WhenVisible({
 }
 
 /** The Lumen command list, shared by the inline and dialog examples. */
-function LumenCommands({ onRun }: { onRun: (label: string) => void }) {
+function LumenCommands({ onRun, listClassName }: { onRun: (label: string) => void; listClassName?: string }) {
   return (
     <>
       <CommandInput placeholder="Search projects and actions" />
-      <CommandList>
+      <CommandList className={listClassName}>
         <CommandEmpty>No results. Try a project name, or an action such as “deploy”.</CommandEmpty>
         <CommandGroup heading="Suggestions">
           {suggestions.map((item) => (
@@ -193,7 +193,9 @@ function InlinePalette() {
   return (
     <div className="grid w-full max-w-144 justify-items-center gap-4">
       <Command loop className="border">
-        <LumenCommands onRun={setLast} />
+        {/* Tall enough that the list ends partway through the Settings group, so it reads as scrollable.
+            In the page, not an overlay, so the wheel carries on to the page at the end of the list. */}
+        <LumenCommands onRun={setLast} listClassName="max-h-96 overscroll-auto" />
       </Command>
       <LastRun label={last} />
     </div>
@@ -206,7 +208,8 @@ type Stage = HTMLDivElement | null
  * The palette open in place, in a stage on the page. contain-layout makes the
  * stage the containing block for the fixed overlay and dialog, and isolate
  * keeps them under the site header. It is non-modal there, so the page still
- * scrolls and a click elsewhere leaves it open.
+ * scrolls and a click elsewhere leaves it open. The overlay keeps its tint but
+ * not its blur, which in a stage this small only smears the page into grey.
  */
 function DialogPalette() {
   const [container, setContainer] = React.useState<Stage>(null)
@@ -226,7 +229,7 @@ function DialogPalette() {
   }, [])
 
   return (
-    <div ref={setContainer} className="relative isolate grid min-h-152 w-full content-start overflow-hidden contain-layout">
+    <div ref={setContainer} className="relative isolate grid min-h-152 w-full content-start overflow-hidden contain-layout [&_[data-slot=dialog-overlay]]:backdrop-blur-none">
       <div className="grid justify-items-center gap-4 p-6 sm:p-12">
         <Button
           variant="outline"

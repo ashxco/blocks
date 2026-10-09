@@ -125,10 +125,13 @@ function DrawerContent({
   className,
   children,
   container,
+  showOverlay,
   ...props
 }: DrawerPrimitive.Popup.Props & {
   /** Element to portal into instead of <body>, e.g. a preview stage. */
   container?: DrawerPrimitive.Portal.Props["container"]
+  /** Draw the blurred overlay behind the drawer. Defaults to true for modal drawers. */
+  showOverlay?: boolean
 }) {
   const { hasSnapPoints, modal, showSwipeHandle, swipeDirection } = useDrawer()
   const swipeAxis =
@@ -136,7 +139,7 @@ function DrawerContent({
 
   return (
     <DrawerPortal data-slot="drawer-portal" container={container}>
-      {modal === true && (
+      {(showOverlay ?? modal === true) && (
         <DrawerOverlay data-snap-points={hasSnapPoints ? "" : undefined} />
       )}
       <DrawerPrimitive.Viewport

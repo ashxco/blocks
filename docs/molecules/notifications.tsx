@@ -3,22 +3,10 @@
 import * as React from "react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { cn } from "@/lib/utils"
+import { AppTopBarSlice } from "@/components/blocks/app-shell/top-bar"
 import { Notifications, NotificationsPanel, type NotificationItem } from "@/components/blocks/notifications"
 import { UserMenu } from "@/components/blocks/user-menu"
-
-/** A slice of the app top bar, so the trigger reads in the place it lives. */
-function TopBarSlice({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex h-(--header-height-sm) w-full max-w-xl items-center gap-3 rounded-(--card-radius) border bg-background pr-2 pl-5">
-      <span className="text-label text-muted-foreground">Acme Inc.</span>
-      <span aria-hidden="true" className="text-label text-muted-foreground">
-        /
-      </span>
-      <span className="text-label text-foreground">Overview</span>
-      <div className="ml-auto flex items-center gap-1">{children}</div>
-    </div>
-  )
-}
 
 const readItems: NotificationItem[] = [
   {
@@ -38,15 +26,21 @@ const readItems: NotificationItem[] = [
   },
 ]
 
-/** The top bar with the popover's content shown open beneath the bell, so the state is visible without a click. */
-function OpenState({ items }: { items: NotificationItem[] }) {
+/**
+ * A top bar with the notifications popover already open under the bell. The
+ * popover portals into this stage, so it follows the example's theme and
+ * width and stays in place as the page scrolls; clicking elsewhere closes it.
+ * The popover is positioned, not in flow, so each stage is as tall as its
+ * open popover, which grows in narrow canvases where the text wraps.
+ */
+function OpenStage({ items, className }: { items?: NotificationItem[]; className: string }) {
+  const [stage, setStage] = React.useState<HTMLDivElement | null>(null)
   return (
-    <div className="grid w-full max-w-xl justify-items-end gap-2">
-      <TopBarSlice>
-        <Notifications items={items} />
+    <div ref={setStage} className={cn("relative w-full max-w-3xl", className)}>
+      <AppTopBarSlice>
+        <Notifications items={items} defaultOpen container={stage} />
         <UserMenu />
-      </TopBarSlice>
-      <NotificationsPanel items={items} className="mr-2" />
+      </AppTopBarSlice>
     </div>
   )
 }
@@ -56,8 +50,7 @@ export default function NotificationsDocs() {
     <Examples>
       <Example
         title="Default"
-        description="The bell shows how many notifications are unread. Opening one marks it as read; Mark all as read clears the count."
-        minHeight="min-h-64"
+        description="The bell shows how many notifications are unread, and each unread one has a violet dot. Opening one marks it as read; Mark all as read clears the count. Shown open; click the bell to close it."
         code={`<Notifications
   items={[
     {
@@ -72,32 +65,33 @@ export default function NotificationsDocs() {
   ]}
 />`}
       >
-        <TopBarSlice>
-          <Notifications />
-          <UserMenu />
-        </TopBarSlice>
+        <OpenStage className="min-h-192 @prose:min-h-180" />
       </Example>
 
       <Example
         title="All read"
-        description="Without unread items the count disappears from the bell, the header drops its badge and Mark all as read turns off. Shown open below the bell."
-        minHeight="min-h-64"
+        description="Without unread items the count disappears from the bell, the header drops its badge and Mark all as read turns off."
         surface="subtle"
-        code={`<Notifications items={items.map((item) => ({ ...item, unread: false }))} />
-
-// The open state on its own surface, for a notifications page or a sheet
-<NotificationsPanel items={items} />`}
+        code={`<Notifications items={items.map((item) => ({ ...item, unread: false }))} />`}
       >
-        <OpenState items={readItems} />
+        <OpenStage items={readItems} className="min-h-108 @prose:min-h-96" />
       </Example>
 
       <Example
         title="Empty"
-        description="With nothing in the last 30 days, a short message takes the place of the list. Shown open below the bell."
-        minHeight="min-h-64"
+        description="With nothing in the last 30 days, a short message takes the place of the list."
         code={`<Notifications items={[]} />`}
       >
-        <OpenState items={[]} />
+        <OpenStage items={[]} className="min-h-92 @prose:min-h-84" />
+      </Example>
+
+      <Example
+        title="On a page"
+        description="NotificationsPanel is the popover’s content on its own bordered surface, without the bell, for a notifications page or a mobile sheet. It shows every item; cap its height in a sheet."
+        surface="subtle"
+        code={`<NotificationsPanel />`}
+      >
+        <NotificationsPanel />
       </Example>
 
       <Guidelines
@@ -140,6 +134,18 @@ export default function NotificationsDocs() {
             description: "Link to notification settings in the footer.",
           },
           {
+            prop: "defaultOpen",
+            type: "boolean",
+            default: "false",
+            description: "Start with the popover open, for a preview of the open state. Focus stays where it is until people use the bell.",
+          },
+          {
+            prop: "container",
+            type: "HTMLElement | null",
+            description:
+              "Portal the popover into this element instead of <body>, e.g. a preview stage. It then stays below the bell and inside the element. null waits until the element exists.",
+          },
+          {
             prop: "className",
             type: "string",
             description: "Classes for the bell button.",
@@ -158,7 +164,7 @@ export default function NotificationsDocs() {
           {
             prop: "className",
             type: "string",
-            description: "Classes for the panel. It is w-sm (24rem) by default and shows every item; cap its height in a sheet.",
+            description: "Classes for the panel. It is --popover-width-lg wide by default, like the popover, and shows every item; cap its height in a sheet.",
           },
         ]}
       />

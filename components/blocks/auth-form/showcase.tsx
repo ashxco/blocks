@@ -1,3 +1,5 @@
+import * as React from "react"
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Kern } from "@/components/ui/kern"
 import { cn } from "@/lib/utils"
@@ -6,17 +8,22 @@ import { DeployLog } from "./deploy-log"
 
 export type AuthShowcaseVariant = "sign-in" | "sign-up" | "reset"
 
-const copy: Record<AuthShowcaseVariant, { title: string; body: string }> = {
+/**
+ * Each headline is a list of sentences. A sentence renders as one unit, so the
+ * heading wraps between sentences ("Push to main. / Live in under a minute.")
+ * and never mid-clause. A sentence wider than the panel still wraps inside.
+ */
+const copy: Record<AuthShowcaseVariant, { title: string[]; body: string }> = {
   "sign-in": {
-    title: "Push to main. Live in under a minute.",
+    title: ["Push to main.", "Live in under a minute."],
     body: "Every pull request gets its own preview URL. Every merge rolls out to 38 edge regions, with logs, metrics and instant rollbacks in one place.",
   },
   "sign-up": {
-    title: "Connect a repo. Lumen does the rest.",
+    title: ["Connect a repo.", "Lumen does the rest."],
     body: "Lumen detects your framework, builds on every push and gives each pull request a preview URL. No Dockerfile or YAML to write first.",
   },
   reset: {
-    title: "Your deploys keep running.",
+    title: ["Your deploys keep running."],
     body: "Production stays live while you reset your password. Nothing ships, and nothing is rolled back, until you sign in again.",
   },
 }
@@ -45,15 +52,23 @@ export function AuthShowcase({
     <div
       data-variant={variant}
       className={cn(
-        "flex flex-1 flex-col gap-10 overflow-hidden rounded-(--panel-radius) bg-panel p-(--panel-padding-sm) text-panel-muted",
-        quote ? "justify-between" : "justify-start gap-12",
+        // justify-between on every screen: the headline holds the top edge and the last part
+        // (the quote, or the deploy log on the reset screen) the bottom one.
+        "flex flex-1 flex-col justify-between gap-10 overflow-hidden rounded-(--panel-radius) bg-panel p-(--panel-padding-sm) text-panel-muted",
         className
       )}
     >
       {/* text-h3: the form's own h1 leads the screen; this panel supports it. */}
       <div className="grid max-w-prose gap-4">
         <h2 className="text-h3 text-panel-foreground">
-          <Kern>{title}</Kern>
+          {title.map((sentence, index) => (
+            <React.Fragment key={sentence}>
+              {index > 0 ? " " : null}
+              <span className="inline-block">
+                <Kern>{sentence}</Kern>
+              </span>
+            </React.Fragment>
+          ))}
         </h2>
         <p className="max-w-104 text-body">{body}</p>
       </div>
@@ -86,8 +101,9 @@ function CustomerQuote({ className }: { className?: string }) {
         </p>
       </blockquote>
       <figcaption className="flex items-center gap-3">
+        {/* Panel colours, not a theme tint, so the avatar looks the same on the panel in both themes. */}
         <Avatar className="after:hidden">
-          <AvatarFallback tone="sand">HO</AvatarFallback>
+          <AvatarFallback className="bg-panel-raised text-panel-foreground">HO</AvatarFallback>
         </Avatar>
         <span className="grid">
           <span className="text-label text-panel-foreground">Hannah Okoye</span>

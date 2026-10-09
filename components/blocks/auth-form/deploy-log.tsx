@@ -30,7 +30,7 @@ const LINES: LogLine[] = [
 const symbol: Record<LineKind, { char: string; className: string }> = {
   prompt: { char: "$", className: "text-panel-muted" },
   note: { char: "→", className: "text-panel-muted" },
-  ok: { char: "✓", className: "text-success" },
+  ok: { char: "✓", className: "text-panel-success" },
 }
 
 /**
@@ -58,8 +58,8 @@ export function DeployLog({ className }: { className?: string }) {
   }, [])
 
   return (
-    // The terminal is dark in both themes, so the dark theme's status colours apply: they read on it in light mode too.
-    <CodeWindow title="acme/storefront · production" className={cn("dark", className)}>
+    // The terminal is dark in both themes, so status colours come from the panel tokens.
+    <CodeWindow title="acme/storefront · production" className={className}>
       <ol className="grid gap-0.5">
         {LINES.map((line, index) => {
           const visible = index < shown
@@ -96,7 +96,7 @@ export function DeployLog({ className }: { className?: string }) {
             aria-hidden="true"
             className={cn(
               "size-2 rounded-full transition-colors duration-(--duration-base)",
-              ready ? "bg-success" : "animate-pulse bg-warning"
+              ready ? "bg-panel-success" : "animate-pulse bg-panel-warning"
             )}
           />
           <span className="font-semibold">{ready ? "Ready" : "Building"}</span>

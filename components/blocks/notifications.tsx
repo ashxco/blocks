@@ -22,6 +22,7 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 export type NotificationKind =
@@ -47,6 +48,16 @@ export interface NotificationsProps {
   align?: "start" | "center" | "end"
   /** Link in the footer to the notification settings. */
   settingsHref?: string
+  /**
+   * Start with the popover open, for previews of the open state. Focus stays
+   * where it is until people use the bell.
+   */
+  defaultOpen?: boolean
+  /**
+   * Element to portal the popover into instead of <body>, e.g. a preview
+   * stage. The popover then keeps to its side of the bell inside it.
+   */
+  container?: HTMLElement | null
   className?: string
 }
 
@@ -145,13 +156,23 @@ export function Notifications({
   onMarkRead,
   align = "end",
   settingsHref = "/live/app/settings",
+  defaultOpen = false,
+  container,
   className,
 }: NotificationsProps) {
   const { list, unread, markRead } = useNotificationList(items, onMarkRead)
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(defaultOpen)
+  // Opened on load rather than by people: leave focus on the page.
+  const [shownOnLoad, setShownOnLoad] = React.useState(defaultOpen)
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        setShownOnLoad(false)
+        setOpen(next)
+      }}
+    >
       <PopoverTrigger
         render={
           <Button
@@ -178,9 +199,18 @@ export function Notifications({
       <PopoverContent
         align={align}
         sideOffset={8}
+        container={container}
+        initialFocus={shownOnLoad ? false : undefined}
+        // In a preview stage the popup keeps below its trigger and within the stage.
+        collisionAvoidance={container ? { side: "none" } : undefined}
+        collisionBoundary={container ?? undefined}
         // As tall as the list, up to the room below a top bar; only then does the list scroll. Capping it
-        // there keeps it below the bell on short screens instead of flipping beside it.
-        className="max-h-[min(var(--available-height),calc(100dvh-var(--header-height)-1rem))] w-sm max-w-[calc(100vw-2rem)] gap-0 overflow-hidden p-0"
+        // there keeps it below the bell on short screens instead of flipping beside it. In a preview stage
+        // it shows every item.
+        className={cn(
+          "@container/notifications w-(--popover-width-lg) gap-0 overflow-hidden p-0",
+          container ? "max-h-none" : "max-h-[min(var(--available-height),calc(100dvh-var(--header-height)-1rem))]"
+        )}
       >
         <NotificationsContent
           list={list}
@@ -211,7 +241,7 @@ export function NotificationsPanel({
     <div
       data-slot="notifications-panel"
       className={cn(
-        "flex w-sm max-w-full flex-col overflow-hidden rounded-(--overlay-radius) border border-input bg-popover text-sm text-popover-foreground",
+        "@container/notifications flex w-(--popover-width-lg) max-w-full flex-col overflow-hidden rounded-(--overlay-radius) border border-popover-border bg-popover text-sm text-popover-foreground",
         className
       )}
     >
@@ -240,6 +270,8 @@ function NotificationsContent({
   onNavigate?: () => void
   inPopover?: boolean
 }) {
+  const headerRef = React.useRef<HTMLDivElement>(null)
+  const narrow = useNarrowPanel(headerRef)
   const heading = (
     <>
       <span className="text-title text-foreground">Notifications</span>
@@ -249,7 +281,7 @@ function NotificationsContent({
 
   return (
     <>
-      <div className="flex shrink-0 items-center justify-between gap-4 border-b border-border px-4 py-3">
+      <div ref={headerRef} className="flex shrink-0 items-center justify-between gap-4 border-b border-border px-4 py-3">
         {inPopover ? (
           <PopoverTitle render={<h2 />} className="flex items-center gap-2">
             {heading}
@@ -257,17 +289,27 @@ function NotificationsContent({
         ) : (
           <h2 className="flex items-center gap-2">{heading}</h2>
         )}
-        <Button
-          variant="ghost"
-          size="xs"
-          disabled={unread === 0}
-          onClick={() =>
-            markRead(list.filter((item) => item.unread).map((item) => item.id))
-          }
-        >
-          <CheckCheckIcon data-icon="inline-start" />
-          Mark all as read
-        </Button>
+        {/* In a narrow panel the action keeps only its icon: its name stays for screen readers and
+            shows as a tooltip on hover and keyboard focus. Wide, the tooltip is off; the label is visible. */}
+        <Tooltip disabled={!narrow}>
+          <TooltipTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="xs"
+                disabled={unread === 0}
+                onClick={() =>
+                  markRead(list.filter((item) => item.unread).map((item) => item.id))
+                }
+                className="shrink-0 @max-[22rem]/notifications:w-(--button-height-xs) @max-[22rem]/notifications:px-0"
+              />
+            }
+          >
+            <CheckCheckIcon data-icon="inline-start" />
+            <span className="@max-[22rem]/notifications:sr-only">Mark all as read</span>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Mark all as read</TooltipContent>
+        </Tooltip>
       </div>
 
       {list.length === 0 ? (
@@ -322,7 +364,9 @@ function NotificationsContent({
               const itemClass = cn(
                 "flex w-full items-start gap-3 rounded-(--overlay-item-radius) p-3 text-left outline-none",
                 "transition-colors duration-(--duration-fast) ease-standard hover:bg-accent focus-visible:focus-ring",
-                item.unread && "bg-muted"
+                // accent/60 sits apart from bg-popover in both themes; bg-muted
+                // matches the popover in dark.
+                item.unread && "bg-accent/60"
               )
               return (
                 <li key={item.id}>
@@ -369,4 +413,28 @@ function NotificationsContent({
       </div>
     </>
   )
+}
+
+/** The width below which the header's "Mark all as read" keeps only its icon (the @max-[22rem] queries). */
+const NARROW_PANEL_REM = 22
+
+/**
+ * Whether the panel is narrower than 22rem, measured on its full-width header,
+ * so the icon-only action can show its name as a tooltip. The CSS container
+ * queries do the visual collapse; this only switches the tooltip on.
+ */
+function useNarrowPanel(ref: React.RefObject<HTMLElement | null>) {
+  const [narrow, setNarrow] = React.useState(false)
+  React.useEffect(() => {
+    const element = ref.current
+    if (!element) return
+    const observer = new ResizeObserver(([entry]) => {
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+      const width = entry.borderBoxSize?.[0]?.inlineSize ?? entry.contentRect.width
+      setNarrow(width < NARROW_PANEL_REM * rem)
+    })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [ref])
+  return narrow
 }

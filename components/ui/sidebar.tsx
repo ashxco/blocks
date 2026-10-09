@@ -65,6 +65,7 @@ function SidebarProvider({
   defaultOpenMobile = false,
   open: openProp,
   onOpenChange: setOpenProp,
+  mobile,
   className,
   style,
   children,
@@ -75,8 +76,16 @@ function SidebarProvider({
   defaultOpenMobile?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  /**
+   * Force the phone layout (true: the sidebar opens as a sheet) or the desktop
+   * layout (false). Defaults to whether the window is below the md breakpoint;
+   * pass it when the sidebar lives in a frame narrower than the window, such
+   * as a device preview.
+   */
+  mobile?: boolean
 }) {
-  const isMobile = useIsMobile()
+  const windowIsMobile = useIsMobile()
+  const isMobile = mobile ?? windowIsMobile
   const [openMobile, setOpenMobile] = React.useState(defaultOpenMobile)
 
   // Internal state, unless the sidebar is controlled with open/onOpenChange.

@@ -24,20 +24,29 @@ export default function KbdDocs() {
 <Kbd>Esc</Kbd>
 <Kbd>Enter</Kbd>`}
       >
-        <Kbd>⌘</Kbd>
-        <Kbd>⇧</Kbd>
-        <Kbd>⌥</Kbd>
-        <Kbd>Esc</Kbd>
-        <Kbd>Enter</Kbd>
-        <Kbd>
-          <CornerDownLeftIcon aria-label="Return" />
-        </Kbd>
-        <Kbd>
-          <ArrowUpIcon aria-label="Up arrow" />
-        </Kbd>
-        <Kbd>
-          <ArrowDownIcon aria-label="Down arrow" />
-        </Kbd>
+        {/* Modifiers, named keys and arrows wrap as groups, so no key is left alone on a line. */}
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <span className="flex gap-1.5">
+            <Kbd>⌘</Kbd>
+            <Kbd>⇧</Kbd>
+            <Kbd>⌥</Kbd>
+          </span>
+          <span className="flex gap-1.5">
+            <Kbd>Esc</Kbd>
+            <Kbd>Enter</Kbd>
+            <Kbd>
+              <CornerDownLeftIcon aria-label="Return" />
+            </Kbd>
+          </span>
+          <span className="flex gap-1.5">
+            <Kbd>
+              <ArrowUpIcon aria-label="Up arrow" />
+            </Kbd>
+            <Kbd>
+              <ArrowDownIcon aria-label="Down arrow" />
+            </Kbd>
+          </span>
+        </div>
       </Example>
 
       <Example

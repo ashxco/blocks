@@ -71,8 +71,8 @@ export interface BillingSummaryProps {
   invoices?: Invoice[]
   /** ISO 4217 currency code. */
   currency?: string
-  /** Pricing page for the “Compare plans” link. */
-  pricingHref?: string
+  /** Pricing page for the “Compare plans” link. Pass null to leave the link out, for a page that already compares plans. */
+  pricingHref?: string | null
   /**
    * Turns “Change plan” into a link, for pages that already show the plans,
    * such as "#change-plan". Without it the button opens the change-plan dialog.
@@ -93,7 +93,7 @@ export interface BillingSummaryProps {
 
 const defaultPlans: BillingPlan[] = [
   { id: "hobby", name: "Hobby", price: 5, description: "Side projects and experiments.", seats: 1 },
-  { id: "starter", name: "Starter", price: 20, description: "Your first real app in production.", seats: 3 },
+  { id: "starter", name: "Starter", price: 20, description: "Your first app in production.", seats: 3 },
   { id: "pro", name: "Pro", price: 39, description: "Production apps that need room to grow.", seats: 10 },
   { id: "scale", name: "Scale", price: 99, description: "Teams running serious traffic." },
 ]
@@ -110,7 +110,7 @@ const defaultInvoices: Invoice[] = [
   { id: "INV-2026-010", date: "Oct 1, 2026", description: "Pro plan, October", amount: 39, status: "paid" },
   { id: "INV-2026-009", date: "Sep 1, 2026", description: "Pro plan, September", amount: 39, status: "paid" },
   { id: "INV-2026-008", date: "Aug 1, 2026", description: "Pro plan, August, plus 120 GB bandwidth", amount: 45, status: "paid" },
-  { id: "INV-2026-007", date: "Jul 14, 2026", description: "Upgrade from Starter to Pro, prorated", amount: 12.58, status: "paid" },
+  { id: "INV-2026-007", date: "Jul 14, 2026", description: "Upgrade from Starter to Pro, prorated", amount: 11.03, status: "paid" },
   { id: "INV-2026-006", date: "Jul 1, 2026", description: "Starter plan, July", amount: 20, status: "paid" },
 ]
 
@@ -189,7 +189,12 @@ export function BillingSummary({
   return (
     <div data-slot="billing-summary" className={cn("@container grid gap-6", className)}>
       {failed ? (
-        <Alert variant="destructive">
+        // In a narrow container the action drops below the text, as it does on phones,
+        // so the description keeps the full width.
+        <Alert
+          variant="destructive"
+          className="@max-sm:has-[>svg]:has-data-[slot=alert-action]:grid-cols-[auto_1fr]"
+        >
           <CircleAlertIcon aria-hidden="true" />
           <AlertTitle>
             The {failed.date} payment of {formatAmount(failed.amount, currency)} failed
@@ -198,7 +203,7 @@ export function BillingSummary({
             We couldn’t charge the {payment.brand} ending in {payment.last4}. Pay now, or update the card and we
             retry within a day.
           </AlertDescription>
-          <AlertAction>
+          <AlertAction className="@max-sm:col-span-full @max-sm:mt-2 @max-sm:self-auto @max-sm:group-has-[>svg]/alert:pl-7 @max-sm:group-has-data-[slot=alert-description]/alert:row-auto">
             <Button size="sm" disabled={paying} onClick={() => void payNow(failed)}>
               {paying ? <Spinner data-icon="inline-start" /> : null}
               {paying ? "Paying" : "Pay now"}
@@ -221,9 +226,8 @@ export function BillingSummary({
               <p className="text-sm">{plan.description}</p>
             </div>
             <Badge variant="outline" className="gap-1.5 border-panel-border text-panel-foreground">
-              {/* A dark scope gives the dot the dark theme's colours, which read on the panel in both themes. */}
               <span
-                className={cn("dark size-1.5 rounded-full", failed ? "bg-warning" : "bg-success")}
+                className={cn("size-1.5 rounded-full", failed ? "bg-panel-warning" : "bg-panel-success")}
                 aria-hidden="true"
               />
               {failed ? "Past due" : "Active"}
@@ -278,9 +282,11 @@ export function BillingSummary({
                 }}
               />
             )}
-            <Button variant="outline-inverse" nativeButton={false} render={<Link href={pricingHref} />}>
-              Compare plans
-            </Button>
+            {pricingHref ? (
+              <Button variant="outline-inverse" nativeButton={false} render={<Link href={pricingHref} />}>
+                Compare plans
+              </Button>
+            ) : null}
           </div>
         </section>
 
@@ -296,8 +302,12 @@ export function BillingSummary({
             <div className="flex items-center gap-4 rounded-(--control-radius) border bg-subtle p-4">
               <CardMark brand={payment.brand} />
               <div className="min-w-0">
-                <p className="truncate text-label text-foreground">
-                  {payment.brand} ending in <span className="tabular-nums">{payment.last4}</span>
+                {/* Wraps instead of truncating, so the last four digits always show. */}
+                <p className="text-label text-foreground">
+                  {payment.brand}{" "}
+                  <span className="whitespace-nowrap">
+                    ending in <span className="tabular-nums">{payment.last4}</span>
+                  </span>
                 </p>
                 <p className="text-caption text-muted-foreground tabular-nums">Expires {payment.expires}</p>
               </div>
@@ -365,17 +375,17 @@ export function BillingSummary({
           <CardDescription>Receipts are also emailed to {payment.email}.</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Below the prose width the date and status sit under the number, so three columns fit a
-              phone. The outer cells line up with the card text. */}
+          {/* Below the prose width the date and status sit under the number and the download sits
+              before the amount, so two columns fit a phone. The outer cells line up with the card text. */}
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead className="pl-0">Invoice</TableHead>
                 <TableHead className="hidden @prose:table-cell">Date</TableHead>
                 <TableHead className="hidden @narrow:table-cell">Description</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="pr-0 text-right @prose:pr-4">Amount</TableHead>
                 <TableHead className="hidden @prose:table-cell">Status</TableHead>
-                <TableHead className="w-0 pr-0">
+                <TableHead className="hidden w-0 pr-0 @prose:table-cell">
                   <span className="sr-only">Download</span>
                 </TableHead>
               </TableRow>
@@ -383,10 +393,10 @@ export function BillingSummary({
             <TableBody>
               {shownInvoices.map((invoice) => (
                 <TableRow key={invoice.id} className="in-data-[slot=table-body]:hover:bg-transparent">
-                  <TableCell className="py-3 pl-0 @prose:py-0">
+                  <TableCell className="py-3 pl-0 whitespace-normal @prose:py-0">
                     <span className="block font-mono text-xs text-foreground">{invoice.id}</span>
-                    <span className="mt-1 flex items-center gap-2 @prose:hidden">
-                      <span className="text-caption text-muted-foreground">{invoice.date}</span>
+                    <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 @prose:hidden">
+                      <span className="text-caption whitespace-nowrap text-muted-foreground">{invoice.date}</span>
                       <InvoiceStatus status={invoice.status} />
                     </span>
                   </TableCell>
@@ -394,13 +404,18 @@ export function BillingSummary({
                   <TableCell className="hidden max-w-80 truncate text-copy @narrow:table-cell">
                     {invoice.description}
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-foreground tabular-nums">
-                    {formatAmount(invoice.amount, currency)}
+                  <TableCell className="pr-0 text-right font-semibold text-foreground tabular-nums @prose:pr-4">
+                    <span className="inline-flex items-center gap-2">
+                      <span className="@prose:hidden">
+                        <InvoiceDownload invoice={invoice} />
+                      </span>
+                      {formatAmount(invoice.amount, currency)}
+                    </span>
                   </TableCell>
                   <TableCell className="hidden @prose:table-cell">
                     <InvoiceStatus status={invoice.status} />
                   </TableCell>
-                  <TableCell className="pr-0 text-right">
+                  <TableCell className="hidden pr-0 text-right @prose:table-cell">
                     <InvoiceDownload invoice={invoice} />
                   </TableCell>
                 </TableRow>

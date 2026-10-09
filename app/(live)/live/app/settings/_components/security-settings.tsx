@@ -57,6 +57,8 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
  */
 const itemList = "@container/items -my-3.5"
 const itemActions = "@max-[28rem]/items:basis-full @max-[28rem]/items:pl-14"
+/** Two-step rows vary in height (the passkey list), so every action sits at the top, beside the title. */
+const methodActions = cn(itemActions, "self-start")
 
 /** Security tab: password, two-step verification and signed-in devices. */
 export function SecuritySettings() {
@@ -203,13 +205,13 @@ function TwoStepSection() {
                 Authenticator app
                 {authenticator ? <Badge variant="success">On</Badge> : <Badge variant="outline">Off</Badge>}
               </ItemTitle>
-              <ItemDescription className="line-clamp-none">
+              <ItemDescription className="line-clamp-none text-caption">
                 {authenticator
                   ? "Six-digit codes from 1Password, Authy or Google Authenticator. Set up on Mar 3, 2026."
                   : "Use an app such as 1Password, Authy or Google Authenticator to get sign-in codes."}
               </ItemDescription>
             </ItemContent>
-            <ItemActions className={itemActions}>
+            <ItemActions className={methodActions}>
               {/* One button that changes its label, so focus stays put when the state flips. */}
               <Button
                 type="button"
@@ -231,7 +233,7 @@ function TwoStepSection() {
                 Passkeys
                 <Badge variant="secondary">{passkeys.length}</Badge>
               </ItemTitle>
-              <ItemDescription className="line-clamp-none">Sign in with Touch ID, Windows Hello or a security key instead of a code.</ItemDescription>
+              <ItemDescription className="line-clamp-none text-caption">Sign in with Touch ID, Windows Hello or a security key instead of a code.</ItemDescription>
               <ul className="mt-2 grid gap-1.5">
                 {passkeys.map((key) => (
                   <li key={key.id} className="flex flex-wrap items-baseline gap-x-2 text-sm">
@@ -241,7 +243,7 @@ function TwoStepSection() {
                 ))}
               </ul>
             </ItemContent>
-            <ItemActions className={cn(itemActions, "self-start")}>
+            <ItemActions className={methodActions}>
               <Button
                 type="button"
                 variant="outline"
@@ -264,11 +266,11 @@ function TwoStepSection() {
             </ItemMedia>
             <ItemContent>
               <ItemTitle className="text-label">Recovery codes</ItemTitle>
-              <ItemDescription className="line-clamp-none">
+              <ItemDescription className="line-clamp-none text-caption">
                 {unused} of {codes.length} codes left. Each one signs you in once if you lose your phone and keys.
               </ItemDescription>
             </ItemContent>
-            <ItemActions className={itemActions}>
+            <ItemActions className={methodActions}>
               <RecoveryCodesDialog codes={codes} onRegenerate={setCodes} />
             </ItemActions>
           </Item>
@@ -280,12 +282,12 @@ function TwoStepSection() {
             </ItemMedia>
             <ItemContent>
               <ItemTitle className="text-label" id={`${requireId}-title`}>Require it in Acme Inc.</ItemTitle>
-              <ItemDescription id={`${requireId}-description`} className="line-clamp-none">
+              <ItemDescription id={`${requireId}-description`} className="line-clamp-none text-caption">
                 Members without two-step verification set it up the next time they sign in. Only owners and admins
                 can change this.
               </ItemDescription>
             </ItemContent>
-            <ItemActions className={cn(itemActions, "self-start")}>
+            <ItemActions className={methodActions}>
               <Switch
                 aria-labelledby={`${requireId}-title`}
                 aria-describedby={`${requireId}-description`}
@@ -303,7 +305,7 @@ function TwoStepSection() {
       </div>
 
       <AlertDialog open={confirmOff} onOpenChange={setConfirmOff}>
-        <AlertDialogContent className="max-w-[calc(100%-2rem)] sm:max-w-(--dialog-width)">
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Turn off the authenticator app?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -417,7 +419,7 @@ function SessionsSection() {
                   {session.device}
                   {session.current ? <Badge variant="brand">This device</Badge> : null}
                 </ItemTitle>
-                <ItemDescription className="line-clamp-none">
+                <ItemDescription className="line-clamp-none text-caption">
                   {session.client} · {session.location} · {session.lastActive}
                 </ItemDescription>
               </ItemContent>
@@ -445,7 +447,7 @@ function SessionsSection() {
       </div>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent className="max-w-[calc(100%-2rem)] sm:max-w-(--dialog-width)">
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Sign out of every other session?</AlertDialogTitle>
             <AlertDialogDescription>

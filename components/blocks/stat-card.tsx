@@ -107,9 +107,9 @@ export function StatCard({
         <span
           className={cn(
             "inline-flex items-center gap-0.5 font-semibold tabular",
-            good ? "text-success" : "text-destructive",
-            // On the panel the status colours take their dark-theme values, which read in both themes.
-            panel && "dark"
+            panel
+              ? good ? "text-panel-success" : "text-panel-destructive"
+              : good ? "text-success" : "text-destructive"
           )}
         >
           <ChangeIcon aria-hidden="true" className="size-3.5" />

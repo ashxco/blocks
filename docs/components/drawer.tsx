@@ -23,9 +23,11 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { cn } from "@/lib/utils"
 
 const logLines = [
   { time: "12:05:09", level: "info", text: "GET /api/projects 200 in 41ms" },
@@ -51,13 +53,15 @@ type Stage = HTMLDivElement | null
 /**
  * The stage an example's drawer opens into, so the page shows the drawer
  * itself. contain-layout makes the stage the containing block for the fixed
- * drawer, and isolate keeps it under the site header. The drawer is non-modal
- * there, so it has no overlay and the page still scrolls.
+ * drawer and its overlay, and isolate keeps them under the site header. The
+ * drawer is non-modal there, so the docs page still scrolls; showOverlay draws
+ * the overlay a modal drawer would have, with its tint but not its blur, which
+ * in a stage this small only smears the page into grey.
  */
 function DrawerStage({ children }: { children: (container: Stage) => React.ReactNode }) {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout">
+    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout [&_[data-slot=drawer-overlay]]:backdrop-blur-none">
       <div className="grid content-start gap-8 p-6 sm:p-12">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="grid gap-1">
@@ -89,6 +93,17 @@ const previewRows = [
 /** Open in place on the docs page: no focus move, no scroll lock, no dismissal on outside clicks. */
 const inlineDrawer = { defaultOpen: true, modal: false, disablePointerDismissal: true } as const
 
+/**
+ * The content half of an in-place drawer: it draws the overlay a modal drawer
+ * would have, and lets the wheel carry on to the page once the drawer has
+ * nothing left to scroll.
+ */
+const inlineContent = {
+  initialFocus: false,
+  showOverlay: true,
+  className: "[&_[data-slot=drawer-content]]:overscroll-auto",
+} as const
+
 const snapPoints = ["168px", 1]
 
 /**
@@ -107,7 +122,7 @@ function SnapPointsDrawer({ container }: { container: Stage }) {
         <ScrollTextIcon data-icon="inline-start" />
         Live logs
       </DrawerTrigger>
-      <DrawerContent container={container} initialFocus={false} className={snapInStage}>
+      <DrawerContent container={container} {...inlineContent} className={cn(inlineContent.className, snapInStage)}>
         <DrawerHeader>
           <DrawerTitle>Live logs</DrawerTitle>
           <DrawerDescription>lumen-web · production · drag up for more</DrawerDescription>
@@ -124,6 +139,13 @@ function SnapPointsDrawer({ container }: { container: Stage }) {
     </Drawer>
   )
 }
+
+const deploymentFilters = [
+  { id: "production", label: "Production", checked: true },
+  { id: "preview", label: "Preview", checked: true },
+  { id: "failed", label: "Failed builds", checked: false },
+  { id: "mine", label: "Created by me", checked: false },
+]
 
 type Direction = "left" | "right"
 
@@ -153,16 +175,17 @@ function SideDrawersDemo() {
           // A new drawer for each edge, so it opens from that edge.
           <Drawer key={direction} {...inlineDrawer} swipeDirection={direction}>
             <DrawerTrigger render={<Button variant="outline" />}>Filters</DrawerTrigger>
-            <DrawerContent container={container} initialFocus={false}>
+            <DrawerContent container={container} {...inlineContent}>
               <DrawerHeader>
                 <DrawerTitle>Filters</DrawerTitle>
                 <DrawerDescription>Narrow the deployments list.</DrawerDescription>
               </DrawerHeader>
-              <div className="grid gap-1 px-(--dialog-padding)">
-                {["Production", "Preview", "Failed builds", "Created by me"].map((label) => (
-                  <Button key={label} variant="ghost" className="justify-start">
-                    {label}
-                  </Button>
+              <div role="group" aria-label="Deployment filters" className="grid gap-4 px-(--dialog-padding) pt-2">
+                {deploymentFilters.map((filter) => (
+                  <Field key={filter.id} orientation="horizontal">
+                    <Checkbox id={`drawer-filter-${filter.id}`} defaultChecked={filter.checked} />
+                    <FieldLabel htmlFor={`drawer-filter-${filter.id}`}>{filter.label}</FieldLabel>
+                  </Field>
                 ))}
               </div>
               <DrawerFooter>
@@ -205,7 +228,7 @@ export default function DrawerDocs() {
                 <SendIcon data-icon="inline-start" />
                 Share preview
               </DrawerTrigger>
-              <DrawerContent container={container} initialFocus={false}>
+              <DrawerContent container={container} {...inlineContent}>
                 <DrawerHeader>
                   <DrawerTitle>Share this preview</DrawerTitle>
                   <DrawerDescription>Anyone with the link can view feat-billing until the branch is merged.</DrawerDescription>
@@ -261,31 +284,31 @@ const [snapPoint, setSnapPoint] = React.useState(snapPoints[0])
           {(container) => (
             <Drawer {...inlineDrawer}>
               <DrawerTrigger render={<Button />}>Deployment actions</DrawerTrigger>
-              <DrawerContent container={container} initialFocus={false}>
+              <DrawerContent container={container} {...inlineContent}>
                 <DrawerHeader>
                   <DrawerTitle>Deployment 8f2c1a9</DrawerTitle>
                   <DrawerDescription>main · Ready · 4 minutes ago</DrawerDescription>
                 </DrawerHeader>
-                <div className="grid gap-1 px-(--dialog-padding)">
-                  <Button variant="ghost" size="lg" className="justify-start">
+                <div className="grid gap-2 px-(--dialog-padding)">
+                  <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
                     <ExternalLinkIcon data-icon="inline-start" />
                     Visit deployment
                   </Button>
-                  <Button variant="ghost" size="lg" className="justify-start">
+                  <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
                     <QrCodeIcon data-icon="inline-start" />
                     Open on another device
                   </Button>
-                  <Button variant="ghost" size="lg" className="justify-start">
+                  <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
                     <RotateCcwIcon data-icon="inline-start" />
                     Redeploy
                   </Button>
-                  <Button variant="ghost" size="lg" className="justify-start text-destructive hover:text-destructive">
+                  <Button variant="outline" size="lg" className="w-full justify-start bg-transparent text-destructive hover:border-destructive">
                     <Undo2Icon data-icon="inline-start" />
                     Roll back production
                   </Button>
                 </div>
                 <DrawerFooter>
-                  <DrawerClose render={<Button variant="outline" size="lg" />}>Cancel</DrawerClose>
+                  <DrawerClose render={<Button variant="ghost" size="lg" className="w-full" />}>Cancel</DrawerClose>
                 </DrawerFooter>
               </DrawerContent>
             </Drawer>
@@ -314,6 +337,7 @@ const [snapPoint, setSnapPoint] = React.useState(snapPoints[0])
           { prop: "snapPoint", type: "number | string | null", description: "Controlled active snap point. Pair with onSnapPointChange." },
           { prop: "open", type: "boolean", description: "Controlled open state. Pair with onOpenChange." },
           { prop: "modal", type: 'boolean | "trap-focus"', default: "true", description: "Shows the overlay, locks scroll and traps focus." },
+          { prop: "showOverlay", type: "boolean", default: "true when modal", description: "On DrawerContent. Draws the blurred overlay behind the drawer, also for a non-modal drawer." },
           { prop: "render", type: "ReactElement", description: "On DrawerTrigger and DrawerClose. Render as a Button." },
         ]}
       />

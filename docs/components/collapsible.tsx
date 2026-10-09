@@ -35,6 +35,27 @@ function VariableRow({ name, env }: { name: string; env: string }) {
   )
 }
 
+/** Starts open so the preview shows the panel; the label says what the trigger will do next. */
+function BuildOutput() {
+  const [open, setOpen] = React.useState(true)
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="grid w-full max-w-xl justify-items-start">
+      <CollapsibleTrigger render={<Button variant="outline" size="sm" />}>
+        {open ? "Hide build output" : "Show build output"}
+        <ChevronDownIcon
+          data-icon="inline-end"
+          className="transition-transform duration-(--duration-base) ease-out group-data-panel-open/collapsible-trigger:rotate-180"
+        />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="w-full">
+        <pre className="mt-4 overflow-x-auto rounded-(--control-radius) border bg-terminal p-4 font-mono text-code text-terminal-foreground">
+          {buildLog.join("\n")}
+        </pre>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+
 export default function CollapsibleDocs() {
   const [open, setOpen] = React.useState(false)
 
@@ -42,7 +63,7 @@ export default function CollapsibleDocs() {
     <Examples>
       <Example
         title="Default"
-        description="Compose the trigger with the render prop. The panel opens with a height transition; the chevron reads data-panel-open from its trigger."
+        description="Compose the trigger with the render prop. The panel opens and closes with a height transition, and the chevron reads data-panel-open from its trigger. Name what the trigger does next: Hide while the panel is open."
         layout="stack"
         code={`<Collapsible>
   <CollapsibleTrigger render={<Button variant="outline" size="sm" />}>
@@ -57,20 +78,7 @@ export default function CollapsibleDocs() {
   </CollapsibleContent>
 </Collapsible>`}
       >
-        <Collapsible className="grid justify-items-start">
-          <CollapsibleTrigger render={<Button variant="outline" size="sm" />}>
-            Show build output
-            <ChevronDownIcon
-              data-icon="inline-end"
-              className="transition-transform duration-(--duration-base) ease-out group-data-panel-open/collapsible-trigger:rotate-180"
-            />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="w-full">
-            <pre className="mt-4 overflow-x-auto rounded-(--control-radius) bg-terminal p-4 font-mono text-code text-terminal-foreground">
-              {buildLog.join("\n")}
-            </pre>
-          </CollapsibleContent>
-        </Collapsible>
+        <BuildOutput />
       </Example>
 
       <Example

@@ -110,7 +110,7 @@ function SelectableMembers() {
             </TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Role</TableHead>
-            <TableHead className="text-right">Last active</TableHead>
+            <TableHead className="hidden text-right @md:table-cell">Last active</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -136,7 +136,7 @@ function SelectableMembers() {
                   </div>
                 </TableCell>
                 <TableCell className="text-copy">{member.role}</TableCell>
-                <TableCell className="text-right text-muted-foreground">{member.lastActive}</TableCell>
+                <TableCell className="hidden text-right text-muted-foreground @md:table-cell">{member.lastActive}</TableCell>
               </TableRow>
             )
           })}
@@ -152,68 +152,82 @@ export default function TableDocs() {
       <Example
         title="Deployments"
         layout="stack"
-        description="The plain table sits straight on the page. Lead with the column people scan first, keep secondary details muted and right-align numbers."
+        description="The plain table sits straight on the page. Lead with the column people scan first, keep secondary details muted and right-align numbers. In narrow containers, hide the secondary columns with container queries and move status under the commit, so the message keeps the width it needs."
         code={`<Table>
   <TableHeader>
     <TableRow>
       <TableHead>Commit</TableHead>
-      <TableHead>Status</TableHead>
-      <TableHead className="text-right">Duration</TableHead>
+      <TableHead className="hidden @md:table-cell">Status</TableHead>
+      <TableHead className="hidden text-right @xl:table-cell">Duration</TableHead>
     </TableRow>
   </TableHeader>
   <TableBody>
     {deployments.map((d) => (
       <TableRow key={d.id}>
-        <TableCell className="font-semibold">{d.message}</TableCell>
-        <TableCell><Badge variant="success">{d.status}</Badge></TableCell>
-        <TableCell className="text-right">{d.duration}</TableCell>
+        <TableCell className="whitespace-normal">
+          <p className="font-semibold @max-md:line-clamp-2 @md:truncate">{d.message}</p>
+          <Badge variant="success" className="@md:hidden">{d.status}</Badge>
+        </TableCell>
+        <TableCell className="hidden @md:table-cell">
+          <Badge variant="success">{d.status}</Badge>
+        </TableCell>
+        <TableCell className="hidden text-right @xl:table-cell">{d.duration}</TableCell>
       </TableRow>
     ))}
   </TableBody>
 </Table>`}
       >
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Commit</TableHead>
-              <TableHead>Branch</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Duration</TableHead>
-              <TableHead className="text-right">Created</TableHead>
-              <TableHead className="w-12">
-                <span className="sr-only">Actions</span>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {deployments.map((d) => (
-              <TableRow key={d.id}>
-                <TableCell>
-                  <div className="grid min-w-48 max-w-72">
-                    <span className="truncate font-semibold">{d.message}</span>
-                    <span className="font-mono text-xs text-muted-foreground">{d.commit}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <span className="inline-flex items-center gap-1.5 text-copy">
-                    <GitBranchIcon aria-hidden="true" className="size-3.5 text-muted-foreground" />
-                    {d.branch}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <StatusBadge status={d.status} />
-                </TableCell>
-                <TableCell className="text-right text-copy">{d.duration}</TableCell>
-                <TableCell className="text-right text-muted-foreground">{d.age}</TableCell>
-                <TableCell className="pr-2">
-                  <Button size="icon-sm" variant="ghost" aria-label={`Actions for ${d.commit}`}>
-                    <MoreHorizontalIcon />
-                  </Button>
-                </TableCell>
+        {/* Its own container, so the queries below measure the table, not the padded stage around it. */}
+        <div className="@container w-full">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Commit</TableHead>
+                <TableHead className="hidden @3xl:table-cell">Branch</TableHead>
+                <TableHead className="hidden @md:table-cell">Status</TableHead>
+                <TableHead className="hidden text-right @xl:table-cell">Duration</TableHead>
+                <TableHead className="hidden text-right @md:table-cell">Created</TableHead>
+                <TableHead className="w-12">
+                  <span className="sr-only">Actions</span>
+                </TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {deployments.map((d) => (
+                <TableRow key={d.id}>
+                  <TableCell className="py-3 whitespace-normal">
+                    <div className="grid max-w-72 gap-1 @md:gap-0 @3xl:min-w-48">
+                      {/* Narrow: the message wraps to two lines and status moves under it. */}
+                      <span className="font-semibold @max-md:line-clamp-2 @md:truncate">{d.message}</span>
+                      <span className="flex items-center gap-2">
+                        <span className="font-mono text-xs text-muted-foreground">{d.commit}</span>
+                        <span className="@md:hidden">
+                          <StatusBadge status={d.status} />
+                        </span>
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="hidden @3xl:table-cell">
+                    <span className="inline-flex items-center gap-1.5 text-copy">
+                      <GitBranchIcon aria-hidden="true" className="size-3.5 text-muted-foreground" />
+                      {d.branch}
+                    </span>
+                  </TableCell>
+                  <TableCell className="hidden @md:table-cell">
+                    <StatusBadge status={d.status} />
+                  </TableCell>
+                  <TableCell className="hidden text-right text-copy @xl:table-cell">{d.duration}</TableCell>
+                  <TableCell className="hidden text-right text-muted-foreground @md:table-cell">{d.age}</TableCell>
+                  <TableCell className="pr-2">
+                    <Button size="icon-sm" variant="ghost" aria-label={`Actions for ${d.commit}`}>
+                      <MoreHorizontalIcon />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Example>
 
       <Example
@@ -237,8 +251,8 @@ export default function TableDocs() {
           <TableHeader>
             <TableRow>
               <TableHead>Project</TableHead>
-              <TableHead className="text-right">Builds</TableHead>
-              <TableHead className="text-right">Build minutes</TableHead>
+              <TableHead className="hidden text-right @md:table-cell">Builds</TableHead>
+              <TableHead className="hidden text-right @sm:table-cell">Build minutes</TableHead>
               <TableHead className="text-right">Bandwidth</TableHead>
             </TableRow>
           </TableHeader>
@@ -246,8 +260,8 @@ export default function TableDocs() {
             {usage.map((row) => (
               <TableRow key={row.project}>
                 <TableCell className="font-semibold">{row.project}</TableCell>
-                <TableCell className="text-right text-copy">{numberFormat.format(row.builds)}</TableCell>
-                <TableCell className="text-right text-copy">{numberFormat.format(row.minutes)}</TableCell>
+                <TableCell className="hidden text-right text-copy @md:table-cell">{numberFormat.format(row.builds)}</TableCell>
+                <TableCell className="hidden text-right text-copy @sm:table-cell">{numberFormat.format(row.minutes)}</TableCell>
                 <TableCell className="text-right text-copy">{row.bandwidth.toFixed(1)} GB</TableCell>
               </TableRow>
             ))}
@@ -255,8 +269,8 @@ export default function TableDocs() {
           <TableFooter>
             <TableRow>
               <TableCell>Total</TableCell>
-              <TableCell className="text-right">840</TableCell>
-              <TableCell className="text-right">2,475</TableCell>
+              <TableCell className="hidden text-right @md:table-cell">840</TableCell>
+              <TableCell className="hidden text-right @sm:table-cell">2,475</TableCell>
               <TableCell className="text-right">323.4 GB</TableCell>
             </TableRow>
           </TableFooter>
@@ -273,15 +287,21 @@ export default function TableDocs() {
           <TableHeader>
             <TableRow>
               <TableHead>Key</TableHead>
-              <TableHead>Environments</TableHead>
+              <TableHead className="hidden @lg:table-cell">Environments</TableHead>
               <TableHead className="text-right">Updated</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {variables.map((v) => (
               <TableRow key={v.key}>
-                <TableCell className="font-mono text-xs font-medium">{v.key}</TableCell>
-                <TableCell className="text-copy">{v.env}</TableCell>
+                <TableCell>
+                  <div className="grid">
+                    <span className="font-mono text-xs font-medium">{v.key}</span>
+                    {/* In a narrow container the environments sit under the key. */}
+                    <span className="text-caption text-muted-foreground @lg:hidden">{v.env}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="hidden text-copy @lg:table-cell">{v.env}</TableCell>
                 <TableCell className="text-right text-muted-foreground">{v.updated}</TableCell>
               </TableRow>
             ))}

@@ -54,14 +54,22 @@ function StatefulPagination({
             aria-disabled={page === 1 || undefined}
           />
         </PaginationItem>
-        {pageWindow(page, total).map((p, i) =>
+        {pageWindow(page, total).map((p, i, items) =>
           p === "ellipsis" ? (
             <PaginationItem key={`ellipsis-${i}`}>
               <PaginationEllipsis />
             </PaginationItem>
           ) : (
-            // On phones, keep the first, last and current page; neighbours return from sm up.
-            <PaginationItem key={p} className={p !== page && p !== 1 && p !== total ? "max-sm:hidden" : undefined}>
+            // On phones, a neighbour of the current page hides when an ellipsis already stands
+            // for the pages beyond it, so no page is ever skipped without a mark.
+            <PaginationItem
+              key={p}
+              className={
+                (p < page && items[i - 1] === "ellipsis") || (p > page && items[i + 1] === "ellipsis")
+                  ? "max-sm:hidden"
+                  : undefined
+              }
+            >
               <PaginationLink href={`#page-${p}`} size={size} isActive={p === page} onClick={go(p)}>
                 {p}
               </PaginationLink>

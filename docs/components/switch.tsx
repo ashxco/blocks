@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, tokenPx } from "@/docs/kit"
 import {
   Card,
   CardContent,
@@ -13,13 +13,6 @@ import {
 } from "@/components/ui/card"
 import { Field, FieldContent, FieldDescription, FieldLabel } from "@/components/ui/field"
 import { Switch } from "@/components/ui/switch"
-import { tokens } from "@/design-system/generated/tokens"
-
-/** A dimension token as a px number, read from the generated tokens so the copy follows the system. */
-function tokenPx(cssVar: string) {
-  const value = tokens.find((token) => token.cssVar === cssVar)?.value
-  return typeof value === "string" && value.endsWith("rem") ? parseFloat(value) * 16 : Number.NaN
-}
 
 const switchSizes = {
   sm: `${tokenPx("--switch-width-sm")} × ${tokenPx("--switch-height-sm")}px`,
@@ -182,7 +175,7 @@ export default function SwitchDocs() {
   <Switch id="previews" defaultChecked />
 </Field>`}
       >
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-sm">
           <Field orientation="horizontal">
             <FieldContent>
               <FieldLabel htmlFor="sw-desc">Preview deployments</FieldLabel>
@@ -221,7 +214,7 @@ export default function SwitchDocs() {
   <Switch id="protect" variant="inverse" defaultChecked />
 </Field>`}
       >
-        <div className="grid w-full max-w-md gap-6">
+        <div className="grid w-full max-w-sm gap-6">
           {panelSettings.map((setting) => (
             <Field key={setting.id} orientation="horizontal">
               <FieldContent>

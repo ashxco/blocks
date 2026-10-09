@@ -46,7 +46,7 @@ const frameworks = [
 const regions = [
   { value: "fra1", label: "Frankfurt (fra1)" },
   { value: "lhr1", label: "London (lhr1)" },
-  { value: "iad1", label: "Washington, D.C. (iad1)" },
+  { value: "iad1", label: "Virginia (iad1)" },
   { value: "sfo1", label: "San Francisco (sfo1)" },
   { value: "hnd1", label: "Tokyo (hnd1)" },
   { value: "syd1", label: "Sydney (syd1)" },
@@ -265,7 +265,7 @@ function CreateProjectForm() {
                         placeholder="API_URL"
                         spellCheck={false}
                         autoComplete="off"
-                        className="font-mono text-ellipsis"
+                        className="col-start-1 row-start-1 font-mono text-ellipsis"
                         aria-invalid={
                           Boolean(errors.env) && !/^[A-Z_][A-Z0-9_]*$/.test(row.key) && Boolean(row.key || row.value)
                         }
@@ -277,7 +277,7 @@ function CreateProjectForm() {
                         placeholder="https://api.acme.dev"
                         spellCheck={false}
                         autoComplete="off"
-                        className="col-span-2 row-start-2 font-mono text-ellipsis @xl/form:col-span-1 @xl/form:row-start-auto"
+                        className="col-start-1 row-start-2 font-mono text-ellipsis @xl/form:col-start-2 @xl/form:row-start-1"
                       />
                       <Button
                         type="button"
@@ -285,7 +285,7 @@ function CreateProjectForm() {
                         size="icon"
                         aria-label={`Remove ${row.key || `variable ${index + 1}`}`}
                         onClick={() => setEnv((rows) => rows.filter((r) => r.id !== row.id))}
-                        className="text-muted-foreground hover:text-foreground"
+                        className="col-start-2 row-span-2 row-start-1 self-center text-muted-foreground hover:text-foreground @xl/form:col-start-3 @xl/form:row-span-1"
                       >
                         <Trash2Icon />
                       </Button>
@@ -358,7 +358,7 @@ export default function FieldDocs() {
       <Example
         title="Anatomy"
         layout="stack"
-        description="A label, the control and a description, 8px apart. The label names the value; the description says how it is used."
+        description="A label, the control and a description in one tight stack (gap-2). The label names the value; the description says how it is used."
         code={`<Field>
   <FieldLabel htmlFor="project">Project name</FieldLabel>
   <Input id="project" placeholder="acme-web" />
@@ -377,7 +377,7 @@ export default function FieldDocs() {
       <Example
         title="Description first"
         layout="stack"
-        description="Put the description under the label when people need it before they type. It tucks up to 4px from the label."
+        description="Put the description under the label when people need it before they type. It tucks in closer to the label than to the control."
         code={`<Field>
   <FieldLabel htmlFor="build">Build command</FieldLabel>
   <FieldDescription>Runs in the project root after dependencies install.</FieldDescription>
@@ -429,7 +429,7 @@ export default function FieldDocs() {
   <FieldLabel htmlFor="failures">Email me when a production build fails</FieldLabel>
 </Field>`}
       >
-        <div className="grid w-full max-w-md gap-6">
+        <div className="grid w-full max-w-sm gap-6">
           <Field orientation="horizontal">
             <FieldContent>
               <FieldLabel htmlFor="field-previews">Preview deployments</FieldLabel>
@@ -500,7 +500,7 @@ export default function FieldDocs() {
       <Example
         title="Choice cards"
         layout="stack"
-        description="Wrap a horizontal field in FieldLabel to make the whole card clickable. The selected card takes an ink border."
+        description="Wrap a horizontal field in FieldLabel to make the whole card clickable. Every choice card in Blocks has one anatomy: the text leads and the radio, checkbox or switch sits at the top right. The selected card takes an ink border."
         code={`const plans = [
   { value: "hobby", title: "Hobby", description: "Personal projects. 100 GB bandwidth." },
   { value: "pro", title: "Pro", description: "Teams shipping to production. 1 TB bandwidth." },
@@ -699,7 +699,7 @@ export default function FieldDocs() {
           { prop: "FieldDescription", type: "<p>", description: "Caption-size helper text in muted foreground. Links inside are ink and underlined." },
           { prop: "FieldError", type: "<div role=alert>", description: "Destructive caption with an icon. Pass children, or errors={[{ message }]} to list several." },
           { prop: "FieldContent", type: "<div>", description: "Stacks a label and description beside a control in horizontal fields." },
-          { prop: "FieldGroup", type: "<div>", description: "Stacks fields 24px apart and is the container for responsive fields." },
+          { prop: "FieldGroup", type: "<div>", description: "Stacks fields with gap-6, a wider rhythm than inside a field, and is the container for responsive fields." },
           { prop: "FieldSet / FieldLegend", type: '<fieldset> / <legend variant="legend" | "label">', description: "Groups related controls. The legend variant is a bold section title; label matches FieldLabel." },
           { prop: "FieldSeparator", type: "<div>", description: "A hairline with optional centred text, such as “or”." },
         ]}

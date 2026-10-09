@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRightIcon, CopyIcon, DownloadIcon, PlusIcon, Trash2Icon } from "lucide-react"
+import { ArrowRightIcon, DownloadIcon, PlusIcon, Trash2Icon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -11,7 +11,7 @@ export default function ButtonDocs() {
     <Examples>
       <Example
         title="Variants"
-        description="Every variant in two rows. The ink family handles everyday actions. Brand and destructive are for the one action that matters most on a view, so use one of them at a time, never next to primary."
+        description="The ink family on the first row handles everyday actions. Brand and destructive mark the one action that matters most on a view. They share a row here only for comparison: in a product, use one of them at a time and never next to primary."
         code={`<Button>Get started</Button>
 <Button variant="secondary">Cancel</Button>
 <Button variant="outline">Self-host</Button>
@@ -37,6 +37,19 @@ export default function ButtonDocs() {
       </Example>
 
       <Example
+        title="Hierarchy"
+        thumbnail
+        description="Give a view one primary action. An outline button carries the alternative and a ghost button the action people can skip."
+        code={`<Button variant="ghost">Skip for now</Button>
+<Button variant="outline">Save draft</Button>
+<Button>Deploy</Button>`}
+      >
+        <Button variant="ghost">Skip for now</Button>
+        <Button variant="outline">Save draft</Button>
+        <Button>Deploy</Button>
+      </Example>
+
+      <Example
         title="Sizes"
         description="Medium is the default. Large is for heroes and calls to action; small and extra small suit toolbars, table rows and input addons."
         code={`<Button size="xs">Extra small</Button>
@@ -44,10 +57,10 @@ export default function ButtonDocs() {
 <Button>Medium</Button>
 <Button size="lg">Large</Button>
 
-<Button size="icon-xs" variant="outline" aria-label="Copy"><CopyIcon /></Button>
-<Button size="icon-sm" variant="outline" aria-label="Copy"><CopyIcon /></Button>
-<Button size="icon" variant="outline" aria-label="Copy"><CopyIcon /></Button>
-<Button size="icon-lg" variant="outline" aria-label="Copy"><CopyIcon /></Button>`}
+<Button size="icon-xs" variant="outline" aria-label="Add domain"><PlusIcon /></Button>
+<Button size="icon-sm" variant="outline" aria-label="Add domain"><PlusIcon /></Button>
+<Button size="icon" variant="outline" aria-label="Add domain"><PlusIcon /></Button>
+<Button size="icon-lg" variant="outline" aria-label="Add domain"><PlusIcon /></Button>`}
       >
         <div className="grid justify-items-center gap-6">
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -57,17 +70,17 @@ export default function ButtonDocs() {
             <Button size="lg">Large</Button>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button size="icon-xs" variant="outline" aria-label="Copy, extra small">
-              <CopyIcon />
+            <Button size="icon-xs" variant="outline" aria-label="Add domain, extra small">
+              <PlusIcon />
             </Button>
-            <Button size="icon-sm" variant="outline" aria-label="Copy, small">
-              <CopyIcon />
+            <Button size="icon-sm" variant="outline" aria-label="Add domain, small">
+              <PlusIcon />
             </Button>
-            <Button size="icon" variant="outline" aria-label="Copy, medium">
-              <CopyIcon />
+            <Button size="icon" variant="outline" aria-label="Add domain, medium">
+              <PlusIcon />
             </Button>
-            <Button size="icon-lg" variant="outline" aria-label="Copy, large">
-              <CopyIcon />
+            <Button size="icon-lg" variant="outline" aria-label="Add domain, large">
+              <PlusIcon />
             </Button>
           </div>
         </div>
@@ -148,13 +161,21 @@ export default function ButtonDocs() {
 
       <Example
         title="As a link"
-        description="Render any element with the render prop. Set nativeButton to false when it is not a button."
+        description="Render a Next.js Link, or any other element, with the render prop. Set nativeButton to false when it is not a button. Any variant works, including link for a quieter text action."
         code={`<Button variant="outline" nativeButton={false} render={<Link href="/pricing" />}>
   See pricing
+</Button>
+<Button variant="link" nativeButton={false} render={<Link href="/changelog" />}>
+  Read the changelog
+  <ArrowRightIcon data-icon="inline-end" />
 </Button>`}
       >
         <Button nativeButton={false} render={<a href="#pricing" />} variant="outline">
           See pricing
+        </Button>
+        <Button nativeButton={false} render={<a href="#changelog" />} variant="link">
+          Read the changelog
+          <ArrowRightIcon data-icon="inline-end" />
         </Button>
       </Example>
 

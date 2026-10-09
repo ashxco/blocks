@@ -210,7 +210,7 @@ export function PlanPicker({
       </ul>
 
       <AlertDialog open={open} onOpenChange={(next) => !pending && setOpen(next)}>
-        <AlertDialogContent className="max-w-[calc(100%-2rem)] sm:max-w-(--dialog-width)">
+        <AlertDialogContent>
           {change ? (
             <ConfirmBody
               from={change.from}

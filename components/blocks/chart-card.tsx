@@ -152,6 +152,23 @@ function formatValue(
   }
 }
 
+/** Room each date label needs on the x-axis, so evenly stepped labels never collide. */
+const DATE_LABEL_SPACE = 64
+const MAX_DATE_LABELS = 6
+
+/** The element's width, kept up to date; null until it has been measured. */
+function useWidth<T extends HTMLElement>() {
+  const [element, setElement] = React.useState<T | null>(null)
+  const [width, setWidth] = React.useState<number | null>(null)
+  React.useEffect(() => {
+    if (!element || typeof ResizeObserver === "undefined") return
+    const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width))
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [element])
+  return [setElement, width] as const
+}
+
 function formatDay(date: string, long = false) {
   return new Date(`${date}T00:00:00Z`).toLocaleDateString("en-US", {
     month: "short",
@@ -188,6 +205,7 @@ export function ChartCard({
 }: ChartCardProps) {
   const [period, setPeriod] = React.useState<ChartPeriod>(defaultPeriod)
   const titleId = React.useId()
+  const [plotRef, plotWidth] = useWidth<HTMLDivElement>()
 
   const visible = React.useMemo(
     () => data.slice(-periodDays[period]),
@@ -221,11 +239,14 @@ export function ChartCard({
     )
     return niceTicks(Math.max(0, ...values))
   }, [visible, comparison])
-  // Evenly stepped date labels, counted back from the latest day so it is always labelled.
+  // Evenly stepped date labels, counted back from the latest day so it is always labelled. As
+  // many as the chart's width has room for, so all of them show and none is dropped.
   const dateTicks = React.useMemo(() => {
-    const step = Math.max(1, Math.ceil(visible.length / 6))
+    const room = plotWidth === null ? MAX_DATE_LABELS : Math.floor(plotWidth / DATE_LABEL_SPACE)
+    const labels = Math.min(MAX_DATE_LABELS, Math.max(2, room))
+    const step = Math.max(1, Math.ceil(visible.length / labels))
     return visible.filter((_, index) => (visible.length - 1 - index) % step === 0).map((point) => point.date)
-  }, [visible])
+  }, [visible, plotWidth])
   const yAxis = {
     tickLine: false,
     axisLine: false,
@@ -335,7 +356,7 @@ export function ChartCard({
       {/* The chart fills whatever height the card gets (a grid row next to a
           taller card, say) and never less than its own minimum. It is
           positioned absolutely so its measured size can't hold the row open. */}
-      <div className="relative min-h-64 flex-1 @min-[40rem]/chart:min-h-72">
+      <div ref={plotRef} className="relative min-h-64 flex-1 @min-[40rem]/chart:min-h-72">
         <ChartContainer
           config={config}
           className="absolute inset-0 aspect-auto px-2 pb-4"
@@ -353,8 +374,7 @@ export function ChartCard({
                 axisLine={false}
                 tickMargin={10}
                 ticks={dateTicks}
-                interval="preserveEnd"
-                minTickGap={8}
+                interval={0}
                 tickFormatter={(value: string) => formatDay(value)}
               />
               <YAxis {...yAxis} />
@@ -387,8 +407,7 @@ export function ChartCard({
                 axisLine={false}
                 tickMargin={10}
                 ticks={dateTicks}
-                interval="preserveEnd"
-                minTickGap={8}
+                interval={0}
                 tickFormatter={(value: string) => formatDay(value)}
               />
               <YAxis {...yAxis} />

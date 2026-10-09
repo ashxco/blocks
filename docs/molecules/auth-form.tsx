@@ -52,7 +52,7 @@ export default function AuthFormDocs() {
   </div>
 </div>`}
       >
-        <div className="@container p-4 sm:p-6">
+        <div className="@container p-4 @prose:p-6">
           <div className="grid overflow-hidden rounded-(--panel-radius) border bg-background @min-[60rem]:grid-cols-2">
             <div className="flex min-w-0 flex-col px-6 @min-[60rem]:px-10">
               <div className="flex h-(--header-height) items-center">

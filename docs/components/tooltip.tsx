@@ -44,16 +44,17 @@ type Stage = HTMLDivElement | null
 
 /**
  * The examples show a tooltip already open, portalled into the example so it
- * follows the example's theme and stays under the site header. Each stage is
- * its own tooltip group: only one tooltip in a group shows at a time, so
- * hovering another trigger hands over to it.
+ * follows the example's theme, and isolate keeps its z-index inside the
+ * example so it scrolls under the site header. Each stage is its own tooltip
+ * group: only one tooltip in a group shows at a time, so hovering another
+ * trigger hands over to it.
  */
 function TooltipStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
     <TooltipProvider>
       <StageContext.Provider value={container}>
-        <div ref={setContainer} className={cn("relative flex flex-wrap items-center justify-center gap-4", className)}>
+        <div ref={setContainer} className={cn("relative isolate flex flex-wrap items-center justify-center gap-4", className)}>
           {children(container)}
         </div>
       </StageContext.Provider>
@@ -205,34 +206,46 @@ export default function TooltipDocs() {
 
       <Example
         title="On a toolbar"
-        description="Tooltips in a group open instantly once the first one is showing, so people can scan a toolbar quickly."
+        description="Tooltips in a group open instantly once the first one is showing, so people can scan a toolbar quickly. Move the pointer along the bar: Redeploy hands over to the next action without a delay."
       >
-        <div className="flex items-center gap-1 rounded-full border bg-background p-1">
-          {actions.slice(0, 3).map(({ label, icon: Icon }) => (
-            <Tooltip key={label}>
-              <TooltipTrigger render={<Button variant="ghost" size="icon-sm" aria-label={label} />}>
-                <Icon />
-              </TooltipTrigger>
-              <TooltipContent side="bottom">{label}</TooltipContent>
-            </Tooltip>
-          ))}
-          <span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label="Delete deployment"
-                  className="text-destructive hover:text-destructive"
-                />
-              }
-            >
-              <Trash2Icon />
-            </TooltipTrigger>
-            <TooltipContent side="bottom">Delete deployment</TooltipContent>
-          </Tooltip>
-        </div>
+        <TooltipStage className="pb-10">
+          {(container) => (
+            <div className="flex items-center gap-1 rounded-full border bg-background p-1">
+              {actions.slice(0, 3).map(({ label, icon: Icon }, index) => {
+                // The first action shows its tooltip on load; hover along the bar and it hands over.
+                const Root = index === 0 ? ShownTooltip : Tooltip
+                return (
+                  <Root key={label}>
+                    <TooltipTrigger render={<Button variant="ghost" size="icon-sm" aria-label={label} />}>
+                      <Icon />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" container={container} {...pinnedTo(container)}>
+                      {label}
+                    </TooltipContent>
+                  </Root>
+                )
+              })}
+              <span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label="Delete deployment"
+                      className="text-destructive hover:text-destructive"
+                    />
+                  }
+                >
+                  <Trash2Icon />
+                </TooltipTrigger>
+                <TooltipContent side="bottom" container={container} {...pinnedTo(container)}>
+                  Delete deployment
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          )}
+        </TooltipStage>
       </Example>
 
       <Guidelines

@@ -10,9 +10,10 @@ function toValues(input: number | readonly number[] | undefined) {
 }
 
 /**
- * Blocks slider. A grey track (muted foreground at 40%, so it stays visible
- * on the dark canvas too) with an ink range and an ink thumb set in a
- * canvas-coloured ring, so the thumb cuts cleanly through the track. Pass a
+ * Blocks slider. A grey track (muted foreground at 75%, the same edge as an
+ * unchecked checkbox, so its full length reaches 3:1 on the canvas in both
+ * themes) with an ink range and an ink thumb set in a canvas-coloured ring,
+ * so the thumb cuts cleanly through the track. Pass a
  * number for one thumb or an array for a range. The violet focus outline
  * sits on the thumb.
  *
@@ -60,7 +61,7 @@ function Slider({
       >
         <SliderPrimitive.Track
           data-slot="slider-track"
-          className="relative grow overflow-hidden rounded-full bg-muted-foreground/40 select-none data-horizontal:h-1.5 data-horizontal:w-full data-vertical:h-full data-vertical:w-1.5"
+          className="relative grow overflow-hidden rounded-full bg-muted-foreground/75 select-none data-horizontal:h-1.5 data-horizontal:w-full data-vertical:h-full data-vertical:w-1.5"
         >
           <SliderPrimitive.Indicator
             data-slot="slider-range"

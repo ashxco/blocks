@@ -3,7 +3,6 @@ import * as React from "react"
 import { formatRatio, textContrast, wcagLevel } from "./color"
 import {
   colorAlias,
-  primaryColorUtility,
   primitiveScales,
   roleName,
   semanticGroups,
@@ -36,18 +35,38 @@ function darkRef(t: DesignToken) {
   return t.dark ? describeColor(String(t.dark.value), t.dark.ref) : lightRef(t)
 }
 
-/** Roles listed right after a related role rather than in source order. */
-const placeAfter: Record<string, string> = { "--panel-brand": "--panel-muted" }
+/*
+ * Display order for groups whose source order reads poorly: the panel-* run
+ * (surfaces, line and text, then the status accents), with terminal, its own
+ * surface, last. Roles not listed follow in source order.
+ */
+const displayOrder: Record<string, string[]> = {
+  panel: [
+    "--panel",
+    "--panel-raised",
+    "--panel-border",
+    "--panel-muted",
+    "--panel-brand",
+    "--panel-success",
+    "--panel-warning",
+    "--panel-destructive",
+    "--terminal",
+  ],
+}
 
 function ordered(list: DesignToken[]) {
-  const rest = list.filter((t) => !placeAfter[t.cssVar])
-  for (const t of list) {
-    const anchor = placeAfter[t.cssVar]
-    if (!anchor) continue
-    const i = rest.findIndex((r) => r.cssVar === anchor)
-    rest.splice(i === -1 ? rest.length : i + 1, 0, t)
+  const order = displayOrder[list[0]?.group ?? ""]
+  if (!order) return list
+  const rank = (t: DesignToken) => {
+    const i = order.indexOf(t.cssVar)
+    return i === -1 ? order.length : i
   }
-  return rest
+  return [...list].sort((a, b) => rank(a) - rank(b))
+}
+
+/** The utility hint from the token build, or the bare variable for a role without one. */
+function utilityOf(t: DesignToken) {
+  return t.utility ?? `var(${t.cssVar})`
 }
 
 type Base = "background" | "panel"
@@ -73,6 +92,21 @@ function parentOf(t: DesignToken) {
   return t.cssVar.endsWith("-foreground") ? t.cssVar.replace(/-foreground$/, "") : undefined
 }
 
+/*
+ * How a role is drawn, from the first utility the build suggests: border and
+ * outline roles as a line, text roles as "Aa" on their canvas, the rest as a
+ * fill. Status colours that are also fills (text-info · bg-info) stay fills;
+ * accents on panels (text-panel-brand · bg-panel-brand) are mostly text, so
+ * they show as text on the panel.
+ */
+function kindOf(t: DesignToken, on?: DesignToken): Role["kind"] {
+  if (on) return "fill"
+  const utility = utilityOf(t)
+  if (/^(border|outline)-/.test(utility)) return "line"
+  if (utility.startsWith("text-") && (!utility.includes(" bg-") || t.group === "panel")) return "text"
+  return "fill"
+}
+
 function rolesOf(list: DesignToken[]): Role[] {
   const inGroup = new Set(list.map((t) => t.cssVar))
   const folded = new Set(list.filter((t) => inGroup.has(parentOf(t) ?? "")).map((t) => t.cssVar))
@@ -80,21 +114,13 @@ function rolesOf(list: DesignToken[]): Role[] {
     .filter((t) => !folded.has(t.cssVar))
     .map((t) => {
       const on = list.find((f) => folded.has(f.cssVar) && parentOf(f) === t.cssVar)
-      const utility = primaryColorUtility(t)
-      const kind = on
-        ? "fill"
-        : utility.startsWith("text-") && !utility.includes("bg-")
-          ? "text"
-          : utility.startsWith("border-") || utility.startsWith("outline-")
-            ? "line"
-            : "fill"
-      return { token: t, on, kind }
+      return { token: t, on, kind: kindOf(t, on) }
     })
 }
 
 function roleUtilities(role: Role) {
-  const fill = primaryColorUtility(role.token)
-  return role.on ? `${fill} · ${primaryColorUtility(role.on)}` : fill
+  const fill = utilityOf(role.token)
+  return role.on ? `${fill} · ${utilityOf(role.on)}` : fill
 }
 
 /** The fill's description, plus the text role's when it says more than "Text on …". */
@@ -119,7 +145,8 @@ function SwatchHalf({ role, theme, size }: { role: Role; theme: "light" | "dark"
   const text = size === "md" ? "text-h4" : "text-title"
   return (
     <div className={cn(theme, "relative grid place-items-center", base === "panel" ? "bg-panel" : "bg-background")}>
-      {role.kind === "fill" ? (
+      {t.cssVar === "--overlay" ? <OverlayScene /> : null}
+      {role.kind === "fill" && t.cssVar !== "--overlay" ? (
         <div
           className="absolute inset-0"
           style={{ backgroundColor: `var(${t.cssVar})`, color: role.on ? `var(${role.on.cssVar})` : undefined }}
@@ -134,8 +161,13 @@ function SwatchHalf({ role, theme, size }: { role: Role; theme: "light" | "dark"
       ) : null}
       {role.kind === "line" ? (
         <span
-          // A control-shaped outline: reads as a line at every swatch width.
-          className="absolute inset-x-2 top-1/2 h-6 -translate-y-1/2 rounded-sm border-(length:--border-width-strong) @prose:inset-x-3 @prose:h-8 @prose:rounded-md"
+          // A control-shaped outline, wider than tall, so it reads as a line at every swatch width.
+          className={cn(
+            "absolute top-1/2 -translate-y-1/2 border-(length:--border-width-strong)",
+            size === "sm"
+              ? "inset-x-2 h-3.5 rounded-xs"
+              : "inset-x-2 h-4 rounded-xs @prose:inset-x-3 @prose:h-8 @prose:rounded-md"
+          )}
           style={{ borderColor: `var(${t.cssVar})` }}
         />
       ) : null}
@@ -143,50 +175,83 @@ function SwatchHalf({ role, theme, size }: { role: Role; theme: "light" | "dark"
   )
 }
 
+/*
+ * The backdrop only shows against something to dim: a few lines of page
+ * content, with the backdrop over the right two thirds so the dimmed part
+ * sits next to the clear one. On a black canvas a plain fill shows nothing.
+ */
+function OverlayScene() {
+  return (
+    <>
+      <span className="absolute inset-x-2 top-1/2 grid -translate-y-1/2 gap-1.5 @prose:inset-x-3">
+        <span className="h-1.5 w-full rounded-full bg-foreground" />
+        <span className="h-1.5 w-3/4 rounded-full bg-muted-foreground" />
+        <span className="h-1.5 w-1/2 rounded-full bg-muted-foreground" />
+      </span>
+      <span className="absolute inset-y-0 right-0 left-1/3" style={{ backgroundColor: "var(--overlay)" }} />
+    </>
+  )
+}
+
 /** Light on the left, dark on the right. */
 function RoleSwatch({ role, size = "md", className }: { role: Role; size?: "sm" | "md"; className?: string }) {
   return (
-    // The hairline between the halves keeps them apart when both themes share a value.
-    <div aria-hidden className={cn("grid grid-cols-2 divide-x overflow-hidden rounded-lg border", className)}>
+    <div aria-hidden className={cn("relative grid grid-cols-2 overflow-hidden rounded-lg border", className)}>
       <SwatchHalf role={role} theme="light" size={size} />
       <SwatchHalf role={role} theme="dark" size={size} />
+      {/*
+       * The hairline between the halves keeps them apart when both themes
+       * share a value. It sits outside both theme scopes so it takes the
+       * page's border colour, like the frame around it.
+       */}
+      <span className="absolute inset-y-0 left-1/2 w-px bg-border" />
     </div>
   )
 }
 
-/** One theme's primitives for a role. Wraps between the fill and its text role, never inside one. */
+/**
+ * One theme's primitives for a role. Wraps between the fill and its text
+ * role, never inside one, and the separator stays at the end of the line it
+ * follows rather than starting the next.
+ */
 function RefLine({ role, theme }: { role: Role; theme: "light" | "dark" }) {
+  const refs = roleRefs(role, theme).split(" · ")
   return (
     <dd className="flex flex-wrap gap-x-1.5 font-mono text-xs text-foreground">
-      {roleRefs(role, theme)
-        .split(" · ")
-        .map((ref, i) => (
-          <span key={i} className="whitespace-nowrap">
-            {i > 0 ? "· " : ""}
-            {ref}
-          </span>
-        ))}
+      {refs.map((ref, i) => (
+        <span key={i} className="whitespace-nowrap">
+          {ref}
+          {i < refs.length - 1 ? " ·" : ""}
+        </span>
+      ))}
     </dd>
   )
 }
 
+/*
+ * From @prose, tiles sit several to a row: the text column fills the row's
+ * height and the Light and Dark lines sit at its foot, so they line up across
+ * tiles whose descriptions differ in length.
+ */
 function RoleTile({ role, compact = false }: { role: Role; compact?: boolean }) {
   return (
-    <li className="grid grid-cols-[5.5rem_minmax(0,1fr)] content-start items-start gap-4 @prose:grid-cols-1">
+    <li className="grid grid-cols-[5.5rem_minmax(0,1fr)] content-start items-start gap-4 @prose:grid-cols-1 @prose:grid-rows-[auto_minmax(0,1fr)] @prose:items-stretch">
       <RoleSwatch role={role} className={compact ? "h-14" : "h-16"} />
-      <div className="grid min-w-0 gap-1.5">
+      <div className="flex min-w-0 flex-col gap-1.5">
         <h4 className="text-title text-foreground">{roleName(role.token)}</h4>
         <CodeList value={roleUtilities(role)} className="text-muted-foreground" />
         {!compact && roleDescription(role) ? <p className="text-caption text-copy">{roleDescription(role)}</p> : null}
         {/* One line per theme, label first: the same at every width, and it fits four-across tiles. */}
-        <dl className="mt-1 grid gap-1 border-t pt-2.5">
-          {(["light", "dark"] as const).map((theme) => (
-            <div key={theme} className="grid grid-cols-[2.75rem_minmax(0,1fr)] items-baseline gap-2">
-              <dt className="text-caption text-muted-foreground">{theme === "light" ? "Light" : "Dark"}</dt>
-              <RefLine role={role} theme={theme} />
-            </div>
-          ))}
-        </dl>
+        <div className="mt-auto pt-1">
+          <dl className="grid gap-1 border-t pt-2.5">
+            {(["light", "dark"] as const).map((theme) => (
+              <div key={theme} className="grid grid-cols-[2.75rem_minmax(0,1fr)] items-baseline gap-2">
+                <dt className="text-caption text-muted-foreground">{theme === "light" ? "Light" : "Dark"}</dt>
+                <RefLine role={role} theme={theme} />
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
     </li>
   )
@@ -299,10 +364,11 @@ const groupBlurb: Record<string, string> = {
   interactive: "Fills for actions, controls and hovered or selected rows.",
   brand: "Violet, used sparingly: links, focus, active indicators and one highlighted word.",
   status: "Each status has a strong colour for text and fills, and a quiet fill for banners and badges.",
-  "lines & focus": "Hairlines, control borders, the focus outline and the backdrop behind dialogs.",
-  panel: "Dark emphasis surfaces. They stay dark in both themes; use panel-brand for violet on them.",
+  "lines & focus": "Hairlines, control and overlay edges, the focus outline and the backdrop behind dialogs.",
+  panel:
+    "Dark emphasis surfaces. They stay dark in both themes and sit above the canvas in dark mode. Accents on them use the panel roles: panel-brand for violet, and panel-success, panel-warning and panel-destructive for status.",
   tint: "Flat decorative fills for covers, avatars and placeholders.",
-  chart: "Data series in order. Fill marks with fill-chart-1, or read var(--chart-1) in chart config.",
+  chart: "Data series in order. Marks take the fill and stroke utilities; chart config reads the variable.",
   sidebar: "The app sidebar copies the page roles, so an app shell can be themed on its own.",
 }
 
@@ -467,6 +533,9 @@ const contrastPairs: { text: string; surface: string; use: string }[] = [
   { text: "--panel-foreground", surface: "--panel", use: "Headings on panels" },
   { text: "--panel-muted", surface: "--panel", use: "Body text on panels" },
   { text: "--panel-brand", surface: "--panel", use: "Links and highlights on panels" },
+  { text: "--panel-success", surface: "--panel", use: "Success on panels" },
+  { text: "--panel-warning", surface: "--panel", use: "Warnings on panels" },
+  { text: "--panel-destructive", surface: "--panel", use: "Errors on panels" },
   { text: "--terminal-foreground", surface: "--terminal", use: "Code and terminal output" },
 ]
 
@@ -587,7 +656,7 @@ export function ColorsFoundation({ title, description }: { title: string; descri
       <Section
         id="roles"
         title="Semantic roles"
-        description="Components only use roles, so switching theme never touches component code. Most roles point at a primitive in each theme; lines and overlays are a primitive at reduced opacity, and the dark subtle fills and tints are tuned one-offs, shown as raw OKLCH. Every swatch shows light on the left and dark on the right; Aa is the text role made for that fill."
+        description="Components only use roles, so switching theme never touches component code. Most roles point at a primitive in each theme. Dark-mode lines, both overlays and the panel's muted text and hairline are a primitive at reduced opacity; in dark mode the quiet fills (brand-subtle and the status -subtle roles) and the tints are tuned one-offs, shown as raw OKLCH. Every swatch shows light on the left and dark on the right; Aa is the text role made for that fill."
       >
         <SemanticRoles />
       </Section>

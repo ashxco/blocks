@@ -12,7 +12,7 @@ export default function DangerZoneDocs() {
         layout="full"
         code={`<DangerZone projectName="web" />`}
       >
-        <div className="p-(--card-padding) sm:p-10">
+        <div className="p-(--card-padding) @prose:p-10">
           <DangerZone />
         </div>
       </Example>
@@ -48,7 +48,7 @@ export default function DangerZoneDocs() {
   ]}
 />`}
       >
-        <div className="p-(--card-padding) sm:p-10">
+        <div className="p-(--card-padding) @prose:p-10">
           <DangerZone
             projectName="acme"
             description="Deleting the workspace removes every project in it."
@@ -86,7 +86,7 @@ export default function DangerZoneDocs() {
           "Place the danger zone last on the settings page, after everything people change often.",
           "Say exactly what goes away, and whether it can be undone.",
           "Require typing the name for anything that deletes data.",
-          "Keep the heading in full ink. Only the edge, the icon and the final button carry the destructive colour.",
+          "Keep the heading in full ink. Red marks the edge, the icon and the actions that delete something; reversible actions stay neutral.",
         ]}
         dont={[
           "Don’t fill every button red. Reversible actions use the outline style.",

@@ -29,31 +29,103 @@ const requests = [
   { time: "14:02:24", method: "DELETE", path: "/api/env/REDIS_URL", status: 204, ms: 57 },
 ]
 
-function Pane({ label, size }: { label: string; size?: number }) {
+const pageSource = `export default async function Page() {
+  const projects = await lumen.projects.list()
+  return <ProjectGrid projects={projects} />
+}`
+
+const buildOutput = [
+  "Compiled 184 routes in 17.6s",
+  "Collecting page data",
+  "Generating static pages (38/38)",
+  "Deployment ready at lumen-web.lumen.app",
+]
+
+const variables = ["DATABASE_URL", "STRIPE_SECRET_KEY", "REDIS_URL", "SENTRY_DSN"]
+
+const deploys = [
+  { message: "Cache build output", status: "Ready" },
+  { message: "Preview comments", status: "Building" },
+  { message: "Bump Node to 22", status: "Failed" },
+]
+
+const logLines = ["GET /api/projects 200", "POST /api/deployments 201", "GET /api/domains 500", "GET /api/usage 200"]
+
+/** The bar along the top of a pane: what it shows, and an optional readout on the right. */
+function PaneHeader({ title, meta }: { title: React.ReactNode; meta?: React.ReactNode }) {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-1 p-6">
-      <span className="text-title text-foreground">{label}</span>
-      {size !== undefined ? (
-        <span className="text-caption text-muted-foreground tabular-nums">{Math.round(size)}%</span>
-      ) : null}
+    <div className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-border px-4">
+      <p className="truncate text-label text-foreground">{title}</p>
+      {meta !== undefined ? <p className="shrink-0 text-caption text-muted-foreground tabular-nums">{meta}</p> : null}
     </div>
   )
+}
+
+function FileTree() {
+  return (
+    // minmax(0, 1fr) lets the track shrink below the names, so they ellipsize instead of clipping.
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-0.5 p-2">
+      {files.map((f) => (
+        <div
+          key={f.name}
+          style={{ paddingLeft: `${0.5 + f.depth * 1}rem` }}
+          className={
+            f.active
+              ? "flex h-8 items-center gap-2 rounded-sm bg-sidebar-accent pr-2 text-sm font-semibold text-sidebar-accent-foreground"
+              : "flex h-8 items-center gap-2 rounded-sm pr-2 text-sm text-copy"
+          }
+        >
+          {f.folder ? (
+            <FolderIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+          ) : (
+            <FileCodeIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+          )}
+          <span className="truncate">{f.name}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function Source() {
+  return (
+    <pre className="min-h-0 flex-1 overflow-auto p-4 font-mono text-code text-copy">
+      <code>{pageSource}</code>
+    </pre>
+  )
+}
+
+const statusDot: Record<string, string> = {
+  Ready: "bg-success",
+  Building: "bg-info",
+  Failed: "bg-destructive",
 }
 
 function LiveSizes() {
   const [left, setLeft] = React.useState(35)
   const [right, setRight] = React.useState(65)
   return (
-    <div className="h-64 w-full max-w-2xl overflow-hidden rounded-(--card-radius) border border-border bg-card">
-      <ResizablePanelGroup orientation="horizontal">
-        <ResizablePanel defaultSize="35%" minSize="20%" onResize={(size) => setLeft(size.asPercentage)}>
-          <Pane label="Sidebar" size={left} />
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize="65%" minSize="30%" onResize={(size) => setRight(size.asPercentage)}>
-          <Pane label="Content" size={right} />
-        </ResizablePanel>
-      </ResizablePanelGroup>
+    // On a phone the group keeps a readable width and scrolls sideways.
+    <div className="w-full max-w-2xl overflow-x-auto overscroll-x-contain rounded-(--card-radius) border border-border bg-card">
+      <div className="h-64 min-w-md">
+        <ResizablePanelGroup orientation="horizontal">
+          <ResizablePanel defaultSize="35%" minSize="20%" onResize={(size) => setLeft(size.asPercentage)} className="bg-sidebar">
+            <div className="flex h-full flex-col">
+              <PaneHeader title="Files" meta={`${Math.round(left)}%`} />
+              <div className="min-h-0 flex-1 overflow-auto">
+                <FileTree />
+              </div>
+            </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize="65%" minSize="30%" onResize={(size) => setRight(size.asPercentage)}>
+            <div className="flex h-full flex-col">
+              <PaneHeader title="page.tsx" meta={`${Math.round(right)}%`} />
+              <Source />
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
     </div>
   )
 }
@@ -77,19 +149,31 @@ export default function ResizableDocs() {
         title="Vertical"
         description={`Stack panels with orientation="vertical". The handle lies flat and the grip turns with it.`}
         code={`<ResizablePanelGroup orientation="vertical">
-  <ResizablePanel defaultSize="60%">Editor</ResizablePanel>
+  <ResizablePanel defaultSize="55%">Editor</ResizablePanel>
   <ResizableHandle withHandle />
-  <ResizablePanel defaultSize="40%">Output</ResizablePanel>
+  <ResizablePanel defaultSize="45%">Output</ResizablePanel>
 </ResizablePanelGroup>`}
       >
         <div className="h-72 w-full max-w-md overflow-hidden rounded-(--card-radius) border border-border bg-card">
           <ResizablePanelGroup orientation="vertical">
-            <ResizablePanel defaultSize="60%" minSize="25%">
-              <Pane label="Editor" />
+            <ResizablePanel defaultSize="55%" minSize="25%">
+              <div className="flex h-full flex-col">
+                <PaneHeader title="page.tsx" />
+                <Source />
+              </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize="40%" minSize="20%">
-              <Pane label="Output" />
+            <ResizablePanel defaultSize="45%" minSize="20%">
+              <div className="flex h-full flex-col">
+                <PaneHeader title="Output" meta="npm run build" />
+                <ol className="min-h-0 flex-1 overflow-auto px-4 py-3 font-mono text-xs text-copy">
+                  {buildOutput.map((line) => (
+                    <li key={line} className="truncate py-0.5">
+                      {line}
+                    </li>
+                  ))}
+                </ol>
+              </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
@@ -100,20 +184,55 @@ export default function ResizableDocs() {
         description="Leave out withHandle where the split is obvious. The line still darkens on hover and turns violet while you drag it."
         code={`<ResizableHandle />`}
       >
-        <div className="h-48 w-full max-w-2xl overflow-hidden rounded-(--card-radius) border border-border bg-card">
-          <ResizablePanelGroup orientation="horizontal">
-            <ResizablePanel defaultSize="33%" minSize="15%">
-              <Pane label="One" />
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize="34%" minSize="15%">
-              <Pane label="Two" />
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize="33%" minSize="15%">
-              <Pane label="Three" />
-            </ResizablePanel>
-          </ResizablePanelGroup>
+        {/* Three panes need about 36rem; a narrower stage scrolls sideways instead of squeezing them. */}
+        <div className="w-full max-w-2xl overflow-x-auto overscroll-x-contain rounded-(--card-radius) border border-border bg-card">
+          <div className="h-56 min-w-xl">
+            <ResizablePanelGroup orientation="horizontal">
+              <ResizablePanel defaultSize="33%" minSize="20%">
+                <div className="flex h-full flex-col">
+                  <PaneHeader title="Variables" />
+                  <ul className="min-h-0 flex-1 overflow-auto px-4 py-2">
+                    {variables.map((key) => (
+                      <li key={key} className="truncate py-1.5 font-mono text-xs text-foreground">
+                        {key}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel defaultSize="34%" minSize="20%">
+                <div className="flex h-full flex-col">
+                  <PaneHeader title="Deployments" />
+                  <ul className="min-h-0 flex-1 overflow-auto px-4 py-2">
+                    {deploys.map((d) => (
+                      <li key={d.message} className="flex items-center gap-2 py-1.5 text-sm text-copy">
+                        <span aria-hidden="true" className={`size-1.5 shrink-0 rounded-full ${statusDot[d.status]}`} />
+                        <span className="truncate">{d.message}</span>
+                        <span className="sr-only">{d.status}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel defaultSize="33%" minSize="20%">
+                <div className="flex h-full flex-col">
+                  <PaneHeader title="Logs" meta="Live" />
+                  <ul className="min-h-0 flex-1 overflow-auto px-4 py-2">
+                    {logLines.map((line) => (
+                      <li
+                        key={line}
+                        className={`truncate py-1.5 font-mono text-xs ${line.endsWith("500") ? "text-destructive" : "text-copy"}`}
+                      >
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </div>
         </div>
       </Example>
 
@@ -126,26 +245,9 @@ export default function ResizableDocs() {
           <div className="h-[28rem] min-w-(--container-prose)">
             <ResizablePanelGroup orientation="horizontal">
               <ResizablePanel defaultSize="26%" minSize="18%" maxSize="40%" className="bg-sidebar">
-                <div className="grid gap-0.5 p-3">
-                  <p className="px-2 pt-1 pb-2 text-caption font-semibold text-muted-foreground">lumen-web</p>
-                  {files.map((f) => (
-                    <div
-                      key={f.name}
-                      style={{ paddingLeft: `${0.5 + f.depth * 1}rem` }}
-                      className={
-                        f.active
-                          ? "flex h-8 items-center gap-2 rounded-sm bg-sidebar-accent pr-2 text-sm font-semibold text-sidebar-accent-foreground"
-                          : "flex h-8 items-center gap-2 rounded-sm pr-2 text-sm text-copy"
-                      }
-                    >
-                      {f.folder ? (
-                        <FolderIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-                      ) : (
-                        <FileCodeIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-                      )}
-                      <span className="truncate">{f.name}</span>
-                    </div>
-                  ))}
+                <div className="grid p-1">
+                  <p className="px-3 pt-3 pb-1 text-caption font-semibold text-muted-foreground">lumen-web</p>
+                  <FileTree />
                 </div>
               </ResizablePanel>
               <ResizableHandle />
@@ -158,12 +260,7 @@ export default function ResizableDocs() {
                         <ChevronRightIcon aria-hidden="true" className="size-3.5" />
                         <span className="font-semibold text-foreground">page.tsx</span>
                       </div>
-                      <pre className="min-h-0 flex-1 overflow-auto p-4 font-mono text-code text-copy">
-                        <code>{`export default async function Page() {
-  const projects = await lumen.projects.list()
-  return <ProjectGrid projects={projects} />
-}`}</code>
-                      </pre>
+                      <Source />
                     </div>
                   </ResizablePanel>
                   <ResizableHandle withHandle />

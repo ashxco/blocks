@@ -121,7 +121,7 @@ export default function StatCardDocs() {
         ]}
         dont={[
           "Don’t put more than one panel-tone card in a row.",
-          "Don’t use colour alone for the change: the arrow and the sign carry it too.",
+          "Don’t use colour alone for the change: the arrow and its screen-reader label carry it too.",
           "Don’t show a sparkline with fewer than six points; pass [] to hide it.",
         ]}
       />

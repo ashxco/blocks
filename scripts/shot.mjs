@@ -223,11 +223,14 @@ try {
 
   finished = true
   clearTimeout(hardStop)
-  await cdp.send("Browser.close").catch(() => {})
-  cdp.close()
-  await Promise.race([new Promise((resolve) => chrome.once("exit", resolve)), sleep(2000)])
-  cleanup()
   console.log(`Saved ${out} (${width}×${height}, ${theme})`)
+  // Chrome often exits before it answers Browser.close, which would leave
+  // this promise unsettled forever, so the close only gets a moment.
+  const exited = new Promise((resolve) => chrome.once("exit", resolve))
+  await Promise.race([cdp.send("Browser.close").catch(() => {}), exited, sleep(1000)])
+  cdp.close()
+  await Promise.race([exited, sleep(2000)])
+  cleanup()
   process.exit(0)
 } catch (error) {
   fail(error instanceof Error ? error.message : String(error))

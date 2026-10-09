@@ -5,8 +5,7 @@ import { UploadIcon } from "lucide-react"
 
 import { DangerZone, type DangerAction } from "@/components/blocks/danger-zone"
 import { personTone } from "@/components/blocks/members-list/people"
-import { WorkspaceUrlInput } from "@/components/blocks/onboarding-steps/workspace-url-input"
-import { SettingsSection } from "@/components/blocks/settings-section"
+import { SettingsSection, WorkspaceFields } from "@/components/blocks/settings-section"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -31,8 +30,6 @@ import {
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/toast"
 
-import { SwitchRow } from "./switch-row"
-
 const TIME_ZONES = [
   { value: "America/Los_Angeles", label: "Pacific Time, Los Angeles" },
   { value: "America/New_York", label: "Eastern Time, New York" },
@@ -40,15 +37,6 @@ const TIME_ZONES = [
   { value: "Europe/Berlin", label: "Central European Time, Berlin" },
   { value: "Asia/Singapore", label: "Singapore" },
   { value: "Australia/Sydney", label: "Sydney" },
-]
-
-const REGIONS = [
-  { value: "fra1", label: "Frankfurt, Germany (fra1)" },
-  { value: "iad1", label: "Washington, D.C., USA (iad1)" },
-  { value: "sfo1", label: "San Francisco, USA (sfo1)" },
-  { value: "gru1", label: "São Paulo, Brazil (gru1)" },
-  { value: "sin1", label: "Singapore (sin1)" },
-  { value: "syd1", label: "Sydney, Australia (syd1)" },
 ]
 
 const WORKSPACE_SLUG = "acme"
@@ -117,7 +105,7 @@ export function GeneralSettings() {
         successTitle="Workspace settings saved"
         successDescription="Every project in Acme Inc. uses them from the next deploy."
       >
-        <WorkspaceFields />
+        <WorkspaceFields defaultSlug={WORKSPACE_SLUG} required />
       </SettingsSection>
 
       {/* Same columns as SettingsSection, so the zone lines up with the cards above. */}
@@ -212,9 +200,8 @@ function ProfileFields() {
             <InputGroupAddon>
               <InputGroupText>@</InputGroupText>
             </InputGroupAddon>
-            {/* pl-0 so the prefix and the value read as one word: @maya. */}
+            {/* A text prefix: the input group starts the value right after it, so it reads @maya. */}
             <InputGroupInput
-              className="pl-0!"
               id={`${id}-username`}
               name="username"
               defaultValue="maya"
@@ -265,67 +252,6 @@ function ProfileFields() {
         </Select>
         <FieldDescription>Used for log timestamps and the Monday summary email.</FieldDescription>
       </Field>
-    </FieldGroup>
-  )
-}
-
-function WorkspaceFields() {
-  const id = React.useId()
-  const [region, setRegion] = React.useState("fra1")
-
-  return (
-    <FieldGroup>
-      <Field>
-        <FieldLabel htmlFor={`${id}-name`}>Workspace name</FieldLabel>
-        <Input id={`${id}-name`} name="workspaceName" defaultValue="Acme Inc." autoComplete="organization" required />
-      </Field>
-
-      <Field>
-        <FieldLabel htmlFor={`${id}-url`}>Workspace URL</FieldLabel>
-        <WorkspaceUrlInput
-          id={`${id}-url`}
-          name="workspaceSlug"
-          defaultValue={WORKSPACE_SLUG}
-          pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
-          title="Use lowercase letters and numbers, with single hyphens between words."
-          aria-describedby={`${id}-url-hint`}
-          required
-        />
-        <FieldDescription id={`${id}-url-hint`}>
-          Changing the URL breaks bookmarked links. Old links redirect for 30 days.
-        </FieldDescription>
-      </Field>
-
-      <Field>
-        <FieldLabel htmlFor={`${id}-region`}>Default region</FieldLabel>
-        <Select
-          id={`${id}-region`}
-          name="region"
-          items={REGIONS}
-          value={region}
-          onValueChange={(value) => value && setRegion(value)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {REGIONS.map((r) => (
-              <SelectItem key={r.value} value={r.value}>
-                {r.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <FieldDescription>New projects deploy here unless you pick another region.</FieldDescription>
-      </Field>
-
-      <SwitchRow
-        label="Preview deployments"
-        name="previews"
-        description="Build every pull request on its own URL and post the link as a GitHub comment."
-        defaultChecked
-        className="border-t pt-6"
-      />
     </FieldGroup>
   )
 }

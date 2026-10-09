@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
    are illustrations: the row's heading and copy carry the meaning, so each
    card is hidden from assistive technology by the row. */
 
-const card = "w-full max-w-96 overflow-hidden rounded-(--card-radius) border bg-card text-card-foreground"
+const card = "@container/card w-full max-w-96 overflow-hidden rounded-(--card-radius) border bg-card text-card-foreground"
 const cardHeader = "flex items-center justify-between gap-3 border-b px-4 py-3"
 
 /* -------------------------------------------------------------------------- */
@@ -33,7 +33,9 @@ export function PreviewCard() {
         <p className="flex items-center justify-between gap-3 text-caption text-muted-foreground">
           <span className="inline-flex min-w-0 items-center gap-1.5">
             <GitBranchIcon aria-hidden="true" className="size-3.5 shrink-0" />
-            <span className="truncate font-mono">feat/billing · 7f02b1d</span>
+            <span className="truncate font-mono">
+              feat/billing<span className="hidden @min-[22rem]/card:inline"> · 7f02b1d</span>
+            </span>
           </span>
           <span className="shrink-0 tabular">Built in 12.8s</span>
         </p>
@@ -70,16 +72,16 @@ export function LatencyCard() {
                 i === peak
                   ? "flex-1 rounded-t-xs bg-warning"
                   : i === latency.length - 1
-                    ? "flex-1 rounded-t-xs bg-chart-1"
-                    : "flex-1 rounded-t-xs bg-chart-1/30"
+                    ? "flex-1 rounded-t-xs bg-foreground"
+                    : "flex-1 rounded-t-xs bg-foreground/15"
               }
               style={{ height: `${value}%` }}
             />
           ))}
         </div>
-        <p className="flex items-center gap-2 border-t pt-3 text-caption text-muted-foreground">
-          <BellIcon aria-hidden="true" className="size-3.5 shrink-0 text-foreground" />
-          <span className="truncate">Alert when p95 is over 300 ms for 5 minutes</span>
+        <p className="flex items-start gap-2 border-t pt-3 text-caption text-muted-foreground">
+          <BellIcon aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-foreground" />
+          <span className="min-w-0">Alert when p95 is over 300 ms for 5 minutes</span>
         </p>
       </div>
     </div>
@@ -114,7 +116,7 @@ export function AuditCard() {
             >
               {event.initials}
             </span>
-            <span className="min-w-0 flex-1 text-sm text-copy sm:truncate">
+            <span className="min-w-0 flex-1 text-sm text-copy @min-[22rem]/card:truncate">
               <span className="font-semibold text-foreground">{event.who}</span> {event.what}
             </span>
             <span className="shrink-0 text-caption text-muted-foreground tabular">{event.when}</span>
@@ -131,8 +133,8 @@ export function AuditCard() {
 
 const databaseDetails = [
   { label: "Engine", value: "Postgres 17" },
-  { label: "Region", value: "fra-1, replica in iad-1" },
-  { label: "Backups", value: "Nightly, kept 14 days" },
+  { label: "Region", value: "fra1, replica in iad1" },
+  { label: "Backups", value: "Hourly, kept 14 days" },
 ]
 
 export function DatabaseCard() {

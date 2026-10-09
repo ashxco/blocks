@@ -46,7 +46,7 @@ export function PricingOverview() {
                 </ToggleGroupItem>
                 <ToggleGroupItem value="yearly" className="group/yearly gap-2 px-5">
                   Yearly
-                  <span className="text-caption font-semibold text-brand group-data-pressed/yearly:text-primary-foreground/70">
+                  <span className="text-caption font-semibold text-muted-foreground group-data-pressed/yearly:text-primary-foreground/70">
                     Save 20%
                   </span>
                 </ToggleGroupItem>

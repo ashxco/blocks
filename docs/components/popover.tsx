@@ -23,12 +23,13 @@ type Stage = HTMLDivElement | null
 /**
  * A stage the example's popover opens into, so the page shows the popover
  * itself. It opens on load and stays open while people use the rest of the
- * page; its trigger and Escape still close it.
+ * page; its trigger and Escape still close it. isolate keeps the popover's
+ * z-index inside the example, so it scrolls under the site header.
  */
 function PopoverStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className={cn("relative flex w-full items-start justify-center", className)}>
+    <div ref={setContainer} className={cn("relative isolate flex w-full items-start justify-center", className)}>
       {children(container)}
     </div>
   )
@@ -72,7 +73,7 @@ function SharePopover({ container }: { container: Stage }) {
         <Link2Icon data-icon="inline-start" />
         Share preview
       </PopoverTrigger>
-      <PopoverContent className="w-80" container={container} initialFocus={false} {...pinnedTo(container)}>
+      <PopoverContent container={container} initialFocus={false} {...pinnedTo(container)}>
         <PopoverHeader>
           <PopoverTitle>Share preview</PopoverTitle>
           <PopoverDescription>Anyone with the link can view this deployment.</PopoverDescription>
@@ -102,7 +103,7 @@ function SpendLimitPopover({ container }: { container: Stage }) {
         <GaugeIcon data-icon="inline-start" />
         Set spend limit
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-80" container={container} initialFocus={false} {...pinnedTo(container)}>
+      <PopoverContent align="start" container={container} initialFocus={false} {...pinnedTo(container)}>
         <form
           className="contents"
           onSubmit={(event) => {
@@ -145,7 +146,7 @@ const placements = [
   { side: "bottom", cell: "col-start-2 row-start-3", region: "São Paulo", code: "gru1", share: "7%" },
 ] as const
 
-/** Wide enough for a w-56 popover on each side of the middle column. */
+/** Wide enough for a --popover-width-sm popover on each side of the middle column. */
 const PLACEMENT_WIDE = 760
 
 function PlacementStage() {
@@ -167,7 +168,7 @@ function PlacementStage() {
     <div
       ref={setContainer}
       className={cn(
-        "relative grid w-full items-center gap-x-4 py-30",
+        "relative isolate grid w-full items-center gap-x-4 py-30",
         wide ? "grid-cols-[1fr_auto_1fr] gap-y-10" : "grid-cols-2 justify-items-center"
       )}
     >
@@ -196,7 +197,7 @@ function RegionPopover({
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger render={<Button variant="outline" className={cn("capitalize", cell)} />}>{side}</PopoverTrigger>
-      <PopoverContent side={side} className="w-56" container={container} initialFocus={false} {...pinnedTo(container)}>
+      <PopoverContent side={side} className="w-(--popover-width-sm)" container={container} initialFocus={false} {...pinnedTo(container)}>
         <PopoverHeader>
           <PopoverTitle>Region: {region}</PopoverTitle>
           <PopoverDescription>
@@ -216,7 +217,13 @@ function LogViewPopover({ container }: { container: Stage }) {
       <PopoverTrigger render={<Button variant="outline" size="icon" aria-label="Log view options" />}>
         <SlidersHorizontalIcon />
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-64 gap-0 p-0" container={container} initialFocus={false} {...pinnedTo(container)}>
+      <PopoverContent
+        align="end"
+        className="w-(--popover-width-sm) gap-0 p-0"
+        container={container}
+        initialFocus={false}
+        {...pinnedTo(container)}
+      >
         <PopoverHeader className="border-b px-4 py-3">
           <PopoverTitle>Log view</PopoverTitle>
         </PopoverHeader>
@@ -293,7 +300,7 @@ export default function PopoverDocs() {
         do={[
           "Use a popover for content tied to one control: sharing, a quick setting, a short form.",
           "Give it a title when it holds more than a single sentence.",
-          "Keep it narrow. The default width is 18rem; go wider only for a form row.",
+          "Keep it narrow. The default width is --popover-width; use --popover-width-sm for a few settings and --popover-width-lg only for a form row.",
         ]}
         dont={[
           "Don’t use a popover for a list of actions. Use a dropdown menu, which has keyboard navigation built in.",
@@ -307,6 +314,7 @@ export default function PopoverDocs() {
           { prop: "side", type: '"top" | "right" | "bottom" | "left" | "inline-start" | "inline-end"', default: '"bottom"', description: "On PopoverContent. Preferred side of the trigger." },
           { prop: "align", type: '"start" | "center" | "end"', default: '"center"', description: "On PopoverContent. Alignment along that side." },
           { prop: "sideOffset", type: "number", default: "8", description: "On PopoverContent. Gap from the trigger, in pixels." },
+          { prop: "className", type: "string", default: '"w-(--popover-width)"', description: "On PopoverContent. Change the width with w-(--popover-width-sm) or w-(--popover-width-lg)." },
           { prop: "open", type: "boolean", description: "On Popover. Controlled open state. Pair with onOpenChange." },
           { prop: "modal", type: 'boolean | "trap-focus"', default: "false", description: "On Popover. Locks scroll and traps focus while open." },
           { prop: "openOnHover", type: "boolean", default: "false", description: "On PopoverTrigger. Also open on hover, after delay." },

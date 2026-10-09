@@ -198,188 +198,183 @@ export function AuthForm({
   }
 
   return (
-    <div
-      data-slot="auth-form"
-      data-mode={mode}
-      className={cn(
-        "@container w-full max-w-104",
-        framed && "rounded-(--card-radius) border bg-card p-(--card-padding) sm:p-10",
-        className
-      )}
-    >
-      {status.state === "done" ? (
-        <AuthSuccess
-          mode={mode}
-          Heading={Heading}
-          email={status.via === "email" ? values.email.trim() : undefined}
-          provider={status.via === "email" ? undefined : status.via}
-          continueHref={continueHref ?? copy.continueHref}
-          onReset={reset}
-        />
-      ) : (
-        <>
-          <header className="grid gap-3">
-            {/* Steps down a role in narrow slots (a framed card in a sidebar, a phone), like PageHeader. */}
-            <Heading className="text-h2 text-foreground @max-[22rem]:text-h3">
-              <Kern>{title ?? copy.title}</Kern>
-            </Heading>
-            <p className="text-body text-copy">{description ?? copy.description}</p>
-          </header>
+    // The root is the container; the frame inside it pads more once the form has its full width.
+    <div data-slot="auth-form" data-mode={mode} className={cn("@container w-full max-w-104", className)}>
+      <div className={cn(framed && "rounded-(--card-radius) border bg-card p-(--card-padding) @min-[24rem]:p-10")}>
+        {status.state === "done" ? (
+          <AuthSuccess
+            mode={mode}
+            Heading={Heading}
+            email={status.via === "email" ? values.email.trim() : undefined}
+            provider={status.via === "email" ? undefined : status.via}
+            continueHref={continueHref ?? copy.continueHref}
+            onReset={reset}
+          />
+        ) : (
+          <>
+            <header className="grid gap-3">
+              {/* Steps down a role in narrow slots (a framed card in a sidebar, a phone), like PageHeader. */}
+              <Heading className="text-h2 text-foreground @max-[22rem]:text-h3">
+                <Kern>{title ?? copy.title}</Kern>
+              </Heading>
+              <p className="text-body text-copy">{description ?? copy.description}</p>
+            </header>
 
-          <div className="mt-8 grid grid-cols-2 gap-3">
-            {(["GitHub", "Google"] as const).map((provider) => {
-              const Icon = provider === "GitHub" ? GitHubMark : GoogleMark
-              const busy = status.state === "pending" && status.via === provider
-              return (
-                <Button
-                  key={provider}
-                  type="button"
-                  variant="outline"
-                  size="lg"
-                  disabled={pending}
-                  aria-label={`Continue with ${provider}`}
-                  onClick={() => void run(provider)}
-                >
-                  {busy ? <Spinner data-icon="inline-start" /> : <Icon data-icon="inline-start" />}
-                  {provider}
-                </Button>
-              )
-            })}
-          </div>
+            <div className="mt-8 grid grid-cols-2 gap-3">
+              {(["GitHub", "Google"] as const).map((provider) => {
+                const Icon = provider === "GitHub" ? GitHubMark : GoogleMark
+                const busy = status.state === "pending" && status.via === provider
+                return (
+                  <Button
+                    key={provider}
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    disabled={pending}
+                    aria-label={`Continue with ${provider}`}
+                    onClick={() => void run(provider)}
+                  >
+                    {busy ? <Spinner data-icon="inline-start" /> : <Icon data-icon="inline-start" />}
+                    {provider}
+                  </Button>
+                )
+              })}
+            </div>
 
-          <div className="my-7 flex items-center gap-4" aria-hidden="true">
-            <span className="h-px flex-1 bg-border" />
-            <span className="text-caption text-muted-foreground">or with email</span>
-            <span className="h-px flex-1 bg-border" />
-          </div>
+            <div className="my-7 flex items-center gap-4" aria-hidden="true">
+              <span className="h-px flex-1 bg-border" />
+              <span className="text-caption text-muted-foreground">or with email</span>
+              <span className="h-px flex-1 bg-border" />
+            </div>
 
-          <form noValidate onSubmit={handleSubmit} aria-busy={pending}>
-            <FieldGroup>
-              {mode === "sign-up" ? (
-                <Field data-invalid={Boolean(errorFor("name"))}>
-                  <FieldLabel htmlFor={`${id}-name`}>Full name</FieldLabel>
-                  <Input
-                    ref={nameRef}
-                    id={`${id}-name`}
-                    name="name"
-                    autoComplete="name"
-                    placeholder="Maya Chen"
-                    value={values.name}
-                    onChange={update("name")}
-                    onBlur={blur("name")}
-                    aria-invalid={Boolean(errorFor("name"))}
-                    aria-describedby={describedBy("name")}
-                  />
-                  <FieldError id={`${id}-name-error`}>{errorFor("name")}</FieldError>
-                </Field>
-              ) : null}
-
-              <Field data-invalid={Boolean(errorFor("email"))}>
-                <FieldLabel htmlFor={`${id}-email`}>Work email</FieldLabel>
-                <Input
-                  ref={emailRef}
-                  id={`${id}-email`}
-                  name="email"
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  spellCheck={false}
-                  placeholder="maya@acme.dev"
-                  value={values.email}
-                  onChange={update("email")}
-                  onBlur={blur("email")}
-                  aria-invalid={Boolean(errorFor("email"))}
-                  aria-describedby={describedBy("email")}
-                />
-                <FieldError id={`${id}-email-error`}>{errorFor("email")}</FieldError>
-              </Field>
-
-              <Field data-invalid={Boolean(errorFor("password"))}>
-                <div className="flex items-center justify-between gap-4">
-                  <FieldLabel htmlFor={`${id}-password`}>Password</FieldLabel>
-                  {mode === "sign-in" ? (
-                    <Link
-                      href={forgotPasswordHref}
-                      className="rounded-xs text-caption font-semibold text-brand underline-offset-4 outline-none hover:underline focus-visible:focus-ring"
-                    >
-                      Forgot password?
-                    </Link>
-                  ) : null}
-                </div>
-                <InputGroup>
-                  <InputGroupInput
-                    ref={passwordRef}
-                    id={`${id}-password`}
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
-                    placeholder={mode === "sign-in" ? "Your password" : `At least ${PASSWORD_MIN} characters`}
-                    value={values.password}
-                    onChange={update("password")}
-                    onBlur={blur("password")}
-                    aria-invalid={Boolean(errorFor("password"))}
-                    aria-describedby={describedBy("password", mode === "sign-up")}
-                  />
-                  <InputGroupAddon align="inline-end">
-                    <InputGroupButton
-                      size="icon-xs"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                      onClick={() => setShowPassword((s) => !s)}
-                    >
-                      {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                    </InputGroupButton>
-                  </InputGroupAddon>
-                </InputGroup>
-                {errorFor("password") ? (
-                  <FieldError id={`${id}-password-error`}>{errorFor("password")}</FieldError>
-                ) : mode === "sign-up" ? (
-                  <FieldDescription id={`${id}-password-hint`}>
-                    Use {PASSWORD_MIN} or more characters. A few unrelated words work well.
-                  </FieldDescription>
+            <form noValidate onSubmit={handleSubmit} aria-busy={pending}>
+              <FieldGroup>
+                {mode === "sign-up" ? (
+                  <Field data-invalid={Boolean(errorFor("name"))}>
+                    <FieldLabel htmlFor={`${id}-name`}>Full name</FieldLabel>
+                    <Input
+                      ref={nameRef}
+                      id={`${id}-name`}
+                      name="name"
+                      autoComplete="name"
+                      placeholder="Maya Chen"
+                      value={values.name}
+                      onChange={update("name")}
+                      onBlur={blur("name")}
+                      aria-invalid={Boolean(errorFor("name"))}
+                      aria-describedby={describedBy("name")}
+                    />
+                    <FieldError id={`${id}-name-error`}>{errorFor("name")}</FieldError>
+                  </Field>
                 ) : null}
-              </Field>
 
-              {formError ? (
-                <p role="alert" className="rounded-(--control-radius) bg-destructive-subtle px-4 py-3 text-sm text-destructive">
-                  {formError}
-                </p>
-              ) : null}
+                <Field data-invalid={Boolean(errorFor("email"))}>
+                  <FieldLabel htmlFor={`${id}-email`}>Work email</FieldLabel>
+                  <Input
+                    ref={emailRef}
+                    id={`${id}-email`}
+                    name="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    spellCheck={false}
+                    placeholder="maya@acme.dev"
+                    value={values.email}
+                    onChange={update("email")}
+                    onBlur={blur("email")}
+                    aria-invalid={Boolean(errorFor("email"))}
+                    aria-describedby={describedBy("email")}
+                  />
+                  <FieldError id={`${id}-email-error`}>{errorFor("email")}</FieldError>
+                </Field>
 
-              <Button type="submit" size="lg" className="w-full" disabled={pending}>
-                {status.state === "pending" && status.via === "email" ? (
-                  <>
-                    <Spinner data-icon="inline-start" />
-                    {copy.pending}
-                  </>
-                ) : (
-                  <>
-                    {copy.submit}
-                    <ArrowRightIcon data-icon="inline-end" />
-                  </>
-                )}
-              </Button>
-            </FieldGroup>
-          </form>
+                <Field data-invalid={Boolean(errorFor("password"))}>
+                  <div className="flex items-center justify-between gap-4">
+                    <FieldLabel htmlFor={`${id}-password`}>Password</FieldLabel>
+                    {mode === "sign-in" ? (
+                      <Link
+                        href={forgotPasswordHref}
+                        className="rounded-xs text-caption font-semibold text-brand underline-offset-4 outline-none hover:underline focus-visible:focus-ring"
+                      >
+                        Forgot password?
+                      </Link>
+                    ) : null}
+                  </div>
+                  <InputGroup>
+                    <InputGroupInput
+                      ref={passwordRef}
+                      id={`${id}-password`}
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
+                      placeholder={mode === "sign-in" ? "Your password" : `At least ${PASSWORD_MIN} characters`}
+                      value={values.password}
+                      onChange={update("password")}
+                      onBlur={blur("password")}
+                      aria-invalid={Boolean(errorFor("password"))}
+                      aria-describedby={describedBy("password", mode === "sign-up")}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        size="icon-xs"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        onClick={() => setShowPassword((s) => !s)}
+                      >
+                        {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {errorFor("password") ? (
+                    <FieldError id={`${id}-password-error`}>{errorFor("password")}</FieldError>
+                  ) : mode === "sign-up" ? (
+                    <FieldDescription id={`${id}-password-hint`}>
+                      Use {PASSWORD_MIN} or more characters. A few unrelated words work well.
+                    </FieldDescription>
+                  ) : null}
+                </Field>
 
-          {mode === "sign-up" ? (
-            <p className="mt-5 text-caption text-muted-foreground">
-              By creating an account you agree to the{" "}
-              <LegalLink href={termsHref}>Terms of Service</LegalLink> and{" "}
-              <LegalLink href={privacyHref}>Privacy Policy</LegalLink>.
+                {formError ? (
+                  <p role="alert" className="rounded-(--control-radius) bg-destructive-subtle px-4 py-3 text-sm text-destructive">
+                    {formError}
+                  </p>
+                ) : null}
+
+                <Button type="submit" size="lg" className="w-full" disabled={pending}>
+                  {status.state === "pending" && status.via === "email" ? (
+                    <>
+                      <Spinner data-icon="inline-start" />
+                      {copy.pending}
+                    </>
+                  ) : (
+                    <>
+                      {copy.submit}
+                      <ArrowRightIcon data-icon="inline-end" />
+                    </>
+                  )}
+                </Button>
+              </FieldGroup>
+            </form>
+
+            {mode === "sign-up" ? (
+              <p className="mt-5 text-caption text-muted-foreground">
+                By creating an account you agree to the{" "}
+                <LegalLink href={termsHref}>Terms of Service</LegalLink> and{" "}
+                <LegalLink href={privacyHref}>Privacy Policy</LegalLink>.
+              </p>
+            ) : null}
+
+            <p className="mt-8 border-t pt-6 text-sm text-copy">
+              {copy.switchPrompt}{" "}
+              <Link
+                href={mode === "sign-in" ? signUpHref : signInHref}
+                className="rounded-xs font-semibold text-brand underline-offset-4 outline-none hover:underline focus-visible:focus-ring"
+              >
+                {copy.switchLabel}
+              </Link>
             </p>
-          ) : null}
-
-          <p className="mt-8 border-t pt-6 text-sm text-copy">
-            {copy.switchPrompt}{" "}
-            <Link
-              href={mode === "sign-in" ? signUpHref : signInHref}
-              className="rounded-xs font-semibold text-brand underline-offset-4 outline-none hover:underline focus-visible:focus-ring"
-            >
-              {copy.switchLabel}
-            </Link>
-          </p>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </div>
   )
 }

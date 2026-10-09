@@ -185,17 +185,21 @@
       },
       "width": {
         "$type": "dimension",
-        "$value": "32rem"
+        "$value": "32rem",
+        "$description": "Default dialog width: forms and settings.",
+        "$extensions": { "blocks": { "utility": "max-w" } }
       },
       "width-sm": {
         "$type": "dimension",
         "$value": "24rem",
-        "$description": "Small dialogs: confirmations."
+        "$description": "Small dialogs: confirmations.",
+        "$extensions": { "blocks": { "utility": "max-w" } }
       },
       "width-lg": {
         "$type": "dimension",
         "$value": "{container.prose}",
-        "$description": "Large dialogs: forms and long content."
+        "$description": "Large dialogs: forms and long content.",
+        "$extensions": { "blocks": { "utility": "max-w" } }
       }
     },
     "badge": {
@@ -308,7 +312,8 @@
       "width": {
         "$type": "dimension",
         "$value": "28rem",
-        "$description": "Side sheet and drawer width."
+        "$description": "Side sheet and drawer width.",
+        "$extensions": { "blocks": { "utility": "max-w" } }
       }
     },
     "scrollbar": {

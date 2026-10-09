@@ -29,7 +29,7 @@ export default function PageHeaderDocs() {
   }
 />`}
       >
-        <div className="p-6 md:p-10">
+        <div className="p-6 @prose:p-10">
           <PageHeader />
         </div>
       </Example>
@@ -44,7 +44,7 @@ export default function PageHeaderDocs() {
   </Tabs>
 </PageHeader>`}
       >
-        <div className="p-6 md:p-10">
+        <div className="p-6 @prose:p-10">
           <PageHeader
             title="Settings"
             description="Manage your profile, notifications and the Acme Inc. workspace."
@@ -67,8 +67,18 @@ export default function PageHeaderDocs() {
         description="Most pages need a single primary action. On a tinted band the hairline still separates the header from the content."
         layout="full"
         surface="subtle"
+        code={`<PageHeader
+  title="Team"
+  description="Six people can open Acme Inc. Invite more on the Pro plan."
+  actions={
+    <Button nativeButton={false} render={<Link href="/live/app/team" />}>
+      <UserPlusIcon data-icon="inline-start" />
+      Invite members
+    </Button>
+  }
+/>`}
       >
-        <div className="p-6 md:p-10">
+        <div className="p-6 @prose:p-10">
           <PageHeader
             title="Team"
             description="Six people can open Acme Inc. Invite more on the Pro plan."
@@ -89,6 +99,17 @@ export default function PageHeaderDocs() {
         title="In a narrow slot"
         description="The header reads its own width with a container query: actions wrap under the title, and below 20rem the title steps down to the h3 role so it doesn’t crowd a sheet or split view."
         layout="center"
+        code={`<PageHeader
+  as="h2"
+  title="Domains"
+  description="Point a domain at web and Lumen issues the certificate."
+  actions={
+    <Button size="sm">
+      <PlusIcon data-icon="inline-start" />
+      Add domain
+    </Button>
+  }
+/>`}
       >
         <div className="w-full max-w-80 rounded-lg border border-border bg-background p-5">
           <PageHeader

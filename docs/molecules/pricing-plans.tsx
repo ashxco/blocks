@@ -33,11 +33,9 @@ const threePlans: PricingPlan[] = [
 
 function ControlledExample() {
   const [billing, setBilling] = React.useState<BillingPeriod>("yearly")
+  // Extra room under the plans: the featured card is raised past their bottom edge.
   return (
-    <div className="grid gap-6 p-6 sm:p-10">
-      <p className="text-caption text-muted-foreground">
-        Billing period in the parent: <span className="font-mono text-foreground">{billing}</span>
-      </p>
+    <div className="grid gap-12 p-6 @2xl:p-10">
       <PricingPlans
         contained={false}
         title={null}
@@ -46,6 +44,12 @@ function ControlledExample() {
         billing={billing}
         onBillingChange={setBilling}
       />
+      {/* Copy elsewhere on the page follows the same state. */}
+      <p className="text-center text-caption text-muted-foreground">
+        {billing === "yearly"
+          ? "Yearly prices include the 20% discount and are billed once a year, before tax."
+          : "Monthly prices, billed each month before tax. Switch to yearly to save 20%."}
+      </p>
     </div>
   )
 }
@@ -85,7 +89,8 @@ export default function PricingPlansDocs() {
   enterprise={null}
   billing={billing}
   onBillingChange={setBilling}
-/>`}
+/>
+<p>{billing === "yearly" ? "Yearly prices include the 20% discount…" : "Monthly prices…"}</p>`}
       >
         <ControlledExample />
       </Example>

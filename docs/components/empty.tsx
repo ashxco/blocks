@@ -64,7 +64,8 @@ export default function EmptyDocs() {
         code={`<Empty variant="subtle">…</Empty>
 <Empty variant="plain">…</Empty>`}
       >
-        <div className="grid gap-4 md:grid-cols-2">
+        {/* Equal cells and the same action, so only the frame differs. */}
+        <div className="grid gap-4 md:auto-rows-fr md:grid-cols-2">
           <Empty variant="subtle">
             <EmptyHeader>
               <EmptyMedia variant="icon">
@@ -77,7 +78,7 @@ export default function EmptyDocs() {
               <Button size="sm">Add domain</Button>
             </EmptyContent>
           </Empty>
-          <div className="rounded-(--card-radius) border">
+          <div className="flex rounded-(--card-radius) border">
             <Empty variant="plain">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
@@ -87,9 +88,7 @@ export default function EmptyDocs() {
                 <EmptyDescription>lumen-web is live at lumen-web.lumen.app.</EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
-                <Button size="sm" variant="outline">
-                  Add domain
-                </Button>
+                <Button size="sm">Add domain</Button>
               </EmptyContent>
             </Empty>
           </div>

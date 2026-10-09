@@ -9,6 +9,10 @@ import { cn } from "@/lib/utils"
  * (--scrollbar-size) that fades in while you hover or scroll and darkens
  * under the pointer.
  * Keyboard users can focus the viewport and scroll with the arrow keys.
+ *
+ * The wheel carries on to the page once the area reaches its end, as native
+ * scrolling does. Inside an overlay, where the page behind should stay put,
+ * add [&>[data-slot=scroll-area-viewport]]:overscroll-contain to the root.
  */
 function ScrollArea({
   className,
@@ -23,7 +27,7 @@ function ScrollArea({
     >
       <ScrollAreaPrimitive.Viewport
         data-slot="scroll-area-viewport"
-        className="size-full overscroll-contain rounded-[inherit] outline-none focus-visible:focus-ring"
+        className="size-full rounded-[inherit] outline-none focus-visible:focus-ring"
       >
         {children}
       </ScrollAreaPrimitive.Viewport>

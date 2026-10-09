@@ -26,7 +26,7 @@ export default function CtaBandDocs() {
   primaryAction={{ label: "Start migrating", href: "/live/sign-up" }}
   secondaryAction={{ label: "Read the guide", href: "/live/blog/post" }}
   installLabel="Import an existing app"
-  command="lumen import heroku my-app"
+  command="lumen import"
   points={["Keeps your environment variables", "Zero-downtime DNS switch"]}
 />`}
       >
@@ -36,7 +36,7 @@ export default function CtaBandDocs() {
           primaryAction={{ label: "Start migrating", href: "/live/sign-up" }}
           secondaryAction={{ label: "Read the guide", href: "/live/blog/post" }}
           installLabel="Import an existing app"
-          command="lumen import heroku my-app"
+          command="lumen import"
           points={["Keeps your environment variables", "Zero-downtime DNS switch"]}
         />
       </Example>
@@ -99,14 +99,27 @@ export default function CtaBandDocs() {
         title="In a narrow column"
         layout="full"
         description="With contained set to false, the panel drops its own container and padding and stacks when the slot is narrow, such as beside a blog post."
-        code={`<CtaBand contained={false} secondaryAction={null} title="Try Lumen on your next side project." />`}
+        code={`<CtaBand
+  contained={false}
+  secondaryAction={null}
+  title="Try Lumen on your next side project."
+  description="Hobby starts at $5 a month, with preview URLs and logs included."
+  primaryAction={{ label: "Choose Hobby", href: "/live/pricing" }}
+  installLabel="What Hobby includes"
+  command={null}
+  points={["3 projects", "Preview URL for every push", "100 GB bandwidth"]}
+/>`}
       >
-        <div className="max-w-prose p-6 sm:p-10">
+        <div className="max-w-prose p-6 @2xl:p-10">
           <CtaBand
             contained={false}
             secondaryAction={null}
             title="Try Lumen on your next side project."
             description="Hobby starts at $5 a month, with preview URLs and logs included."
+            primaryAction={{ label: "Choose Hobby", href: "/live/pricing" }}
+            installLabel="What Hobby includes"
+            command={null}
+            points={["3 projects", "Preview URL for every push", "100 GB bandwidth"]}
           />
         </div>
       </Example>

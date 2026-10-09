@@ -42,7 +42,7 @@ export default function FeaturesPage() {
       <CapabilityGrid />
       <CtaBand
         title="See it on your own code."
-        description="Connect a repository and get a preview URL in about a minute. Every plan includes every feature on this page, and Pro is free for 14 days."
+        description="Connect a repository and get a preview URL in about a minute. Every plan runs the platform on this page, and Pro is free for 14 days."
         aside={null}
       />
     </>

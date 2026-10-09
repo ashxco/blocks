@@ -47,7 +47,7 @@ const log = [
   ["00:24.91", "Generating static pages (48/48)"],
   ["00:27.15", "Finalizing page optimization"],
   ["00:27.80", "Uploading build output (36.2 MB)"],
-  ["00:31.07", "Deploying to 18 regions"],
+  ["00:31.07", "Deploying to 3 regions"],
   ["00:46.52", "Assigned lumen-web.lumen.app"],
   ["00:47.95", "Deployment ready in 48s"],
 ]
@@ -119,7 +119,7 @@ export default function ScrollAreaDocs() {
       <Example
         title="Build log"
         layout="stack"
-        description="In a terminal window the same quiet scrollbar keeps long output readable. The viewport takes keyboard focus, so arrow keys scroll it."
+        description="In a terminal window the same quiet scrollbars keep long output readable: lines stay whole and scroll sideways, with a second ScrollBar for that axis. The viewport takes keyboard focus, so arrow keys scroll it."
       >
         <div className="overflow-hidden rounded-(--card-radius) border border-border bg-terminal">
           <div className="flex items-center justify-between gap-4 border-b border-panel-border px-5 py-3">
@@ -127,14 +127,16 @@ export default function ScrollAreaDocs() {
             <p className="font-mono text-xs text-panel-muted">dpl_8f2k · 48s</p>
           </div>
           <ScrollArea className="h-64" aria-label="Build log for deployment dpl_8f2k">
-            <ol className="grid gap-1 px-5 py-4 font-mono text-code text-terminal-foreground">
+            {/* Lines never wrap, as in a terminal: long ones scroll sideways. */}
+            <ol className="grid min-w-max gap-1 px-5 py-4 font-mono text-code text-terminal-foreground">
               {log.map(([time, line]) => (
-                <li key={time} className="grid grid-cols-[5.5rem_1fr] gap-4">
+                <li key={time} className="grid grid-cols-[5.5rem_auto] gap-4 whitespace-pre">
                   <span className="text-panel-muted tabular-nums">{time}</span>
-                  <span className="min-w-0 break-words">{line}</span>
+                  <span>{line}</span>
                 </li>
               ))}
             </ol>
+            <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
       </Example>

@@ -15,7 +15,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const entry = molecules.find((e) => e.slug === slug)
-  return entry ? { title: entry.title, description: entry.description } : {}
+  return entry ? { title: entry.title, description: entry.description } : { title: "Page not found" }
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {

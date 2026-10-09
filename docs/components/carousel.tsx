@@ -84,7 +84,7 @@ export default function CarouselDocs() {
       <Example
         title="Controls in a header"
         layout="stack"
-        description={`Several slides per view, with the controls beside the section title. Pass className="static" to take the controls out of their default position.`}
+        description={`Several slides per view, with the controls beside the section title. Size the slides so the next one peeks in at the edge, which shows there is more. Pass className="static" to take the controls out of their default position.`}
         code={`<Carousel opts={{ align: "start" }}>
   <div className="flex items-end justify-between">
     <h3 className="text-h4">Start from a template</h3>
@@ -95,7 +95,7 @@ export default function CarouselDocs() {
   </div>
   <CarouselContent>
     {templates.map((t) => (
-      <CarouselItem key={t.name} className="basis-3/4 sm:basis-1/2 lg:basis-1/3">…</CarouselItem>
+      <CarouselItem key={t.name} className="basis-[85%] @lg:basis-[45%] @3xl:basis-[30%]">…</CarouselItem>
     ))}
   </CarouselContent>
 </Carousel>`}
@@ -113,7 +113,7 @@ export default function CarouselDocs() {
           </div>
           <CarouselContent>
             {templates.map((t) => (
-              <CarouselItem key={t.name} className="basis-3/4 sm:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={t.name} className="basis-[85%] @lg:basis-[45%] @3xl:basis-[30%]">
                 <a
                   href="#templates"
                   className="group/template grid gap-4 rounded-(--card-radius) border border-border bg-card p-3 outline-none transition-colors duration-(--duration-fast) ease-standard hover:border-border-strong focus-visible:focus-ring"

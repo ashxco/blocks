@@ -18,6 +18,14 @@ import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+/* Default and sm side by side, per variant, so the heights compare directly. */
+const sizeRows = [
+  { variant: "default", size: "default", caption: 'size="default"' },
+  { variant: "default", size: "sm", caption: 'size="sm"' },
+  { variant: "segmented", size: "default", caption: 'variant="segmented" size="default"' },
+  { variant: "segmented", size: "sm", caption: 'variant="segmented" size="sm"' },
+] as const
+
 const deployments = [
   { sha: "a41c9e2", message: "Cache build output between deploys", branch: "main", status: "Ready", time: "2m ago" },
   { sha: "7f03b1d", message: "Add preview comments to pull requests", branch: "preview-comments", status: "Building", time: "9m ago" },
@@ -36,7 +44,7 @@ export default function TabsDocs() {
     <Examples>
       <Example
         title="Underline"
-        description="The default. A 2px ink line slides to the active tab along a full-width hairline."
+        description="The default. An ink line, --border-width-strong thick, slides to the active tab along a full-width hairline."
         layout="stack"
         code={`<Tabs defaultValue="overview">
   <TabsList>
@@ -98,25 +106,25 @@ export default function TabsDocs() {
 
       <Example
         title="Sizes"
-        description="Default height is --tabs-height. Use sm in toolbars and dense panels."
+        description="Default height is --tabs-height; sm drops to --control-height-sm. Use sm in toolbars and dense panels."
         layout="stack"
         code={`<TabsList size="sm">…</TabsList>
 <TabsList variant="segmented" size="sm">…</TabsList>`}
       >
-        <Tabs defaultValue="all">
-          <TabsList size="sm">
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="errors">Errors</TabsTrigger>
-            <TabsTrigger value="warnings">Warnings</TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <Tabs defaultValue="all">
-          <TabsList variant="segmented" size="sm">
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="errors">Errors</TabsTrigger>
-            <TabsTrigger value="warnings">Warnings</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="grid w-full gap-6 @lg:grid-cols-2 @lg:gap-x-10">
+          {sizeRows.map((row) => (
+            <div key={row.caption} className="grid content-end justify-items-start gap-2">
+              <Tabs defaultValue="all" className="w-full">
+                <TabsList variant={row.variant} size={row.size}>
+                  <TabsTrigger value="all">All</TabsTrigger>
+                  <TabsTrigger value="errors">Errors</TabsTrigger>
+                  <TabsTrigger value="warnings">Warnings</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <p className="font-mono text-xs text-muted-foreground">{row.caption}</p>
+            </div>
+          ))}
+        </div>
       </Example>
 
       <Example
@@ -284,7 +292,7 @@ export default function TabsDocs() {
               </ul>
             </TabsContent>
             <TabsContent value="logs">
-              <pre className="overflow-x-auto rounded-(--control-radius) bg-terminal p-4 font-mono text-code text-terminal-foreground">
+              <pre className="overflow-x-auto rounded-(--control-radius) border bg-terminal p-4 font-mono text-code text-terminal-foreground">
                 {logLines.join("\n")}
               </pre>
             </TabsContent>

@@ -109,7 +109,7 @@ export function Faq({
             {items.map((item, i) => (
               <AccordionItem key={item.question} value={value(i)} className="border-b">
                 <AccordionTrigger className="items-center gap-6 py-6 hover:no-underline">
-                  <span className="text-title text-foreground">{item.question}</span>
+                  <span className="text-title text-pretty text-foreground">{item.question}</span>
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="max-w-prose pr-10 pb-6 text-body text-copy">{item.answer}</div>

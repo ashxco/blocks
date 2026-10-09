@@ -68,7 +68,7 @@ export const defaultMatrixGroups: PlanMatrixGroup[] = [
       { feature: "Preview URL for every branch", values: [true, true, true, true] },
       { feature: "Concurrent builds", values: [1, 2, 5, 20] },
       { feature: "Build minutes", values: ["500", "3,000", "10,000", "Unlimited"] },
-      { feature: "Instant rollbacks", values: [false, true, true, true] },
+      { feature: "Instant rollbacks", values: [true, true, true, true] },
     ],
   },
   {
@@ -202,12 +202,12 @@ function PlanMatrixStacked({
 
 /* Shared cell styles. Borders live on cells so the sticky column keeps its hairline. */
 const stickyCell =
-  "sticky left-0 z-10 border-r border-b bg-background px-5 text-left whitespace-normal group-hover/row:bg-subtle"
-const valueCell = "border-b px-3 text-center whitespace-normal"
-/* bg-muted, not bg-subtle: in dark mode subtle matches the canvas closely, muted keeps the column visible. */
+  "sticky left-0 z-10 border-r border-b bg-card px-5 text-left whitespace-normal group-hover/row:bg-subtle"
+const valueCell = "border-b px-2 text-center whitespace-normal @prose:px-3"
+/* bg-muted, not bg-subtle: muted keeps the column visibly tinted on the card in both themes. */
 const featuredCell = "bg-muted group-hover/row:bg-accent"
 /* Group titles run as one clean line: no column divider, only the featured column's tint carries through. */
-const groupCell = "sticky left-0 z-10 border-b bg-background px-5 text-left whitespace-normal"
+const groupCell = "sticky left-0 z-10 border-b bg-card px-5 text-left whitespace-normal"
 
 /**
  * A feature-by-plan comparison table. Checks and dashes for yes and no,
@@ -235,8 +235,10 @@ export function PlanMatrix({
 
         {stacked ? <PlanMatrixStacked columns={columns} groups={groups} className="@prose:hidden" /> : null}
 
-        <div className={cn("overflow-hidden rounded-(--card-radius) border", stacked && "hidden @prose:block")}>
+        {/* The card table draws its own border and clips the featured column to its radius. */}
+        <div className={cn(stacked && "hidden @prose:block")}>
           <Table
+            variant="card"
             className={cn(
               // Wide enough for four plans; a two-plan table fits a phone as it is.
               stacked ? "min-w-184" : "min-w-0",
@@ -245,9 +247,9 @@ export function PlanMatrix({
             )}
           >
             <caption className="sr-only">{caption}</caption>
-            <TableHeader className="[&_tr]:border-0">
+            <TableHeader className="group-data-[variant=card]/table:bg-transparent [&_tr]:border-0">
               <TableRow className="border-0 hover:bg-transparent">
-                <TableHead scope="col" className={cn(stickyCell, "h-auto w-32 py-6 align-bottom @prose:w-40 @narrow:w-1/3")}>
+                <TableHead scope="col" className={cn(stickyCell, "h-auto w-28 py-6 align-bottom @prose:w-40 @narrow:w-1/3")}>
                   <span className="text-caption font-semibold text-muted-foreground">Plans</span>
                 </TableHead>
                 {columns.map((col) => (

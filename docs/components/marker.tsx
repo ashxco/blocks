@@ -12,7 +12,7 @@ export default function MarkerDocs() {
       <Example
         title="Status"
         layout="stack"
-        description="A single quiet line for what is happening: work in progress, a step that finished, a source that was used."
+        description="A single quiet line for what is happening: work in progress, a result, a source that was used. Keep it to three in a row."
         code={`<Marker>
   <MarkerIcon><Spinner /></MarkerIcon>
   <MarkerContent>Reading the build log for dpl_7d1q</MarkerContent>
@@ -24,12 +24,6 @@ export default function MarkerDocs() {
               <Spinner className="size-3.5" />
             </MarkerIcon>
             <MarkerContent>Reading the build log for dpl_7d1q</MarkerContent>
-          </Marker>
-          <Marker>
-            <MarkerIcon>
-              <CheckIcon />
-            </MarkerIcon>
-            <MarkerContent>Checked DNS for lumen.app</MarkerContent>
           </Marker>
           <Marker>
             <MarkerIcon>

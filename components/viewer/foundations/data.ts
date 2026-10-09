@@ -9,16 +9,6 @@ import { parseOklch, type Oklch } from "./color"
 export type { DesignToken, TokenTier }
 export { tokens }
 
-export const tierOrder: TokenTier[] = ["primitive", "semantic", "typography", "layout", "component"]
-
-export const tierLabels: Record<TokenTier, string> = {
-  primitive: "Primitive",
-  semantic: "Semantic",
-  typography: "Typography",
-  layout: "Layout",
-  component: "Component",
-}
-
 const byName = new Map(tokens.map((t) => [t.name, t]))
 const byVar = new Map(tokens.map((t) => [t.cssVar, t]))
 
@@ -53,10 +43,15 @@ export function leafName(name: string) {
 
 /**
  * Drops a trailing "Use px-gutter." sentence from a token description, for
- * places that already show the utility next to it.
+ * places that already show the utility next to it. A note after the utility
+ * stays: "Use max-w-(--container-prose); max-w-prose is 65ch." keeps
+ * "max-w-prose is 65ch."
  */
 export function withoutUsage(description?: string) {
-  return description?.replace(/\s*Use [^.]+\.$/, "") || undefined
+  if (!description) return undefined
+  const m = /^(.*?)\s*Use [^.;]+(?:;\s*(.+?))?\.$/.exec(description)
+  if (!m) return description
+  return [m[1], m[2] ? `${m[2]}.` : ""].filter(Boolean).join(" ") || undefined
 }
 
 export function sentenceCase(text: string) {
@@ -131,20 +126,6 @@ export function colorAlias(value: string, ref?: string): string | undefined {
   const base = match ? refLabel(match.name) : parsed.l === 0 && parsed.c === 0 ? "black" : undefined
   if (!base) return undefined
   return parsed.alpha < 1 ? `${base} at ${Math.round(parsed.alpha * 100)}%` : base
-}
-
-/** The single most useful utility for a semantic colour. */
-export function primaryColorUtility(t: DesignToken) {
-  const role = roleName(t)
-  if (role.startsWith("chart-")) return `fill-${role}`
-  if (role === "ring" || role === "sidebar-ring") return `outline-${role}`
-  if (role === "border" || role === "border-strong" || role === "input" || role.endsWith("-border"))
-    return `border-${role}`
-  if (role === "copy" || role.endsWith("foreground") || role === "panel-muted" || role === "panel-brand")
-    return `text-${role}`
-  if (role === "brand" || role === "destructive" || role === "success" || role === "warning" || role === "info")
-    return `text-${role} · bg-${role}`
-  return `bg-${role}`
 }
 
 /** Light and dark values for a semantic token (dark falls back to light). */
@@ -226,7 +207,7 @@ export function familyStack(value: unknown) {
 }
 
 /* ------------------------------------------------------------------------ */
-/* Values and utilities for the token table                                  */
+/* Values for the token table                                                */
 /* ------------------------------------------------------------------------ */
 
 export function formatValue(t: DesignToken, value: unknown): string {
@@ -238,38 +219,6 @@ export function formatValue(t: DesignToken, value: unknown): string {
   if (t.type === "cubicBezier" && Array.isArray(value)) return `cubic-bezier(${value.join(", ")})`
   if (Array.isArray(value)) return value.join(", ")
   return String(value)
-}
-
-/**
- * Tailwind usage for a token, as the token build writes it, with a few hints
- * narrowed to the one utility people should reach for:
- * - Tailwind keeps max-w-prose as its fixed 65ch, so the 42rem prose
- *   container is reached through its variable or the @prose: query.
- * - The hairline is plain `border`; only the strong width needs the variable.
- * - Named spacing has one intended axis each (px-gutter, py-section, gap-stack).
- */
-const utilityOverrides: Record<string, string> = {
-  "container.prose": "max-w-(--container-prose) · @prose:",
-  "border.hairline": "border",
-  "border.strong": "border-(length:--border-width-strong)",
-  "space.gutter": "px-gutter",
-  "space.section": "py-section",
-  "space.section-sm": "py-section-sm",
-  "space.stack": "gap-stack",
-}
-
-export function utilityFor(t: DesignToken): string | undefined {
-  return utilityOverrides[t.name] ?? t.utility
-}
-
-/**
- * The single intended utility for any token: the primary utility for a
- * semantic colour, nothing for primitives (CSS variables only), otherwise
- * the build's hint.
- */
-export function intendedUtility(t: DesignToken): string | undefined {
-  if (t.type === "color") return t.tier === "semantic" ? primaryColorUtility(t) : undefined
-  return utilityFor(t)
 }
 
 export function isColor(t: DesignToken) {

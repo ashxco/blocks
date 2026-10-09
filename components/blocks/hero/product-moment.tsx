@@ -171,7 +171,7 @@ export function DeployedCard({
   return (
     <Card className={cn("justify-between gap-5 border-panel-border bg-panel p-4 text-panel-foreground", className)}>
       <div className="flex items-center justify-between gap-3">
-        <CircleCheckIcon aria-hidden="true" className="size-5 text-success" />
+        <CircleCheckIcon aria-hidden="true" className="size-5 text-panel-success" />
         <span className="font-mono text-caption text-panel-muted tabular">{time}</span>
       </div>
       <div className="grid gap-3">
@@ -182,7 +182,7 @@ export function DeployedCard({
         <ul className="grid gap-1.5 border-t border-panel-border pt-3">
           {checks.map((c) => (
             <li key={c} className="flex items-center gap-2 text-caption text-panel-muted">
-              <CheckIcon aria-hidden="true" className="size-3.5 shrink-0 text-success" />
+              <CheckIcon aria-hidden="true" className="size-3.5 shrink-0 text-panel-success" />
               {c}
             </li>
           ))}
@@ -209,18 +209,15 @@ export interface HeroProductMomentProps {
  */
 export function HeroProductMoment({ stage = true, className }: HeroProductMomentProps) {
   return (
-    <div
-      data-slot="hero-product-moment"
-      className={cn(
-        "@container/moment",
-        stage && "rounded-(--panel-radius) border bg-subtle p-3 sm:p-4",
-        className
-      )}
-    >
-      <div className="grid gap-3 @min-[26rem]/moment:grid-cols-2 @narrow/moment:grid-cols-[1.45fr_1fr_1fr]">
-        <DeploymentsCard className="@min-[26rem]/moment:col-span-2 @narrow/moment:col-span-1" />
-        <RequestsCard />
-        <DeployedCard />
+    // The root is the container, so the stage padding can follow it too.
+    <div data-slot="hero-product-moment" className={cn("@container/moment", className)}>
+      <div className={cn(stage && "rounded-(--panel-radius) border bg-subtle p-3 @min-[30rem]/moment:p-4")}>
+        {/* Two-up from 24rem, so the moment stays short beside the hero copy just past its 60rem split. */}
+        <div className="grid gap-3 @min-[24rem]/moment:grid-cols-2 @narrow/moment:grid-cols-[1.45fr_1fr_1fr]">
+          <DeploymentsCard className="@min-[24rem]/moment:col-span-2 @narrow/moment:col-span-1" />
+          <RequestsCard />
+          <DeployedCard />
+        </div>
       </div>
     </div>
   )

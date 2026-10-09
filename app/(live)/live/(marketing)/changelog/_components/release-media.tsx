@@ -6,24 +6,37 @@ import { cn } from "@/lib/utils"
  * frame that ChangelogEntry draws, so each one pads itself away from the edge.
  */
 
+const logLines = [
+  "$ lumen logs --follow --status 5xx",
+  "→ Streaming from 3 replicas in fra1, iad1 and gru1",
+  "14:02:11  gru1  GET   /api/checkout   502  1.21s",
+  "14:02:14  fra1  POST  /api/cart       500  84ms",
+  "→ Deploy dpl_8f2k1c is live, following the new version",
+  "✓ No 5xx responses in the last 60 seconds",
+]
+
+/* The same stream for a phone: shorter notes and no region or latency columns, so nothing runs off the edge. */
+const compactLogLines = [
+  "$ lumen logs -f --status 5xx",
+  "→ Following 3 replicas",
+  "14:02:11 GET  /api/checkout 502",
+  "14:02:14 POST /api/cart     500",
+  "→ dpl_8f2k1c is live",
+  "✓ No 5xx in the last 60s",
+]
+
 /**
  * Live log stream, for the `lumen logs` release. Log lines are columns, so
- * the window scrolls sideways on phones instead of wrapping them apart.
+ * they never wrap: in a narrow frame the window shows a shorter stream
+ * instead of clipping the long one at the edge.
  */
 export function LogsShot({ className }: { className?: string }) {
   return (
     <div className={cn("p-3 sm:p-10", className)}>
-      <CodeWindow
-        title="lumen logs"
-        lines={[
-          "$ lumen logs --follow --status 5xx",
-          "→ Streaming from 3 replicas in fra-1, iad-1 and gru-1",
-          "14:02:11  gru-1  GET   /api/checkout   502  1.21s",
-          "14:02:14  fra-1  POST  /api/cart       500  84ms",
-          "→ Deploy dpl_8f2k1c is live, following the new version",
-          "✓ No 5xx responses in the last 60 seconds",
-        ]}
-      />
+      <div className="@container/logs">
+        <CodeWindow title="lumen logs" lines={compactLogLines} className="@min-[30rem]/logs:hidden" />
+        <CodeWindow title="lumen logs" lines={logLines} className="hidden @min-[30rem]/logs:flex" />
+      </div>
     </div>
   )
 }

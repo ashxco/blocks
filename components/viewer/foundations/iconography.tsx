@@ -128,7 +128,7 @@ function Aligned({ children }: { children: React.ReactNode }) {
 const pairings: { name: string; spec: string; sample: React.ReactNode }[] = [
   {
     name: "Button",
-    spec: "size-4 · gap-2, built in",
+    spec: "size-4 · gap-2 · built in",
     sample: (
       <Button type="button">
         <PlusIcon data-icon="inline-start" />

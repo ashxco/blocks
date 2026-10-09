@@ -257,6 +257,7 @@ export default function AttachmentDocs() {
           </AttachmentMedia>
           <AttachmentContent>
             <AttachmentTitle>Add image</AttachmentTitle>
+            <AttachmentDescription>Up to 10 MB</AttachmentDescription>
           </AttachmentContent>
         </Attachment>
       </Example>

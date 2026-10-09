@@ -18,20 +18,19 @@ export default function TeamGridDocs() {
       <Example
         title="With a hiring tile"
         layout="full"
-        surface="subtle"
-        description="Close the grid with a tile that links to open roles."
+        description="Close the grid with a tile that links to open roles. It keeps the portrait frame on a tinted fill, with its title and line in the caption slot. Leave it out when the page already has a hiring section."
         code={`<TeamGrid
   members={members.slice(0, 7)}
   hiring={{
     title: "Join us",
-    description: "4 open roles in engineering and design",
+    description: "Six open roles in engineering, design and support",
     href: "/live/contact",
   }}
 />`}
       >
         <TeamGrid
           members={defaultTeam.slice(0, 7)}
-          hiring={{ title: "Join us", description: "4 open roles in engineering and design", href: "/live/contact" }}
+          hiring={{ title: "Join us", description: "Six open roles in engineering, design and support", href: "/live/contact" }}
         />
       </Example>
 
@@ -41,7 +40,7 @@ export default function TeamGridDocs() {
         description="Pass title={null} and contained={false} to place the grid inside your own layout, such as a two-column about page."
         code={`<TeamGrid title={null} contained={false} members={members.slice(0, 4)} />`}
       >
-        <div className="p-6 sm:p-10">
+        <div className="p-6 @2xl:p-10">
           <TeamGrid
             title={null}
             contained={false}

@@ -10,20 +10,18 @@ import {
   CommandMenuButton,
   CommandMenuPanel,
 } from "@/components/blocks/command-menu"
+import { AppTopBarSlice } from "@/components/blocks/app-shell/top-bar"
 import { Notifications } from "@/components/blocks/notifications"
 import { UserMenu } from "@/components/blocks/user-menu"
 
 /** A slice of the app top bar, so the trigger reads in the place it lives. */
-function TopBarSlice({ children }: { children: React.ReactNode }) {
+function TopBar() {
   return (
-    <div className="flex h-(--header-height-sm) w-full max-w-xl items-center gap-3 rounded-(--card-radius) border bg-background pr-2 pl-5">
-      <span className="text-label text-muted-foreground">Acme Inc.</span>
-      <span aria-hidden="true" className="text-label text-muted-foreground">
-        /
-      </span>
-      <span className="text-label text-foreground">Overview</span>
-      <div className="ml-auto flex items-center gap-1">{children}</div>
-    </div>
+    <AppTopBarSlice className="max-w-3xl">
+      <CommandMenu hotkey={false} className="mr-1" />
+      <Notifications />
+      <UserMenu />
+    </AppTopBarSlice>
   )
 }
 
@@ -49,34 +47,29 @@ export default function CommandMenuDocs() {
   return (
     <Examples>
       <Example
-        title="Default"
-        description="A search field that opens the palette. In your app Cmd+K or Ctrl+K also opens it; the hotkey is off here because this site uses it for its own search. Below the md breakpoint the field becomes an icon."
-        minHeight="min-h-56"
-        code={`<CommandMenu />`}
-      >
-        <TopBarSlice>
-          <CommandMenu hotkey={false} className="mr-1" />
-          <Notifications />
-          <UserMenu />
-        </TopBarSlice>
-      </Example>
-
-      <Example
         title="Open"
-        description="What the trigger opens: one search field over three groups, Navigation, Actions and Theme. Arrow keys move, Enter runs the item, Esc closes. Shown inline here with CommandMenuPanel; in the app it opens in a dialog in the upper third of the screen."
+        description="What the trigger opens: one search field over three groups, Navigation, Actions and Theme. Arrow keys move, Enter runs the item, Esc closes. Shown inline here with CommandMenuPanel, which renders the palette on a bordered surface as wide as a dialog, without a trigger or the dialog. In the app it opens in a dialog in the upper third of the screen."
         layout="full"
         surface="subtle"
         code={`// The open state on its own surface, for previews or a page that keeps search open
 <CommandMenuPanel />`}
       >
-        <div className="grid justify-items-center gap-3 px-4 py-10 sm:px-10">
-          <TopBarSlice>
-            <CommandMenu hotkey={false} className="mr-1" />
-            <Notifications />
-            <UserMenu />
-          </TopBarSlice>
+        <div className="grid justify-items-center gap-3 px-4 py-10 @prose:px-10">
+          <TopBar />
           <CommandMenuPanel />
         </div>
+      </Example>
+
+      <Example
+        title="In the top bar"
+        description="A search field that opens the palette. In your app Cmd+K or Ctrl+K also opens it; the hotkey is off here because this site uses it for its own search. The trigger reads its container: in a top bar narrower than 44rem the field becomes an icon."
+        minHeight="min-h-56"
+        code={`<header className="@container/topbar …">
+  …
+  <CommandMenu />
+</header>`}
+      >
+        <TopBar />
       </Example>
 
       <Example
@@ -151,7 +144,7 @@ export default function CommandMenuDocs() {
             type: '"auto" | "search" | "icon" | "none"',
             default: '"auto"',
             description:
-              "Which trigger to render. Auto switches from icon to field at md.",
+              "Which trigger to render. Auto is an icon until its container (the top bar) is 44rem wide, then a field.",
           },
           {
             prop: "placeholder",
@@ -173,8 +166,7 @@ export default function CommandMenuDocs() {
             prop: "placeholder",
             type: "string",
             default: '"Search pages and actions"',
-            description:
-              "The palette inline, on a bordered surface as wide as a dialog, without a trigger or the dialog.",
+            description: "Placeholder for the search input.",
           },
           {
             prop: "className",

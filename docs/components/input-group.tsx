@@ -12,7 +12,7 @@ import {
   XIcon,
 } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, tokenPx } from "@/docs/kit"
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
 import {
   InputGroup,
@@ -23,13 +23,6 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group"
 import { Kbd } from "@/components/ui/kbd"
-import { tokens } from "@/design-system/generated/tokens"
-
-/** A dimension token in px, read from the generated tokens so the copy follows the system. */
-function tokenPx(cssVar: string) {
-  const value = tokens.find((token) => token.cssVar === cssVar)?.value
-  return typeof value === "string" && value.endsWith("rem") ? `${parseFloat(value) * 16}px` : String(value ?? "")
-}
 
 function SearchWithClear() {
   const [query, setQuery] = React.useState("")
@@ -59,7 +52,7 @@ function SearchWithClear() {
 
 function DeployHook() {
   const [copied, setCopied] = React.useState(false)
-  const url = "https://api.lumen.app/hooks/dh_3kR9xW2m"
+  const url = "https://hooks.lumen.app/dh_3kR9xW2m"
 
   async function copy() {
     try {
@@ -159,9 +152,9 @@ function DeploymentNote() {
 }
 
 const groupSizes = [
-  { size: "sm", label: "Small", height: tokenPx("--control-height-sm"), button: "icon-xs" },
-  { size: "default", label: "Medium", height: tokenPx("--control-height-md"), button: "icon-sm" },
-  { size: "lg", label: "Large", height: tokenPx("--control-height-lg"), button: "icon-sm" },
+  { size: "sm", label: "Small", height: `${tokenPx("--control-height-sm")}px`, button: "icon-xs" },
+  { size: "default", label: "Medium", height: `${tokenPx("--control-height-md")}px`, button: "icon-sm" },
+  { size: "lg", label: "Large", height: `${tokenPx("--control-height-lg")}px`, button: "icon-sm" },
 ] as const
 
 export default function InputGroupDocs() {
@@ -213,7 +206,7 @@ export default function InputGroupDocs() {
     <InputGroupAddon>
       <InputGroupText>https://</InputGroupText>
     </InputGroupAddon>
-    <InputGroupInput id="subdomain" placeholder="acme-web" spellCheck={false} />
+    <InputGroupInput id="subdomain" defaultValue="acme-web" placeholder="acme-web" spellCheck={false} />
     <InputGroupAddon align="inline-end">
       <InputGroupText>.lumen.app</InputGroupText>
     </InputGroupAddon>
@@ -230,14 +223,14 @@ export default function InputGroupDocs() {
   </InputGroup>
 </Field>`}
       >
-        <div className="grid w-full max-w-md gap-6">
+        <div className="grid w-full max-w-sm gap-6">
           <Field>
             <FieldLabel htmlFor="ig-subdomain">Preview domain</FieldLabel>
             <InputGroup>
               <InputGroupAddon>
                 <InputGroupText>https://</InputGroupText>
               </InputGroupAddon>
-              <InputGroupInput id="ig-subdomain" placeholder="acme-web" spellCheck={false} />
+              <InputGroupInput id="ig-subdomain" defaultValue="acme-web" placeholder="acme-web" spellCheck={false} />
               <InputGroupAddon align="inline-end">
                 <InputGroupText>.lumen.app</InputGroupText>
               </InputGroupAddon>
@@ -297,7 +290,7 @@ export default function InputGroupDocs() {
   </InputGroup>
 </Field>`}
       >
-        <div className="grid w-full max-w-md gap-6">
+        <div className="grid w-full max-w-sm gap-6">
           <DeployHook />
           <PasswordField />
         </div>
@@ -326,7 +319,7 @@ export default function InputGroupDocs() {
   </InputGroup>
 </Field>`}
       >
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-sm">
           <DeploymentNote />
         </div>
       </Example>
