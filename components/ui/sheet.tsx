@@ -2,10 +2,45 @@
 
 import * as React from "react"
 import { Dialog as SheetPrimitive } from "@base-ui/react/dialog"
-import { cn } from "cn"
+import { XIcon } from "lucide-react"
+import { cn } from "@/components/viewer/cn"
 
 import { Button } from "@/components/ui/button"
-import { XIcon } from "lucide-react"
+
+/**
+ * Blocks sheet. A dialog that slides in from an edge: bg-popover with a
+ * hairline border on its inner edge, over the blurred overlay. Use
+ * variant="floating" to inset it from the viewport with --dialog-radius
+ * corners. Header, body and footer share --dialog-padding.
+ */
+
+type SheetSide = "top" | "right" | "bottom" | "left"
+
+/** Where each side sits when flush against the viewport. */
+const edgeSide: Record<SheetSide, string> = {
+  right: "inset-y-0 right-0 border-l",
+  left: "inset-y-0 left-0 border-r",
+  top: "inset-x-0 top-0 border-b",
+  bottom: "inset-x-0 bottom-0 border-t",
+}
+
+/** Where each side sits when floating, inset by 0.75rem. */
+const floatingSide: Record<SheetSide, string> = {
+  right: "inset-y-3 right-3",
+  left: "inset-y-3 left-3",
+  top: "inset-x-3 top-3",
+  bottom: "inset-x-3 bottom-3",
+}
+
+/** Size and slide-in direction. Width is a plain class so callers can override it. */
+const sideSize: Record<SheetSide, string> = {
+  right:
+    "w-[calc(100%-3rem)] max-w-(--dialog-width) data-starting-style:translate-x-[calc(100%+0.75rem)] data-ending-style:translate-x-[calc(100%+0.75rem)]",
+  left: "w-[calc(100%-3rem)] max-w-(--dialog-width) data-starting-style:-translate-x-[calc(100%+0.75rem)] data-ending-style:-translate-x-[calc(100%+0.75rem)]",
+  top: "max-h-[calc(100dvh-4rem)] data-starting-style:-translate-y-[calc(100%+0.75rem)] data-ending-style:-translate-y-[calc(100%+0.75rem)]",
+  bottom:
+    "max-h-[calc(100dvh-4rem)] data-starting-style:translate-y-[calc(100%+0.75rem)] data-ending-style:translate-y-[calc(100%+0.75rem)]",
+}
 
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
@@ -28,7 +63,10 @@ function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
     <SheetPrimitive.Backdrop
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-black/10 transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 supports-backdrop-filter:backdrop-blur-xs",
+        "fixed inset-0 isolate z-(--z-overlay) bg-overlay backdrop-blur-glass",
+        "transition-opacity duration-(--duration-slow) ease-out",
+        "data-starting-style:opacity-0",
+        "data-ending-style:opacity-0 data-ending-style:duration-(--duration-base) data-ending-style:ease-in",
         className
       )}
       {...props}
@@ -40,10 +78,13 @@ function SheetContent({
   className,
   children,
   side = "right",
+  variant = "edge",
   showCloseButton = true,
   ...props
 }: SheetPrimitive.Popup.Props & {
-  side?: "top" | "right" | "bottom" | "left"
+  side?: SheetSide
+  /** edge sits flush against the viewport; floating is inset with rounded corners. */
+  variant?: "edge" | "floating"
   showCloseButton?: boolean
 }) {
   return (
@@ -52,26 +93,34 @@ function SheetContent({
       <SheetPrimitive.Popup
         data-slot="sheet-content"
         data-side={side}
+        data-variant={variant}
+        data-closable={showCloseButton}
         className={cn(
-          "fixed z-50 flex flex-col gap-4 bg-popover bg-clip-padding text-sm text-popover-foreground shadow-lg transition duration-200 ease-in-out data-ending-style:opacity-0 data-starting-style:opacity-0 data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=bottom]:data-ending-style:translate-y-[2.5rem] data-[side=bottom]:data-starting-style:translate-y-[2.5rem] data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=left]:data-ending-style:translate-x-[-2.5rem] data-[side=left]:data-starting-style:translate-x-[-2.5rem] data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=right]:data-ending-style:translate-x-[2.5rem] data-[side=right]:data-starting-style:translate-x-[2.5rem] data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=top]:data-ending-style:translate-y-[-2.5rem] data-[side=top]:data-starting-style:translate-y-[-2.5rem] data-[side=left]:sm:max-w-sm data-[side=right]:sm:max-w-sm",
+          "group/sheet-content fixed z-(--z-overlay) flex flex-col bg-popover text-body text-popover-foreground outline-none",
+          "transition-[translate] duration-(--duration-slow) ease-out",
+          "data-ending-style:duration-(--duration-base) data-ending-style:ease-in",
+          variant === "floating"
+            ? cn("rounded-(--dialog-radius) border", floatingSide[side])
+            : edgeSide[side],
+          sideSize[side],
           className
         )}
         {...props}
       >
         {children}
+        {/* Centred on the first line of the text-h4 title. */}
         {showCloseButton && (
           <SheetPrimitive.Close
             data-slot="sheet-close"
             render={
               <Button
                 variant="ghost"
-                className="absolute top-3 right-3"
                 size="icon-sm"
+                className="absolute top-[calc(var(--dialog-padding)+var(--text-h4)*var(--text-h4--line-height)/2-var(--button-height-sm)/2)] right-[calc(var(--dialog-padding)+var(--text-h4)*var(--text-h4--line-height)/2-var(--button-height-sm)/2)] text-muted-foreground hover:text-foreground"
               />
             }
           >
-            <XIcon
-            />
+            <XIcon />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
         )}
@@ -84,7 +133,24 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sheet-header"
-      className={cn("flex flex-col gap-0.5 p-4", className)}
+      className={cn(
+        "flex shrink-0 flex-col gap-2 p-(--dialog-padding) group-data-[closable=true]/sheet-content:pr-16",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+/** The scrolling middle of a sheet, between the header and the footer. */
+function SheetBody({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="sheet-body"
+      className={cn(
+        "flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto overscroll-contain px-(--dialog-padding) pb-(--dialog-padding)",
+        className
+      )}
       {...props}
     />
   )
@@ -94,7 +160,10 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sheet-footer"
-      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
+      className={cn(
+        "mt-auto flex shrink-0 flex-col-reverse gap-2 border-t px-(--dialog-padding) py-5 sm:flex-row sm:items-center sm:justify-end",
+        className
+      )}
       {...props}
     />
   )
@@ -104,10 +173,7 @@ function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn(
-        "font-heading text-base font-medium text-foreground",
-        className
-      )}
+      className={cn("text-h4 text-foreground", className)}
       {...props}
     />
   )
@@ -120,7 +186,7 @@ function SheetDescription({
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-body text-copy", className)}
       {...props}
     />
   )
@@ -132,6 +198,7 @@ export {
   SheetClose,
   SheetContent,
   SheetHeader,
+  SheetBody,
   SheetFooter,
   SheetTitle,
   SheetDescription,

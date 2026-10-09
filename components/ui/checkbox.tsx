@@ -2,23 +2,51 @@
 
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
 import { cn } from "cn"
-import { CheckIcon } from "lucide-react"
+import { CheckIcon, MinusIcon } from "lucide-react"
 
+/**
+ * Blocks checkbox. A hairline square on the canvas that fills with ink when
+ * checked or indeterminate. Violet appears only as the focus outline.
+ *
+ * Label it with <Label htmlFor> or <FieldLabel>, or wrap it in a label.
+ * The hit area extends past the box so it is easy to tap.
+ */
 function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        "peer relative flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-colors outline-none group-has-disabled/field:opacity-50 group-has-[:focus-visible]/field-label:ring-0 group-has-[:focus-visible]/field-label:not-data-checked:border-input after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 aria-invalid:aria-checked:border-primary dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground group-has-[:focus-visible]/field-label:data-checked:border-primary dark:data-checked:bg-primary",
+        "peer group/checkbox relative inline-flex size-4.5 max-w-4.5 min-w-4.5 shrink-0 items-center justify-center rounded-xs border border-muted-foreground/75 bg-background text-primary-foreground",
+        "outline-none transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
+        "after:absolute after:-inset-2.5",
+        "data-unchecked:not-data-indeterminate:hover:border-foreground",
+        "focus-visible:focus-ring",
+        "data-checked:border-primary data-checked:bg-primary data-indeterminate:border-primary data-indeterminate:bg-primary",
+        "group-data-[invalid=true]/field:border-destructive aria-invalid:border-destructive",
+        "aria-invalid:aria-checked:border-primary group-data-[invalid=true]/field:aria-checked:border-primary",
+        "data-disabled:cursor-not-allowed data-disabled:opacity-50",
+        "group-has-[>[data-slot=field]]/field-label:focus-visible:outline-none",
         className
       )}
       {...props}
     >
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
-        className="grid place-content-center text-current transition-none [&>svg]:size-3.5"
+        className={cn(
+          "grid place-content-center",
+          "transition-[opacity,scale] duration-(--duration-fast) ease-out",
+          "data-starting-style:scale-50 data-starting-style:opacity-0 data-ending-style:scale-50 data-ending-style:opacity-0"
+        )}
       >
         <CheckIcon
+          aria-hidden="true"
+          strokeWidth={3}
+          className="size-3.5 group-data-indeterminate/checkbox:hidden"
+        />
+        <MinusIcon
+          aria-hidden="true"
+          strokeWidth={3}
+          className="hidden size-3.5 group-data-indeterminate/checkbox:block"
         />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>

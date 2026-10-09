@@ -2,10 +2,24 @@
 
 import * as React from "react"
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
-import { cn } from "cn"
+import { XIcon } from "lucide-react"
+import { cn } from "@/components/viewer/cn"
 
 import { Button } from "@/components/ui/button"
-import { XIcon } from "lucide-react"
+
+/**
+ * Blocks dialog. A flat bg-popover card with a hairline border on a blurred
+ * overlay. Radius, padding and width come from --dialog-* tokens; the title
+ * uses the text-h4 role. It enters with a fade and a 98% scale on ease-out and
+ * leaves faster on ease-in.
+ *
+ *   <Dialog>
+ *     <DialogTrigger render={<Button variant="outline" />}>Rename</DialogTrigger>
+ *     <DialogContent>…</DialogContent>
+ *   </Dialog>
+ */
+
+type DialogSize = "sm" | "default" | "lg"
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
@@ -31,7 +45,10 @@ function DialogOverlay({
     <DialogPrimitive.Backdrop
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        "fixed inset-0 isolate z-(--z-overlay) bg-overlay backdrop-blur-glass",
+        "transition-opacity duration-(--duration-base) ease-out",
+        "data-starting-style:opacity-0",
+        "data-ending-style:opacity-0 data-ending-style:duration-(--duration-fast) data-ending-style:ease-in",
         className
       )}
       {...props}
@@ -43,35 +60,46 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  size = "default",
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean
+  /** Maximum width. sm is 3/4 of --dialog-width, lg is the prose container. */
+  size?: DialogSize
 }) {
   return (
     <DialogPortal>
       <DialogOverlay />
       <DialogPrimitive.Popup
         data-slot="dialog-content"
+        data-size={size}
+        data-closable={showCloseButton}
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "group/dialog-content fixed top-1/2 left-1/2 z-(--z-overlay) grid w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6",
+          "max-h-[calc(100dvh-2rem)] max-w-(--dialog-width) overflow-y-auto overscroll-contain",
+          "data-[size=sm]:max-w-[calc(var(--dialog-width)*0.75)] data-[size=lg]:max-w-prose",
+          "rounded-(--dialog-radius) border bg-popover p-(--dialog-padding) text-body text-popover-foreground outline-none",
+          "transition-[opacity,scale] duration-(--duration-base) ease-out",
+          "data-starting-style:scale-98 data-starting-style:opacity-0",
+          "data-ending-style:scale-98 data-ending-style:opacity-0 data-ending-style:duration-(--duration-fast) data-ending-style:ease-in",
           className
         )}
         {...props}
       >
         {children}
+        {/* Centred on the first line of the text-h4 title. */}
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
             render={
               <Button
                 variant="ghost"
-                className="absolute top-2 right-2"
                 size="icon-sm"
+                className="absolute top-[calc(var(--dialog-padding)+var(--text-h4)*var(--text-h4--line-height)/2-var(--button-height-sm)/2)] right-[calc(var(--dialog-padding)+var(--text-h4)*var(--text-h4--line-height)/2-var(--button-height-sm)/2)] text-muted-foreground hover:text-foreground"
               />
             }
           >
-            <XIcon
-            />
+            <XIcon />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
         )}
@@ -84,7 +112,10 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn("flex flex-col gap-2", className)}
+      className={cn(
+        "flex flex-col gap-2 group-data-[closable=true]/dialog-content:pr-8",
+        className
+      )}
       {...props}
     />
   )
@@ -102,7 +133,7 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end",
+        "flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end",
         className
       )}
       {...props}
@@ -121,10 +152,7 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn(
-        "font-heading text-base leading-none font-medium",
-        className
-      )}
+      className={cn("text-h4 text-foreground", className)}
       {...props}
     />
   )
@@ -138,7 +166,8 @@ function DialogDescription({
     <DialogPrimitive.Description
       data-slot="dialog-description"
       className={cn(
-        "text-sm text-muted-foreground *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground",
+        "text-body text-copy",
+        "*:[a]:font-semibold *:[a]:text-brand *:[a]:underline-offset-4 *:[a]:hover:underline",
         className
       )}
       {...props}

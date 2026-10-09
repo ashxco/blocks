@@ -3,6 +3,12 @@
 import { cn } from "cn"
 import * as ResizablePrimitive from "react-resizable-panels"
 
+/**
+ * Blocks resizable panels, on react-resizable-panels. Panels are divided by a
+ * 1px hairline with a wider invisible hit area. The line darkens on hover,
+ * turns violet while dragging or focused, and withHandle adds a small pill
+ * grip in the middle. Drag, or focus the handle and use the arrow keys.
+ */
 function ResizablePanelGroup({
   className,
   ...props
@@ -34,13 +40,34 @@ function ResizableHandle({
     <ResizablePrimitive.Separator
       data-slot="resizable-handle"
       className={cn(
-        "relative flex w-px items-center justify-center bg-border ring-offset-background after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90",
+        "group/handle relative flex w-px shrink-0 items-center justify-center bg-border outline-none",
+        "transition-colors duration-(--duration-fast) ease-standard",
+        // Invisible 9px hit area centred on the line.
+        "after:absolute after:inset-y-0 after:left-1/2 after:w-2.25 after:-translate-x-1/2",
+        "data-[separator=hover]:bg-border-strong data-[separator=active]:bg-brand focus-visible:bg-ring",
+        "aria-disabled:cursor-not-allowed aria-disabled:opacity-50",
+        // Rows: the separator lies flat.
+        "aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full",
+        "aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-2.25 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2",
+        "[&[aria-orientation=horizontal]>div]:rotate-90",
         className
       )}
       {...props}
     >
       {withHandle && (
-        <div className="z-10 flex h-6 w-1 shrink-0 rounded-lg bg-border" />
+        <div
+          data-slot="resizable-handle-grip"
+          className={cn(
+            "z-10 flex h-7 w-3.5 shrink-0 flex-col items-center justify-center gap-0.75 rounded-full border border-border-strong bg-background",
+            "transition-colors duration-(--duration-fast) ease-standard",
+            "group-data-[separator=hover]/handle:border-muted-foreground/60",
+            "group-data-[separator=active]/handle:border-brand group-focus-visible/handle:border-ring"
+          )}
+        >
+          <span className="size-0.75 rounded-full bg-muted-foreground" />
+          <span className="size-0.75 rounded-full bg-muted-foreground" />
+          <span className="size-0.75 rounded-full bg-muted-foreground" />
+        </div>
       )}
     </ResizablePrimitive.Separator>
   )

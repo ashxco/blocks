@@ -1,19 +1,57 @@
 import * as React from "react"
-import { cn } from "cn"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/components/viewer/cn"
+
+/**
+ * Blocks card. Flat: a hairline border, --card-radius corners and
+ * --card-padding inside (--card-padding-sm at size="sm"). No shadow.
+ *
+ * - `variant="default"`: bg-card on the canvas.
+ * - `variant="subtle"`: a tinted fill, for cards that should recede.
+ * - `variant="panel"`: the dark emphasis surface; stays dark in both themes.
+ *
+ * A CardHeader with `border-b` and the CardFooter run edge to edge. The inset
+ * they use is the --card-inset variable, which follows the size.
+ */
+const cardVariants = cva(
+  [
+    "group/card relative flex min-w-0 flex-col overflow-hidden rounded-(--card-radius) border p-(--card-inset) text-body",
+    // Media placed first or last bleeds to the edges.
+    "*:[img:first-child]:-mx-(--card-inset) *:[img:first-child]:-mt-(--card-inset) *:[img:first-child]:w-[calc(100%+var(--card-inset)*2)] *:[img:first-child]:max-w-none",
+    "*:[img:last-child]:-mx-(--card-inset) *:[img:last-child]:-mb-(--card-inset) *:[img:last-child]:w-[calc(100%+var(--card-inset)*2)] *:[img:last-child]:max-w-none",
+  ],
+  {
+    variants: {
+      variant: {
+        default: "border-border bg-card text-card-foreground",
+        subtle: "border-border bg-subtle text-foreground",
+        panel: "border-panel-border bg-panel text-panel-foreground",
+      },
+      size: {
+        default: "gap-6 [--card-inset:var(--card-padding)]",
+        sm: "gap-4 [--card-inset:var(--card-padding-sm)]",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
 
 function Card({
   className,
   size = "default",
+  variant = "default",
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: React.ComponentProps<"div"> & VariantProps<typeof cardVariants>) {
   return (
     <div
       data-slot="card"
       data-size={size}
-      className={cn(
-        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
-        className
-      )}
+      data-variant={variant}
+      className={cn(cardVariants({ variant, size }), className)}
       {...props}
     />
   )
@@ -24,7 +62,10 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-header"
       className={cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)",
+        "group/card-header @container/card-header grid auto-rows-min items-start gap-1.5",
+        "has-data-[slot=card-action]:grid-cols-[minmax(0,1fr)_auto] has-data-[slot=card-action]:gap-x-4",
+        // With a hairline, the header becomes an edge-to-edge band.
+        "[.border-b]:-mx-(--card-inset) [.border-b]:-mt-(--card-inset) [.border-b]:p-(--card-inset)",
         className
       )}
       {...props}
@@ -37,7 +78,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-title"
       className={cn(
-        "font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
+        "font-heading text-h4 text-foreground group-data-[size=sm]/card:text-title group-data-[variant=panel]/card:text-panel-foreground",
         className
       )}
       {...props}
@@ -49,7 +90,11 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn(
+        "text-sm text-muted-foreground group-data-[variant=panel]/card:text-panel-muted",
+        "[&_a]:font-semibold [&_a]:text-foreground [&_a]:underline-offset-4 [&_a:hover]:underline",
+        className
+      )}
       {...props}
     />
   )
@@ -60,7 +105,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-action"
       className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+        "col-start-2 row-span-2 row-start-1 flex items-center gap-2 self-start justify-self-end",
         className
       )}
       {...props}
@@ -72,7 +117,10 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-content"
-      className={cn("px-(--card-spacing)", className)}
+      className={cn(
+        "min-w-0 text-copy group-data-[variant=panel]/card:text-panel-muted",
+        className
+      )}
       {...props}
     />
   )
@@ -83,7 +131,8 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-footer"
       className={cn(
-        "flex items-center rounded-b-xl border-t bg-muted/50 p-(--card-spacing)",
+        "-mx-(--card-inset) -mb-(--card-inset) flex items-center gap-3 border-t border-border bg-subtle px-(--card-inset) py-4",
+        "group-data-[variant=subtle]/card:bg-muted group-data-[variant=panel]/card:border-panel-border group-data-[variant=panel]/card:bg-panel-raised",
         className
       )}
       {...props}
@@ -99,4 +148,5 @@ export {
   CardAction,
   CardDescription,
   CardContent,
+  cardVariants,
 }

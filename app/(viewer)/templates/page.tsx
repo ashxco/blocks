@@ -1,4 +1,48 @@
-// Placeholder. Replaced by the viewer build.
+import type { Metadata } from "next"
+
+import { DocHeader } from "@/components/viewer/doc-header"
+import { groupDescriptions, sectionDescription, slugify, templateKinds } from "@/components/viewer/nav"
+import { TemplateCard } from "@/components/viewer/template-card"
+import { ViewerPage } from "@/components/viewer/viewer-page"
+import { templates } from "@/lib/registry"
+
+export const metadata: Metadata = {
+  title: "Templates",
+  description: sectionDescription.templates,
+}
+
 export default function TemplatesPage() {
-  return <h1 className="text-h1">Templates</h1>
+  return (
+    <ViewerPage>
+      <DocHeader
+        section="Templates"
+        title="Templates"
+        description={`${templates.length} full pages for Lumen, a deployment platform. Each one is built from molecules and runs live, so what you see below is the real page.`}
+      />
+      <div className="grid gap-16 sm:gap-20">
+        {templateKinds.map(({ kind, title }) => {
+          const items = templates.filter((t) => t.kind === kind)
+          if (!items.length) return null
+          const id = slugify(title)
+          return (
+            <section key={kind} id={id} aria-labelledby={`${id}-title`} className="grid scroll-mt-24 gap-8">
+              <div className="grid gap-2">
+                <h2 id={`${id}-title`} className="text-h3">
+                  {title}
+                </h2>
+                {groupDescriptions[title] ? (
+                  <p className="max-w-prose text-body text-copy">{groupDescriptions[title]}</p>
+                ) : null}
+              </div>
+              <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 2xl:grid-cols-3">
+                {items.map((template) => (
+                  <TemplateCard key={template.slug} template={template} />
+                ))}
+              </div>
+            </section>
+          )
+        })}
+      </div>
+    </ViewerPage>
+  )
 }

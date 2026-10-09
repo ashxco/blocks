@@ -5,15 +5,34 @@ import { cn } from "cn"
 
 import { Separator } from "@/components/ui/separator"
 
+/**
+ * Blocks button group. Joins related buttons into one pill.
+ *
+ * Only the inner corners are squared, so the ends keep each child's own
+ * radius (pill for buttons, control radius for inputs). Neighbours overlap
+ * by one pixel so outline buttons share a single hairline, and the hovered
+ * or focused child is lifted above its neighbours so its full border shows.
+ * Separators sit between filled buttons without overlapping them.
+ */
 const buttonGroupVariants = cva(
-  "flex w-fit items-stretch *:focus-visible:relative *:focus-visible:z-10 has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-lg [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
+  [
+    "flex w-fit items-stretch",
+    "*:hover:z-10 *:focus-visible:z-20",
+    "has-[>[data-slot=button-group]]:gap-2",
+    "[&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>[data-slot=input]]:flex-1 [&>input]:flex-1",
+  ],
   {
     variants: {
       orientation: {
-        horizontal:
-          "*:data-slot:rounded-r-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg! [&>[data-slot]~[data-slot]]:rounded-l-none [&>[data-slot]~[data-slot]]:border-l-0",
-        vertical:
-          "flex-col *:data-slot:rounded-b-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-b-lg! [&>[data-slot]~[data-slot]]:rounded-t-none [&>[data-slot]~[data-slot]]:border-t-0",
+        horizontal: [
+          "[&>[data-slot]:has(~[data-slot])]:rounded-r-none [&>[data-slot]~[data-slot]]:rounded-l-none",
+          "[&>[data-slot]~[data-slot]:not([data-slot=button-group-separator])]:-ml-px [&>[data-slot=button-group-separator]+[data-slot]]:ml-0!",
+        ],
+        vertical: [
+          "flex-col",
+          "[&>[data-slot]:has(~[data-slot])]:rounded-b-none [&>[data-slot]~[data-slot]]:rounded-t-none",
+          "[&>[data-slot]~[data-slot]:not([data-slot=button-group-separator])]:-mt-px [&>[data-slot=button-group-separator]+[data-slot]]:mt-0!",
+        ],
       },
     },
     defaultVariants: {
@@ -24,7 +43,7 @@ const buttonGroupVariants = cva(
 
 function ButtonGroup({
   className,
-  orientation,
+  orientation = "horizontal",
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof buttonGroupVariants>) {
   return (
@@ -38,6 +57,7 @@ function ButtonGroup({
   )
 }
 
+/** Static text or an icon attached to the group, such as a prefix or a unit. */
 function ButtonGroupText({
   className,
   render,
@@ -48,7 +68,8 @@ function ButtonGroupText({
     props: mergeProps<"div">(
       {
         className: cn(
-          "flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+          "flex items-center gap-2 rounded-(--button-radius) border border-input bg-muted px-4 text-sm font-semibold whitespace-nowrap text-muted-foreground",
+          "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
           className
         ),
       },
@@ -61,6 +82,7 @@ function ButtonGroupText({
   })
 }
 
+/** A hairline between filled buttons, as in a split button. */
 function ButtonGroupSeparator({
   className,
   orientation = "vertical",

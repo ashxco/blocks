@@ -3,6 +3,12 @@
 import { Progress as ProgressPrimitive } from "@base-ui/react/progress"
 import { cn } from "cn"
 
+/**
+ * Blocks progress. A thin ink bar on a muted track. Put a ProgressLabel and
+ * ProgressValue inside to show them above the bar. Pass `value={null}` for
+ * work of unknown length: the bar sweeps, or rests at low contrast when the
+ * user prefers reduced motion.
+ */
 function Progress({
   className,
   children,
@@ -13,7 +19,7 @@ function Progress({
     <ProgressPrimitive.Root
       value={value}
       data-slot="progress"
-      className={cn("flex flex-wrap gap-3", className)}
+      className={cn("flex w-full flex-wrap items-baseline gap-x-3 gap-y-2.5", className)}
       {...props}
     >
       {children}
@@ -28,7 +34,7 @@ function ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props) {
   return (
     <ProgressPrimitive.Track
       className={cn(
-        "relative flex h-1 w-full items-center overflow-x-hidden rounded-full bg-muted",
+        "relative flex h-1 w-full items-center overflow-hidden rounded-full bg-muted",
         className
       )}
       data-slot="progress-track"
@@ -44,7 +50,12 @@ function ProgressIndicator({
   return (
     <ProgressPrimitive.Indicator
       data-slot="progress-indicator"
-      className={cn("h-full bg-primary transition-all", className)}
+      className={cn(
+        "h-full rounded-full bg-primary transition-[width] duration-(--duration-slow) ease-out",
+        "data-indeterminate:w-2/5 data-indeterminate:-translate-x-full data-indeterminate:animate-out data-indeterminate:ease-in-out data-indeterminate:repeat-infinite data-indeterminate:slide-out-to-right-[350%] data-indeterminate:[--tw-animation-duration:calc(var(--duration-slower)*2.5)]",
+        "motion-reduce:data-indeterminate:w-full motion-reduce:data-indeterminate:translate-x-0 motion-reduce:data-indeterminate:animate-none motion-reduce:data-indeterminate:opacity-30",
+        className
+      )}
       {...props}
     />
   )
@@ -53,7 +64,7 @@ function ProgressIndicator({
 function ProgressLabel({ className, ...props }: ProgressPrimitive.Label.Props) {
   return (
     <ProgressPrimitive.Label
-      className={cn("text-sm font-medium", className)}
+      className={cn("text-sm font-semibold tracking-tight text-foreground", className)}
       data-slot="progress-label"
       {...props}
     />
