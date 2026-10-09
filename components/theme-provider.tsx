@@ -16,6 +16,7 @@ function ThemeProvider({
       {...props}
     >
       <ThemeHotkey />
+      <ThemeFromQuery />
       {children}
     </NextThemesProvider>
   )
@@ -64,6 +65,18 @@ function ThemeHotkey() {
       window.removeEventListener("keydown", onKeyDown)
     }
   }, [resolvedTheme, setTheme])
+
+  return null
+}
+
+/** Lets screenshots and template previews pick a theme with ?theme=dark|light. */
+function ThemeFromQuery() {
+  const { setTheme } = useTheme()
+
+  React.useEffect(() => {
+    const theme = new URLSearchParams(window.location.search).get("theme")
+    if (theme === "dark" || theme === "light") setTheme(theme)
+  }, [setTheme])
 
   return null
 }
