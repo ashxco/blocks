@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { breakpoints as systemBreakpoints, grid } from "@/design-system/generated/tokens"
 import { cn } from "@/lib/utils"
 
 import {
@@ -220,6 +221,77 @@ function Containers() {
   )
 }
 
+/* ------------------------------------------------------------------------ */
+/* System grid                                                               */
+/* ------------------------------------------------------------------------ */
+
+/**
+ * The system grid at the window's width: twelve cells on grid-system, with
+ * rows past the first clipped, so exactly the current columns show. The
+ * label prints --grid-columns through a CSS counter, so it is right on
+ * first paint at any width.
+ */
+function LiveGrid() {
+  return (
+    <div className="grid gap-3">
+      <div aria-hidden className="grid-system h-32 auto-rows-[100%] overflow-hidden">
+        {Array.from({ length: 12 }, (_, column) => (
+          <span key={column} className="rounded-xs bg-brand-subtle" />
+        ))}
+      </div>
+      <p className="text-caption text-muted-foreground">
+        <span className="font-semibold text-foreground [counter-reset:grid-columns_var(--grid-columns)] before:content-[counter(grid-columns)]" />{" "}
+        columns in this window
+      </p>
+    </div>
+  )
+}
+
+function GridTable() {
+  const tiers = ["base", ...systemBreakpoints.map((b) => b.name).filter((name) => name in grid.columns || name in grid.gutter)] as const
+  const minOf = (tier: string) => systemBreakpoints.find((b) => b.name === tier)?.min
+  const valueAt = <T,>(values: { base: T } & Partial<Record<string, T>>, tier: string) => values[tier] ?? values.base
+  const th = "h-(--table-row-height-sm) px-4 text-left text-caption font-semibold text-muted-foreground @prose:px-5"
+  const td = "h-(--table-row-height) px-4 py-3 align-baseline @prose:px-5"
+  return (
+    <div className="overflow-hidden rounded-(--card-radius) border">
+      <table className="w-full border-collapse">
+        <caption className="sr-only">System grid per breakpoint</caption>
+        <thead className="bg-subtle">
+          <tr>
+            <th scope="col" className={th}>From</th>
+            <th scope="col" className={th}>Columns</th>
+            <th scope="col" className={th}>Gutter</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tiers.map((tier) => {
+            const min = minOf(tier)
+            const gutter = String(valueAt(grid.gutter, tier))
+            return (
+              <tr key={tier} className="border-t">
+                <td className={td}>
+                  <span className="flex flex-wrap items-baseline gap-x-2">
+                    <Code>{tier === "base" ? "base" : `${tier}:`}</Code>
+                    <Meta>{min ? `${round((toRem(min) ?? 0) * 16)}px` : "0px"}</Meta>
+                  </span>
+                </td>
+                <td className={cn(td, "font-mono text-label text-foreground tabular")}>{valueAt(grid.columns, tier)}</td>
+                <td className={td}>
+                  <span className="flex flex-wrap items-baseline gap-x-2">
+                    <Meta className="text-foreground">{round((toRem(gutter) ?? 0) * 16)}px</Meta>
+                    <Meta>{gutter}</Meta>
+                  </span>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 const deviceHint: Record<string, string> = {
   sm: "Large phones in landscape",
   md: "Tablets in portrait",
@@ -379,7 +451,7 @@ export function SpacingFoundation({ title, description }: { title: string; descr
       <Section
         id="named"
         title="Named spacing"
-        description="Page-level rhythm has names, so every template breathes the same way. Gutters and sections are fluid: resize the window and the highlighted space follows."
+        description="Page-level rhythm has names, so every page breathes the same way. Gutters and sections are fluid: resize the window and the highlighted space follows."
       >
         <NamedSpacing />
       </Section>
@@ -390,6 +462,22 @@ export function SpacingFoundation({ title, description }: { title: string; descr
         description="Four widths, drawn to scale against the breakpoint ruler; page, in ink, is the default. The container utilities centre the column and add gutters; the max-width utilities only cap it."
       >
         <Containers />
+      </Section>
+
+      <Section
+        id="grid"
+        title="Grid"
+        description={
+          <>
+            Four columns on phones, eight from md and twelve from lg, with the gutter between columns and rows. Use{" "}
+            <Code>grid-system</Code> or <Code>{"<Grid>"}</Code> inside a container, which keeps the page margins.
+          </>
+        }
+      >
+        <div className="grid gap-8">
+          <LiveGrid />
+          <GridTable />
+        </div>
       </Section>
 
       <Section
