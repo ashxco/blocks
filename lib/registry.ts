@@ -1,8 +1,7 @@
 /**
- * The Blocks registry: every foundation page, component, molecule and
- * template the viewer knows about. Docs modules live at
- *   docs/components/<slug>.tsx  and  docs/molecules/<slug>.tsx
- * and are loaded through docs/index.ts.
+ * The Blocks registry: every foundation page and component the viewer knows
+ * about. Component docs modules live at docs/components/<slug>.tsx and are
+ * loaded through docs/index.ts.
  */
 
 export interface RegistryEntry {
@@ -12,26 +11,25 @@ export interface RegistryEntry {
   group: string
 }
 
-export interface TemplateEntry extends RegistryEntry {
-  /** Live route of the full-page template. */
-  href: string
-  kind: "marketing" | "auth" | "app"
-}
-
 export const foundations: RegistryEntry[] = [
   { slug: "themes", title: "Themes", group: "Foundations", description: "Presets that set the accent, neutrals, radii and fonts in light and dark, and how to make your own." },
   { slug: "colors", title: "Colour", group: "Foundations", description: "The theme's accent and neutral scales, the fixed OKLCH scales behind them, and the semantic roles that map them to light and dark." },
-  { slug: "typography", title: "Typography", group: "Foundations", description: "The theme's sans and mono families, type roles from display to caption, and the size scale." },
-  { slug: "spacing", title: "Spacing & layout", group: "Foundations", description: "The 4px spacing unit, page gutters, section rhythm, containers and breakpoints." },
+  { slug: "typography", title: "Typography", group: "Foundations", description: "The theme's heading, text and mono families, type roles from display to caption, and the size scale." },
+  { slug: "spacing", title: "Spacing & layout", group: "Foundations", description: "The 4px spacing unit, page gutters, section rhythm, containers, the system grid and breakpoints." },
   { slug: "shape", title: "Shape", group: "Foundations", description: "The theme's radius scale and component radii, from chips to panels, and borders instead of shadows." },
   { slug: "motion", title: "Motion", group: "Foundations", description: "Durations and easing curves, with reduced-motion behaviour." },
   { slug: "iconography", title: "Iconography", group: "Foundations", description: "Lucide icons: sizes, stroke and how they pair with text." },
   { slug: "tokens", title: "All tokens", group: "Foundations", description: "Every design token with its CSS variable, Tailwind utility and value in light and dark, for any theme." },
 ]
 
-export const componentGroups = ["Actions", "Forms", "Overlays", "Navigation", "Data display", "Feedback", "Conversation"] as const
+export const componentGroups = ["Layout", "Actions", "Forms", "Overlays", "Navigation", "Data display", "Feedback", "Conversation"] as const
 
 export const components: RegistryEntry[] = [
+  // Layout
+  { slug: "container", title: "Container", group: "Layout", description: "A centred column at a container width, with the page gutters on both sides." },
+  { slug: "stack", title: "Stack", group: "Layout", description: "Children in a vertical flow, spaced by one gap from the spacing scale." },
+  { slug: "inline", title: "Inline", group: "Layout", description: "A row of buttons, badges or metadata that wraps when it runs out of room." },
+  { slug: "grid", title: "Grid", group: "Layout", description: "The system grid of 4, 8 and 12 columns, with items that span columns at each breakpoint." },
   // Actions
   { slug: "button", title: "Button", group: "Actions", description: "Actions in primary, secondary, outline, ghost, link, brand, inverse and destructive variants, shaped by the theme's button radius." },
   { slug: "button-group", title: "Button group", group: "Actions", description: "Related buttons joined into one control." },
@@ -99,76 +97,4 @@ export const components: RegistryEntry[] = [
   { slug: "attachment", title: "Attachment", group: "Conversation", description: "Files attached to a message or form." },
   { slug: "marker", title: "Marker", group: "Conversation", description: "Inline status markers in a conversation." },
   { slug: "questionnaire", title: "Questionnaire", group: "Conversation", description: "A multi-step question flow." },
-]
-
-export const moleculeGroups = ["Site", "Marketing sections", "Commerce & content", "App", "Account"] as const
-
-export const molecules: RegistryEntry[] = [
-  // Site
-  { slug: "site-header", title: "Site header", group: "Site", description: "Header that turns solid on scroll, with a full-screen menu on phones." },
-  { slug: "site-footer", title: "Site footer", group: "Site", description: "Footer with newsletter sign-up, link columns and status." },
-  { slug: "section-heading", title: "Section heading", group: "Site", description: "Split heading: bold title on the left, supporting text on the right." },
-  { slug: "logo-cloud", title: "Logo row", group: "Site", description: "A row of customer logos or the tools a product connects to." },
-  { slug: "cta-band", title: "Call to action", group: "Site", description: "Dark panel with a closing pitch and actions." },
-  { slug: "newsletter-form", title: "Newsletter form", group: "Site", description: "Email capture with inline confirmation." },
-  { slug: "install-command", title: "Install command", group: "Site", description: "A one-line command, such as an SDK install, with a copy button." },
-  { slug: "code-window", title: "Code window", group: "Site", description: "Editor-style frame for code samples, such as an API example." },
-  // Marketing sections
-  { slug: "hero", title: "Hero", group: "Marketing sections", description: "Split hero with headline, actions and a product visual." },
-  { slug: "feature-bento", title: "Feature bento", group: "Marketing sections", description: "Mixed-size feature tiles with small product visuals." },
-  { slug: "steps", title: "Steps", group: "Marketing sections", description: "How it works, in a row of cards." },
-  { slug: "product-tour", title: "Product tour", group: "Marketing sections", description: "Selectable steps beside a product screen that changes with each step." },
-  { slug: "comparison", title: "Comparison", group: "Marketing sections", description: "Side-by-side cards: you versus the alternative." },
-  { slug: "testimonial", title: "Testimonial", group: "Marketing sections", description: "A large customer quote with a result." },
-  { slug: "stats", title: "Stats", group: "Marketing sections", description: "A band of headline numbers." },
-  { slug: "faq", title: "FAQ", group: "Marketing sections", description: "Questions and answers beside a heading." },
-  { slug: "app-mockup", title: "App mockup", group: "Marketing sections", description: "A product screen built from real components." },
-  // Commerce & content
-  { slug: "pricing-plans", title: "Pricing plans", group: "Commerce & content", description: "Plan cards with a monthly or yearly switch and a featured plan." },
-  { slug: "plan-matrix", title: "Plan comparison", group: "Commerce & content", description: "Feature table across plans." },
-  { slug: "changelog-entry", title: "Changelog entry", group: "Commerce & content", description: "A dated release on a timeline." },
-  { slug: "post-card", title: "Post card", group: "Commerce & content", description: "Blog post card, plus a featured layout." },
-  { slug: "team-grid", title: "Team grid", group: "Commerce & content", description: "People with photos, names and roles." },
-  { slug: "contact-panel", title: "Contact panel", group: "Commerce & content", description: "Contact form beside a dark panel of other ways to reach you." },
-  // App
-  { slug: "app-shell", title: "App shell", group: "App", description: "Sidebar navigation, top bar and content area, responsive down to mobile." },
-  { slug: "page-header", title: "Page header", group: "App", description: "Title, description and actions at the top of an app page." },
-  { slug: "stat-card", title: "Stat card", group: "App", description: "A metric with change and a small trend." },
-  { slug: "chart-card", title: "Chart card", group: "App", description: "A titled chart with a period switch." },
-  { slug: "data-table", title: "Data table", group: "App", description: "Search, filter, sort, select and paginate rows." },
-  { slug: "activity-feed", title: "Activity feed", group: "App", description: "Recent events with people and timestamps." },
-  { slug: "command-menu", title: "Command menu", group: "App", description: "⌘K palette for navigation and actions." },
-  { slug: "user-menu", title: "User menu", group: "App", description: "Account, theme and sign-out menu." },
-  { slug: "notifications", title: "Notifications", group: "App", description: "Notification popover with unread state." },
-  // Account
-  { slug: "auth-form", title: "Auth form", group: "Account", description: "Sign in and sign up with email and social providers." },
-  { slug: "onboarding-steps", title: "Onboarding steps", group: "Account", description: "A multi-step setup flow with progress." },
-  { slug: "settings-section", title: "Settings section", group: "Account", description: "A settings group: description on the left, controls on the right." },
-  { slug: "billing-summary", title: "Billing summary", group: "Account", description: "Current plan, usage and payment method." },
-  { slug: "members-list", title: "Members list", group: "Account", description: "Team members with roles and an invite dialog." },
-  { slug: "danger-zone", title: "Danger zone", group: "Account", description: "Irreversible actions behind confirmation." },
-]
-
-export const templates: TemplateEntry[] = [
-  // Marketing
-  { slug: "home", title: "Home", kind: "marketing", group: "Marketing", href: "/live", description: "Landing page: hero, customer logos, product tour, feature tiles, comparison, testimonial, an SDK example and a closing call to action." },
-  { slug: "features", title: "Features", kind: "marketing", group: "Marketing", href: "/live/features", description: "A row for each product area and a list of everything included." },
-  { slug: "pricing", title: "Pricing", kind: "marketing", group: "Marketing", href: "/live/pricing", description: "Plans with a monthly or yearly switch, a comparison table and FAQ." },
-  { slug: "changelog", title: "Changelog", kind: "marketing", group: "Marketing", href: "/live/changelog", description: "Product updates on a dated timeline." },
-  { slug: "blog", title: "Blog", kind: "marketing", group: "Marketing", href: "/live/blog", description: "Featured post, latest posts and category filters." },
-  { slug: "blog-post", title: "Blog post", kind: "marketing", group: "Marketing", href: "/live/blog/post", description: "Article with a table of contents, author and related posts." },
-  { slug: "about", title: "About", kind: "marketing", group: "Marketing", href: "/live/about", description: "Mission, numbers, values and team." },
-  { slug: "contact", title: "Contact", kind: "marketing", group: "Marketing", href: "/live/contact", description: "Contact form and other ways to get in touch." },
-  { slug: "error-404", title: "404", kind: "marketing", group: "Marketing", href: "/live/error-404", description: "Page-not-found screen." },
-  // Auth
-  { slug: "sign-in", title: "Sign in", kind: "auth", group: "Account", href: "/live/sign-in", description: "Email, password and social sign-in." },
-  { slug: "sign-up", title: "Sign up", kind: "auth", group: "Account", href: "/live/sign-up", description: "Create an account with email or a social provider." },
-  { slug: "forgot-password", title: "Forgot password", kind: "auth", group: "Account", href: "/live/forgot-password", description: "Request a reset link." },
-  { slug: "onboarding", title: "Onboarding", kind: "auth", group: "Account", href: "/live/onboarding", description: "Set up a workspace in three steps." },
-  // App
-  { slug: "dashboard", title: "Dashboard", kind: "app", group: "App", href: "/live/app", description: "Key metrics, a chart of completed tasks, project updates and team activity." },
-  { slug: "projects", title: "Projects", kind: "app", group: "App", href: "/live/app/projects", description: "Data table of projects with filters." },
-  { slug: "settings", title: "Settings", kind: "app", group: "App", href: "/live/app/settings", description: "Profile, notifications and danger zone." },
-  { slug: "billing", title: "Billing", kind: "app", group: "App", href: "/live/app/billing", description: "Plan, usage, payment method and invoices." },
-  { slug: "team", title: "Team", kind: "app", group: "App", href: "/live/app/team", description: "Members, roles and invitations." },
 ]

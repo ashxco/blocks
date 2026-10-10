@@ -1,28 +1,22 @@
 import Link from "next/link"
-import { ArrowRightIcon, ArrowUpRightIcon, BoldIcon, BracesIcon, DropletIcon, PanelsTopLeftIcon, SquareIcon } from "lucide-react"
+import { ArrowRightIcon, BoldIcon, BracesIcon, DropletIcon, PanelsTopLeftIcon, SquareIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import {
-  ComponentsMiniature,
-  EntryTile,
-  FoundationsMiniature,
-  MoleculesMiniature,
-  ProjectCard,
-  TemplatesMiniature,
-} from "@/components/viewer/overview"
+import { ComponentsMiniature, EntryTile, FoundationsMiniature, ProjectCard } from "@/components/viewer/overview"
 import { Kern, Punct } from "@/components/viewer/kern"
 import { sectionDescription } from "@/components/viewer/nav"
 import { SearchTrigger } from "@/components/viewer/search-trigger"
 import { ThemeShowcase } from "@/components/viewer/theme-showcase"
 import { tokens } from "@/design-system/generated/tokens"
-import { components, molecules, templates } from "@/lib/registry"
+import { components, foundations } from "@/lib/registry"
+import { themes } from "@/lib/themes"
 
 const counts = [
   { value: tokens.length, label: "Tokens", href: "/foundations/tokens" },
+  { value: foundations.length, label: "Foundations", href: "/foundations" },
   { value: components.length, label: "Components", href: "/components" },
-  { value: molecules.length, label: "Molecules", href: "/molecules" },
-  { value: templates.length, label: "Templates", href: "/templates" },
+  { value: themes.length, label: "Themes", href: "/foundations/themes" },
 ]
 
 const principles = [
@@ -70,23 +64,17 @@ export default function Overview() {
           </h1>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-16">
             <p className="max-w-prose text-lead text-copy">
-              Blocks is a design system and template kit for Next.js. Foundations, components, molecules and full
-              pages all answer to one set of tokens, so the whole product changes when the system does.
+              Blocks is a design system for Next.js. Its foundations and {components.length} accessible components
+              all answer to one set of tokens, so every component changes when the system does.
             </p>
             <div className="grid gap-3 sm:flex sm:flex-wrap">
               <Button size="lg" nativeButton={false} render={<Link href="/components" />}>
-                Browse components
+                Browse Components
                 <ArrowRightIcon data-icon="inline-end" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                nativeButton={false}
-                render={<a href="/live" target="_blank" rel="noopener" />}
-              >
-                Open live templates
-                <ArrowUpRightIcon data-icon="inline-end" />
-                <span className="sr-only">(opens in a new tab)</span>
+              <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/foundations/themes" />}>
+                Explore the Themes
+                <ArrowRightIcon data-icon="inline-end" />
               </Button>
             </div>
           </div>
@@ -120,14 +108,14 @@ export default function Overview() {
       <section aria-labelledby="explore" className="container-wide grid gap-10">
         <div className="grid gap-4 lg:grid-cols-2 lg:items-end lg:gap-16">
           <h2 id="explore" className="text-h2">
-            <Kern>Four layers, one system.</Kern>
+            <Kern>Two layers, built in order.</Kern>
           </h2>
           <p className="max-w-prose text-lead text-copy">
-            Tokens become components, components become molecules, molecules become pages. Start anywhere: each layer
-            builds only on the layers below it.
+            Foundations are the tokens: colour, type, space, shape and motion. Components are made of nothing else, so
+            each one changes the moment a token does.
           </p>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 md:grid-rows-[repeat(2,minmax(0,1fr)_auto)] md:gap-5">
+        <div className="grid gap-4 md:grid-cols-2 md:grid-rows-[minmax(0,1fr)_auto] md:gap-5">
           <EntryTile
             href="/foundations"
             title="Foundations"
@@ -139,23 +127,9 @@ export default function Overview() {
             href="/components"
             title="Components"
             description={sectionDescription.components}
-          >
-            <ComponentsMiniature />
-          </EntryTile>
-          <EntryTile
-            href="/molecules"
-            title="Molecules"
-            description={sectionDescription.molecules}
-          >
-            <MoleculesMiniature />
-          </EntryTile>
-          <EntryTile
-            href="/templates"
-            title="Templates"
-            description={sectionDescription.templates}
             tone="panel"
           >
-            <TemplatesMiniature />
+            <ComponentsMiniature />
           </EntryTile>
         </div>
       </section>
@@ -169,10 +143,10 @@ export default function Overview() {
           <div className="grid justify-items-start gap-4">
             <p className="max-w-prose text-lead text-copy">
               A theme sets the accent, the neutrals, the corner radii and the type, in light and dark. The components
-              stay the same. Choose one and the whole site follows, live templates included.
+              stay the same. Choose one and the whole site follows, every example included.
             </p>
             <Button variant="link" nativeButton={false} render={<Link href="/foundations/themes" />}>
-              How themes work
+              How Themes Work
               <ArrowRightIcon data-icon="inline-end" />
             </Button>
           </div>
@@ -216,7 +190,7 @@ export default function Overview() {
       {/* Principles */}
       <section aria-labelledby="principles" className="container-wide">
         <div className="grid gap-12 rounded-(--panel-radius) bg-panel p-(--panel-padding) text-panel-foreground lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:gap-20">
-          <div className="grid content-start gap-5 lg:sticky lg:top-[calc(var(--viewer-bar)+2rem)]">
+          <div className="grid content-start gap-5 lg:sticky lg:top-8">
             <h2 id="principles" className="text-h2 text-panel-foreground">
               <span className="block">
                 <Kern>Five rules.</Kern>
@@ -230,7 +204,7 @@ export default function Overview() {
             </p>
             <div className="pt-2">
               <Button variant="inverse" nativeButton={false} render={<Link href="/foundations" />}>
-                Read the foundations
+                Read the Foundations
                 <ArrowRightIcon data-icon="inline-end" />
               </Button>
             </div>
@@ -259,7 +233,7 @@ export default function Overview() {
               <Kern>Looking for something specific?</Kern>
             </h2>
             <p className="text-body text-copy">
-              Search every foundation, component, molecule and template.
+              Search every foundation, component and theme.
               <span className="hidden sm:not-pointer-coarse:inline"> Press D at any time to switch between light and dark.</span>
             </p>
           </div>

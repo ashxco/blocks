@@ -10,29 +10,22 @@ import type { RegistryEntry } from "@/lib/registry"
 /**
  * A section index: one block per group, its name and purpose, then its
  * entries as cards. Each card shows a live miniature of the entry's first
- * example (when a preview is given), then its title and description. With
- * `compact`, phones get two cards per row, captioned with the title only.
+ * example (when a preview is given), then its title and description.
  */
 export function EntryIndex({
   groups,
   entries,
   base,
   previews,
-  aspect = "aspect-[4/3]",
   viewport,
-  compact = false,
 }: {
   groups: readonly string[]
   entries: RegistryEntry[]
   base: string
   /** Live previews by slug, e.g. each entry's docs module. */
   previews?: Record<string, React.ReactNode>
-  /** Aspect ratio class for the preview tiles. */
-  aspect?: string
   /** Widths previews lay out at before scaling: full-width examples, then the rest. */
   viewport?: { full: number; other: number }
-  /** Two cards per row on phones, captioned with the title only. For long indexes of small things. */
-  compact?: boolean
 }) {
   return (
     <div className="grid gap-16 sm:gap-20">
@@ -50,12 +43,7 @@ export function EntryIndex({
                 <p className="max-w-prose text-body text-copy">{groupDescriptions[group]}</p>
               ) : null}
             </div>
-            <ul
-              className={cn(
-                "grid sm:grid-cols-2 sm:gap-x-5 sm:gap-y-10 xl:grid-cols-3",
-                compact ? "grid-cols-2 gap-x-3 gap-y-8" : "gap-y-10"
-              )}
-            >
+            <ul className="grid gap-y-10 sm:grid-cols-2 sm:gap-x-5 xl:grid-cols-3">
               {items.map((entry) => (
                 <li key={entry.slug} className="grid">
                   <EntryCard
@@ -63,9 +51,7 @@ export function EntryIndex({
                     title={entry.title}
                     description={entry.description}
                     preview={previews?.[entry.slug]}
-                    aspect={aspect}
                     viewport={viewport}
-                    compact={compact}
                   />
                 </li>
               ))}
@@ -82,33 +68,28 @@ export function EntryIndex({
  * and description. The whole card is one link (a stretched link, so the
  * preview stays outside it); hovering turns the frame's hairline to ink.
  */
-export function EntryCard({
+function EntryCard({
   href,
   title,
   description,
   preview,
-  aspect = "aspect-[4/3]",
   viewport,
-  compact = false,
 }: {
   href: string
   title: string
   description: string
   preview?: React.ReactNode
-  aspect?: string
   viewport?: { full: number; other: number }
-  /** Title only below sm: the description and arrow return from sm up. */
-  compact?: boolean
 }) {
   return (
-    <article className={cn("group/entry relative grid content-start", compact ? "gap-3 sm:gap-4" : "gap-4")}>
+    <article className="group/entry relative grid content-start gap-4">
       <div
         className={cn(
           "overflow-hidden rounded-(--card-radius) border",
           "transition-colors duration-(--duration-base) ease-standard group-hover/entry:border-foreground"
         )}
       >
-        <EntryThumbnail className={aspect} viewport={viewport}>
+        <EntryThumbnail className="aspect-[4/3]" viewport={viewport}>
           {preview}
         </EntryThumbnail>
       </div>
@@ -122,16 +103,11 @@ export function EntryCard({
               {title}
             </Link>
           </h3>
-          <p className={cn("line-clamp-2 text-caption text-muted-foreground", compact && "max-sm:hidden")}>
-            {description}
-          </p>
+          <p className="line-clamp-2 text-caption text-muted-foreground">{description}</p>
         </div>
         <ArrowRightIcon
           aria-hidden="true"
-          className={cn(
-            "mt-1 size-4 shrink-0 text-muted-foreground transition-[translate,color] duration-(--duration-base) ease-out group-hover/entry:translate-x-0.5 group-hover/entry:text-foreground",
-            compact && "max-sm:hidden"
-          )}
+          className="mt-1 size-4 shrink-0 text-muted-foreground transition-[translate,color] duration-(--duration-base) ease-out group-hover/entry:translate-x-0.5 group-hover/entry:text-foreground"
         />
       </div>
     </article>
