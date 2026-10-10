@@ -10,7 +10,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { cn } from "@/lib/utils"
 import { slugify } from "@/components/viewer/nav"
 
 export interface DocHeaderProps {
@@ -20,27 +19,21 @@ export interface DocHeaderProps {
   group?: string
   title: string
   description: string
-  /** Optional actions or meta shown under the description. */
-  children?: React.ReactNode
-  /** Extra classes, e.g. a tighter bottom padding above a preview. */
-  className?: string
 }
 
 const sectionLinks: Record<string, string> = {
   Foundations: "/foundations",
   Components: "/components",
-  Molecules: "/molecules",
-  Templates: "/templates",
 }
 
 /**
  * Header for every viewer page: a quiet breadcrumb, a bold title in full ink,
- * the description as a lead paragraph, then any related links or actions.
- * Section indexes have no breadcrumb (it would only repeat the title);
- * on phones the trail collapses to a link back to the parent. The viewer may
- * restyle it but must keep these props.
+ * then the description as a lead paragraph. Section indexes have no
+ * breadcrumb (it would only repeat the title); on phones the trail collapses
+ * to a link back to the parent. The viewer may restyle it but must keep
+ * these props.
  */
-export function DocHeader({ section, group, title, description, children, className }: DocHeaderProps) {
+export function DocHeader({ section, group, title, description }: DocHeaderProps) {
   const sectionHref = sectionLinks[section]
   const isSectionIndex = section === title && !group
   const crumbs: { label: string; href: string }[] = [
@@ -51,12 +44,8 @@ export function DocHeader({ section, group, title, description, children, classN
   const parent = crumbs[crumbs.length - 1]
 
   return (
-    // One column that never grows past the page: a long row of related links
-    // scrolls inside its own line instead of widening the header.
-    <header
-      data-slot="doc-header"
-      className={cn("grid grid-cols-[minmax(0,1fr)] gap-6 border-b pb-10 sm:pb-12", className)}
-    >
+    // One column that never grows past the page.
+    <header data-slot="doc-header" className="grid grid-cols-[minmax(0,1fr)] gap-6 border-b pb-10 sm:pb-12">
       <div className="grid gap-3">
         {isSectionIndex ? null : (
           <Breadcrumb aria-label="Breadcrumb">
@@ -88,7 +77,6 @@ export function DocHeader({ section, group, title, description, children, classN
         <h1 className="max-w-narrow text-h1">{title}</h1>
       </div>
       <p className="max-w-prose text-lead text-copy">{description}</p>
-      {children ? <div className="flex min-w-0 flex-wrap items-center gap-3">{children}</div> : null}
     </header>
   )
 }

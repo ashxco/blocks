@@ -2,13 +2,12 @@
 export type PersonTone = "violet" | "mint" | "sand" | "sky" | "rose"
 
 /**
- * The Acme team, and the avatar tint each person keeps everywhere: the top
- * bar, the team page, the activity feed, project leads and the account
- * screens. Molecules look a person up here by name, so one name always gets
- * one colour. Anyone not listed falls back to the Avatar's own tint, picked
- * from their initials.
+ * The Acme team in the docs examples, and the avatar tint each person keeps
+ * in every example, so one teammate never changes colour between pages.
+ * Anyone not listed falls back to the Avatar's own tint, picked from their
+ * initials.
  */
-export const PEOPLE: Record<string, PersonTone> = {
+const PEOPLE: Record<string, PersonTone> = {
   "Maya Patel": "violet",
   "Hana Kim": "sand",
   "Daniel Brooks": "sky",
@@ -17,11 +16,6 @@ export const PEOPLE: Record<string, PersonTone> = {
   "Sam Okafor": "mint",
   "Priya Raman": "sky",
   "Lucas Moreau": "rose",
-}
-
-/** The tint for a person, or undefined to let the Avatar pick one from the initials. */
-export function personTone(name?: string): PersonTone | undefined {
-  return name ? PEOPLE[name.trim()] : undefined
 }
 
 const initialsOf = (name: string) =>

@@ -1,9 +1,13 @@
-// GENERATED from lib/registry.ts by the scaffold. One loader per docs module.
+// One loader per component docs module, keyed by its slug in lib/registry.ts.
 import type { ComponentType } from "react"
 
 type DocsModule = () => Promise<{ default: ComponentType }>
 
 export const componentDocs: Record<string, DocsModule> = {
+  "container": () => import("./components/container"),
+  "stack": () => import("./components/stack"),
+  "inline": () => import("./components/inline"),
+  "grid": () => import("./components/grid"),
   "button": () => import("./components/button"),
   "button-group": () => import("./components/button-group"),
   "toggle": () => import("./components/toggle"),
@@ -64,45 +68,4 @@ export const componentDocs: Record<string, DocsModule> = {
   "attachment": () => import("./components/attachment"),
   "marker": () => import("./components/marker"),
   "questionnaire": () => import("./components/questionnaire"),
-}
-
-export const moleculeDocs: Record<string, DocsModule> = {
-  "site-header": () => import("./molecules/site-header"),
-  "site-footer": () => import("./molecules/site-footer"),
-  "section-heading": () => import("./molecules/section-heading"),
-  "logo-cloud": () => import("./molecules/logo-cloud"),
-  "cta-band": () => import("./molecules/cta-band"),
-  "newsletter-form": () => import("./molecules/newsletter-form"),
-  "install-command": () => import("./molecules/install-command"),
-  "code-window": () => import("./molecules/code-window"),
-  "hero": () => import("./molecules/hero"),
-  "feature-bento": () => import("./molecules/feature-bento"),
-  "steps": () => import("./molecules/steps"),
-  "product-tour": () => import("./molecules/product-tour"),
-  "comparison": () => import("./molecules/comparison"),
-  "testimonial": () => import("./molecules/testimonial"),
-  "stats": () => import("./molecules/stats"),
-  "faq": () => import("./molecules/faq"),
-  "app-mockup": () => import("./molecules/app-mockup"),
-  "pricing-plans": () => import("./molecules/pricing-plans"),
-  "plan-matrix": () => import("./molecules/plan-matrix"),
-  "changelog-entry": () => import("./molecules/changelog-entry"),
-  "post-card": () => import("./molecules/post-card"),
-  "team-grid": () => import("./molecules/team-grid"),
-  "contact-panel": () => import("./molecules/contact-panel"),
-  "app-shell": () => import("./molecules/app-shell"),
-  "page-header": () => import("./molecules/page-header"),
-  "stat-card": () => import("./molecules/stat-card"),
-  "chart-card": () => import("./molecules/chart-card"),
-  "data-table": () => import("./molecules/data-table"),
-  "activity-feed": () => import("./molecules/activity-feed"),
-  "command-menu": () => import("./molecules/command-menu"),
-  "user-menu": () => import("./molecules/user-menu"),
-  "notifications": () => import("./molecules/notifications"),
-  "auth-form": () => import("./molecules/auth-form"),
-  "onboarding-steps": () => import("./molecules/onboarding-steps"),
-  "settings-section": () => import("./molecules/settings-section"),
-  "billing-summary": () => import("./molecules/billing-summary"),
-  "members-list": () => import("./molecules/members-list"),
-  "danger-zone": () => import("./molecules/danger-zone"),
 }

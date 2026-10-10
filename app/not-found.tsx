@@ -1,29 +1,25 @@
 import type { Metadata } from "next"
 
 import { NotFoundContent } from "@/components/viewer/not-found-content"
-import { ThemePicker } from "@/components/viewer/theme-picker"
-import { ThemeToggle } from "@/components/viewer/theme-toggle"
-import { Wordmark } from "@/components/viewer/wordmark"
+import { SearchTrigger } from "@/components/viewer/search-trigger"
+import { ViewerShell } from "@/components/viewer/viewer-shell"
 
 export const metadata: Metadata = {
   title: "Page not found",
-  description: "There is no page at this address. Go back to the Blocks overview or open the live templates.",
+  description: "There is no page at this address. Search Blocks, go back to the overview or browse the components.",
 }
 
-/** Global 404, for any address outside the viewer and the live templates. */
+/**
+ * Global 404, for any address outside the viewer. It keeps the viewer's
+ * sidebar (sections, search, Theme and Appearance) so the visitor can recover
+ * from here.
+ */
 export default function NotFound() {
   return (
-    <div className="flex min-h-dvh flex-col bg-background">
-      <header className="flex h-(--header-height-sm) shrink-0 items-center justify-between gap-4 px-gutter">
-        <Wordmark />
-        <div className="flex items-center gap-0.5">
-          <ThemePicker />
-          <ThemeToggle />
-        </div>
-      </header>
-      <main id="content" className="container-wide flex flex-1 flex-col justify-center pt-section-sm pb-section">
-        <NotFoundContent />
-      </main>
-    </div>
+    <ViewerShell>
+      <div className="container-wide flex min-h-dvh flex-col justify-center py-section">
+        <NotFoundContent actions={<SearchTrigger />} />
+      </div>
+    </ViewerShell>
   )
 }

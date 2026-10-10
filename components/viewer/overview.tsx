@@ -3,21 +3,12 @@
  * inside them, and the project card used for the light and dark comparison.
  * They render in the site's theme; the row of themes is ThemeShowcase.
  * Every miniature is made of real Blocks components or token swatches. The
- * sample content is Acme Inc., the placeholder company of the templates.
+ * sample content is Acme Inc., the placeholder company of the docs examples.
  */
 import * as React from "react"
 import Link from "next/link"
-import {
-  ArrowRightIcon,
-  CalendarIcon,
-  ChartColumnIcon,
-  ChartGanttIcon,
-  FolderKanbanIcon,
-  ListChecksIcon,
-  SquareKanbanIcon,
-} from "lucide-react"
+import { ArrowRightIcon, CalendarIcon, FolderKanbanIcon, ListChecksIcon } from "lucide-react"
 
-import { BrandMark } from "@/components/blocks/wordmark"
 import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -117,7 +108,11 @@ const swatches = [
   "bg-tint-sky",
 ]
 
-/* Five steps that stay distinct at this size: larger radii would all read as circles. */
+/*
+ * Five steps of the scale. The squares share the row's width, so even the
+ * softest theme's card step (28px in Ember) still reads as a rounded square
+ * beside the circle.
+ */
 const radii = ["rounded-xs", "rounded-sm", "rounded-md", "rounded-lg", "rounded-full"]
 
 /* The miniatures size themselves to their own width (@container), so they fit two-up tiles on tablets. */
@@ -127,10 +122,10 @@ export function FoundationsMiniature() {
       <div className="grid gap-6 rounded-(--card-radius) border bg-background p-6 @sm:p-7">
         <div className="flex items-end justify-between gap-6">
           <div className="grid gap-1">
-            <span className="text-6xl font-extrabold text-foreground @sm:text-7xl">Aa</span>
-            {/* The page theme's own font. */}
+            <span className="font-heading text-6xl font-extrabold text-foreground @sm:text-7xl">Aa</span>
+            {/* The page theme's heading face, which is its body face unless the theme gives headings their own. */}
             <span className="text-caption text-muted-foreground">
-              <PageThemeText field="sans" />, 800
+              <PageThemeText field="heading" />, 800
             </span>
           </div>
           <div className="grid grid-cols-4 gap-2">
@@ -139,11 +134,11 @@ export function FoundationsMiniature() {
             ))}
           </div>
         </div>
-        <div className="flex items-end justify-between gap-2 border-t pt-5">
+        <div className="grid grid-cols-5 gap-2 border-t pt-5 @sm:gap-3">
           {radii.map((r) => (
             <span
               key={r}
-              className={cn("size-10 border-(length:--border-width-strong) border-foreground/80 @sm:size-14", r)}
+              className={cn("aspect-square w-full border-(length:--border-width-strong) border-foreground/80", r)}
             />
           ))}
         </div>
@@ -169,104 +164,10 @@ export function ComponentsMiniature() {
         Let guests comment
       </div>
       <div className="flex gap-2 pt-1">
-        <Button size="sm">Save changes</Button>
+        <Button size="sm">Save Changes</Button>
         <Button size="sm" variant="outline">
           Cancel
         </Button>
-      </div>
-    </div>
-  )
-}
-
-const bars = ["h-5", "h-8", "h-6", "h-11", "h-9", "h-14", "h-12", "h-16", "h-[4.5rem]", "h-20"]
-
-export function MoleculesMiniature() {
-  return (
-    <div className="grid w-full max-w-96 min-w-0 grid-cols-[minmax(0,1fr)] gap-3">
-      <div className="grid gap-4 rounded-(--card-radius) border bg-background p-5">
-        <div className="flex items-start justify-between gap-3">
-          <div className="grid gap-1">
-            <span className="text-caption font-semibold text-muted-foreground">Tasks completed this month</span>
-            <span className="text-h2 text-foreground tabular">1,284</span>
-          </div>
-          <Badge variant="success">+12%</Badge>
-        </div>
-        {/* Past months in a neutral that reads on the card in both themes; only
-            this month takes the series colour. */}
-        <div className="flex h-20 items-end gap-1.5">
-          {bars.map((h, i) => (
-            <span
-              key={h}
-              className={cn("flex-1 rounded-t-xs", h, i === bars.length - 1 ? "bg-chart-1" : "bg-muted-foreground/40")}
-            />
-          ))}
-        </div>
-      </div>
-      <div className="flex items-center gap-3 rounded-(--card-radius) border bg-background p-4">
-        <Avatar size="sm">
-          <AvatarFallback>MP</AvatarFallback>
-        </Avatar>
-        {/* Short enough for a phone; it wraps rather than cuts off below sm. */}
-        <span className="min-w-0 flex-1 text-label font-medium text-copy sm:truncate">
-          <span className="font-semibold text-foreground">Maya Patel</span> reviewed homepage copy
-        </span>
-        <span className="text-caption text-muted-foreground">2m</span>
-      </div>
-    </div>
-  )
-}
-
-const features = [
-  { icon: SquareKanbanIcon, label: "Boards", tint: "bg-tint-violet" },
-  { icon: ChartGanttIcon, label: "Timelines", tint: "bg-tint-mint" },
-  { icon: ChartColumnIcon, label: "Reports", tint: "bg-tint-sky" },
-]
-
-export function TemplatesMiniature() {
-  return (
-    <div className="@container w-full max-w-112 overflow-hidden rounded-(--card-radius) border border-panel-border bg-card text-copy">
-      <div className="flex h-8 items-center border-b px-3">
-        <span className="font-mono text-xs text-muted-foreground">acme.com</span>
-      </div>
-      <div className="grid gap-5 p-5 sm:p-6">
-        <div className="flex items-center justify-between gap-3">
-          <span className="flex items-center gap-1.5 text-label font-extrabold text-foreground">
-            <BrandMark className="size-4" />
-            Acme
-          </span>
-          <span className="hidden gap-3 text-xs font-medium text-muted-foreground @sm:flex">
-            <span>Features</span>
-            <span>Pricing</span>
-            <span>Changelog</span>
-          </span>
-          <Button size="sm" variant="ghost">
-            Log in
-          </Button>
-        </div>
-        <div className="grid gap-2 py-2">
-          <span className="text-h3 text-foreground">
-            {/* The Home template's headline; the no-break space keeps "it" with "together". */}
-            Plan it. Track it.
-            <br />
-            Ship it{"\u00a0"}
-            <span className="text-brand">together</span>.
-          </span>
-          <span className="text-caption text-copy">Projects, tasks, docs and reports in one workspace.</span>
-        </div>
-        <div className="flex gap-2">
-          <Button size="sm">Start free trial</Button>
-          <Button size="sm" variant="outline">
-            Book a demo
-          </Button>
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          {features.map(({ icon: Icon, label, tint }) => (
-            <span key={label} className={cn("grid gap-3 rounded-sm p-3", tint)}>
-              <Icon aria-hidden="true" className="size-4 text-foreground" />
-              <span className="truncate text-xs font-semibold text-foreground">{label}</span>
-            </span>
-          ))}
-        </div>
       </div>
     </div>
   )
@@ -285,7 +186,8 @@ export function ProjectCard() {
             <FolderKanbanIcon aria-hidden="true" className="size-4" />
           </span>
           <div className="grid min-w-0">
-            <span className="truncate text-title text-foreground">Website relaunch</span>
+            {/* Wraps rather than truncates: a wide heading face (Mono's Geist Mono) needs the room on phones. */}
+            <span className="text-title text-pretty text-foreground">Website relaunch</span>
             <span className="truncate text-caption text-muted-foreground">Marketing</span>
           </div>
         </div>

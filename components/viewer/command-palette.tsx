@@ -4,14 +4,19 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { defaultFilter } from "cmdk"
 import {
-  AppWindowIcon,
-  ArrowUpRightIcon,
   BoxIcon,
+  BracesIcon,
   ComponentIcon,
-  LayersIcon,
+  LayoutGridIcon,
   MoonIcon,
+  MoveRightIcon,
   PaletteIcon,
+  RulerIcon,
+  SmileIcon,
+  SquareRoundCornerIcon,
   SunIcon,
+  SwatchBookIcon,
+  TypeIcon,
   type LucideIcon,
 } from "lucide-react"
 
@@ -19,6 +24,7 @@ import {
   Command,
   CommandDialog,
   CommandEmpty,
+  CommandFooter,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -26,6 +32,7 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command"
+import { Kbd } from "@/components/ui/kbd"
 import { useThemePreset } from "@/components/theme-provider"
 import { navSections, type SectionId } from "@/components/viewer/nav"
 import { ThemeSwatch, themeTagline, useChooseTheme } from "@/components/viewer/theme-picker"
@@ -35,8 +42,19 @@ import { themes } from "@/lib/themes"
 const sectionIcon: Record<SectionId, LucideIcon> = {
   foundations: PaletteIcon,
   components: ComponentIcon,
-  molecules: LayersIcon,
-  templates: AppWindowIcon,
+}
+
+/** Each foundation gets an icon of what it covers; components share one. */
+const pageIcon: Record<string, LucideIcon> = {
+  "/foundations": LayoutGridIcon,
+  "/foundations/themes": SwatchBookIcon,
+  "/foundations/colors": PaletteIcon,
+  "/foundations/typography": TypeIcon,
+  "/foundations/spacing": RulerIcon,
+  "/foundations/shape": SquareRoundCornerIcon,
+  "/foundations/motion": MoveRightIcon,
+  "/foundations/iconography": SmileIcon,
+  "/foundations/tokens": BracesIcon,
 }
 
 /** One row of the palette. */
@@ -132,12 +150,13 @@ export function CommandPalette({
   const pages = React.useMemo<Section[]>(
     () =>
       navSections.map((section) => {
-        const Icon = sectionIcon[section.id]
+        const SectionIcon = sectionIcon[section.id]
         return {
           id: section.id,
           heading: section.title,
           entries: section.groups.flatMap((group) =>
             group.items.map((item) => {
+              const Icon = pageIcon[item.href] ?? SectionIcon
               const label = item.href === section.href ? `${section.title} ${item.title.toLowerCase()}` : item.title
               return {
                 value: item.href,
@@ -172,7 +191,7 @@ export function CommandPalette({
       // The name itself, so typing a theme's name is an exact match.
       value: theme.name,
       label: theme.name,
-      keywords: ["theme", theme.fonts.sans, themeTagline(theme)],
+      keywords: ["theme", theme.fonts.heading, theme.fonts.sans, themeTagline(theme)],
       onSelect: () => run(() => chooseTheme(theme.id)),
       content: (
         <>
@@ -210,19 +229,6 @@ export function CommandPalette({
         ),
       },
       {
-        value: "action-live",
-        label: "Open the live templates",
-        keywords: ["live", "templates", "acme", "site", "preview"],
-        onSelect: () => run(() => window.open("/live", "_blank", "noopener")),
-        content: (
-          <>
-            <ArrowUpRightIcon aria-hidden="true" className="text-muted-foreground" />
-            <span className="text-foreground">Open the live templates</span>
-            <span className="ml-auto hidden shrink-0 text-caption text-muted-foreground sm:inline">New tab</span>
-          </>
-        ),
-      },
-      {
         value: "action-overview",
         label: "Go to the overview",
         keywords: ["home", "overview", "blocks"],
@@ -244,7 +250,7 @@ export function CommandPalette({
       open={open}
       onOpenChange={onOpenChange}
       title="Search Blocks"
-      description="Jump to a foundation, component, molecule or template."
+      description="Jump to a foundation, a component or a theme."
       className="sm:max-w-144"
     >
       {/* Filtering and order are done here (rank), not by cmdk. */}
@@ -252,7 +258,7 @@ export function CommandPalette({
         {/* Short enough for a phone, and covers every section and action. */}
         <CommandInput placeholder="Search Blocks…" value={query} onValueChange={setQuery} />
         <CommandList className="max-h-[min(26rem,60dvh)]">
-          <CommandEmpty>No results. Try “button”, “pricing” or “color”.</CommandEmpty>
+          <CommandEmpty>No results. Try “button”, “dialog” or “color”.</CommandEmpty>
           {sections.map((section) => (
             <React.Fragment key={section.id}>
               {section.separated ? <CommandSeparator /> : null}
@@ -266,6 +272,22 @@ export function CommandPalette({
             </React.Fragment>
           ))}
         </CommandList>
+        {/* Key hints, only where there is likely to be a keyboard. */}
+        <CommandFooter className="hidden not-pointer-coarse:sm:flex">
+          <span>
+            <Kbd>↑</Kbd>
+            <Kbd>↓</Kbd>
+            Move
+          </span>
+          <span>
+            <Kbd>↵</Kbd>
+            Open
+          </span>
+          <span className="ml-auto">
+            <Kbd>Esc</Kbd>
+            Close
+          </span>
+        </CommandFooter>
       </Command>
     </CommandDialog>
   )

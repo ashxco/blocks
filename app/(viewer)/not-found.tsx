@@ -6,7 +6,7 @@ import { SearchTrigger } from "@/components/viewer/search-trigger"
 /*
  * A page that calls notFound() only streams its own metadata, so the title
  * of the server HTML comes from here: without it, a missing component or
- * template is titled "Blocks" until the page hydrates.
+ * foundation is titled "Blocks" until the page hydrates.
  */
 export const metadata: Metadata = {
   title: "Page not found",
@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 }
 
 /**
- * 404 for a missing foundation, component, molecule or template. It keeps the
- * viewer's header and sidebar, and offers search, which lives in the header.
+ * 404 for a missing foundation or component. It keeps the viewer's sidebar
+ * and offers search.
  */
 export default function ViewerNotFound() {
   return (
