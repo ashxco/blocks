@@ -34,34 +34,34 @@ export interface FaqProps {
 
 const defaultItems: FaqItem[] = [
   {
-    question: "Can I try Lumen before I pay?",
+    question: "Can I try Acme before I pay?",
     answer:
-      "Yes. Every new workspace gets 14 days of Pro, with no card needed. When the trial ends, pick a plan to keep your projects running. Hobby starts at $5 a month.",
+      "Yes. The Free plan costs nothing for up to 3 members and 5 projects, and needs no card. To try everything else, start a 14-day Pro trial and pick a plan when it ends.",
   },
   {
-    question: "Can I run Lumen on my own servers?",
+    question: "How does per-member pricing work?",
     answer:
-      "Yes. Connect any Linux server over SSH and Lumen manages builds, deploys and TLS on it. Your apps keep running even if you stop using Lumen.",
+      "Pro and Business are billed for each member in your workspace. Guests are people outside your team, such as clients, and they don’t take a member seat.",
   },
   {
-    question: "Do you charge per seat?",
+    question: "Can I bring in work from other tools?",
     answer:
-      "No. Each plan includes a set number of team members, and Scale includes unlimited. Inviting someone never changes your bill.",
+      "Import tasks from a CSV export or a spreadsheet, or start from a template such as Product roadmap or Sprint planning. Assignees, due dates and comments come across with the tasks.",
   },
   {
-    question: "How do preview URLs work?",
+    question: "What counts as an automation run?",
     answer:
-      "Every branch and pull request gets its own URL with a copy of your preview environment variables. Lumen removes the preview when the branch is merged or deleted.",
+      "Each time a rule acts, such as notifying an owner when a task moves to Done, that is one run. Free includes 1,000 runs a month, Pro 10,000 and Business 50,000.",
   },
   {
-    question: "Can I move from another platform?",
+    question: "Who can see my projects?",
     answer:
-      "Most apps move without code changes. Import the repository, copy your environment variables, then point your domain at Lumen when the first deploy is live.",
+      "Only the people you invite. Owners and Admins set who can see each project, and guests see only the projects you share with them.",
   },
   {
-    question: "What happens when a deploy fails?",
+    question: "How do you keep our data safe?",
     answer:
-      "The running version keeps serving traffic. Lumen shows the step that failed with its logs, and you can roll back to any earlier deploy in one click.",
+      "Acme has a SOC 2 Type II report and is GDPR compliant. Business adds SSO with SAML, advanced permissions and an audit log, and Enterprise adds data residency.",
   },
 ]
 

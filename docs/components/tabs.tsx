@@ -1,21 +1,23 @@
 "use client"
 
 import {
-  ActivityIcon,
-  GitBranchIcon,
-  GlobeIcon,
-  KeyRoundIcon,
+  BellIcon,
+  ClockAlertIcon,
+  FileTextIcon,
   LayoutGridIcon,
   ListIcon,
-  ScrollTextIcon,
+  ListTodoIcon,
+  PlugIcon,
   SettingsIcon,
   UsersIcon,
+  ZapIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { initialsTone } from "@/components/blocks/members-list/people"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Spinner } from "@/components/ui/spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 /* Default and sm side by side, per variant, so the heights compare directly. */
@@ -26,17 +28,18 @@ const sizeRows = [
   { variant: "segmented", size: "sm", caption: 'variant="segmented" size="sm"' },
 ] as const
 
-const deployments = [
-  { sha: "a41c9e2", message: "Cache build output between deploys", branch: "main", status: "Ready", time: "2m ago" },
-  { sha: "7f03b1d", message: "Add preview comments to pull requests", branch: "preview-comments", status: "Building", time: "9m ago" },
-  { sha: "c88e410", message: "Move image resizing to the edge", branch: "main", status: "Ready", time: "1h ago" },
+const statusVariant = { Overdue: "destructive", "In progress": "info", Done: "success" } as const
+
+const tasks = [
+  { title: "Fix crash when uploading photos", assignee: "Jordan Lee", priority: "Urgent", status: "Overdue", due: "Oct 7" },
+  { title: "Ship the new onboarding screens", assignee: "Sofia Alvarez", priority: "High", status: "In progress", due: "Oct 12" },
+  { title: "Write the release notes for 2.0", assignee: "Priya Raman", priority: "Medium", status: "Done", due: "Oct 8" },
 ] as const
 
-const logLines = [
-  "12:04:31  GET  /api/projects        200   38ms",
-  "12:04:33  POST /api/deployments     201  412ms",
-  "12:04:34  GET  /dashboard           200   61ms",
-  "12:04:39  GET  /api/logs?tail=100   200   22ms",
+const activity = [
+  { initials: "JL", name: "Jordan Lee", text: "commented on Fix crash when uploading photos", time: "12m ago" },
+  { initials: "SA", name: "Sofia Alvarez", text: "moved Ship the new onboarding screens to In progress", time: "1h ago" },
+  { initials: "PR", name: "Priya Raman", text: "completed Write the release notes for 2.0", time: "Yesterday" },
 ]
 
 export default function TabsDocs() {
@@ -49,8 +52,8 @@ export default function TabsDocs() {
         code={`<Tabs defaultValue="overview">
   <TabsList>
     <TabsTrigger value="overview">Overview</TabsTrigger>
-    <TabsTrigger value="deployments">Deployments</TabsTrigger>
-    <TabsTrigger value="logs">Logs</TabsTrigger>
+    <TabsTrigger value="tasks">Tasks</TabsTrigger>
+    <TabsTrigger value="docs">Docs</TabsTrigger>
     <TabsTrigger value="settings">Settings</TabsTrigger>
   </TabsList>
   <TabsContent value="overview">…</TabsContent>
@@ -59,18 +62,16 @@ export default function TabsDocs() {
         <Tabs defaultValue="overview">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="deployments">Deployments</TabsTrigger>
-            <TabsTrigger value="logs">Logs</TabsTrigger>
+            <TabsTrigger value="tasks">Tasks</TabsTrigger>
+            <TabsTrigger value="docs">Docs</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="overview">
-            Production is serving the build from commit a41c9e2. Traffic is up 18% on last week.
+            Website relaunch is on track: 38 of 52 tasks are done, and launch day is Nov 14.
           </TabsContent>
-          <TabsContent value="deployments">
-            Three deployments today. The latest one went live 2 minutes ago.
-          </TabsContent>
-          <TabsContent value="logs">Streaming runtime logs from 2 regions.</TabsContent>
-          <TabsContent value="settings">Build command, output directory and Node.js version.</TabsContent>
+          <TabsContent value="tasks">14 open tasks, 3 of them due this week.</TabsContent>
+          <TabsContent value="docs">6 docs, including the launch plan and the homepage copy.</TabsContent>
+          <TabsContent value="settings">Owner, members, default view and notifications.</TabsContent>
         </Tabs>
       </Example>
 
@@ -117,8 +118,8 @@ export default function TabsDocs() {
               <Tabs defaultValue="all" className="w-full">
                 <TabsList variant={row.variant} size={row.size}>
                   <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="errors">Errors</TabsTrigger>
-                  <TabsTrigger value="warnings">Warnings</TabsTrigger>
+                  <TabsTrigger value="open">Open</TabsTrigger>
+                  <TabsTrigger value="done">Done</TabsTrigger>
                 </TabsList>
               </Tabs>
               <p className="font-mono text-xs text-muted-foreground">{row.caption}</p>
@@ -132,8 +133,8 @@ export default function TabsDocs() {
         description="Use variant line when the tabs sit on a border that is already there, such as the bottom of a page header."
         layout="stack"
         code={`<header className="border-b">
-  <h1 className="text-h3">lumen-web</h1>
-  <Tabs defaultValue="deployments">
+  <h1 className="text-h3">Website relaunch</h1>
+  <Tabs defaultValue="board">
     <TabsList variant="line">…</TabsList>
   </Tabs>
 </header>`}
@@ -141,24 +142,24 @@ export default function TabsDocs() {
         <header className="grid gap-5 border-b">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="grid gap-1">
-              <h3 className="text-h3">lumen-web</h3>
-              <p className="text-sm text-muted-foreground">lumen.app · Frankfurt, fra1</p>
+              <h3 className="text-h3">Website relaunch</h3>
+              <p className="text-sm text-muted-foreground">Marketing · led by Priya Raman · due Nov 14</p>
             </div>
             <Button size="sm" variant="outline">
-              Visit
+              Share
             </Button>
           </div>
-          <Tabs defaultValue="deployments" className="min-w-0">
+          <Tabs defaultValue="board" className="min-w-0">
             {/* The row scrolls rather than overflow the page, and on a phone the least used tab
                 drops out so every tab left in the row shows whole. */}
             <div className="no-scrollbar -mx-6 scroll-px-6 overflow-x-auto px-6 sm:-mx-10 sm:scroll-px-10 sm:px-10">
               <TabsList variant="line" className="w-max">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="deployments">Deployments</TabsTrigger>
-                <TabsTrigger value="analytics" className="@max-md:hidden">
-                  Analytics
+                <TabsTrigger value="list">List</TabsTrigger>
+                <TabsTrigger value="board">Board</TabsTrigger>
+                <TabsTrigger value="timeline">Timeline</TabsTrigger>
+                <TabsTrigger value="calendar" className="@max-md:hidden">
+                  Calendar
                 </TabsTrigger>
-                <TabsTrigger value="settings">Settings</TabsTrigger>
               </TabsList>
             </div>
           </Tabs>
@@ -170,27 +171,27 @@ export default function TabsDocs() {
         description="Icons sit before the label. Counts use a small badge after it. When the row can run wider than a phone, put the list in an overflow-x-auto wrapper so it scrolls."
         layout="stack"
       >
-        <Tabs defaultValue="deployments" className="min-w-0">
+        <Tabs defaultValue="tasks" className="min-w-0">
           {/* The row scrolls rather than overflow the page. On a phone the disabled tab drops
               out, so every tab left in the row, and its count, shows whole. */}
           <div className="no-scrollbar -mx-6 scroll-px-6 overflow-x-auto px-6 sm:-mx-10 sm:scroll-px-10 sm:px-10">
             <TabsList className="min-w-full gap-4 data-horizontal:w-max @md:gap-6">
-              <TabsTrigger value="deployments">
-                <GitBranchIcon />
-                Deployments
+              <TabsTrigger value="tasks">
+                <ListTodoIcon />
+                Tasks
               </TabsTrigger>
-              <TabsTrigger value="logs">
-                <ScrollTextIcon />
-                Logs
+              <TabsTrigger value="docs">
+                <FileTextIcon />
+                Docs
               </TabsTrigger>
-              <TabsTrigger value="incidents">
-                <ActivityIcon />
-                Incidents
+              <TabsTrigger value="overdue">
+                <ClockAlertIcon />
+                Overdue
                 <Badge variant="destructive">2</Badge>
               </TabsTrigger>
-              <TabsTrigger value="members" disabled className="@max-md:hidden">
-                <UsersIcon />
-                Members
+              <TabsTrigger value="automations" disabled className="@max-md:hidden">
+                <ZapIcon />
+                Automations
               </TabsTrigger>
             </TabsList>
           </div>
@@ -204,47 +205,47 @@ export default function TabsDocs() {
         code={`<Tabs defaultValue="general" orientation="vertical">
   <TabsList>
     <TabsTrigger value="general">General</TabsTrigger>
-    <TabsTrigger value="domains">Domains</TabsTrigger>
+    <TabsTrigger value="members">Members</TabsTrigger>
   </TabsList>
   <TabsContent value="general">…</TabsContent>
 </Tabs>`}
       >
-        <Tabs defaultValue="domains" orientation="vertical" className="min-h-56 max-sm:data-vertical:flex-col">
+        <Tabs defaultValue="members" orientation="vertical" className="min-h-56 max-sm:data-vertical:flex-col">
           <TabsList className="sm:w-48">
             <TabsTrigger value="general">
               <SettingsIcon />
               General
             </TabsTrigger>
-            <TabsTrigger value="domains">
-              <GlobeIcon />
-              Domains
+            <TabsTrigger value="members">
+              <UsersIcon />
+              Members
             </TabsTrigger>
-            <TabsTrigger value="git">
-              <GitBranchIcon />
-              Git
+            <TabsTrigger value="notifications">
+              <BellIcon />
+              Notifications
             </TabsTrigger>
-            <TabsTrigger value="env">
-              <KeyRoundIcon />
-              Environment variables
+            <TabsTrigger value="integrations">
+              <PlugIcon />
+              Integrations
             </TabsTrigger>
           </TabsList>
           <TabsContent value="general" className="grid content-start gap-2">
             <h4 className="text-title">General</h4>
-            <p className="text-sm">Project name, framework preset and the root directory to build from.</p>
+            <p className="text-sm">Workspace name, its URL at app.acme.com/acme and the default view for new projects.</p>
           </TabsContent>
-          <TabsContent value="domains" className="grid content-start gap-2">
-            <h4 className="text-title">Domains</h4>
+          <TabsContent value="members" className="grid content-start gap-2">
+            <h4 className="text-title">Members</h4>
             <p className="text-sm">
-              lumen.app and www.lumen.app point at production. Add a domain to serve this project from it.
+              18 members and 6 guests in Acme Inc. Invite people, change their role or remove them.
             </p>
           </TabsContent>
-          <TabsContent value="git" className="grid content-start gap-2">
-            <h4 className="text-title">Git</h4>
-            <p className="text-sm">Connected to lumen-labs/lumen-web. Pushes to main deploy to production.</p>
+          <TabsContent value="notifications" className="grid content-start gap-2">
+            <h4 className="text-title">Notifications</h4>
+            <p className="text-sm">Choose what Acme emails you about, and when your weekly summary arrives.</p>
           </TabsContent>
-          <TabsContent value="env" className="grid content-start gap-2">
-            <h4 className="text-title">Environment variables</h4>
-            <p className="text-sm">12 variables across production, preview and development.</p>
+          <TabsContent value="integrations" className="grid content-start gap-2">
+            <h4 className="text-title">Integrations</h4>
+            <p className="text-sm">Slack, Google Drive and GitHub are connected. Connect Figma, Zoom or HubSpot.</p>
           </TabsContent>
         </Tabs>
       </Example>
@@ -256,52 +257,58 @@ export default function TabsDocs() {
       >
         <section className="grid gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)">
           <div className="grid gap-1">
-            <h3 className="text-h4">lumen-api</h3>
-            <p className="text-sm text-muted-foreground">Node.js 22 · 2 regions · Last deployed 2 minutes ago</p>
+            <h3 className="text-h4">Mobile app 2.0</h3>
+            <p className="text-sm text-muted-foreground">At risk · 2 tasks overdue · due Nov 20</p>
           </div>
-          <Tabs defaultValue="deployments">
+          <Tabs defaultValue="tasks">
             <TabsList>
-              <TabsTrigger value="deployments">Deployments</TabsTrigger>
-              <TabsTrigger value="logs">Logs</TabsTrigger>
-              <TabsTrigger value="usage">Usage</TabsTrigger>
+              <TabsTrigger value="tasks">Tasks</TabsTrigger>
+              <TabsTrigger value="activity">Activity</TabsTrigger>
+              <TabsTrigger value="progress">Progress</TabsTrigger>
             </TabsList>
-            <TabsContent value="deployments">
+            <TabsContent value="tasks">
               <ul className="divide-y">
-                {deployments.map((d) => (
+                {tasks.map((task) => (
                   <li
-                    key={d.sha}
+                    key={task.title}
                     className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 py-3.5 first:pt-0 last:pb-0"
                   >
-                    <p className="truncate text-label text-foreground">{d.message}</p>
-                    <Badge variant={d.status === "Ready" ? "success" : "info"}>
-                      {d.status === "Ready" ? (
-                        <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
-                      ) : (
-                        <Spinner className="size-3" />
-                      )}
-                      {d.status}
+                    <p className="truncate text-label text-foreground">{task.title}</p>
+                    <Badge variant={statusVariant[task.status]}>
+                      <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
+                      {task.status}
                     </Badge>
                     <p className="flex min-w-0 items-center gap-2 text-caption text-muted-foreground">
-                      <span className="font-mono">{d.sha}</span>
+                      <span className="truncate">{task.assignee}</span>
                       <span aria-hidden="true">·</span>
-                      <span className="truncate">{d.branch}</span>
+                      <span>{task.priority}</span>
                     </p>
-                    <p className="text-right text-caption text-muted-foreground">{d.time}</p>
+                    <p className="text-right text-caption text-muted-foreground">{task.due}</p>
                   </li>
                 ))}
               </ul>
             </TabsContent>
-            <TabsContent value="logs">
-              <pre className="overflow-x-auto rounded-(--control-radius) border bg-terminal p-4 font-mono text-code text-terminal-foreground">
-                {logLines.join("\n")}
-              </pre>
+            <TabsContent value="activity">
+              <ul className="divide-y">
+                {activity.map((entry) => (
+                  <li key={entry.text} className="flex items-center gap-3 py-3.5 first:pt-0 last:pb-0">
+                    <Avatar size="sm">
+                      <AvatarFallback tone={initialsTone(entry.initials)}>{entry.initials}</AvatarFallback>
+                    </Avatar>
+                    <p className="min-w-0 flex-1 text-sm text-copy">
+                      <span className="font-semibold text-foreground">{entry.name}</span> {entry.text}
+                    </p>
+                    <span className="shrink-0 text-caption text-muted-foreground">{entry.time}</span>
+                  </li>
+                ))}
+              </ul>
             </TabsContent>
-            <TabsContent value="usage">
+            <TabsContent value="progress">
               <dl className="grid gap-4 sm:grid-cols-3">
                 {[
-                  ["Requests", "2.4M"],
-                  ["Bandwidth", "184 GB"],
-                  ["Build minutes", "1,260"],
+                  ["Open tasks", "57"],
+                  ["Overdue", "2"],
+                  ["Done this week", "17"],
                 ].map(([label, value]) => (
                   <div key={label} className="grid gap-1 rounded-(--control-radius) bg-subtle p-4">
                     <dt className="text-caption text-muted-foreground">{label}</dt>
@@ -316,7 +323,7 @@ export default function TabsDocs() {
 
       <Guidelines
         do={[
-          "Use tabs to switch between views of the same object, such as a project’s deployments, logs and settings.",
+          "Use tabs to switch between views of the same object, such as a project’s tasks, activity and settings.",
           "Keep labels to one or two words and order tabs by how often people use them.",
           "Use the segmented variant for small, mutually exclusive view options like a time range.",
           "Use variant line when a hairline is already there, so the page never shows two lines.",

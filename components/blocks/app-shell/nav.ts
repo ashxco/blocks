@@ -15,7 +15,7 @@ export interface AppNavItem {
   exact?: boolean
 }
 
-/** Primary navigation of the Lumen app templates. Shared by AppShell and CommandMenu. */
+/** Primary navigation of the Acme app templates. Shared by AppShell and CommandMenu. */
 export const appNav: AppNavItem[] = [
   { title: "Overview", href: "/live/app", icon: LayoutGridIcon, exact: true },
   { title: "Projects", href: "/live/app/projects", icon: FolderKanbanIcon },

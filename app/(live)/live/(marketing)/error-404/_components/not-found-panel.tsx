@@ -1,22 +1,72 @@
 import Link from "next/link"
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
+import { ArrowLeftIcon, ArrowRightIcon, CalendarIcon, CheckIcon } from "lucide-react"
 
-import { CodeWindow } from "@/components/blocks/code-window"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { Kern } from "@/components/ui/kern"
+import { cn } from "@/lib/utils"
 
 const popular = [
-  { title: "Pricing", description: "Plans from $5 a month", href: "/live/pricing" },
-  { title: "Features", description: "What Lumen does for you", href: "/live/features" },
-  { title: "Changelog", description: "What shipped this week", href: "/live/changelog" },
-  { title: "Blog", description: "Guides and engineering notes", href: "/live/blog" },
+  { title: "Pricing", description: "Free for up to 3 members", href: "/live/pricing" },
+  { title: "Features", description: "What Acme does for your team", href: "/live/features" },
+  { title: "Changelog", description: "What shipped this month", href: "/live/changelog" },
+  { title: "Blog", description: "Guides and product news", href: "/live/blog" },
 ]
 
+const subtasks = [
+  { title: "Check the address for typos", done: true },
+  { title: "Try one of the pages below", done: false },
+  { title: "Still lost? Write to support@acme.com", done: false },
+]
+
+/** The missing page as an Acme task, with the ways out as its subtasks. Decorative. */
+function MissingPageTask() {
+  return (
+    <div
+      aria-hidden="true"
+      className="grid gap-5 rounded-(--card-radius) border border-panel-border bg-panel-raised p-5 text-panel-foreground sm:p-6"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="grid gap-1">
+          <p className="text-caption text-panel-muted">acme.com · Task</p>
+          <p className="text-h4 text-panel-foreground">Find the page you were looking for</p>
+        </div>
+        <span className="mt-1 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-panel-border px-2.5 py-0.5 text-caption font-semibold text-panel-foreground">
+          <span className="size-1.5 rounded-full bg-panel-warning" />
+          Not found
+        </span>
+      </div>
+      <ul className="grid gap-3 border-t border-panel-border pt-5">
+        {subtasks.map((subtask) => (
+          <li key={subtask.title} className="flex items-center gap-3 text-sm">
+            <span
+              className={cn(
+                "grid size-(--selection-size) shrink-0 place-items-center rounded-xs border",
+                subtask.done ? "border-panel-foreground bg-panel-foreground text-panel" : "border-panel-muted"
+              )}
+            >
+              {subtask.done ? <CheckIcon className="size-3.5" strokeWidth={3} /> : null}
+            </span>
+            <span className={subtask.done ? "text-panel-muted line-through" : "text-panel-foreground"}>
+              {subtask.title}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="flex items-center justify-between gap-3 border-t border-panel-border pt-4 text-caption text-panel-muted">
+        <span>Assigned to you</span>
+        <span className="inline-flex items-center gap-1.5">
+          <CalendarIcon className="size-3.5" />
+          Due today
+        </span>
+      </p>
+    </div>
+  )
+}
+
 /**
- * The not-found screen: a dark panel with the message and two ways out, a
- * terminal that shows the failed request, and links to the most visited
- * pages along the bottom.
+ * The not-found screen: a dark panel with the message and two ways out, the
+ * missing page drawn as an Acme task with the next steps as its subtasks,
+ * and links to the most visited pages along the bottom.
  */
 export function NotFoundPanel({ className }: { className?: string }) {
   return (
@@ -25,7 +75,7 @@ export function NotFoundPanel({ className }: { className?: string }) {
         <div className="grid items-center gap-12 @min-[60rem]:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] @min-[60rem]:gap-16">
           <div className="grid justify-items-start gap-6">
             <h1 className="max-w-narrow text-display text-panel-foreground">
-              <Kern>This page didn’t ship.</Kern>
+              <Kern>This page isn’t on the plan.</Kern>
             </h1>
             <p className="max-w-prose text-lead text-panel-muted">
               The link may be out of date, or the page moved when we reorganised the site. Check the address for typos,
@@ -42,18 +92,7 @@ export function NotFoundPanel({ className }: { className?: string }) {
             </div>
           </div>
 
-          <CodeWindow
-            wrap
-            title="lumen.dev"
-            lines={[
-              "$ curl -I lumen.dev/docs/v1",
-              "HTTP/2 404",
-              "x-lumen-region: fra1",
-              "x-lumen-route: no match",
-              "→ No deployment serves this path",
-              "→ Checked 12 redirects and 3 rewrites",
-            ]}
-          />
+          <MissingPageTask />
         </div>
 
         <nav aria-label="Popular pages" className="mt-14 border-t border-panel-border pt-8 @min-[60rem]:mt-20">

@@ -19,9 +19,9 @@ export interface TimeZonesPanelProps {
 const defaultZones: TeamZone[] = [
   { city: "Tokyo", offset: "UTC+9", start: 0, end: 8 },
   { city: "Bengaluru", offset: "UTC+5:30", start: 3.5, end: 11.5 },
-  { city: "Berlin", offset: "UTC+2", start: 7, end: 15 },
-  { city: "Lisbon", offset: "UTC+1", start: 8, end: 16 },
-  { city: "Toronto", offset: "UTC−4", start: 13, end: 21 },
+  { city: "Lisbon", offset: "UTC+1", start: 7.5, end: 15.5 },
+  { city: "London", offset: "UTC+1", start: 8, end: 16 },
+  { city: "New York", offset: "UTC−4", start: 13, end: 21 },
   { city: "San Francisco", offset: "UTC−7", start: 16, end: 24 },
 ]
 
@@ -48,7 +48,7 @@ export function TimeZonesPanel({ zones = defaultZones, className }: TimeZonesPan
       <figcaption className="grid gap-2">
         <span className="text-h4 text-panel-foreground">One team, six time zones</span>
         <span className="max-w-prose text-body text-panel-muted">
-          Our working hours on one UTC clock. Someone is awake whenever you deploy.
+          Our working hours on one UTC clock. Someone on the team is online whenever yours is.
         </span>
       </figcaption>
 

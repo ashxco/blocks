@@ -4,33 +4,36 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Kern } from "@/components/ui/kern"
 import { cn } from "@/lib/utils"
 
-import { DeployLog } from "./deploy-log"
+import { ActivityPreview } from "./activity-preview"
+import { TemplatePreview } from "./template-preview"
 
 export type AuthShowcaseVariant = "sign-in" | "sign-up" | "reset"
 
 /**
  * Each headline is a list of sentences. A sentence renders as one unit, so the
- * heading wraps between sentences ("Push to main. / Live in under a minute.")
+ * heading wraps between sentences ("Plan the work. / See it get done.")
  * and never mid-clause. A sentence wider than the panel still wraps inside.
  */
 const copy: Record<AuthShowcaseVariant, { title: string[]; body: string }> = {
   "sign-in": {
-    title: ["Push to main.", "Live in under a minute."],
-    body: "Every pull request gets its own preview URL. Every merge rolls out to 38 edge regions, with logs, metrics and instant rollbacks in one place.",
+    title: ["Plan the work.", "See it get done."],
+    body: "Projects, tasks and docs live in one workspace, with boards, timelines and reports that update as your team works.",
   },
   "sign-up": {
-    title: ["Connect a repo.", "Lumen does the rest."],
-    body: "Lumen detects your framework, builds on every push and gives each pull request a preview URL. No Dockerfile or YAML to write first.",
+    title: ["Start from a template.", "Bring your team."],
+    body: "Pick Product roadmap, Sprint planning or another starter project and invite your team in a minute. Every Pro feature is free for 14 days.",
   },
   reset: {
-    title: ["Your deploys keep running."],
-    body: "Production stays live while you reset your password. Nothing ships, and nothing is rolled back, until you sign in again.",
+    title: ["Your work is where you left it."],
+    body: "Tasks, docs and automations keep running while you reset your password. Nothing changes until you sign in again.",
   },
 }
 
 /**
- * The dark side of the account screens: what Lumen does, a deploy streaming
- * in, and a customer who ships with it. It fills the sticky aside of the auth
+ * The dark side of the account screens: what Acme does, a product preview
+ * that matches the headline, and a customer who runs on it. Sign-in and reset
+ * show a project's tasks getting done; sign-up shows a project made from a
+ * template filling in and a teammate joining. It fills the sticky aside of the auth
  * templates, at least one viewport tall, so the parts spread out and stay in
  * view. Give it a height (or a flex parent) to fill other slots.
  *
@@ -52,8 +55,8 @@ export function AuthShowcase({
     <div
       data-variant={variant}
       className={cn(
-        // justify-between on every screen: the headline holds the top edge and the last part
-        // (the quote, or the deploy log on the reset screen) the bottom one.
+        // justify-between on every screen: the headline sits at the top and the last part
+        // (the quote, or the project preview on the reset screen) at the bottom.
         "flex flex-1 flex-col justify-between gap-10 overflow-hidden rounded-(--panel-radius) bg-panel p-(--panel-padding-sm) text-panel-muted",
         className
       )}
@@ -73,7 +76,7 @@ export function AuthShowcase({
         <p className="max-w-104 text-body">{body}</p>
       </div>
 
-      <DeployLog />
+      {variant === "sign-up" ? <TemplatePreview /> : <ActivityPreview />}
 
       {quote ? <CustomerQuote className="border-t border-panel-border pt-8" /> : null}
     </div>
@@ -97,17 +100,17 @@ function CustomerQuote({ className }: { className?: string }) {
     <figure className={cn("m-0 grid gap-6", className)}>
       <blockquote>
         <p className="text-title text-panel-foreground">
-          “Release day is gone from our calendar. Main is live 40 seconds after we merge.”
+          “We replaced three tools and our weekly planning meeting with Acme.”
         </p>
       </blockquote>
       <figcaption className="flex items-center gap-3">
         {/* Panel colours, not a theme tint, so the avatar looks the same on the panel in both themes. */}
         <Avatar className="after:hidden">
-          <AvatarFallback className="bg-panel-raised text-panel-foreground">HO</AvatarFallback>
+          <AvatarFallback className="bg-panel-raised text-panel-foreground">ER</AvatarFallback>
         </Avatar>
         <span className="grid">
-          <span className="text-label text-panel-foreground">Hannah Okoye</span>
-          <span className="text-caption">CTO, Fernhill</span>
+          <span className="text-label text-panel-foreground">Elena Ruiz</span>
+          <span className="text-caption">COO, Northwind</span>
         </span>
       </figcaption>
     </figure>

@@ -21,7 +21,7 @@ const textLink =
 function validate(email: string) {
   const value = email.trim()
   if (!value) return "Enter the email address you sign in with."
-  if (!EMAIL_PATTERN.test(value)) return "Enter an email address like maya@acme.dev."
+  if (!EMAIL_PATTERN.test(value)) return "Enter an email address like maya@acme.com."
   return undefined
 }
 
@@ -86,7 +86,7 @@ export function ResetRequestForm({ signInHref = "/live/sign-in" }: { signInHref?
               inputMode="email"
               autoComplete="email"
               spellCheck={false}
-              placeholder="maya@acme.dev"
+              placeholder="maya@acme.com"
               value={email}
               disabled={pending}
               onChange={(event) => setEmail(event.target.value)}
@@ -173,7 +173,7 @@ function ResetLinkSent({
           Check your email
         </h1>
         <p className="text-body text-copy">
-          If <span className="font-semibold break-all text-foreground">{email}</span> has a Lumen account, a reset
+          If <span className="font-semibold break-all text-foreground">{email}</span> has an Acme account, a reset
           link is on its way. It works once and expires in 30 minutes.
         </p>
       </div>

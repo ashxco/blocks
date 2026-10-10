@@ -5,15 +5,16 @@ import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import {
   BookOpenIcon,
-  CopyIcon,
-  GlobeIcon,
+  FilePlusIcon,
+  FolderPlusIcon,
+  LinkIcon,
   MonitorIcon,
   MoonIcon,
-  PlusIcon,
   SearchIcon,
+  SquarePenIcon,
   SunIcon,
-  TerminalIcon,
   UserPlusIcon,
+  ZapIcon,
   type LucideIcon,
 } from "lucide-react"
 
@@ -65,50 +66,56 @@ interface ActionItem {
   run: (router: ReturnType<typeof useRouter>) => void
 }
 
+const WORKSPACE_URL = "https://app.acme.com/acme"
+
 const actions: ActionItem[] = [
   {
+    label: "Create task",
+    icon: SquarePenIcon,
+    keywords: ["new", "todo", "add", "assign"],
+    run: (router) => router.push("/live/app/projects"),
+  },
+  {
     label: "Create project",
-    icon: PlusIcon,
-    keywords: ["new", "import", "repository"],
+    icon: FolderPlusIcon,
+    keywords: ["new", "template", "board", "timeline"],
+    run: (router) => router.push("/live/onboarding?step=template"),
+  },
+  {
+    label: "Write a doc",
+    icon: FilePlusIcon,
+    keywords: ["new", "spec", "notes", "meeting"],
+    run: (router) => router.push("/live/app/projects"),
+  },
+  {
+    label: "Create automation",
+    icon: ZapIcon,
+    keywords: ["rule", "when", "trigger", "notify"],
     run: (router) => router.push("/live/app/projects"),
   },
   {
     label: "Invite members",
     icon: UserPlusIcon,
-    keywords: ["teammate", "team", "add", "invite"],
+    keywords: ["teammate", "team", "guest", "add", "invite"],
     run: (router) => router.push("/live/app/team"),
   },
   {
-    label: "Add a domain",
-    icon: GlobeIcon,
-    keywords: ["dns", "certificate", "https"],
-    run: (router) => router.push("/live/app/projects"),
-  },
-  {
-    label: "Open deployment logs",
-    icon: TerminalIcon,
-    keywords: ["build", "output", "errors"],
-    run: (router) => router.push("/live/app/projects"),
-  },
-  {
-    label: "Copy the CLI install command",
-    icon: CopyIcon,
-    keywords: ["npm", "install", "terminal"],
+    label: "Copy workspace link",
+    icon: LinkIcon,
+    keywords: ["url", "share", "address"],
     run: () => {
-      void navigator.clipboard
-        ?.writeText("npm i -g lumen")
-        .catch(() => undefined)
+      void navigator.clipboard?.writeText(WORKSPACE_URL).catch(() => undefined)
       toast.add({
-        title: "Copied npm i -g lumen",
-        description: "Paste it into your terminal to install the CLI.",
+        title: "Copied the workspace link",
+        description: WORKSPACE_URL,
         type: "success",
       })
     },
   },
   {
-    label: "Read the documentation",
+    label: "Read the guides",
     icon: BookOpenIcon,
-    keywords: ["docs", "help", "guide"],
+    keywords: ["docs", "help", "how to"],
     run: (router) => router.push("/live/blog"),
   },
 ]
@@ -307,7 +314,7 @@ function CommandPalette({
         <CommandEmpty>
           <span className="text-label text-foreground">No results</span>
           <span className="mt-1 block text-caption text-muted-foreground">
-            Try a page name such as Billing, or an action such as “invite”.
+            Try a page name such as Billing, or an action such as “task”.
           </span>
         </CommandEmpty>
         <CommandGroup heading="Navigation">

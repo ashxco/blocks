@@ -147,7 +147,7 @@
     },
     "overlay": {
       "$value": "oklch(0 0 0 / 0.6)",
-      "$description": "Backdrop behind dialogs and sheets."
+      "$description": "Backdrop behind dialogs and sheets. Pair with backdrop-blur-glass."
     },
     "panel": {
       "$value": "{color.ink.800}",

@@ -54,7 +54,7 @@ export function hideDevIndicator(frame: HTMLIFrameElement) {
   }
 }
 
-/** Adds ?theme= to a preview URL when the viewer's theme is forced. */
+/** Adds ?theme= to a frame's address when the viewer's theme is forced. */
 export function withTheme(src: string, theme: string | undefined) {
   if (theme !== "dark" && theme !== "light") return src
   return `${src}${src.includes("?") ? "&" : "?"}theme=${theme}`
@@ -227,6 +227,11 @@ export function frameRendered(frame: HTMLIFrameElement) {
  * at a desktop viewport width, scaled down to fit the frame, in the viewer's
  * theme. The frame only starts loading when it comes within a screen of the
  * viewport, a few at a time; until then it shows the placeholder.
+ *
+ * The iframe is a real viewport of viewportWidth, so vw units, media queries
+ * and tokens with breakpoint values all follow that width on their own. Only
+ * the in-page previews of <Example> (a scaled element, not a frame) recompute
+ * them, with viewportStyle from components/viewer/devices.ts.
  */
 export function ScaledFrame({
   src,

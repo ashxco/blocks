@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRightIcon, FolderIcon, HouseIcon } from "lucide-react"
+import { ChevronRightIcon, FolderIcon, HouseIcon, UserPlusIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import {
@@ -29,15 +29,15 @@ export default function BreadcrumbDocs() {
         code={`<Breadcrumb>
   <BreadcrumbList>
     <BreadcrumbItem>
-      <BreadcrumbLink render={<Link href="/projects" />}>Projects</BreadcrumbLink>
+      <BreadcrumbLink render={<Link href="/acme" />}>Acme</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
-      <BreadcrumbLink render={<Link href="/projects/lumen-web" />}>lumen-web</BreadcrumbLink>
+      <BreadcrumbLink render={<Link href="/acme/projects" />}>Projects</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
-      <BreadcrumbPage>Deployments</BreadcrumbPage>
+      <BreadcrumbPage>Website relaunch</BreadcrumbPage>
     </BreadcrumbItem>
   </BreadcrumbList>
 </Breadcrumb>`}
@@ -45,7 +45,7 @@ export default function BreadcrumbDocs() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className="@max-sm:hidden">
-              <BreadcrumbLink href="#lumen-labs">Lumen Labs</BreadcrumbLink>
+              <BreadcrumbLink href="#acme">Acme</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="@max-sm:hidden" />
             <BreadcrumbItem>
@@ -53,11 +53,7 @@ export default function BreadcrumbDocs() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="#lumen-web">lumen-web</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Deployments</BreadcrumbPage>
+              <BreadcrumbPage>Website relaunch</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -75,7 +71,7 @@ export default function BreadcrumbDocs() {
     </DropdownMenuTrigger>
     <DropdownMenuContent>
       <DropdownMenuItem>Projects</DropdownMenuItem>
-      <DropdownMenuItem>lumen-web</DropdownMenuItem>
+      <DropdownMenuItem>Website relaunch</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 </BreadcrumbItem>`}
@@ -83,7 +79,7 @@ export default function BreadcrumbDocs() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="#lumen-labs">Lumen Labs</BreadcrumbLink>
+              <BreadcrumbLink href="#acme">Acme</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -101,20 +97,18 @@ export default function BreadcrumbDocs() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>Projects</DropdownMenuItem>
-                  <DropdownMenuItem>lumen-web</DropdownMenuItem>
-                  <DropdownMenuItem>Deployments</DropdownMenuItem>
+                  <DropdownMenuItem>Website relaunch</DropdownMenuItem>
+                  <DropdownMenuItem>Docs</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="#a41c9e2" className="font-mono">
-                a41c9e2
-              </BreadcrumbLink>
+              <BreadcrumbLink href="#launch-plan">Launch plan</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Build logs</BreadcrumbPage>
+              <BreadcrumbPage>History</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -139,27 +133,27 @@ export default function BreadcrumbDocs() {
               <ChevronRightIcon />
             </BreadcrumbSeparator>
             <BreadcrumbItem>
-              <BreadcrumbLink href="#docs">Docs</BreadcrumbLink>
+              <BreadcrumbLink href="#settings">Settings</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator>
               <ChevronRightIcon />
             </BreadcrumbSeparator>
             <BreadcrumbItem>
-              <BreadcrumbPage>Custom domains</BreadcrumbPage>
+              <BreadcrumbPage>Integrations</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="#backups">
+              <BreadcrumbLink href="#meeting-notes">
                 <FolderIcon />
-                backups
+                Meeting notes
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage className="font-mono">2026-10-08.sql.gz</BreadcrumbPage>
+              <BreadcrumbPage>Weekly planning, Oct 5</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -178,27 +172,32 @@ export default function BreadcrumbDocs() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="#lumen-web">lumen-web</BreadcrumbLink>
+                <BreadcrumbLink href="#website-relaunch">Website relaunch</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Domains</BreadcrumbPage>
+                <BreadcrumbPage>Members</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="grid gap-1.5">
-              <h3 className="text-h2">Domains</h3>
-              <p className="text-body text-copy">Serve lumen-web from your own domains. Certificates renew on their own.</p>
+              <h3 className="text-h2">Members</h3>
+              <p className="text-body text-copy">
+                5 people can see and edit Website relaunch. Guests only see the projects you invite them to.
+              </p>
             </div>
-            <Button>Add domain</Button>
+            <Button>
+              <UserPlusIcon data-icon="inline-start" />
+              Invite members
+            </Button>
           </div>
         </header>
       </Example>
 
       <Guidelines
         do={[
-          "Start from the top of the hierarchy people care about, usually the team or project.",
+          "Start from the top of the hierarchy people care about, usually the workspace or project.",
           "End with the current page as BreadcrumbPage, so screen readers announce it as the current page.",
           "Render links with your router through the render prop.",
         ]}

@@ -1,44 +1,49 @@
 import * as React from "react"
-import { DatabaseIcon, GitBranchIcon, GlobeIcon, KeyRoundIcon } from "lucide-react"
+import { BellIcon, FilterIcon, MessageSquareIcon, ZapIcon } from "lucide-react"
 
-import { DeploymentStatusBadge } from "@/components/blocks/hero/product-moment"
+import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
 export interface ReleaseShotRow {
-  /** A lucide icon element, e.g. <DatabaseIcon />. */
+  /** A lucide icon element, e.g. <BellIcon />. */
   icon: React.ReactNode
+  /** The step's role in the rule, such as "When", "If" or "Then". */
   label: string
-  /** Shown in mono, e.g. a branch name or URL. */
+  /** What the step does. */
   value: string
-  /** Short readout on the right, e.g. "ready in 1.8s". */
+  /** Short readout on the right, e.g. the app it posts to. */
   meta?: string
 }
 
 export interface ReleaseShotProps {
-  /** Git branch the preview was built from. */
-  branch?: string
-  /** Commit and pull request line under the branch. */
+  /** Name of the automation. */
+  title?: string
+  /** Project and owner line under the name. */
   detail?: string
   rows?: ReleaseShotRow[]
+  /** Line at the foot of the card. Pass an empty string to hide it. */
+  footer?: string
   className?: string
 }
 
 const defaultRows: ReleaseShotRow[] = [
-  { icon: <GlobeIcon />, label: "URL", value: "feat-billing.acme.dev", meta: "HTTPS" },
-  { icon: <DatabaseIcon />, label: "Database", value: "preview/feat-billing", meta: "ready in 1.8s" },
-  { icon: <KeyRoundIcon />, label: "Variables", value: "14 inherited", meta: "2 preview only" },
+  { icon: <ZapIcon />, label: "When", value: "A task moves to Done" },
+  { icon: <FilterIcon />, label: "If", value: "Priority is High or Urgent" },
+  { icon: <BellIcon />, label: "Then", value: "Notify the task owner" },
+  { icon: <MessageSquareIcon />, label: "And", value: "Post in #website-relaunch", meta: "Slack" },
 ]
 
 /**
- * The default screenshot for a changelog entry: a preview environment card
- * built from real components (branch, status, URL, database branch and
- * variables). It sits centred in the tinted frame that ChangelogEntry draws.
- * Decorative only.
+ * The default screenshot for a changelog entry: an automation rule built
+ * from real components (its name, trigger, condition and actions, and how
+ * often it ran). It sits centred in the tinted frame that ChangelogEntry
+ * draws. Decorative only.
  */
 export function ReleaseShot({
-  branch = "feat/billing",
-  detail = "7f02b1d · pull request #482",
+  title = "Tell owners when work is done",
+  detail = "Website relaunch · Created by Maya Patel",
   rows = defaultRows,
+  footer = "Ran 12 times",
   className,
 }: ReleaseShotProps) {
   return (
@@ -46,34 +51,41 @@ export function ReleaseShot({
       <div className="@container/shot w-full max-w-md overflow-hidden rounded-(--card-radius) border bg-card text-card-foreground">
         <div className="flex items-start justify-between gap-4 p-5">
           <div className="grid min-w-0 gap-1">
-            <p className="flex min-w-0 items-center gap-2 text-title text-foreground">
-              <GitBranchIcon className="size-4 shrink-0 text-muted-foreground" />
-              <span className="truncate">{branch}</span>
-            </p>
-            <p className="truncate font-mono text-caption text-muted-foreground">{detail}</p>
+            <p className="text-title text-foreground">{title}</p>
+            <p className="truncate text-caption text-muted-foreground">{detail}</p>
           </div>
-          <DeploymentStatusBadge status="ready" />
+          <Badge variant="success">
+            <span className="size-1.5 rounded-full bg-current" />
+            On
+          </Badge>
         </div>
 
-        <ul className="divide-y border-t">
+        <ol className="grid gap-2 border-t bg-subtle p-3">
           {rows.map((row) => (
             <li
-              key={row.label}
-              className="grid grid-cols-[1rem_minmax(0,1fr)] items-center gap-x-3 gap-y-0.5 px-5 py-3 text-sm @min-[24rem]/shot:grid-cols-[1rem_5.5rem_minmax(0,1fr)_auto]"
+              key={`${row.label}-${row.value}`}
+              className="grid grid-cols-[1.75rem_minmax(0,1fr)] items-center gap-x-3 rounded-md border bg-card px-3 py-2.5 @min-[24rem]/shot:grid-cols-[1.75rem_2.75rem_minmax(0,1fr)_auto]"
             >
-              <span className="text-muted-foreground [&_svg]:size-4">{row.icon}</span>
-              <span className="text-muted-foreground">{row.label}</span>
-              <span className="col-start-2 truncate font-mono text-caption text-foreground @min-[24rem]/shot:col-start-auto">
+              <span className="grid size-7 place-items-center rounded-sm bg-muted text-foreground [&_svg]:size-3.5">
+                {row.icon}
+              </span>
+              <span className="hidden text-caption font-semibold text-muted-foreground @min-[24rem]/shot:block">
+                {row.label}
+              </span>
+              <span className="min-w-0 text-sm font-medium text-foreground @min-[24rem]/shot:truncate">
+                <span className="text-muted-foreground @min-[24rem]/shot:hidden">{row.label} </span>
                 {row.value}
               </span>
               {row.meta ? (
-                <span className="col-start-2 text-caption text-muted-foreground tabular @min-[24rem]/shot:col-start-auto @min-[24rem]/shot:text-right">
-                  {row.meta}
-                </span>
+                <span className="hidden text-caption text-muted-foreground @min-[24rem]/shot:block">{row.meta}</span>
               ) : null}
             </li>
           ))}
-        </ul>
+        </ol>
+
+        {footer ? (
+          <p className="border-t px-5 py-3 text-caption text-muted-foreground tabular">{footer}</p>
+        ) : null}
       </div>
     </div>
   )

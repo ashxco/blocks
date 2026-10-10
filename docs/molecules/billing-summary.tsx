@@ -23,38 +23,34 @@ export default function BillingSummaryDocs() {
         layout="full"
         surface="subtle"
         code={`<BillingSummary
-  currentPlanId="starter"
-  renewsOn="October 14, 2026"
-  periodLabel="September 14 to October 13, 2026. Resets in 4 days."
+  seats={9}
   usage={[
-    { id: "build-minutes", label: "Build minutes", used: 2860, limit: 3000, unit: "min" },
-    { id: "bandwidth", label: "Bandwidth", used: 94, limit: 100, unit: "GB" },
+    { id: "automation-runs", label: "Automation runs", used: 9320, limit: 10000, unit: "runs" },
+    { id: "storage", label: "Storage", used: 88, limit: 100, unit: "GB" },
+    { id: "guests", label: "Guests", used: 9, limit: 10 },
   ]}
   invoices={[…]}
 />`}
       >
         <div className="p-(--card-padding) @prose:p-10">
           <BillingSummary
-            currentPlanId="starter"
-            renewsOn="October 14, 2026"
-            periodLabel="September 14 to October 13, 2026. Resets in 4 days."
+            seats={9}
             paymentMethod={{
               brand: "Mastercard",
               last4: "8210",
               expires: "02/2027",
-              email: "finance@fieldnotes.app",
-              billedTo: "Fieldnotes Ltd",
+              email: "finance@copperleaf.com",
+              billedTo: "Copperleaf Ltd",
             }}
             usage={[
-              { id: "build-minutes", label: "Build minutes", used: 2860, limit: 3000, unit: "min" },
-              { id: "bandwidth", label: "Bandwidth", used: 94, limit: 100, unit: "GB" },
-              { id: "invocations", label: "Function invocations", used: 610_000, limit: 1_000_000 },
-              { id: "storage", label: "Database storage", used: 0.8, limit: 2, unit: "GB" },
+              { id: "automation-runs", label: "Automation runs", used: 9320, limit: 10_000, unit: "runs" },
+              { id: "storage", label: "Storage", used: 88, limit: 100, unit: "GB" },
+              { id: "guests", label: "Guests", used: 9, limit: 10 },
             ]}
             invoices={[
-              { id: "INV-2026-024", date: "Sep 14, 2026", description: "Starter plan, September", amount: 20, status: "failed" },
-              { id: "INV-2026-017", date: "Aug 14, 2026", description: "Starter plan, August", amount: 20, status: "paid" },
-              { id: "INV-2026-011", date: "Jul 14, 2026", description: "Starter plan, July", amount: 20, status: "paid" },
+              { id: "INV-2026-031", date: "Oct 1, 2026", description: "Pro, 9 seats, October", amount: 108, status: "failed" },
+              { id: "INV-2026-024", date: "Sep 1, 2026", description: "Pro, 9 seats, September", amount: 108, status: "paid" },
+              { id: "INV-2026-017", date: "Aug 1, 2026", description: "Pro, 8 seats, August", amount: 96, status: "paid" },
             ]}
           />
         </div>
@@ -66,6 +62,7 @@ export default function BillingSummaryDocs() {
           "Show usage as used of limit, with tabular numbers so the columns line up.",
           "Use status badges for invoices: Paid, Due, Failed. A failed charge also leads the page with Pay now.",
           "Format every meter the same way: plain below 100,000, compact from there (610K / 1M).",
+          "Show the price per member next to the monthly total, so the seat math is visible.",
           "Explain proration and when a downgrade takes effect inside the change-plan dialog.",
         ]}
         dont={[
@@ -77,9 +74,10 @@ export default function BillingSummaryDocs() {
 
       <ApiTable
         rows={[
-          { prop: "plans", type: "BillingPlan[]", default: "Hobby, Starter, Pro, Scale", description: "Plans in the change-plan dialog: id, name, price, description, seats." },
+          { prop: "plans", type: "BillingPlan[]", default: "Free, Pro, Business", description: "Plans in the change-plan dialog: id, name, price per member per month, description and seats, the most members a plan allows." },
           { prop: "currentPlanId", type: "string", default: '"pro"', description: "Id of the active plan. The summary follows changes, so a plan picker elsewhere on the page can share it." },
-          { prop: "renewsOn", type: "string", default: '"November 1, 2026"', description: "Display date of the next renewal." },
+          { prop: "seats", type: "number", default: "18", description: "Seats paid for, one per member. The monthly total is the plan price times the seats, and plans that allow fewer members can’t be chosen." },
+          { prop: "renewsOn", type: "string", default: '"November 1, 2026"', description: "Display date of the next invoice." },
           { prop: "periodLabel", type: "string", description: "Billing period shown above the meters." },
           { prop: "usage", type: "UsageMeter[]", description: "Meters: id, label, used, limit, unit. 80% or more shows amber." },
           { prop: "paymentMethod", type: "PaymentMethod", description: "brand, last4, expires, email and an optional billedTo. The summary follows changes." },
@@ -87,7 +85,7 @@ export default function BillingSummaryDocs() {
           { prop: "currency", type: "string", default: '"USD"', description: "ISO 4217 code for prices and amounts." },
           { prop: "pricingHref", type: "string | null", default: '"/live/pricing"', description: "Target of “Compare plans”. Pass null to leave the link out when the page already compares plans." },
           { prop: "changePlanHref", type: "string", description: "Makes “Change plan” a link, such as \"#change-plan\", for pages that already list the plans. Without it the button opens the change-plan dialog." },
-          { prop: "nextCharge", type: "number", description: "Amount shown as the next charge on renewsOn. Defaults to the current plan’s price." },
+          { prop: "nextCharge", type: "number", description: "Amount shown as the next charge on renewsOn. Defaults to the current plan’s price times the seats." },
           { prop: "onPlanChange", type: "(plan) => void | Promise<void>", description: "Called when a new plan is confirmed. Throw to keep the dialog open. Upgrades show at once; downgrades start at renewal, so the panel keeps the current plan." },
           { prop: "onPaymentMethodChange", type: "({ brand, last4, expires }) => void", description: "Called after a card is saved. The full number never leaves the dialog." },
           { prop: "className", type: "string", description: "Classes for the root grid." },

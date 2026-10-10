@@ -1,13 +1,13 @@
 import * as React from "react"
 import {
-  ContainerIcon,
-  CogIcon,
-  DatabaseIcon,
-  FlaskConicalIcon,
+  AnchorIcon,
+  CloverIcon,
+  CompassIcon,
   HexagonIcon,
-  LayersIcon,
+  LeafIcon,
+  MountainIcon,
+  StethoscopeIcon,
   TriangleIcon,
-  WindIcon,
   type LucideIcon,
 } from "lucide-react"
 
@@ -32,22 +32,23 @@ export interface LogoCloudProps {
   className?: string
 }
 
+/** Acme customers. Fictional names, each with a simple monochrome mark. */
 export const logoCloudItems: LogoCloudItem[] = [
-  { name: "Next.js", icon: TriangleIcon },
-  { name: "Node.js", icon: HexagonIcon },
-  { name: "Python", icon: FlaskConicalIcon },
-  { name: "Go", icon: WindIcon },
-  { name: "Rust", icon: CogIcon },
-  { name: "Docker", icon: ContainerIcon },
-  { name: "Postgres", icon: DatabaseIcon },
-  { name: "Redis", icon: LayersIcon },
+  { name: "Northwind", icon: CompassIcon },
+  { name: "Globex", icon: HexagonIcon },
+  { name: "Initech", icon: TriangleIcon },
+  { name: "Brightline", icon: MountainIcon },
+  { name: "Fieldstone", icon: LeafIcon },
+  { name: "Copperleaf", icon: CloverIcon },
+  { name: "Harbor & Co.", icon: AnchorIcon },
+  { name: "Meridian Health", icon: StethoscopeIcon },
 ]
 
 /**
- * A quiet, monochrome row of supported technologies or customer logos.
+ * A quiet, monochrome row of customer logos or the tools a product connects to.
  */
 export function LogoCloud({
-  title = "Deploys the stack you already use",
+  title = "Trusted by 12,000+ teams, including",
   items = logoCloudItems,
   layout = "split",
   tone = "default",
@@ -56,12 +57,15 @@ export function LogoCloud({
 }: LogoCloudProps) {
   const panel = tone === "panel"
   const split = layout === "split"
-  // Six or more marks fill the row edge to edge; fewer would leave wide gaps.
+  // Six or more marks fill the whole row; fewer would leave wide gaps.
   const spread = items.length >= 6
+  // Long names, such as eight customers, can't share one line beside the
+  // label at page width, so they stay in the four-by-two grid.
+  const oneRow = items.reduce((total, item) => total + item.name.length, 0) <= 60
 
   // Split: the label moves beside the marks from 52rem (a four-by-two grid),
-  // and the marks join one row from 68rem, the narrowest width where all
-  // eight fit on one line. Container queries, so docs and pages match.
+  // and short names join one row from 68rem, the narrowest width where eight
+  // of them fit on one line. Container queries, so docs and pages match.
   const row = (
     <div
       className={
@@ -83,11 +87,15 @@ export function LogoCloud({
         className={
           split
             ? cn(
-                "grid grid-cols-2 gap-x-6 gap-y-5 @prose:grid-cols-4 @min-[68rem]:flex @min-[68rem]:items-center",
-                // A full row spreads to the edge; a short list stays grouped beside the label.
-                spread ? "@min-[68rem]:justify-between" : "@min-[68rem]:justify-start @min-[68rem]:gap-x-16"
+                "grid grid-cols-2 gap-x-6 gap-y-5 @prose:grid-cols-4",
+                oneRow && "@min-[68rem]:flex @min-[68rem]:items-center",
+                // A full row spreads across; a short list stays grouped beside the label.
+                oneRow && (spread ? "@min-[68rem]:justify-between" : "@min-[68rem]:justify-start @min-[68rem]:gap-x-16")
               )
-            : "flex flex-wrap items-center justify-center gap-x-10 gap-y-5"
+            : oneRow
+              ? "flex flex-wrap items-center justify-center gap-x-10 gap-y-5"
+              : // Long names wrap unevenly in a free row, so they sit in an even grid instead.
+                "grid grid-cols-2 justify-items-center gap-x-10 gap-y-5 @prose:grid-cols-4"
         }
       >
         {items.map(({ name, icon: Icon }) => (
@@ -106,7 +114,7 @@ export function LogoCloud({
   return (
     <section
       data-slot="logo-cloud"
-      aria-label={typeof title === "string" ? title : "Supported technologies"}
+      aria-label={typeof title === "string" ? title : "Customers"}
       className={cn("@container", contained && (panel ? "border-y border-panel-border" : "border-y"), className)}
     >
       {contained ? <div className="container-page py-10">{row}</div> : row}

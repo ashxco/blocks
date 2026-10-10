@@ -9,26 +9,26 @@ export default function SeparatorDocs() {
         description="A hairline (--border-width-hairline) between groups of content. It is the only divider in Blocks: no shadows, no fades."
         layout="stack"
         code={`<div className="grid gap-1">
-  <h3 className="text-title">lumen-web</h3>
-  <p className="text-sm text-muted-foreground">Next.js · Node.js 22</p>
+  <h3 className="text-title">Website relaunch</h3>
+  <p className="text-sm text-muted-foreground">5 members · 52 tasks</p>
 </div>
 <Separator className="my-5" />
-<p className="text-sm">Production branch: main</p>`}
+<p className="text-sm">Lead: Priya Raman</p>`}
       >
         <div className="mx-auto w-full max-w-96">
           <div className="grid gap-1">
-            <h3 className="text-title text-foreground">lumen-web</h3>
-            <p className="text-sm text-muted-foreground">Next.js · Node.js 22 · Virginia, iad1</p>
+            <h3 className="text-title text-foreground">Website relaunch</h3>
+            <p className="text-sm text-muted-foreground">5 members · 52 tasks · Board view</p>
           </div>
           <Separator className="my-5" />
           <dl className="grid grid-cols-2 gap-4 text-sm">
             <div className="grid gap-0.5">
-              <dt className="text-muted-foreground">Production branch</dt>
-              <dd className="font-semibold text-foreground">main</dd>
+              <dt className="text-muted-foreground">Lead</dt>
+              <dd className="font-semibold text-foreground">Priya Raman</dd>
             </div>
             <div className="grid gap-0.5">
-              <dt className="text-muted-foreground">Build command</dt>
-              <dd className="font-mono text-code text-foreground">npm run build</dd>
+              <dt className="text-muted-foreground">Due date</dt>
+              <dd className="font-semibold text-foreground">Nov 14, 2026</dd>
             </div>
           </dl>
         </div>
@@ -38,21 +38,19 @@ export default function SeparatorDocs() {
         title="Vertical"
         description="Between inline items, such as metadata or toolbar groups. The separator stretches to the height of the row."
         code={`<div className="flex h-5 items-center gap-3 text-sm">
-  <span>Production</span>
+  <span>Urgent</span>
   <Separator orientation="vertical" />
-  <span>main</span>
+  <span>Jordan Lee</span>
   <Separator orientation="vertical" />
-  <span>4 minutes ago</span>
+  <span>Due today</span>
 </div>`}
       >
-        <div className="flex h-5 items-center gap-3 text-sm text-muted-foreground">
-          <span className="font-semibold text-foreground">Production</span>
+        <div className="flex h-5 items-center gap-3 text-sm whitespace-nowrap text-muted-foreground">
+          <span className="font-semibold text-foreground">Urgent</span>
           <Separator orientation="vertical" />
-          <span>main</span>
+          <span>Jordan Lee</span>
           <Separator orientation="vertical" />
-          <span className="font-mono text-code">8f3c2a1</span>
-          <Separator orientation="vertical" />
-          <span>4 minutes ago</span>
+          <span>Due today</span>
         </div>
       </Example>
 
@@ -81,14 +79,14 @@ export default function SeparatorDocs() {
       >
         <div className="mx-auto grid w-full max-w-96 gap-5">
           <div className="grid gap-1">
-            <p className="text-h4">Ship from git push</p>
-            <p className="text-sm text-panel-muted">Every branch gets a preview URL.</p>
+            <p className="text-h4">All your team’s work in one place</p>
+            <p className="text-sm text-panel-muted">Projects, tasks and docs, side by side.</p>
           </div>
           <Separator variant="panel" />
           <div className="flex h-5 items-center gap-3 text-sm text-panel-muted">
-            <span>99.99% uptime</span>
+            <span>12,000+ teams</span>
             <Separator variant="panel" orientation="vertical" />
-            <span>14 regions</span>
+            <span>GDPR</span>
             <Separator variant="panel" orientation="vertical" />
             <span>SOC 2 Type II</span>
           </div>

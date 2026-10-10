@@ -12,9 +12,9 @@ export default function ButtonDocs() {
       <Example
         title="Variants"
         description="The ink family on the first row handles everyday actions. Brand and destructive mark the one action that matters most on a view. They share a row here only for comparison: in a product, use one of them at a time and never next to primary."
-        code={`<Button>Get started</Button>
+        code={`<Button>Invite members</Button>
 <Button variant="secondary">Cancel</Button>
-<Button variant="outline">Self-host</Button>
+<Button variant="outline">Import tasks</Button>
 <Button variant="ghost">Skip</Button>
 <Button variant="link">Read the docs</Button>
 
@@ -23,9 +23,9 @@ export default function ButtonDocs() {
       >
         <div className="grid justify-items-center gap-6">
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button>Get started</Button>
+            <Button>Invite members</Button>
             <Button variant="secondary">Cancel</Button>
-            <Button variant="outline">Self-host</Button>
+            <Button variant="outline">Import tasks</Button>
             <Button variant="ghost">Skip</Button>
             <Button variant="link">Read the docs</Button>
           </div>
@@ -42,11 +42,11 @@ export default function ButtonDocs() {
         description="Give a view one primary action. An outline button carries the alternative and a ghost button the action people can skip."
         code={`<Button variant="ghost">Skip for now</Button>
 <Button variant="outline">Save draft</Button>
-<Button>Deploy</Button>`}
+<Button>Create project</Button>`}
       >
         <Button variant="ghost">Skip for now</Button>
         <Button variant="outline">Save draft</Button>
-        <Button>Deploy</Button>
+        <Button>Create project</Button>
       </Example>
 
       <Example
@@ -57,10 +57,10 @@ export default function ButtonDocs() {
 <Button>Medium</Button>
 <Button size="lg">Large</Button>
 
-<Button size="icon-xs" variant="outline" aria-label="Add domain"><PlusIcon /></Button>
-<Button size="icon-sm" variant="outline" aria-label="Add domain"><PlusIcon /></Button>
-<Button size="icon" variant="outline" aria-label="Add domain"><PlusIcon /></Button>
-<Button size="icon-lg" variant="outline" aria-label="Add domain"><PlusIcon /></Button>`}
+<Button size="icon-xs" variant="outline" aria-label="Add task"><PlusIcon /></Button>
+<Button size="icon-sm" variant="outline" aria-label="Add task"><PlusIcon /></Button>
+<Button size="icon" variant="outline" aria-label="Add task"><PlusIcon /></Button>
+<Button size="icon-lg" variant="outline" aria-label="Add task"><PlusIcon /></Button>`}
       >
         <div className="grid justify-items-center gap-6">
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -70,16 +70,16 @@ export default function ButtonDocs() {
             <Button size="lg">Large</Button>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button size="icon-xs" variant="outline" aria-label="Add domain, extra small">
+            <Button size="icon-xs" variant="outline" aria-label="Add task, extra small">
               <PlusIcon />
             </Button>
-            <Button size="icon-sm" variant="outline" aria-label="Add domain, small">
+            <Button size="icon-sm" variant="outline" aria-label="Add task, small">
               <PlusIcon />
             </Button>
-            <Button size="icon" variant="outline" aria-label="Add domain, medium">
+            <Button size="icon" variant="outline" aria-label="Add task, medium">
               <PlusIcon />
             </Button>
-            <Button size="icon-lg" variant="outline" aria-label="Add domain, large">
+            <Button size="icon-lg" variant="outline" aria-label="Add task, large">
               <PlusIcon />
             </Button>
           </div>
@@ -98,7 +98,7 @@ export default function ButtonDocs() {
   Export
 </Button>
 <Button>
-  Start for free
+  Start free trial
   <ArrowRightIcon data-icon="inline-end" />
 </Button>
 <Button size="icon" variant="outline" aria-label="Delete">
@@ -114,7 +114,7 @@ export default function ButtonDocs() {
           Export
         </Button>
         <Button>
-          Start for free
+          Start free trial
           <ArrowRightIcon data-icon="inline-end" />
         </Button>
         <Button size="icon" variant="outline" aria-label="Delete">
@@ -127,13 +127,13 @@ export default function ButtonDocs() {
         surface="panel"
         description="Inverse variants keep contrast on dark panels, in both themes."
         code={`<Button variant="inverse">
-  Get started
+  Start free trial
   <ArrowRightIcon data-icon="inline-end" />
 </Button>
 <Button variant="outline-inverse">Book a demo</Button>`}
       >
         <Button variant="inverse">
-          Get started
+          Start free trial
           <ArrowRightIcon data-icon="inline-end" />
         </Button>
         <Button variant="outline-inverse">Book a demo</Button>
@@ -142,20 +142,20 @@ export default function ButtonDocs() {
       <Example
         title="States"
         description="Disabled buttons fade to half strength. While an action runs, keep the button disabled, swap the label to say what is happening and show a spinner."
-        code={`<Button disabled>Deploy</Button>
+        code={`<Button disabled>Create project</Button>
 <Button variant="outline" disabled>Export</Button>
 <Button disabled aria-busy="true">
   <Spinner data-icon="inline-start" />
-  Deploying
+  Creating project
 </Button>`}
       >
-        <Button disabled>Deploy</Button>
+        <Button disabled>Create project</Button>
         <Button variant="outline" disabled>
           Export
         </Button>
         <Button disabled aria-busy="true">
           <Spinner data-icon="inline-start" />
-          Deploying
+          Creating project
         </Button>
       </Example>
 

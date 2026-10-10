@@ -1,9 +1,9 @@
 import {
+  BellIcon,
   CircleCheckIcon,
   CircleXIcon,
-  GaugeIcon,
+  FolderKanbanIcon,
   InfoIcon,
-  TerminalIcon,
   TriangleAlertIcon,
 } from "lucide-react"
 
@@ -20,50 +20,50 @@ export default function AlertDocs() {
         layout="stack"
         code={`<Alert variant="warning">
   <TriangleAlertIcon />
-  <AlertTitle>Build minutes are running low</AlertTitle>
+  <AlertTitle>Automation runs are running low</AlertTitle>
   <AlertDescription>
-    You have used 5,420 of 6,000 minutes this month. Builds pause when you reach the limit.
+    You have used 7,240 of 10,000 runs this cycle. Automations pause when you reach the limit.
   </AlertDescription>
 </Alert>`}
       >
         <Alert>
-          <TerminalIcon />
-          <AlertTitle>Node.js 18 reaches end of life on 30 April</AlertTitle>
+          <BellIcon />
+          <AlertTitle>Weekly digests now arrive on Monday mornings</AlertTitle>
           <AlertDescription>
-            New builds will use Node.js 22. Set the engines field in package.json to keep a
-            specific version.
+            Each member gets one email at 9:00 in their own time zone. Change the day in
+            notification settings.
           </AlertDescription>
         </Alert>
         <Alert variant="info">
           <InfoIcon />
-          <AlertTitle>Preview deployments are now private by default</AlertTitle>
+          <AlertTitle>Timeline view is now available in every project</AlertTitle>
           <AlertDescription>
-            Only members of your team can open preview URLs. You can share a link that expires
-            from the deployment page.
+            Choose Timeline in the view switcher to plan work by date. Your list and board views
+            stay as they are.
           </AlertDescription>
         </Alert>
         <Alert variant="success">
           <CircleCheckIcon />
-          <AlertTitle>lumen.app is verified</AlertTitle>
+          <AlertTitle>Slack is connected</AlertTitle>
           <AlertDescription>
-            DNS records are in place and a certificate has been issued. Traffic is served over
-            HTTPS.
+            Updates from Website relaunch now post to #website-relaunch. Change the channel in
+            Integrations.
           </AlertDescription>
         </Alert>
         <Alert variant="warning">
           <TriangleAlertIcon />
-          <AlertTitle>Build minutes are running low</AlertTitle>
+          <AlertTitle>Automation runs are running low</AlertTitle>
           <AlertDescription>
-            You have used 5,420 of 6,000 minutes this month. Builds pause when you reach the
+            You have used 7,240 of 10,000 runs this cycle. Automations pause when you reach the
             limit.
           </AlertDescription>
         </Alert>
         <Alert variant="destructive">
           <CircleXIcon />
-          <AlertTitle>The last deployment failed</AlertTitle>
+          <AlertTitle>The import didn’t finish</AlertTitle>
           <AlertDescription>
-            The build exited with code 1 during npm run build. Check the logs, fix the error and
-            push again.
+            The file has no Title column, so Acme couldn’t create any tasks. Add a column named
+            Title and upload the file again.
           </AlertDescription>
         </Alert>
       </Example>
@@ -73,35 +73,35 @@ export default function AlertDocs() {
         description="Put one action on the right when the fix is a single step. On phones it drops below the text."
         layout="stack"
         code={`<Alert variant="warning">
-  <GaugeIcon />
-  <AlertTitle>You are close to your bandwidth limit</AlertTitle>
-  <AlertDescription>92% of 1 TB used. Upgrade to keep sites fast after the limit.</AlertDescription>
+  <FolderKanbanIcon />
+  <AlertTitle>Mobile app 2.0 is at risk</AlertTitle>
+  <AlertDescription>61 of 118 tasks are done and the project is due Nov 20.</AlertDescription>
   <AlertAction>
-    <Button size="sm" variant="outline">Upgrade plan</Button>
+    <Button size="sm" variant="outline">Review plan</Button>
   </AlertAction>
 </Alert>`}
       >
         <Alert variant="warning">
-          <GaugeIcon />
-          <AlertTitle>You are close to your bandwidth limit</AlertTitle>
+          <FolderKanbanIcon />
+          <AlertTitle>Mobile app 2.0 is at risk</AlertTitle>
           <AlertDescription>
-            92% of 1 TB used this month. Upgrade to keep sites fast after the limit.
+            61 of 118 tasks are done and the project is due Nov 20. Review the plan with Jordan Lee.
           </AlertDescription>
           <AlertAction>
             <Button size="sm" variant="outline">
-              Upgrade plan
+              Review plan
             </Button>
           </AlertAction>
         </Alert>
         <Alert variant="destructive">
           <CircleXIcon />
-          <AlertTitle>Payment for October failed</AlertTitle>
+          <AlertTitle>Google Drive is disconnected</AlertTitle>
           <AlertDescription>
-            Your card ending in 4242 was declined. Update it before 12 November to keep your
-            projects online.
+            Acme can no longer reach the Website relaunch folder, so new files don’t attach to tasks.
+            Reconnect Google Drive to pick up where it left off.
           </AlertDescription>
           <AlertAction>
-            <Button size="sm">Update card</Button>
+            <Button size="sm">Reconnect</Button>
           </AlertAction>
         </Alert>
       </Example>
@@ -121,7 +121,7 @@ export default function AlertDocs() {
         </Alert>
         <Alert variant="warning">
           <TriangleAlertIcon />
-          <AlertTitle>Preview deployments are paused while billing is past due.</AlertTitle>
+          <AlertTitle>Automations are paused while billing is past due.</AlertTitle>
         </Alert>
       </Example>
 
@@ -132,36 +132,36 @@ export default function AlertDocs() {
       >
         <section className="grid gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)">
           <div className="grid gap-1">
-            <h3 className="text-h4 text-foreground">Database</h3>
+            <h3 className="text-h4 text-foreground">Automations</h3>
             <p className="text-sm text-muted-foreground">
-              Postgres 16 · lumen-prod-db · Frankfurt, fra1
+              Pro plan · 10,000 runs a month
             </p>
           </div>
           <Alert variant="warning">
             <TriangleAlertIcon />
-            <AlertTitle>Storage is 87% full</AlertTitle>
+            <AlertTitle>You may run out of automation runs this cycle</AlertTitle>
             <AlertDescription>
-              At the current rate the database fills up in about 9 days. Increase storage or
-              remove old rows. <a href="#retention">Set a retention policy</a>
+              At the current rate the workspace reaches 10,000 runs before the cycle resets on Nov 1.
+              Upgrade, or turn off rules you no longer need. <a href="#runs-by-rule">See runs by rule</a>
             </AlertDescription>
             <AlertAction>
               <Button size="sm" variant="outline">
-                Increase storage
+                Upgrade plan
               </Button>
             </AlertAction>
           </Alert>
           <dl className="grid gap-4 sm:grid-cols-3">
             <div className="grid gap-1">
-              <dt className="text-caption text-muted-foreground">Storage</dt>
-              <dd className="text-title text-foreground tabular-nums">43.5 of 50 GB</dd>
+              <dt className="text-caption text-muted-foreground">Runs used</dt>
+              <dd className="text-title text-foreground tabular-nums">7,240 of 10,000</dd>
             </div>
             <div className="grid gap-1">
-              <dt className="text-caption text-muted-foreground">Connections</dt>
-              <dd className="text-title text-foreground tabular-nums">38 of 100</dd>
+              <dt className="text-caption text-muted-foreground">Active rules</dt>
+              <dd className="text-title text-foreground tabular-nums">14</dd>
             </div>
             <div className="grid gap-1">
-              <dt className="text-caption text-muted-foreground">Last backup</dt>
-              <dd className="text-title text-foreground">Today, 04:00</dd>
+              <dt className="text-caption text-muted-foreground">Resets</dt>
+              <dd className="text-title text-foreground">Nov 1</dd>
             </div>
           </dl>
         </section>

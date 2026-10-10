@@ -1,6 +1,6 @@
 import * as React from "react"
 import Link from "next/link"
-import { FolderGit2Icon, PlusIcon } from "lucide-react"
+import { LayoutTemplateIcon, PlusIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -27,7 +27,7 @@ export interface PageHeaderProps {
  * below. Lays itself out with a container query, so it also works in narrow
  * slots such as a split view or a sheet.
  *
- * Rendered with no props it shows the Lumen projects page header.
+ * Rendered with no props it shows the header of the Acme projects page.
  */
 export function PageHeader({
   title,
@@ -41,15 +41,15 @@ export function PageHeader({
   const demo = title === undefined
   const resolvedTitle = demo ? "Projects" : title
   const resolvedDescription = demo
-    ? "Every app and service in Acme Inc. Push to a connected branch and Lumen builds and deploys it."
+    ? "Every project in Acme Inc., with its status, lead and due date. Open one to see its board, timeline and docs."
     : description
   const resolvedActions = demo ? (
     <>
-      <Button variant="outline">
-        <FolderGit2Icon data-icon="inline-start" />
-        Import repository
+      <Button variant="outline" nativeButton={false} render={<Link href="/live/onboarding?step=template" />}>
+        <LayoutTemplateIcon data-icon="inline-start" />
+        Browse templates
       </Button>
-      <Button nativeButton={false} render={<Link href="/live/app/projects" />}>
+      <Button nativeButton={false} render={<Link href="/live/onboarding?step=template" />}>
         <PlusIcon data-icon="inline-start" />
         New project
       </Button>

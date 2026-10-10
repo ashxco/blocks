@@ -8,7 +8,7 @@ export default function DataTableDocs() {
     <Examples>
       <Example
         title="Projects"
-        description="Search by name, repository or region, filter by status, choose columns, sort by clicking a header (newest deploy first to start), select rows for a bulk redeploy, and act on one row from its menu. In narrow slots the detail columns step out, so project, status and the row menu always fit."
+        description="Search by project, team or lead, filter by status, choose columns, sort by clicking a header (most recently updated first to start), select rows to archive them together, and act on one row from its menu. In narrow slots the detail columns step out and long project names wrap, so project, status and the row menu always fit."
         layout="full"
         code={`<DataTable rows={projects} pageSize={8} />`}
       >
@@ -19,16 +19,16 @@ export default function DataTableDocs() {
 
       <Example
         title="Compact"
-        description="When the table shares a page with other content: one line per row at the small row height, fewer columns and a shorter page. The repository and branch lines drop out; the row menu still has everything."
+        description="When the table shares a page with other content: one line per row at the small row height, fewer columns and a shorter page. The team line under each name drops out; the row menu still has everything."
         layout="full"
         surface="subtle"
-        code={`<DataTable density="compact" pageSize={5} hiddenColumns={["framework", "region"]} />`}
+        code={`<DataTable density="compact" pageSize={5} hiddenColumns={["lead", "updated"]} />`}
       >
         <div className="p-6 @prose:p-10">
           <DataTable
             density="compact"
             pageSize={5}
-            hiddenColumns={["framework", "region"]}
+            hiddenColumns={["lead", "updated"]}
           />
         </div>
       </Example>
@@ -40,8 +40,8 @@ export default function DataTableDocs() {
         code={`<DataTable
   rows={[]}
   emptyTitle="No projects yet"
-  emptyDescription="Import a repository and Lumen builds and deploys it as your first project."
-  emptyAction={{ label: "Import repository", href: "/live/onboarding", icon: FolderGit2Icon }}
+  emptyDescription="Start from a template such as Product roadmap, or create a blank project and add tasks as you go."
+  emptyAction={{ label: "Create project", href: "/live/onboarding?step=template", icon: PlusIcon }}
 />`}
       >
         <div className="p-6 @prose:p-10">
@@ -51,7 +51,7 @@ export default function DataTableDocs() {
 
       <Guidelines
         do={[
-          "Keep the first column the thing people scan for, with the secondary detail under it in mono.",
+          "Keep the first column the thing people scan for, with one quiet detail under it, such as the team.",
           "Pair every status colour with a label.",
           "Put destructive row actions last, after a separator.",
         ]}
@@ -68,7 +68,7 @@ export default function DataTableDocs() {
             prop: "rows",
             type: "ProjectRow[]",
             description:
-              "Rows to show. Defaults to the 12 Lumen projects of Acme Inc., the same list the app templates use.",
+              "Rows to show. Defaults to the 26 projects of the Acme Inc. workspace, 24 of them active: the same list the app templates use.",
           },
           {
             prop: "pageSize",
@@ -78,10 +78,10 @@ export default function DataTableDocs() {
           },
           {
             prop: "hiddenColumns",
-            type: '("framework" | "region" | "requests" | "updated")[]',
+            type: '("progress" | "lead" | "due" | "updated")[]',
             default: "[]",
             description:
-              "Optional columns hidden on first render. People can show them from the Columns menu. Below 34, 44, 52 and 60rem of table width, Last deploy, Requests, Framework and Region step out on their own; the deploy time then sits under the status.",
+              "Optional columns hidden on first render. People can show them from the Columns menu. Below 34, 44, 52 and 60rem of table width, Due date, Progress, Lead and Updated step out on their own; the due date then sits under the status.",
           },
           {
             prop: "noun",
@@ -95,7 +95,7 @@ export default function DataTableDocs() {
             type: '"default" | "compact"',
             default: '"default"',
             description:
-              "Compact sets one-line rows at --table-row-height-sm, without the repository and branch lines.",
+              "Compact sets one-line rows at --table-row-height-sm, without the team line under each name.",
           },
           {
             prop: "emptyTitle / emptyDescription",
@@ -106,7 +106,7 @@ export default function DataTableDocs() {
           {
             prop: "emptyAction",
             type: "{ label; href?; onClick?; icon? } | null",
-            default: "Import repository",
+            default: "Create project",
             description:
               "The empty state’s primary action, a small primary button. The default only applies to projects; null leaves it out.",
           },
@@ -127,30 +127,37 @@ export default function DataTableDocs() {
             description: "Project name, shown first.",
           },
           {
-            prop: "repo",
+            prop: "team",
             type: "string",
-            description: "Connected repository, shown under the name in mono.",
+            description: "Team that owns the project, shown under the name.",
           },
           {
             prop: "status",
-            type: '"ready" | "building" | "failed" | "paused"',
-            description: "Latest deployment status.",
+            type: '"on-track" | "at-risk" | "off-track" | "completed" | "paused"',
+            description:
+              "Shown as a badge: success, warning, destructive, and neutral for completed and paused.",
           },
           {
-            prop: "framework / region / branch",
+            prop: "lead",
             type: "string",
-            description: "Detail columns.",
+            description:
+              "Project lead by full name. The avatar tint comes from the shared people list.",
           },
           {
-            prop: "requests",
+            prop: "done / total",
             type: "number",
-            description: "Requests in the last 24 hours.",
+            description: "Tasks done and tasks in the project, for the progress column.",
+          },
+          {
+            prop: "due",
+            type: "string",
+            description: "Due date in ISO format, such as 2026-11-14.",
           },
           {
             prop: "updated / updatedMinutes",
             type: "string / number",
             description:
-              "Relative label and the minutes behind it, used for sorting.",
+              "Relative label for the latest change and the minutes behind it, used for sorting.",
           },
         ]}
       />

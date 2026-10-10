@@ -154,7 +154,7 @@ function InviteForm({
   }
 
   const title = `Invite people to ${workspaceName}`
-  const description = "Invites expire after 7 days. You can change roles at any time."
+  const description = "Invites expire after 7 days. Members take a seat; guests are free and see only the projects you share with them."
 
   return (
     <form onSubmit={handleSubmit} noValidate className={inline ? "grid gap-6" : "contents"}>
@@ -180,7 +180,7 @@ function InviteForm({
             rows={3}
             spellCheck={false}
             autoCapitalize="none"
-            placeholder="sam@acme.dev, ana@acme.dev"
+            placeholder="nina@acme.com, leo@acme.com"
             value={raw}
             onChange={(e) => {
               setRaw(e.target.value)
@@ -242,7 +242,7 @@ function InviteForm({
 
 export function InviteDialog({
   workspaceName = "Acme Inc.",
-  defaultRole = "developer",
+  defaultRole = "member",
   existingEmails = [],
   onInvite,
   triggerLabel = "Invite members",
@@ -286,7 +286,7 @@ export function InviteDialog({
  */
 export function InvitePanel({
   workspaceName = "Acme Inc.",
-  defaultRole = "developer",
+  defaultRole = "member",
   existingEmails = [],
   onInvite,
   className,

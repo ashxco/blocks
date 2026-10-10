@@ -5,7 +5,7 @@ A design system and template kit: tokens, components, molecules and page templat
 - **Tokens:** W3C DTCG token files compiled by Style Dictionary into Tailwind CSS v4 theme variables, in light and dark.
 - **Components:** shadcn/ui on Base UI, restyled to Blocks.
 - **Molecules:** marketing sections and app patterns built from the components.
-- **Templates:** marketing, auth and app pages for a placeholder product, Lumen.
+- **Templates:** marketing, auth and app pages for Acme Inc., a sample work-management SaaS company.
 - **Viewer:** the design-system site at `/`.
 
 ## Run it
@@ -50,4 +50,3 @@ npm run check
 | `lib/registry.ts` | Everything the viewer lists |
 | `app/(viewer)/` | Viewer routes |
 | `app/(live)/live/` | Live templates |
-| `reference/html/` | The original static HTML templates |

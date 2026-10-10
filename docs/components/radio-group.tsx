@@ -16,16 +16,16 @@ import {
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-const machines = [
-  { value: "standard", title: "Standard", description: "4 vCPU, 8 GB memory. Fine for most sites." },
-  { value: "enhanced", title: "Enhanced", description: "8 vCPU, 16 GB memory. Halves build time for large apps." },
-  { value: "turbo", title: "Turbo", description: "30 vCPU, 60 GB memory. For monorepos with many packages." },
+const views = [
+  { value: "list", title: "List", description: "Tasks in rows, grouped by section. Best for quick triage." },
+  { value: "board", title: "Board", description: "A column for each status. Drag cards to move work along." },
+  { value: "timeline", title: "Timeline", description: "Tasks as bars across the weeks, with their dependencies." },
 ]
 
 const plans = [
-  { value: "hobby", title: "Hobby", price: "$0", detail: "Personal projects and experiments." },
-  { value: "pro", title: "Pro", price: "$20", detail: "Per member, per month. For teams in production." },
-  { value: "enterprise", title: "Enterprise", price: "Custom", detail: "SSO, audit logs and a 99.99% SLA." },
+  { value: "pro", title: "Pro", price: "$12", detail: "Per member a month, billed annually. Unlimited projects, 10,000 automation runs and 100 GB storage." },
+  { value: "business", title: "Business", price: "$24", detail: "Per member a month, billed annually. SSO, audit log and a 99.9% uptime SLA." },
+  { value: "enterprise", title: "Enterprise", price: "Custom", detail: "A dedicated success manager, custom contracts and data residency." },
 ]
 
 function PlanPicker() {
@@ -64,27 +64,27 @@ export default function RadioGroupDocs() {
         layout="stack"
         description="Pick exactly one option. The selected circle fills with ink and shows a canvas-coloured dot."
         code={`<FieldSet>
-  <FieldLegend variant="label">Build machine</FieldLegend>
-  <RadioGroup defaultValue="standard" name="machine">
+  <FieldLegend variant="label">Default view</FieldLegend>
+  <RadioGroup defaultValue="list" name="view">
     <div className="flex items-center gap-3">
-      <RadioGroupItem value="standard" id="standard" />
-      <Label htmlFor="standard" className="font-medium">Standard</Label>
+      <RadioGroupItem value="list" id="list" />
+      <Label htmlFor="list" className="font-medium">List</Label>
     </div>
     <div className="flex items-center gap-3">
-      <RadioGroupItem value="enhanced" id="enhanced" />
-      <Label htmlFor="enhanced" className="font-medium">Enhanced</Label>
+      <RadioGroupItem value="board" id="board" />
+      <Label htmlFor="board" className="font-medium">Board</Label>
     </div>
     <div className="flex items-center gap-3">
-      <RadioGroupItem value="turbo" id="turbo" />
-      <Label htmlFor="turbo" className="font-medium">Turbo</Label>
+      <RadioGroupItem value="timeline" id="timeline" />
+      <Label htmlFor="timeline" className="font-medium">Timeline</Label>
     </div>
   </RadioGroup>
 </FieldSet>`}
       >
         <FieldSet>
-          <FieldLegend variant="label">Build machine</FieldLegend>
-          <RadioGroup defaultValue="standard" name="machine">
-            {machines.map((m) => (
+          <FieldLegend variant="label">Default view</FieldLegend>
+          <RadioGroup defaultValue="list" name="view">
+            {views.map((m) => (
               <div key={m.value} className="flex items-center gap-3">
                 <RadioGroupItem value={m.value} id={`rg-${m.value}`} />
                 <Label htmlFor={`rg-${m.value}`} className="font-medium">
@@ -100,21 +100,21 @@ export default function RadioGroupDocs() {
         title="With descriptions"
         layout="stack"
         description="Use horizontal fields when each option needs a line of explanation. The circle aligns to the first line."
-        code={`const machines = [
-  { value: "standard", title: "Standard", description: "4 vCPU, 8 GB memory. Fine for most sites." },
-  { value: "enhanced", title: "Enhanced", description: "8 vCPU, 16 GB memory. Halves build time for large apps." },
-  { value: "turbo", title: "Turbo", description: "30 vCPU, 60 GB memory. For monorepos with many packages." },
+        code={`const views = [
+  { value: "list", title: "List", description: "Tasks in rows, grouped by section. Best for quick triage." },
+  { value: "board", title: "Board", description: "A column for each status. Drag cards to move work along." },
+  { value: "timeline", title: "Timeline", description: "Tasks as bars across the weeks, with their dependencies." },
 ]
 
 <FieldSet>
-  <FieldLegend variant="label">Build machine</FieldLegend>
-  <RadioGroup defaultValue="enhanced" name="machine" className="gap-5">
-    {machines.map((m) => (
-      <Field key={m.value} orientation="horizontal">
-        <RadioGroupItem value={m.value} id={m.value} />
+  <FieldLegend variant="label">Default view</FieldLegend>
+  <RadioGroup defaultValue="board" name="view" className="gap-5">
+    {views.map((v) => (
+      <Field key={v.value} orientation="horizontal">
+        <RadioGroupItem value={v.value} id={v.value} />
         <FieldContent>
-          <FieldLabel htmlFor={m.value}>{m.title}</FieldLabel>
-          <FieldDescription>{m.description}</FieldDescription>
+          <FieldLabel htmlFor={v.value}>{v.title}</FieldLabel>
+          <FieldDescription>{v.description}</FieldDescription>
         </FieldContent>
       </Field>
     ))}
@@ -122,9 +122,9 @@ export default function RadioGroupDocs() {
 </FieldSet>`}
       >
         <FieldSet className="max-w-md">
-          <FieldLegend variant="label">Build machine</FieldLegend>
-          <RadioGroup defaultValue="enhanced" name="machine-described" className="gap-5">
-            {machines.map((m) => (
+          <FieldLegend variant="label">Default view</FieldLegend>
+          <RadioGroup defaultValue="board" name="view-described" className="gap-5">
+            {views.map((m) => (
               <Field key={m.value} orientation="horizontal">
                 <RadioGroupItem value={m.value} id={`rgd-${m.value}`} />
                 <FieldContent>
@@ -142,9 +142,9 @@ export default function RadioGroupDocs() {
         layout="stack"
         description="Cards suit options people compare side by side, such as plans. The whole card is the label; the selected card takes an ink border."
         code={`const plans = [
-  { value: "hobby", title: "Hobby", price: "$0", detail: "Personal projects and experiments." },
-  { value: "pro", title: "Pro", price: "$20", detail: "Per member, per month. For teams in production." },
-  { value: "enterprise", title: "Enterprise", price: "Custom", detail: "SSO, audit logs and a 99.99% SLA." },
+  { value: "pro", title: "Pro", price: "$12", detail: "Per member a month, billed annually. Unlimited projects, 10,000 automation runs and 100 GB storage." },
+  { value: "business", title: "Business", price: "$24", detail: "Per member a month, billed annually. SSO, audit log and a 99.9% uptime SLA." },
+  { value: "enterprise", title: "Enterprise", price: "Custom", detail: "A dedicated success manager, custom contracts and data residency." },
 ]
 
 <FieldSet>
@@ -174,30 +174,30 @@ export default function RadioGroupDocs() {
         layout="stack"
         description="Lay short options in a row with className. Keep it to three or four."
         code={`<FieldSet>
-  <FieldLegend variant="label">Log retention</FieldLegend>
-  <RadioGroup defaultValue="7d" name="retention" className="flex flex-wrap gap-x-6 gap-y-3">
+  <FieldLegend variant="label">Remind assignees</FieldLegend>
+  <RadioGroup defaultValue="1d" name="reminder" className="flex flex-wrap gap-x-6 gap-y-3">
     <div className="flex items-center gap-3">
-      <RadioGroupItem value="1d" id="retention-1d" />
-      <Label htmlFor="retention-1d" className="font-medium">1 day</Label>
+      <RadioGroupItem value="0d" id="reminder-0d" />
+      <Label htmlFor="reminder-0d" className="font-medium">On the day</Label>
     </div>
     <div className="flex items-center gap-3">
-      <RadioGroupItem value="7d" id="retention-7d" />
-      <Label htmlFor="retention-7d" className="font-medium">7 days</Label>
+      <RadioGroupItem value="1d" id="reminder-1d" />
+      <Label htmlFor="reminder-1d" className="font-medium">1 day before</Label>
     </div>
     <div className="flex items-center gap-3">
-      <RadioGroupItem value="30d" id="retention-30d" />
-      <Label htmlFor="retention-30d" className="font-medium">30 days</Label>
+      <RadioGroupItem value="7d" id="reminder-7d" />
+      <Label htmlFor="reminder-7d" className="font-medium">1 week before</Label>
     </div>
   </RadioGroup>
 </FieldSet>`}
       >
         <FieldSet>
-          <FieldLegend variant="label">Log retention</FieldLegend>
-          <RadioGroup defaultValue="7d" name="retention" className="flex flex-wrap gap-x-6 gap-y-3">
+          <FieldLegend variant="label">Remind assignees</FieldLegend>
+          <RadioGroup defaultValue="1d" name="reminder" className="flex flex-wrap gap-x-6 gap-y-3">
             {[
-              { value: "1d", label: "1 day" },
-              { value: "7d", label: "7 days" },
-              { value: "30d", label: "30 days" },
+              { value: "0d", label: "On the day" },
+              { value: "1d", label: "1 day before" },
+              { value: "7d", label: "1 week before" },
             ].map((o) => (
               <div key={o.value} className="flex items-center gap-3">
                 <RadioGroupItem value={o.value} id={`rgi-${o.value}`} />
@@ -214,70 +214,70 @@ export default function RadioGroupDocs() {
         title="States"
         layout="stack"
         description="Disable single options with a reason nearby, or mark the group invalid when nothing is chosen."
-        code={`<RadioGroup defaultValue="fra1" name="region">
+        code={`<RadioGroup defaultValue="member" name="role">
   <Field orientation="horizontal">
-    <RadioGroupItem value="fra1" id="fra1" />
-    <FieldLabel htmlFor="fra1">Frankfurt (fra1)</FieldLabel>
+    <RadioGroupItem value="member" id="member" />
+    <FieldLabel htmlFor="member">Member</FieldLabel>
   </Field>
   <Field orientation="horizontal">
-    <RadioGroupItem value="lhr1" id="lhr1" />
-    <FieldLabel htmlFor="lhr1">London (lhr1)</FieldLabel>
+    <RadioGroupItem value="guest" id="guest" />
+    <FieldLabel htmlFor="guest">Guest</FieldLabel>
   </Field>
   <Field orientation="horizontal" data-disabled>
-    <RadioGroupItem value="gru1" id="gru1" disabled />
+    <RadioGroupItem value="admin" id="admin" disabled />
     <FieldContent>
-      <FieldLabel htmlFor="gru1">São Paulo (gru1)</FieldLabel>
-      <FieldDescription>Available on Pro and above.</FieldDescription>
+      <FieldLabel htmlFor="admin">Admin</FieldLabel>
+      <FieldDescription>Only the workspace owner can add admins.</FieldDescription>
     </FieldContent>
   </Field>
 </RadioGroup>
 
-<RadioGroup name="rollback" aria-invalid aria-describedby="rollback-error">
+<RadioGroup name="open-tasks" aria-invalid aria-describedby="open-tasks-error">
   <Field orientation="horizontal" data-invalid>
-    <RadioGroupItem value="previous" id="previous" aria-invalid />
-    <FieldLabel htmlFor="previous">Previous production build</FieldLabel>
+    <RadioGroupItem value="backlog" id="backlog" aria-invalid />
+    <FieldLabel htmlFor="backlog">Move them to the backlog</FieldLabel>
   </Field>
   <Field orientation="horizontal" data-invalid>
-    <RadioGroupItem value="tagged" id="tagged" aria-invalid />
-    <FieldLabel htmlFor="tagged">Last tagged release</FieldLabel>
+    <RadioGroupItem value="done" id="done" aria-invalid />
+    <FieldLabel htmlFor="done">Mark them as done</FieldLabel>
   </Field>
 </RadioGroup>
-<FieldError id="rollback-error">Choose which build to roll back to.</FieldError>`}
+<FieldError id="open-tasks-error">Choose what happens to the 14 open tasks.</FieldError>`}
       >
         <div className="grid w-full max-w-2xl gap-10 @xl:grid-cols-2">
           <FieldSet>
-            <FieldLegend variant="label">Region</FieldLegend>
-            <RadioGroup defaultValue="fra1" name="region-states">
+            <FieldLegend variant="label">Role for new members</FieldLegend>
+            <RadioGroup defaultValue="member" name="role-states">
               <Field orientation="horizontal">
-                <RadioGroupItem value="fra1" id="rgs-fra1" />
-                <FieldLabel htmlFor="rgs-fra1">Frankfurt (fra1)</FieldLabel>
+                <RadioGroupItem value="member" id="rgs-member" />
+                <FieldLabel htmlFor="rgs-member">Member</FieldLabel>
               </Field>
               <Field orientation="horizontal">
-                <RadioGroupItem value="lhr1" id="rgs-lhr1" />
-                <FieldLabel htmlFor="rgs-lhr1">London (lhr1)</FieldLabel>
+                <RadioGroupItem value="guest" id="rgs-guest" />
+                <FieldLabel htmlFor="rgs-guest">Guest</FieldLabel>
               </Field>
               <Field orientation="horizontal" data-disabled="true">
-                <RadioGroupItem value="gru1" id="rgs-gru1" disabled />
+                <RadioGroupItem value="admin" id="rgs-admin" disabled />
                 <FieldContent>
-                  <FieldLabel htmlFor="rgs-gru1">São Paulo (gru1)</FieldLabel>
-                  <FieldDescription>Available on Pro and above.</FieldDescription>
+                  <FieldLabel htmlFor="rgs-admin">Admin</FieldLabel>
+                  <FieldDescription>Only the workspace owner can add admins.</FieldDescription>
                 </FieldContent>
               </Field>
             </RadioGroup>
           </FieldSet>
           <FieldSet>
-            <FieldLegend variant="label">Rollback target</FieldLegend>
-            <RadioGroup name="rollback-states" aria-invalid aria-describedby="rgs-error">
+            <FieldLegend variant="label">Open tasks</FieldLegend>
+            <RadioGroup name="open-tasks-states" aria-invalid aria-describedby="rgs-error">
               <Field orientation="horizontal" data-invalid>
-                <RadioGroupItem value="previous" id="rgs-previous" aria-invalid />
-                <FieldLabel htmlFor="rgs-previous">Previous production build</FieldLabel>
+                <RadioGroupItem value="backlog" id="rgs-backlog" aria-invalid />
+                <FieldLabel htmlFor="rgs-backlog">Move them to the backlog</FieldLabel>
               </Field>
               <Field orientation="horizontal" data-invalid>
-                <RadioGroupItem value="tagged" id="rgs-tagged" aria-invalid />
-                <FieldLabel htmlFor="rgs-tagged">Last tagged release</FieldLabel>
+                <RadioGroupItem value="done" id="rgs-done" aria-invalid />
+                <FieldLabel htmlFor="rgs-done">Mark them as done</FieldLabel>
               </Field>
             </RadioGroup>
-            <FieldError id="rgs-error">Choose which build to roll back to.</FieldError>
+            <FieldError id="rgs-error">Choose what happens to the 14 open tasks.</FieldError>
           </FieldSet>
         </div>
       </Example>

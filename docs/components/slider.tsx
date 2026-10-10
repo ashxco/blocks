@@ -16,7 +16,7 @@ import { Field, FieldDescription } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 
-const formatMb = (mb: number) => (mb >= 1024 ? `${(mb / 1024).toLocaleString("en-US", { maximumFractionDigits: 2 })} GB` : `${mb} MB`)
+const formatRuns = (runs: number) => `${runs.toLocaleString("en-US")} runs`
 
 function SliderHeader({ id, label, value }: { id: string; label: string; value: string }) {
   return (
@@ -42,48 +42,48 @@ function SliderScale({ min, max }: { min: string; max: string }) {
   )
 }
 
-const builds = (n: number) => `${n} ${n === 1 ? "build" : "builds"}`
+const tasks = (n: number) => `${n} ${n === 1 ? "task" : "tasks"}`
 
-function Concurrency() {
+function WorkInProgressLimit() {
   const [value, setValue] = React.useState(4)
   return (
     <div className="grid w-full max-w-sm gap-3">
-      <SliderHeader id="sl-concurrency" label="Concurrent builds" value={builds(value)} />
+      <SliderHeader id="sl-wip" label="In progress limit" value={tasks(value)} />
       <Slider
-        aria-labelledby="sl-concurrency"
+        aria-labelledby="sl-wip"
         min={1}
         max={10}
         value={value}
         onValueChange={(v) => setValue(v as number)}
-        getAriaValueText={(_, v) => `${builds(v)} at once`}
+        getAriaValueText={(_, v) => `${tasks(v)} in progress at once`}
       />
       <SliderScale min="1" max="10" />
     </div>
   )
 }
 
-const thresholds = [
-  { id: "cpu", label: "CPU", value: 80 },
-  { id: "memory", label: "Memory", value: 70 },
-  { id: "disk", label: "Disk", value: 90 },
+const teams = [
+  { id: "design", label: "Design", value: 80 },
+  { id: "engineering", label: "Engineering", value: 70 },
+  { id: "marketing", label: "Marketing", value: 90 },
 ]
 
-function AlertThresholds() {
+function WorkloadAlerts() {
   const [values, setValues] = React.useState<Record<string, number>>(
-    Object.fromEntries(thresholds.map((t) => [t.id, t.value]))
+    Object.fromEntries(teams.map((t) => [t.id, t.value]))
   )
   return (
-    <div role="group" aria-labelledby="sl-thresholds" className="grid justify-items-start gap-5">
-      <Label id="sl-thresholds">Alert thresholds</Label>
+    <div role="group" aria-labelledby="sl-workload" className="grid justify-items-start gap-5">
+      <Label id="sl-workload">Workload alerts</Label>
       <div className="flex gap-10">
-        {thresholds.map((t) => (
+        {teams.map((t) => (
           <div key={t.id} className="grid h-56 grid-rows-[minmax(0,1fr)_auto] justify-items-center gap-3">
             <Slider
               orientation="vertical"
               aria-labelledby={`sl-${t.id}`}
               value={values[t.id]}
               onValueChange={(v) => setValues((current) => ({ ...current, [t.id]: v as number }))}
-              getAriaValueText={(_, v) => `Alert above ${v}%`}
+              getAriaValueText={(_, v) => `Alert above ${v}% booked`}
             />
             <div className="grid justify-items-center">
               <span id={`sl-${t.id}`} className="text-caption text-muted-foreground">
@@ -100,84 +100,86 @@ function AlertThresholds() {
   )
 }
 
-function Autoscaling() {
+const days = (n: number) => (n === 0 ? "today" : `${n} ${n === 1 ? "day" : "days"}`)
+
+function DueWindow() {
   const [range, setRange] = React.useState<number[]>([2, 8])
   return (
     <div className="grid w-full max-w-sm gap-3">
-      <SliderHeader id="sl-instances" label="Instances" value={`${range[0]}–${range[1]}`} />
+      <SliderHeader id="sl-due" label="Due within" value={range[0] === 0 ? `Today–${days(range[1])}` : `${range[0]}–${range[1]} days`} />
       <Slider
-        aria-labelledby="sl-instances"
-        min={1}
-        max={20}
+        aria-labelledby="sl-due"
+        min={0}
+        max={30}
         minStepsBetweenValues={1}
         value={range}
         onValueChange={(v) => setRange([...(v as readonly number[])])}
-        getAriaLabel={(index) => (index === 0 ? "Minimum instances" : "Maximum instances")}
+        getAriaLabel={(index) => (index === 0 ? "Earliest due date" : "Latest due date")}
+        getAriaValueText={(_, v) => (v === 0 ? "Today" : `${days(v)} from today`)}
       />
-      <SliderScale min="1" max="20" />
+      <SliderScale min="Today" max="30 days" />
       <p className="text-caption text-pretty text-muted-foreground">
-        Lumen keeps at least {range[0]} warm and adds up to {range[1] - range[0]} more under load.
+        Shows tasks due {range[0] === 0 ? "from today" : `${days(range[0])} from now`} up to {days(range[1])} from now.
       </p>
     </div>
   )
 }
 
-function FunctionResources() {
-  const [memory, setMemory] = React.useState(1024)
-  const [duration, setDuration] = React.useState(60)
+function AutomationBudget() {
+  const [runs, setRuns] = React.useState(2500)
+  const [alertAt, setAlertAt] = React.useState(80)
   const [status, setStatus] = React.useState<"clean" | "dirty" | "saved">("clean")
 
   return (
-    <Card className="@container/resources w-full max-w-md">
+    <Card className="@container/budget w-full max-w-md">
       <CardHeader>
-        <CardTitle>Function resources</CardTitle>
+        <CardTitle>Automation budget</CardTitle>
         <CardDescription className="text-pretty">
-          Applies to every serverless function in <span className="whitespace-nowrap">acme-web</span> from the next
-          deployment.
+          Caps the runs that rules in <span className="whitespace-nowrap">Website relaunch</span> can use each month.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-8">
         <Field>
-          <SliderHeader id="sl-memory" label="Memory" value={formatMb(memory)} />
+          <SliderHeader id="sl-runs" label="Monthly runs" value={formatRuns(runs)} />
           <Slider
-            aria-labelledby="sl-memory"
-            min={128}
-            max={3008}
-            step={64}
-            value={memory}
+            aria-labelledby="sl-runs"
+            min={250}
+            max={10000}
+            step={250}
+            value={runs}
             onValueChange={(v) => {
-              setMemory(v as number)
+              setRuns(v as number)
               setStatus("dirty")
             }}
-            getAriaValueText={(_, v) => formatMb(v)}
+            getAriaValueText={(_, v) => formatRuns(v)}
           />
           <FieldDescription>
-            128&nbsp;MB to 2.9&nbsp;GB. More memory also adds CPU; most API routes need 1&nbsp;GB or less.
+            250 to 10,000 runs. Your Pro plan includes 10,000 a month across every project.
           </FieldDescription>
         </Field>
         <Field>
-          <SliderHeader id="sl-duration" label="Maximum duration" value={`${duration} s`} />
+          <SliderHeader id="sl-alert" label="Email the owner at" value={`${alertAt}%`} />
           <Slider
-            aria-labelledby="sl-duration"
-            min={10}
-            max={300}
-            step={10}
-            value={duration}
+            aria-labelledby="sl-alert"
+            min={50}
+            max={100}
+            step={5}
+            value={alertAt}
             onValueChange={(v) => {
-              setDuration(v as number)
+              setAlertAt(v as number)
               setStatus("dirty")
             }}
-            getAriaValueText={(_, v) => `${v} seconds`}
+            getAriaValueText={(_, v) => `${v}% of the budget`}
           />
-          <FieldDescription>10 to 300&nbsp;seconds. Requests that run longer stop with a 504&nbsp;error.</FieldDescription>
+          <FieldDescription>50 to 100% of the budget. Rules pause when the project runs out.</FieldDescription>
         </Field>
       </CardContent>
-      <CardFooter className="flex-col-reverse items-stretch gap-3 @sm/resources:flex-row @sm/resources:items-center @sm/resources:justify-between">
+      <CardFooter className="flex-col-reverse items-stretch gap-3 @sm/budget:flex-row @sm/budget:items-center @sm/budget:justify-between">
         <p
-          className="text-center text-caption text-muted-foreground @sm/resources:text-start"
+          className="text-center text-caption text-muted-foreground @sm/budget:text-start"
           aria-live="polite"
         >
-          {status === "saved" ? "Saved. Redeploy to apply." : status === "dirty" ? "Unsaved changes" : "No unsaved changes"}
+          {status === "saved" ? "Saved. Applies from today." : status === "dirty" ? "Unsaved changes" : "No unsaved changes"}
         </p>
         <Button disabled={status !== "dirty"} onClick={() => setStatus("saved")}>
           Save changes
@@ -198,16 +200,16 @@ export default function SliderDocs() {
 
 <div className="grid gap-3">
   <div className="flex items-baseline justify-between gap-4">
-    <Label id="concurrency">Concurrent builds</Label>
-    <output aria-hidden="true" className="text-label text-foreground tabular">{value} builds</output>
+    <Label id="wip">In progress limit</Label>
+    <output aria-hidden="true" className="text-label text-foreground tabular">{value} tasks</output>
   </div>
   <Slider
-    aria-labelledby="concurrency"
+    aria-labelledby="wip"
     min={1}
     max={10}
     value={value}
     onValueChange={(v) => setValue(v as number)}
-    getAriaValueText={(_, v) => \`\${v} builds at once\`}
+    getAriaValueText={(_, v) => \`\${v} tasks in progress at once\`}
   />
   <div aria-hidden="true" className="-mt-1.5 flex justify-between text-caption text-muted-foreground tabular">
     <span>1</span>
@@ -215,7 +217,7 @@ export default function SliderDocs() {
   </div>
 </div>`}
       >
-        <Concurrency />
+        <WorkInProgressLimit />
       </Example>
 
       <Example
@@ -226,28 +228,30 @@ export default function SliderDocs() {
 
 <div className="grid gap-3">
   <div className="flex items-baseline justify-between gap-4">
-    <Label id="instances">Instances</Label>
-    <output aria-hidden="true" className="text-label text-foreground tabular">{range[0]}–{range[1]}</output>
+    <Label id="due">Due within</Label>
+    <output aria-hidden="true" className="text-label text-foreground tabular">
+      {range[0] === 0 ? "Today" : range[0]}–{range[1]} days
+    </output>
   </div>
   <Slider
-    aria-labelledby="instances"
-    min={1}
-    max={20}
+    aria-labelledby="due"
+    min={0}
+    max={30}
     minStepsBetweenValues={1}
     value={range}
     onValueChange={(v) => setRange([...(v as readonly number[])])}
-    getAriaLabel={(i) => (i === 0 ? "Minimum instances" : "Maximum instances")}
+    getAriaLabel={(i) => (i === 0 ? "Earliest due date" : "Latest due date")}
   />
   <div aria-hidden="true" className="-mt-1.5 flex justify-between text-caption text-muted-foreground tabular">
-    <span>1</span>
-    <span>20</span>
+    <span>Today</span>
+    <span>30 days</span>
   </div>
   <p className="text-caption text-muted-foreground">
-    Lumen keeps at least {range[0]} warm and adds up to {range[1] - range[0]} more under load.
+    Shows tasks due {range[0]} days from now up to {range[1]} days from now.
   </p>
 </div>`}
       >
-        <Autoscaling />
+        <DueWindow />
       </Example>
 
       <Example
@@ -255,54 +259,54 @@ export default function SliderDocs() {
         layout="stack"
         description="Vertical sliders fill the height of their container; put the label and value under each one. Disabled sliders dim and ignore input."
         code={`<div className="grid h-56 grid-rows-[minmax(0,1fr)_auto] justify-items-center gap-3">
-  <Slider orientation="vertical" aria-labelledby="cpu" value={cpu} onValueChange={setCpu} />
-  <span id="cpu">CPU</span>
-  <output>{cpu}%</output>
+  <Slider orientation="vertical" aria-labelledby="design" value={design} onValueChange={setDesign} />
+  <span id="design">Design</span>
+  <output>{design}%</output>
 </div>
 
 <Field data-disabled>
   <div className="flex items-baseline justify-between gap-4">
-    <Label id="cache">Build cache size</Label>
+    <Label id="attachments">Attachment size limit</Label>
     <output aria-hidden="true" className="text-label text-foreground tabular group-data-[disabled=true]/field:opacity-50">
-      3 GB
+      25 MB
     </output>
   </div>
-  <Slider aria-labelledby="cache" disabled defaultValue={30} getAriaValueText={() => "3 GB"} />
-  <FieldDescription>0 to 10 GB. Your plan sets it to 3 GB; upgrade to Pro to change it.</FieldDescription>
+  <Slider aria-labelledby="attachments" disabled defaultValue={10} getAriaValueText={() => "25 MB"} />
+  <FieldDescription>0 to 250 MB. Set by a workspace admin. Ask Hana Kim to change it.</FieldDescription>
 </Field>`}
       >
         <div className="grid w-full max-w-sm gap-10">
-          <AlertThresholds />
+          <WorkloadAlerts />
           <Field data-disabled="true" className="border-t pt-8">
-            <SliderHeader id="sl-disabled" label="Build cache size" value="3 GB" />
-            <Slider aria-labelledby="sl-disabled" disabled defaultValue={30} getAriaValueText={() => "3 GB"} />
-            <FieldDescription>0 to 10&nbsp;GB. Your plan sets it to 3&nbsp;GB; upgrade to Pro to change it.</FieldDescription>
+            <SliderHeader id="sl-disabled" label="Attachment size limit" value="25 MB" />
+            <Slider aria-labelledby="sl-disabled" disabled defaultValue={10} getAriaValueText={() => "25 MB"} />
+            <FieldDescription>0 to 250&nbsp;MB. Set by a workspace admin. Ask Hana Kim to change it.</FieldDescription>
           </Field>
         </div>
       </Example>
 
       <Example
-        title="Function resources"
+        title="Automation budget"
         description="Sliders with steps for values people tune by feel. The readout uses tabular figures so it does not jump as it changes."
         surface="subtle"
         code={`<Field>
   <div className="flex items-baseline justify-between gap-4">
-    <Label id="memory">Memory</Label>
-    <output aria-hidden="true" className="text-label text-foreground tabular">{formatMb(memory)}</output>
+    <Label id="runs">Monthly runs</Label>
+    <output aria-hidden="true" className="text-label text-foreground tabular">{formatRuns(runs)}</output>
   </div>
   <Slider
-    aria-labelledby="memory"
-    min={128}
-    max={3008}
-    step={64}
-    value={memory}
-    onValueChange={(v) => setMemory(v as number)}
-    getAriaValueText={(_, v) => formatMb(v)}
+    aria-labelledby="runs"
+    min={250}
+    max={10000}
+    step={250}
+    value={runs}
+    onValueChange={(v) => setRuns(v as number)}
+    getAriaValueText={(_, v) => formatRuns(v)}
   />
-  <FieldDescription>128 MB to 2.9 GB. More memory also adds CPU; most API routes need 1 GB or less.</FieldDescription>
+  <FieldDescription>250 to 10,000 runs. Your Pro plan includes 10,000 a month across every project.</FieldDescription>
 </Field>`}
       >
-        <FunctionResources />
+        <AutomationBudget />
       </Example>
 
       <Guidelines
@@ -328,7 +332,7 @@ export default function SliderDocs() {
           { prop: "minStepsBetweenValues", type: "number", default: "0", description: "Minimum gap between range thumbs, in steps." },
           { prop: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Vertical sliders fill their container’s height." },
           { prop: "getAriaLabel", type: "(index: number) => string", description: "Accessible name for each thumb. Or point aria-labelledby at a Label." },
-          { prop: "getAriaValueText", type: "(formatted, value, index) => string", description: "Readable value for screen readers, such as “1 GB”." },
+          { prop: "getAriaValueText", type: "(formatted, value, index) => string", description: "Readable value for screen readers, such as “2,500 runs”." },
           { prop: "disabled", type: "boolean", default: "false", description: "Dims the slider and blocks input." },
         ]}
       />

@@ -23,14 +23,14 @@ export default function TeamGridDocs() {
   members={members.slice(0, 7)}
   hiring={{
     title: "Join us",
-    description: "Six open roles in engineering, design and support",
+    description: "Three open roles in engineering, design and customer success",
     href: "/live/contact",
   }}
 />`}
       >
         <TeamGrid
           members={defaultTeam.slice(0, 7)}
-          hiring={{ title: "Join us", description: "Six open roles in engineering, design and support", href: "/live/contact" }}
+          hiring={{ title: "Join us", description: "Three open roles in engineering, design and customer success", href: "/live/contact" }}
         />
       </Example>
 
@@ -45,10 +45,10 @@ export default function TeamGridDocs() {
             title={null}
             contained={false}
             members={[
-              { name: "Maya Okafor", role: "Co-founder, CEO", tint: "panel" },
-              { name: "Daniel Reyes", role: "Co-founder, CTO", tint: "violet" },
-              { name: "Hana Sato", role: "Product design", tint: "sand" },
-              { name: "Leo Martins", role: "Developer relations", tint: "mint" },
+              { name: "Hana Kim", role: "Co-founder and CEO", tint: "panel" },
+              { name: "Daniel Brooks", role: "Co-founder and CTO", tint: "violet" },
+              { name: "Maya Patel", role: "Head of Product", tint: "sand" },
+              { name: "Sofia Alvarez", role: "Design Lead", tint: "mint" },
             ]}
           />
         </div>
@@ -69,8 +69,8 @@ export default function TeamGridDocs() {
 
       <ApiTable
         rows={[
-          { prop: "members", type: "TeamMember[]", default: "Eight Lumen people", description: "Name, role, optional initials and tint." },
-          { prop: "title", type: "ReactNode | null", default: '"Small team. Big leverage."', description: "Section heading. Pass null to render the grid alone." },
+          { prop: "members", type: "TeamMember[]", default: "Eight Acme people", description: "Name, role, optional initials and tint." },
+          { prop: "title", type: "ReactNode | null", default: '"The people behind Acme."', description: "Section heading. Pass null to render the grid alone." },
           { prop: "description", type: "ReactNode", description: "Supporting line beside the heading." },
           { prop: "hiring", type: "{ title; description?; href } | null", default: "null", description: "Closing tile that links to open roles." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section padding." },

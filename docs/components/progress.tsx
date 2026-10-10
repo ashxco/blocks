@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { RocketIcon } from "lucide-react"
+import { UploadIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -12,14 +12,14 @@ import {
 } from "@/components/ui/progress"
 
 const steps = [
-  { label: "Cloning repository", until: 12 },
-  { label: "Installing dependencies", until: 48 },
-  { label: "Building", until: 86 },
-  { label: "Uploading to the edge", until: 100 },
+  { label: "Reading tasks.csv", until: 12 },
+  { label: "Matching columns", until: 30 },
+  { label: "Creating 284 tasks", until: 86 },
+  { label: "Linking assignees", until: 100 },
 ]
 
-function DeployProgress() {
-  // Rests on the last finished deploy, so the preview shows a full, labelled bar.
+function ImportProgress() {
+  // Rests on the last finished import, so the preview shows a full, labelled bar.
   const [value, setValue] = React.useState<number | null>(100)
   const timer = React.useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -46,22 +46,22 @@ function DeployProgress() {
     <div className="grid gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="grid gap-1">
-          <h3 className="text-title text-foreground">lumen-web</h3>
+          <h3 className="text-title text-foreground">Client projects</h3>
           <p className="text-sm text-muted-foreground">
             {value === null
-              ? "Ready to deploy commit 8f3c2a1 from main"
+              ? "Ready to import 284 tasks from tasks.csv"
               : done
-                ? "Deployed to production in 3 regions"
+                ? "Imported 284 tasks from tasks.csv"
                 : step?.label}
           </p>
         </div>
         <Button size="sm" onClick={start} disabled={value !== null && !done}>
-          <RocketIcon data-icon="inline-start" />
-          {done ? "Deploy again" : "Deploy"}
+          <UploadIcon data-icon="inline-start" />
+          {done ? "Import again" : "Import tasks"}
         </Button>
       </div>
-      <Progress value={value ?? 0} aria-label="Deployment progress">
-        <ProgressLabel>{value === null ? "Not started" : done ? "Done" : "Deploying"}</ProgressLabel>
+      <Progress value={value ?? 0} aria-label="Import progress">
+        <ProgressLabel>{value === null ? "Not started" : done ? "Done" : "Importing"}</ProgressLabel>
         <ProgressValue />
       </Progress>
     </div>
@@ -69,9 +69,9 @@ function DeployProgress() {
 }
 
 const usage = [
-  { label: "Build minutes", used: 3420, limit: 6000, unit: "min" },
-  { label: "Bandwidth", used: 912, limit: 1000, unit: "GB" },
-  { label: "Database storage", used: 12.4, limit: 50, unit: "GB" },
+  { label: "Automation runs", used: 7240, limit: 10000, unit: "runs" },
+  { label: "Storage", used: 42, limit: 100, unit: "GB" },
+  { label: "Guests", used: 6, limit: 10, unit: "guests" },
 ]
 
 export default function ProgressDocs() {
@@ -95,13 +95,13 @@ export default function ProgressDocs() {
         description="Put a ProgressLabel and a ProgressValue inside. They sit above the bar, and the value is formatted for the locale."
         layout="stack"
         code={`<Progress value={72}>
-  <ProgressLabel>Uploading build output</ProgressLabel>
+  <ProgressLabel>Uploading attachments</ProgressLabel>
   <ProgressValue />
 </Progress>`}
       >
         <div className="mx-auto grid w-full max-w-96 gap-8">
           <Progress value={72}>
-            <ProgressLabel>Uploading build output</ProgressLabel>
+            <ProgressLabel>Uploading attachments</ProgressLabel>
             <ProgressValue />
           </Progress>
           <Progress value={3} max={5}>
@@ -116,28 +116,28 @@ export default function ProgressDocs() {
         description="Pass null when you can’t tell how long the work will take. The bar sweeps, and rests at low contrast when motion is reduced."
         layout="stack"
         code={`<Progress value={null}>
-  <ProgressLabel>Provisioning database</ProgressLabel>
+  <ProgressLabel>Preparing your workspace</ProgressLabel>
 </Progress>`}
       >
         <div className="mx-auto grid w-full max-w-96">
           <Progress value={null}>
-            <ProgressLabel>Provisioning database</ProgressLabel>
+            <ProgressLabel>Preparing your workspace</ProgressLabel>
           </Progress>
         </div>
       </Example>
 
       <Example
-        title="Deploy"
-        description="The width animates between values, so frequent updates look smooth. Choose Deploy again to watch it run, with the current step next to the bar."
+        title="Import"
+        description="The width animates between values, so frequent updates look smooth. Choose Import again to watch it run, with the current step next to the bar."
         layout="stack"
         code={`const [value, setValue] = React.useState(0)
 
 <Progress value={value}>
-  <ProgressLabel>Deploying</ProgressLabel>
+  <ProgressLabel>Importing</ProgressLabel>
   <ProgressValue />
 </Progress>`}
       >
-        <DeployProgress />
+        <ImportProgress />
       </Example>
 
       <Example
@@ -148,7 +148,7 @@ export default function ProgressDocs() {
         <div className="grid gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)">
           <div className="grid gap-1">
             <h3 className="text-h4 text-foreground">Usage this month</h3>
-            <p className="text-sm text-muted-foreground">Pro plan · resets on 1 November</p>
+            <p className="text-sm text-muted-foreground">Pro plan · resets on Nov 1</p>
           </div>
           <div className="grid gap-6">
             {usage.map((u) => (
@@ -167,7 +167,7 @@ export default function ProgressDocs() {
         do={[
           "Use progress when you know how far a task has got. Use a spinner when you don’t.",
           "Label the bar, with ProgressLabel or aria-label.",
-          "Say what is happening next to the bar: Installing dependencies, Uploading.",
+          "Say what is happening next to the bar: Matching columns, Creating tasks.",
         ]}
         dont={[
           "Don’t colour the bar by status. If a limit is close, add an alert that says so.",

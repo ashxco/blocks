@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 import { DocHeader } from "@/components/viewer/doc-header"
-import { groupDescriptions, sectionDescription, slugify, templateKinds } from "@/components/viewer/nav"
+import { sectionDescription, slugify, templateGroupDescriptions, templateKinds } from "@/components/viewer/nav"
 import { TemplateCard } from "@/components/viewer/template-card"
 import { ViewerPage } from "@/components/viewer/viewer-page"
 import { templates } from "@/lib/registry"
@@ -17,7 +17,7 @@ export default function TemplatesPage() {
       <DocHeader
         section="Templates"
         title="Templates"
-        description="Full pages for Lumen, a deployment platform. Each one is built from molecules and runs live, so what you see below is the real page."
+        description="Marketing, account and app pages for Acme Inc., a sample work-management SaaS. Each one is built from molecules and runs live, so what you see below is the real page."
       />
       <div className="grid gap-16 sm:gap-20">
         {templateKinds.map(({ kind, title }) => {
@@ -30,9 +30,7 @@ export default function TemplatesPage() {
                 <h2 id={`${id}-title`} className="text-h3">
                   {title}
                 </h2>
-                {groupDescriptions[title] ? (
-                  <p className="max-w-prose text-body text-copy">{groupDescriptions[title]}</p>
-                ) : null}
+                <p className="max-w-prose text-body text-copy">{templateGroupDescriptions[kind]}</p>
               </div>
               {/* Two columns. With an odd count, the first page leads across the
                   whole row, so no card is left on its own at the end. */}

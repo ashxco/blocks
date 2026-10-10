@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CalendarIcon, GitCommitHorizontalIcon, GlobeIcon } from "lucide-react"
+import { FolderIcon, MapPinIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -55,7 +55,7 @@ function ProfileCard({ container }: { container: Stage }) {
   const pinned = usePinnedOpen(container)
   return (
     <p className="max-w-96 text-center text-body text-copy">
-      Deployment approved by{" "}
+      The launch announcement is assigned to{" "}
       <HoverCard {...pinned}>
         <HoverCardTrigger href="#priya" className={linkClass}>
           @priya
@@ -63,14 +63,14 @@ function ProfileCard({ container }: { container: Stage }) {
         <HoverCardContent container={container} {...pinnedTo(container)}>
           <div className="flex gap-3">
             <Avatar size="lg">
-              <AvatarFallback>PR</AvatarFallback>
+              <AvatarFallback tone="sky">PR</AvatarFallback>
             </Avatar>
             <div className="grid gap-1">
               <p className="text-title text-foreground">Priya Raman</p>
-              <p className="text-sm text-copy">Platform engineer. Owns builds, caching and the edge network.</p>
+              <p className="text-sm text-copy">Marketing at Acme Inc. Runs launches, the blog and the newsletter.</p>
               <p className="mt-1 flex items-center gap-1.5 text-caption text-muted-foreground">
-                <CalendarIcon aria-hidden="true" className="size-3.5" />
-                Joined March 2024
+                <MapPinIcon aria-hidden="true" className="size-3.5" />
+                London · 3:42 PM local time
               </p>
             </div>
           </div>
@@ -81,34 +81,34 @@ function ProfileCard({ container }: { container: Stage }) {
   )
 }
 
-function CommitCard({ container }: { container: Stage }) {
+function TaskCard({ container }: { container: Stage }) {
   const pinned = usePinnedOpen(container)
   return (
     <p className="max-w-96 text-center text-body text-copy">
-      Production is running main at{" "}
+      The launch email waits on{" "}
       <HoverCard {...pinned}>
-        <HoverCardTrigger href="#8f2c1a9" className={`${linkClass} font-mono text-code`}>
-          8f2c1a9
+        <HoverCardTrigger href="#fix-the-pricing-table" className={linkClass}>
+          Fix the pricing table
         </HoverCardTrigger>
         <HoverCardContent container={container} {...pinnedTo(container)}>
           <div className="flex items-start justify-between gap-3">
-            <p className="text-title text-foreground">Add usage-based billing page</p>
-            <Badge variant="success">Ready</Badge>
+            <p className="text-title text-foreground">Fix the pricing table on mobile</p>
+            <Badge variant="info">In progress</Badge>
           </div>
           <div className="flex items-center gap-2 text-caption text-muted-foreground">
             <Avatar size="sm">
-              <AvatarFallback>MO</AvatarFallback>
+              <AvatarFallback tone="mint">JL</AvatarFallback>
             </Avatar>
-            Mateo Ortiz committed 2 hours ago
+            Jordan Lee · updated 2 hours ago
           </div>
           <dl className="grid grid-cols-2 gap-3 border-t pt-3">
             <div className="grid gap-0.5">
-              <dt className="text-caption text-muted-foreground">Files changed</dt>
-              <dd className="text-sm font-semibold text-foreground tabular">14</dd>
+              <dt className="text-caption text-muted-foreground">Due</dt>
+              <dd className="text-sm font-semibold text-foreground tabular">Oct 15</dd>
             </div>
             <div className="grid gap-0.5">
-              <dt className="text-caption text-muted-foreground">Build time</dt>
-              <dd className="text-sm font-semibold text-foreground tabular">38s</dd>
+              <dt className="text-caption text-muted-foreground">Subtasks</dt>
+              <dd className="text-sm font-semibold text-foreground tabular">2 of 3 done</dd>
             </div>
           </dl>
         </HoverCardContent>
@@ -118,10 +118,10 @@ function CommitCard({ container }: { container: Stage }) {
   )
 }
 
-const domains = [
-  { domain: "lumen.app", note: "Production · SSL valid until 12 Jan" },
-  { domain: "www.lumen.app", note: "Redirects to lumen.app" },
-  { domain: "docs.lumen.app", note: "Preview · waiting for DNS" },
+const projects = [
+  { name: "Website relaunch", status: "On track", dot: "bg-success", note: "38 of 52 tasks done · due Nov 14" },
+  { name: "Brand refresh", status: "On track", dot: "bg-success", note: "27 of 40 tasks done · due Nov 6" },
+  { name: "Mobile app 2.0", status: "At risk", dot: "bg-warning", note: "2 tasks overdue · due Nov 20" },
 ]
 
 /** Links in a list stay ink, so a column of them doesn’t turn the page violet. */
@@ -144,33 +144,43 @@ function useCardSide() {
   return wide ? "right" : "bottom"
 }
 
-function DomainList({ container }: { container: Stage }) {
+function ProjectList({ container }: { container: Stage }) {
   const pinned = usePinnedOpen(container)
   const side = useCardSide()
-  const shown = domains[domains.length - 1].domain
+  const shown = projects[projects.length - 1].name
 
   return (
     <div className="grid w-full max-w-80 gap-3">
       <p className="font-mono text-code text-muted-foreground">delay 200 · closeDelay 150</p>
       <ul className="grid divide-y rounded-(--card-radius) border bg-card">
-        {domains.map((item) => (
-          <li key={item.domain} className="flex items-center gap-2.5 px-4 py-3">
-            <GlobeIcon aria-hidden="true" className="size-4 text-muted-foreground" />
-            <HoverCard {...(item.domain === shown ? pinned : undefined)}>
-              <HoverCardTrigger href={`#${item.domain}`} delay={200} closeDelay={150} className={listLinkClass}>
-                {item.domain}
+        {projects.map((item) => (
+          <li key={item.name} className="flex items-center gap-2.5 px-4 py-3">
+            <FolderIcon aria-hidden="true" className="size-4 text-muted-foreground" />
+            <HoverCard {...(item.name === shown ? pinned : undefined)}>
+              <HoverCardTrigger
+                href={`#${item.name.toLowerCase().replace(/\W+/g, "-")}`}
+                delay={200}
+                closeDelay={150}
+                className={cn(listLinkClass, "flex-1")}
+              >
+                {item.name}
               </HoverCardTrigger>
               <HoverCardContent
                 side={side}
+                // Clear the list frame, not just the link: the row padding (16px beside, 12px below),
+                // the 1px border, then the usual 8px gap.
+                sideOffset={side === "right" ? 25 : 21}
                 align="start"
                 container={container}
                 collisionAvoidance={{ side: "none", align: "none" }}
                 collisionBoundary={container ?? undefined}
               >
-                <p className="text-title text-foreground">{item.domain}</p>
-                <p className="flex items-center gap-2 text-sm text-copy">
-                  <GitCommitHorizontalIcon aria-hidden="true" className="size-4 text-muted-foreground" />
-                  {item.note}
+                <p className="flex items-center gap-2 text-title text-foreground">
+                  <span aria-hidden="true" className={`size-2 shrink-0 rounded-full ${item.dot}`} />
+                  {item.name}
+                </p>
+                <p className="text-sm text-copy">
+                  <span className="font-semibold text-foreground">{item.status}</span> · {item.note}
                 </p>
               </HoverCardContent>
             </HoverCard>
@@ -191,39 +201,39 @@ export default function HoverCardDocs() {
   <HoverCardTrigger href="/team/priya">@priya</HoverCardTrigger>
   <HoverCardContent>
     <div className="flex gap-3">
-      <Avatar><AvatarFallback>PR</AvatarFallback></Avatar>
+      <Avatar><AvatarFallback tone="sky">PR</AvatarFallback></Avatar>
       <div className="grid gap-1">
         <p className="text-title">Priya Raman</p>
-        <p className="text-sm text-copy">Platform engineer at Lumen Labs.</p>
+        <p className="text-sm text-copy">Marketing at Acme Inc.</p>
       </div>
     </div>
   </HoverCardContent>
 </HoverCard>`}
       >
-        <HoverCardStage className="min-h-48">{(container) => <ProfileCard container={container} />}</HoverCardStage>
+        <HoverCardStage className="min-h-60">{(container) => <ProfileCard container={container} />}</HoverCardStage>
       </Example>
 
       <Example
-        title="Commit preview"
-        description="Preview a linked object, such as a commit or a deployment, with its status and the one detail people check most."
+        title="Task preview"
+        description="Preview a linked object, such as a task or a doc, with its status and the one detail people check most."
       >
-        <HoverCardStage className="min-h-64">{(container) => <CommitCard container={container} />}</HoverCardStage>
+        <HoverCardStage className="min-h-64">{(container) => <TaskCard container={container} />}</HoverCardStage>
       </Example>
 
       <Example
         title="Timing and placement"
         description="Cards open after 600ms and close 300ms after the pointer leaves, so passing over a link doesn’t flash them. Shorten the delays for dense lists, and open beside the list so the card never covers the next row."
         code={`<HoverCardTrigger delay={200} closeDelay={150}>…</HoverCardTrigger>
-<HoverCardContent side="right" align="start">…</HoverCardContent>`}
+<HoverCardContent side="right" align="start" sideOffset={25}>…</HoverCardContent>`}
       >
         <HoverCardStage className="min-h-80 justify-start @md:justify-center">
-          {(container) => <DomainList container={container} />}
+          {(container) => <ProjectList container={container} />}
         </HoverCardStage>
       </Example>
 
       <Guidelines
         do={[
-          "Use a hover card to preview what a link points to: a person, a commit, a domain.",
+          "Use a hover card to preview what a link points to: a person, a task, a project.",
           "Make the trigger a working link, so touch and keyboard users reach the same place.",
           "Keep the card to a title, one or two lines and a few key facts.",
         ]}

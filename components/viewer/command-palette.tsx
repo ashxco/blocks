@@ -115,7 +115,7 @@ export function CommandPalette({
           </CommandItem>
           <CommandItem
             value="action-live"
-            keywords={["live", "templates", "lumen", "site", "preview"]}
+            keywords={["live", "templates", "acme", "site", "preview"]}
             onSelect={() => run(() => window.open("/live", "_blank", "noopener"))}
           >
             <ArrowUpRightIcon aria-hidden="true" className="text-muted-foreground" />

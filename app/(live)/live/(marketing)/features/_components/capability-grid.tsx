@@ -1,17 +1,17 @@
 import * as React from "react"
 import {
-  ActivityIcon,
-  BoxesIcon,
-  CalendarClockIcon,
-  DatabaseIcon,
-  GitBranchIcon,
-  GitPullRequestIcon,
+  CalendarDaysIcon,
+  ChartColumnIcon,
+  FileTextIcon,
+  KanbanIcon,
   KeyRoundIcon,
-  RefreshCwIcon,
-  ScalingIcon,
+  ListTodoIcon,
+  PlugIcon,
+  RepeatIcon,
+  ScrollTextIcon,
   ShieldCheckIcon,
-  TerminalIcon,
-  UsersIcon,
+  UserPlusIcon,
+  ZapIcon,
   type LucideIcon,
 } from "lucide-react"
 
@@ -24,18 +24,18 @@ interface Capability {
 }
 
 const capabilities: Capability[] = [
-  { title: "Push to deploy", description: "Every push to a connected branch builds and ships.", icon: GitBranchIcon },
-  { title: "Preview URLs", description: "A shareable URL for every pull request, removed on merge.", icon: GitPullRequestIcon },
-  { title: "CLI and API", description: "Deploy, tail logs and roll back from your terminal or scripts.", icon: TerminalIcon },
-  { title: "Detected stacks", description: "Next.js, Rails, Django, Go, Rust and 30 more, with no config.", icon: BoxesIcon },
-  { title: "Live metrics", description: "CPU, memory, latency and errors from the first request.", icon: ActivityIcon },
-  { title: "Scheduled jobs", description: "Cron jobs and one-off tasks, with logs and retries.", icon: CalendarClockIcon },
-  { title: "Zero-downtime deploys", description: "New versions take traffic only once they are healthy.", icon: RefreshCwIcon },
-  { title: "Autoscaling", description: "Add replicas on CPU or request load, and scale down at night.", icon: ScalingIcon },
-  { title: "Managed Postgres", description: "Backups on every plan, point-in-time restore from Pro, read replicas on Scale.", icon: DatabaseIcon },
-  { title: "Edge protection", description: "TLS, rate limits and DDoS filtering in 38 edge regions.", icon: ShieldCheckIcon },
-  { title: "Secrets vault", description: "Encrypted at rest and scoped to each environment.", icon: KeyRoundIcon },
-  { title: "Roles and audit log", description: "Four roles and an audit log from Pro, SAML single sign-on on Scale.", icon: UsersIcon },
+  { title: "Four project views", description: "List, board, timeline and calendar views of the same work.", icon: KanbanIcon },
+  { title: "Tasks and subtasks", description: "Owners, due dates, priorities from Urgent to Low, and comments.", icon: ListTodoIcon },
+  { title: "Docs", description: "Specs and meeting notes next to the tasks they describe.", icon: FileTextIcon },
+  { title: "Automations", description: "Rules for handoffs, reminders and status changes, with a run history.", icon: ZapIcon },
+  { title: "Recurring tasks", description: "Daily, weekly or monthly work that schedules itself.", icon: RepeatIcon },
+  { title: "Calendar", description: "Due dates and milestones on one calendar for every project.", icon: CalendarDaysIcon },
+  { title: "Reports", description: "Workload, on-time delivery and cycle time, shared as dashboards.", icon: ChartColumnIcon },
+  { title: "Integrations", description: "Slack, Google Drive, GitHub, Figma, Zoom and HubSpot, from Pro.", icon: PlugIcon },
+  { title: "Guests", description: "Clients and contractors see only the projects you share, from Pro.", icon: UserPlusIcon },
+  { title: "Roles and permissions", description: "Owner, Admin, Member and Guest, with advanced permissions on Business.", icon: ShieldCheckIcon },
+  { title: "SSO and two-factor", description: "Two-factor authentication on every plan, SSO with SAML on Business.", icon: KeyRoundIcon },
+  { title: "Audit log", description: "Every change to members, permissions and settings, on Business.", icon: ScrollTextIcon },
 ]
 
 /**
@@ -44,17 +44,17 @@ const capabilities: Capability[] = [
  */
 export function CapabilityGrid() {
   return (
-    <section className="border-y bg-subtle">
+    <section id="capabilities" className="scroll-mt-(--header-height) border-y bg-subtle">
       <div className="container-page py-section">
         <SectionHeading
           title={
             <>
               Twelve capabilities.
               <br />
-              One platform.
+              One workspace.
             </>
           }
-          description="Every plan runs the same platform. Limits, backups, team controls and support grow as you move up."
+          description="Every plan includes the core of Acme. Automation runs, storage, guests and admin controls grow as you move up."
           className="mb-12 md:mb-16"
         />
         <ul className="grid gap-px overflow-hidden rounded-(--card-radius) border bg-border sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

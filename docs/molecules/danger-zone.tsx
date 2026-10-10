@@ -10,7 +10,7 @@ export default function DangerZoneDocs() {
         title="Project danger zone"
         description="Every action asks for confirmation. Deleting the project unlocks only after its name is typed exactly."
         layout="full"
-        code={`<DangerZone projectName="web" />`}
+        code={`<DangerZone projectName="Website relaunch" />`}
       >
         <div className="p-(--card-padding) @prose:p-10">
           <DangerZone />
@@ -28,20 +28,20 @@ export default function DangerZoneDocs() {
   actions={[
     {
       id: "downgrade",
-      title: "Downgrade to Hobby",
-      description: "Move Acme Inc. to Hobby, $5 a month, at the end of the billing period.",
+      title: "Downgrade to Free",
+      description: "Move Acme Inc. to Free, $0, at the end of the billing period.",
       actionLabel: "Downgrade",
-      confirmTitle: "Downgrade Acme Inc. to Hobby?",
+      confirmTitle: "Downgrade Acme Inc. to Free?",
       confirmDescription: "Pro stays active until November 1, 2026. …",
       tone: "default",
     },
     {
       id: "delete-workspace",
       title: "Delete workspace",
-      description: "Delete Acme Inc. with its 12 projects, domains and billing history.",
+      description: "Delete Acme Inc. with its 26 projects, docs and billing history.",
       actionLabel: "Delete workspace",
       confirmTitle: "Delete Acme Inc.?",
-      confirmDescription: "Every project, deployment and domain in this workspace goes with it. You can’t undo this.",
+      confirmDescription: "Every project, task and doc in this workspace goes with it. You can’t undo this.",
       requireTyping: true,
       successMessage: "Acme Inc. was deleted.",
     },
@@ -55,24 +55,24 @@ export default function DangerZoneDocs() {
             actions={[
               {
                 id: "downgrade",
-                title: "Downgrade to Hobby",
-                description: "Move Acme Inc. to Hobby, $5 a month, at the end of the billing period.",
+                title: "Downgrade to Free",
+                description: "Move Acme Inc. to Free, $0, at the end of the billing period.",
                 actionLabel: "Downgrade",
-                confirmTitle: "Downgrade Acme Inc. to Hobby?",
+                confirmTitle: "Downgrade Acme Inc. to Free?",
                 confirmDescription:
-                  "Pro stays active until November 1, 2026. After that, Hobby allows 3 projects and one seat, so the other projects stop deploying.",
-                confirmLabel: "Downgrade to Hobby",
+                  "Pro stays active until November 1, 2026. After that, Free allows 3 members and 5 projects, so everyone else loses access and the other projects become read-only.",
+                confirmLabel: "Downgrade to Free",
                 tone: "default",
-                successMessage: "Hobby starts on November 1. Pro stays active until then.",
+                successMessage: "Free starts on November 1. Pro stays active until then.",
               },
               {
                 id: "delete-workspace",
                 title: "Delete workspace",
-                description: "Delete Acme Inc. with its 12 projects, domains and billing history.",
+                description: "Delete Acme Inc. with its 26 projects, docs and billing history.",
                 actionLabel: "Delete workspace",
                 confirmTitle: "Delete Acme Inc.?",
                 confirmDescription:
-                  "Every project, deployment and domain in this workspace goes with it. You can’t undo this.",
+                  "Every project, task and doc in this workspace goes with it. You can’t undo this.",
                 requireTyping: true,
                 successMessage: "Acme Inc. was deleted.",
               },
@@ -98,10 +98,10 @@ export default function DangerZoneDocs() {
       <ApiTable
         title="DangerZone"
         rows={[
-          { prop: "projectName", type: "string", default: '"web"', description: "Name people type to confirm. Also used in the default copy." },
+          { prop: "projectName", type: "string", default: '"Website relaunch"', description: "Name people type to confirm. Also used in the default copy." },
           { prop: "title", type: "ReactNode | null", default: '"Danger zone"', description: "Heading inside the card. null leaves the header out, for layouts that title the zone themselves." },
           { prop: "description", type: "ReactNode", description: "Line under the heading." },
-          { prop: "actions", type: "DangerAction[]", default: "Pause, delete previews, delete project", description: "Rows, most disruptive last." },
+          { prop: "actions", type: "DangerAction[]", default: "Archive, remove guests, delete project", description: "Rows, most disruptive last." },
           { prop: "onConfirm", type: "(actionId) => void | Promise<void>", description: "Called after confirmation. Throw to keep the dialog open with an error toast." },
           { prop: "as", type: '"h2" | "h3"', default: '"h2"', description: "Heading level." },
           { prop: "className", type: "string", description: "Classes for the card." },

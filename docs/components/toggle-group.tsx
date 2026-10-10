@@ -31,35 +31,35 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 function series(points: number, base: number, growth: number, wave: number) {
   return Array.from({ length: points }, (_, i) => ({
     i,
-    requests: Math.round(
+    completed: Math.round(
       base * (1 + (growth * i) / points + wave * Math.sin(i * 0.9) + wave * 0.6 * Math.cos(i * 2.3))
     ),
   }))
 }
 
 const ranges = {
-  "1h": { label: "the last hour", requests: "18.2K", change: "+4.1%", errors: "0.02%", data: series(12, 1500, 0.05, 0.08) },
-  "24h": { label: "the last 24 hours", requests: "412K", change: "+12.6%", errors: "0.04%", data: series(24, 16000, 0.15, 0.18) },
-  "7d": { label: "the last 7 days", requests: "2.9M", change: "+8.3%", errors: "0.05%", data: series(7, 400000, 0.1, 0.12) },
-  "30d": { label: "the last 30 days", requests: "11.4M", change: "+21.0%", errors: "0.07%", data: series(30, 360000, 0.24, 0.1) },
+  "7d": { label: "the last 7 days", completed: "312", change: "+6%", onTime: "94%", data: series(7, 42, 0.08, 0.12) },
+  "30d": { label: "the last 30 days", completed: "1,284", change: "+12%", onTime: "92%", data: series(30, 38, 0.2, 0.14) },
+  "90d": { label: "the last 90 days", completed: "3,702", change: "+18%", onTime: "90%", data: series(13, 260, 0.16, 0.1) },
+  "1y": { label: "the last 12 months", completed: "13,960", change: "+34%", onTime: "89%", data: series(12, 980, 0.3, 0.08) },
 } as const
 
 type Range = keyof typeof ranges
 
-const requestsConfig = {
-  requests: { label: "Requests", color: "var(--chart-1)" },
+const completedConfig = {
+  completed: { label: "Tasks completed", color: "var(--chart-1)" },
 } satisfies ChartConfig
 
-function RequestsCard() {
-  const [range, setRange] = React.useState<Range>("24h")
+function TasksCompletedCard() {
+  const [range, setRange] = React.useState<Range>("30d")
   const data = ranges[range]
 
   return (
-    <Card className="@container/requests w-full max-w-2xl">
+    <Card className="@container/completed w-full max-w-2xl">
       <CardHeader className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
         <div className="grid gap-1.5">
-          <CardTitle>Requests</CardTitle>
-          <CardDescription>acme-web, production</CardDescription>
+          <CardTitle>Tasks completed</CardTitle>
+          <CardDescription>All projects in Acme Inc.</CardDescription>
         </div>
         <ToggleGroup
           size="sm"
@@ -80,32 +80,32 @@ function RequestsCard() {
         {/* Each stat spans two rows of a shared subgrid, so the values line up even if a label wraps. */}
         <dl className="grid grid-cols-3 gap-x-4 gap-y-1">
           <div className="row-span-2 grid grid-rows-subgrid">
-            <dt className="text-caption text-muted-foreground">Total</dt>
-            <dd className="text-title text-foreground tabular @md/requests:text-h3">{data.requests}</dd>
+            <dt className="text-caption text-muted-foreground">Completed</dt>
+            <dd className="text-title text-foreground tabular @md/completed:text-h3">{data.completed}</dd>
           </div>
           <div className="row-span-2 grid grid-rows-subgrid">
             <dt className="text-caption text-muted-foreground">Change</dt>
-            <dd className="text-title text-success tabular @md/requests:text-h3">{data.change}</dd>
+            <dd className="text-title text-success tabular @md/completed:text-h3">{data.change}</dd>
           </div>
           <div className="row-span-2 grid grid-rows-subgrid">
-            <dt className="text-caption text-muted-foreground">Error rate</dt>
-            <dd className="text-title text-foreground tabular @md/requests:text-h3">{data.errors}</dd>
+            <dt className="text-caption text-muted-foreground">On time</dt>
+            <dd className="text-title text-foreground tabular @md/completed:text-h3">{data.onTime}</dd>
           </div>
         </dl>
         <ChartContainer
-          config={requestsConfig}
+          config={completedConfig}
           role="img"
-          aria-label={`Requests over ${data.label}, trending up`}
+          aria-label={`Tasks completed over ${data.label}, trending up`}
           className="aspect-auto h-28 w-full"
           initialDimension={{ width: 560, height: 112 }}
         >
           <AreaChart data={[...data.data]} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
             <Area
-              dataKey="requests"
+              dataKey="completed"
               type="monotone"
-              stroke="var(--color-requests)"
+              stroke="var(--color-completed)"
               strokeWidth={2}
-              fill="var(--color-requests)"
+              fill="var(--color-completed)"
               fillOpacity={0.12}
               isAnimationActive={false}
             />
@@ -122,18 +122,18 @@ export default function ToggleGroupDocs() {
       <Example
         title="Segmented"
         description="The default look: pill items in a muted track, with the selected item in ink. One item is on at a time."
-        code={`<ToggleGroup defaultValue={["24h"]} aria-label="Time range">
-  <ToggleGroupItem value="1h">1h</ToggleGroupItem>
-  <ToggleGroupItem value="24h">24h</ToggleGroupItem>
-  <ToggleGroupItem value="7d">7d</ToggleGroupItem>
-  <ToggleGroupItem value="30d">30d</ToggleGroupItem>
+        code={`<ToggleGroup defaultValue={["board"]} aria-label="Project view">
+  <ToggleGroupItem value="list">List</ToggleGroupItem>
+  <ToggleGroupItem value="board">Board</ToggleGroupItem>
+  <ToggleGroupItem value="timeline">Timeline</ToggleGroupItem>
+  <ToggleGroupItem value="calendar">Calendar</ToggleGroupItem>
 </ToggleGroup>`}
       >
-        <ToggleGroup defaultValue={["24h"]} aria-label="Time range">
-          <ToggleGroupItem value="1h">1h</ToggleGroupItem>
-          <ToggleGroupItem value="24h">24h</ToggleGroupItem>
-          <ToggleGroupItem value="7d">7d</ToggleGroupItem>
-          <ToggleGroupItem value="30d">30d</ToggleGroupItem>
+        <ToggleGroup defaultValue={["board"]} aria-label="Project view">
+          <ToggleGroupItem value="list">List</ToggleGroupItem>
+          <ToggleGroupItem value="board">Board</ToggleGroupItem>
+          <ToggleGroupItem value="timeline">Timeline</ToggleGroupItem>
+          <ToggleGroupItem value="calendar">Calendar</ToggleGroupItem>
         </ToggleGroup>
       </Example>
 
@@ -187,52 +187,54 @@ export default function ToggleGroupDocs() {
       <Example
         title="Sizes"
         description="The track is exactly as tall as a button of the same size."
-        code={`<ToggleGroup size="sm" defaultValue={["preview"]} aria-label="Environment">
-  <ToggleGroupItem value="production">Production</ToggleGroupItem>
-  <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+        code={`<ToggleGroup size="sm" defaultValue={["active"]} aria-label="Projects">
+  <ToggleGroupItem value="active">Active</ToggleGroupItem>
+  <ToggleGroupItem value="archived">Archived</ToggleGroupItem>
 </ToggleGroup>
-<ToggleGroup defaultValue={["preview"]} aria-label="Environment">
-  <ToggleGroupItem value="production">Production</ToggleGroupItem>
-  <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+<ToggleGroup defaultValue={["active"]} aria-label="Projects">
+  <ToggleGroupItem value="active">Active</ToggleGroupItem>
+  <ToggleGroupItem value="archived">Archived</ToggleGroupItem>
 </ToggleGroup>
-<ToggleGroup size="lg" defaultValue={["preview"]} aria-label="Environment">
-  <ToggleGroupItem value="production">Production</ToggleGroupItem>
-  <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+<ToggleGroup size="lg" defaultValue={["active"]} aria-label="Projects">
+  <ToggleGroupItem value="active">Active</ToggleGroupItem>
+  <ToggleGroupItem value="archived">Archived</ToggleGroupItem>
 </ToggleGroup>`}
       >
-        <ToggleGroup size="sm" defaultValue={["preview"]} aria-label="Environment, small">
-          <ToggleGroupItem value="production">Production</ToggleGroupItem>
-          <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+        <ToggleGroup size="sm" defaultValue={["active"]} aria-label="Projects, small">
+          <ToggleGroupItem value="active">Active</ToggleGroupItem>
+          <ToggleGroupItem value="archived">Archived</ToggleGroupItem>
         </ToggleGroup>
-        <ToggleGroup defaultValue={["preview"]} aria-label="Environment, medium">
-          <ToggleGroupItem value="production">Production</ToggleGroupItem>
-          <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+        <ToggleGroup defaultValue={["active"]} aria-label="Projects, medium">
+          <ToggleGroupItem value="active">Active</ToggleGroupItem>
+          <ToggleGroupItem value="archived">Archived</ToggleGroupItem>
         </ToggleGroup>
-        <ToggleGroup size="lg" defaultValue={["preview"]} aria-label="Environment, large">
-          <ToggleGroupItem value="production">Production</ToggleGroupItem>
-          <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+        <ToggleGroup size="lg" defaultValue={["active"]} aria-label="Projects, large">
+          <ToggleGroupItem value="active">Active</ToggleGroupItem>
+          <ToggleGroupItem value="archived">Archived</ToggleGroupItem>
         </ToggleGroup>
       </Example>
 
       <Example
         title="Multiple, as filters"
         description="Outline items with multiple turn on independently, like filter chips."
-        code={`<ToggleGroup variant="outline" size="sm" multiple defaultValue={["production", "preview"]} aria-label="Environments">
-  <ToggleGroupItem value="production">Production</ToggleGroupItem>
-  <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
-  <ToggleGroupItem value="development">Development</ToggleGroupItem>
+        code={`<ToggleGroup variant="outline" size="sm" multiple defaultValue={["urgent", "high"]} aria-label="Priority">
+  <ToggleGroupItem value="urgent">Urgent</ToggleGroupItem>
+  <ToggleGroupItem value="high">High</ToggleGroupItem>
+  <ToggleGroupItem value="medium">Medium</ToggleGroupItem>
+  <ToggleGroupItem value="low">Low</ToggleGroupItem>
 </ToggleGroup>`}
       >
         <ToggleGroup
           variant="outline"
           size="sm"
           multiple
-          defaultValue={["production", "preview"]}
-          aria-label="Environments"
+          defaultValue={["urgent", "high"]}
+          aria-label="Priority"
         >
-          <ToggleGroupItem value="production">Production</ToggleGroupItem>
-          <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
-          <ToggleGroupItem value="development">Development</ToggleGroupItem>
+          <ToggleGroupItem value="urgent">Urgent</ToggleGroupItem>
+          <ToggleGroupItem value="high">High</ToggleGroupItem>
+          <ToggleGroupItem value="medium">Medium</ToggleGroupItem>
+          <ToggleGroupItem value="low">Low</ToggleGroupItem>
         </ToggleGroup>
       </Example>
 
@@ -245,10 +247,10 @@ export default function ToggleGroupDocs() {
   <ToggleGroupItem value="right" aria-label="Align right"><AlignRightIcon /></ToggleGroupItem>
 </ToggleGroup>
 
-<ToggleGroup variant="outline" spacing={0} multiple defaultValue={["error", "warn"]} aria-label="Log levels">
-  <ToggleGroupItem value="info">Info</ToggleGroupItem>
-  <ToggleGroupItem value="warn">Warn</ToggleGroupItem>
-  <ToggleGroupItem value="error">Error</ToggleGroupItem>
+<ToggleGroup variant="outline" spacing={0} multiple defaultValue={["todo", "in-progress"]} aria-label="Task status">
+  <ToggleGroupItem value="todo">To do</ToggleGroupItem>
+  <ToggleGroupItem value="in-progress">In progress</ToggleGroupItem>
+  <ToggleGroupItem value="done">Done</ToggleGroupItem>
 </ToggleGroup>`}
       >
         <ToggleGroup variant="outline" spacing={0} defaultValue={["left"]} aria-label="Text alignment">
@@ -266,39 +268,41 @@ export default function ToggleGroupDocs() {
           variant="outline"
           spacing={0}
           multiple
-          defaultValue={["error", "warn"]}
-          aria-label="Log levels"
+          defaultValue={["todo", "in-progress"]}
+          aria-label="Task status"
         >
-          <ToggleGroupItem value="info">Info</ToggleGroupItem>
-          <ToggleGroupItem value="warn">Warn</ToggleGroupItem>
-          <ToggleGroupItem value="error">Error</ToggleGroupItem>
+          <ToggleGroupItem value="todo">To do</ToggleGroupItem>
+          <ToggleGroupItem value="in-progress">In progress</ToggleGroupItem>
+          <ToggleGroupItem value="done">Done</ToggleGroupItem>
         </ToggleGroup>
       </Example>
 
       <Example
         title="Vertical and disabled"
         description="Stack the track for side panels; vertical items become rounded rectangles that nest in the track. Disable single items, or the whole group, which fades as one so the choice stays readable."
-        code={`<ToggleGroup orientation="vertical" defaultValue={["iad1"]} aria-label="Region">
-  <ToggleGroupItem value="iad1">Virginia (iad1)</ToggleGroupItem>
-  <ToggleGroupItem value="fra1">Frankfurt (fra1)</ToggleGroupItem>
-  <ToggleGroupItem value="syd1" disabled>Sydney (syd1)</ToggleGroupItem>
+        code={`<ToggleGroup orientation="vertical" defaultValue={["member"]} aria-label="Role">
+  <ToggleGroupItem value="guest">Guest</ToggleGroupItem>
+  <ToggleGroupItem value="member">Member</ToggleGroupItem>
+  <ToggleGroupItem value="admin">Admin</ToggleGroupItem>
+  <ToggleGroupItem value="owner" disabled>Owner</ToggleGroupItem>
 </ToggleGroup>
 
-<ToggleGroup disabled defaultValue={["preview"]} aria-label="Environment">
-  <ToggleGroupItem value="production">Production</ToggleGroupItem>
-  <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+<ToggleGroup disabled defaultValue={["annual"]} aria-label="Billing period">
+  <ToggleGroupItem value="monthly">Monthly</ToggleGroupItem>
+  <ToggleGroupItem value="annual">Annual</ToggleGroupItem>
 </ToggleGroup>`}
       >
-        <ToggleGroup orientation="vertical" defaultValue={["iad1"]} aria-label="Region">
-          <ToggleGroupItem value="iad1">Virginia (iad1)</ToggleGroupItem>
-          <ToggleGroupItem value="fra1">Frankfurt (fra1)</ToggleGroupItem>
-          <ToggleGroupItem value="syd1" disabled>
-            Sydney (syd1)
+        <ToggleGroup orientation="vertical" defaultValue={["member"]} aria-label="Role">
+          <ToggleGroupItem value="guest">Guest</ToggleGroupItem>
+          <ToggleGroupItem value="member">Member</ToggleGroupItem>
+          <ToggleGroupItem value="admin">Admin</ToggleGroupItem>
+          <ToggleGroupItem value="owner" disabled>
+            Owner
           </ToggleGroupItem>
         </ToggleGroup>
-        <ToggleGroup disabled defaultValue={["preview"]} aria-label="Environment">
-          <ToggleGroupItem value="production">Production</ToggleGroupItem>
-          <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+        <ToggleGroup disabled defaultValue={["annual"]} aria-label="Billing period">
+          <ToggleGroupItem value="monthly">Monthly</ToggleGroupItem>
+          <ToggleGroupItem value="annual">Annual</ToggleGroupItem>
         </ToggleGroup>
       </Example>
 
@@ -306,7 +310,7 @@ export default function ToggleGroupDocs() {
         title="Chart range"
         description="A segmented control switches the range a chart card shows: the totals and the line update together. Controlled with value and onValueChange."
         surface="subtle"
-        code={`const [range, setRange] = React.useState("24h")
+        code={`const [range, setRange] = React.useState("30d")
 
 <ToggleGroup
   size="sm"
@@ -314,13 +318,13 @@ export default function ToggleGroupDocs() {
   value={[range]}
   onValueChange={(value) => value[0] && setRange(value[0])}
 >
-  <ToggleGroupItem value="1h">1h</ToggleGroupItem>
-  <ToggleGroupItem value="24h">24h</ToggleGroupItem>
   <ToggleGroupItem value="7d">7d</ToggleGroupItem>
   <ToggleGroupItem value="30d">30d</ToggleGroupItem>
+  <ToggleGroupItem value="90d">90d</ToggleGroupItem>
+  <ToggleGroupItem value="1y">1y</ToggleGroupItem>
 </ToggleGroup>`}
       >
-        <RequestsCard />
+        <TasksCompletedCard />
       </Example>
 
       <Guidelines

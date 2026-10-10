@@ -63,8 +63,8 @@ export interface UserMenuProps {
 }
 
 export const defaultUser: UserMenuUser = {
-  name: "Maya Chen",
-  email: "maya@acme.dev",
+  name: "Maya Patel",
+  email: "maya@acme.com",
 }
 
 const themes = [

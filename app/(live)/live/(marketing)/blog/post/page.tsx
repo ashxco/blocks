@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowLeftIcon } from "lucide-react"
 
+import { ReleaseShot } from "@/components/blocks/changelog-entry"
 import { CodeWindow } from "@/components/blocks/code-window"
 import { PostGrid } from "@/components/blocks/post-card"
 import { PostCover } from "@/components/blocks/post-card/post-cover"
@@ -27,35 +28,35 @@ import { TableOfContents, type TocItem } from "./_components/table-of-contents"
 import { Kern } from "@/components/ui/kern"
 
 export const metadata: Metadata = {
-  title: "How we cut build times by 70%",
+  title: "Introducing Automations 2.0",
   description:
-    "Layer caching, a smarter dependency graph and one very slow Docker step: the build changes we shipped in September, with the numbers.",
+    "Rules with several steps, conditions and actions in the apps your team already uses: what changed in Automations 2.0, why we rebuilt it and how to set up your first rule.",
 }
 
 const sections: TocItem[] = [
-  { id: "where-the-time-went", title: "Where the time went" },
-  { id: "cache-layers", title: "Cache layers, not images" },
-  { id: "lockfile-keys", title: "Keying the cache on the lockfile", level: 3 },
-  { id: "build-what-changed", title: "Build only what changed" },
-  { id: "slow-docker-step", title: "The one slow Docker step" },
-  { id: "results", title: "The results" },
+  { id: "why-we-rebuilt", title: "Why we rebuilt automations" },
+  { id: "several-steps", title: "Rules with more than one step" },
+  { id: "conditions", title: "Conditions between steps", level: 3 },
+  { id: "recipes", title: "Start from a recipe" },
+  { id: "api", title: "Run rules from your own tools" },
+  { id: "runs", title: "How runs are counted" },
   { id: "whats-next", title: "What comes next" },
 ]
 
 const heading = Object.fromEntries(sections.map((s) => [s.id, s.title])) as Record<string, string>
 
-const results = [
-  { metric: "Median build", before: "61.2s", after: "17.8s", change: "−71%" },
-  { metric: "95th percentile build", before: "4m 12s", after: "1m 38s", change: "−61%" },
-  { metric: "Median image export", before: "11.6s", after: "2.4s", change: "−79%" },
-  { metric: "Builds that skip install", before: "0%", after: "83%", change: "+83 pts" },
+const plans = [
+  { plan: "Free", runs: "1,000", price: "$0" },
+  { plan: "Pro", runs: "10,000", price: "$12" },
+  { plan: "Business", runs: "50,000", price: "$24" },
+  { plan: "Enterprise", runs: "Custom", price: "Custom" },
 ]
 
 const author = {
-  name: "Priya Natarajan",
-  role: "Staff engineer, build team",
-  initials: "PN",
-  bio: "Priya leads the team that runs Lumen’s build fleet. Before Lumen she worked on CI infrastructure at a large payments company, where she learned to measure before she optimises.",
+  name: "Maya Patel",
+  role: "Head of Product",
+  initials: "MP",
+  bio: "Maya leads product at Acme and runs the weekly planning meeting the rest of the company copies. Before Acme she ran operations at a design agency, where she built her first automation in a spreadsheet.",
 }
 
 export default function BlogPostPage() {
@@ -110,7 +111,7 @@ export default function BlogPostPage() {
           </div>
         </header>
 
-        {/* A short, wide cover so the article starts high; its bars are the post's real numbers. */}
+        {/* A short, wide cover so the article starts high. */}
         <div className="container-wide mt-12 md:mt-16">
           <PostCover
             pattern={featuredPost.cover?.pattern}
@@ -131,169 +132,127 @@ export default function BlogPostPage() {
             <div className="min-w-0 lg:col-span-8 xl:col-span-7">
               <Prose>
                 <p>
-                  In June, the median Lumen build took 61 seconds from push to a running image. Today it takes 18.
-                  Nothing about your code changed, and there is no setting to turn on. This post walks through the
-                  three changes that got us there, one idea that did not work, and the numbers before and after.
+                  Teams use automations to move tasks along, remind owners and keep Slack up to date without anyone
+                  doing it by hand. Today we are replacing them with Automations 2.0: rules with several steps,
+                  conditions between them and actions in the apps your team already uses. Every workspace has it now,
+                  and your existing rules keep working.
                 </p>
 
-                <h2 id="where-the-time-went">{heading["where-the-time-went"]}</h2>
+                <h2 id="why-we-rebuilt">{heading["why-we-rebuilt"]}</h2>
                 <p>
-                  Before changing anything, we traced every step of the build pipeline and sampled 200,000 builds from
-                  the first two weeks of June. We expected dependency installs to dominate. They did, but not for the
-                  reason we assumed.
+                  The first version of automations did one thing per rule: when something happened, do one thing. That
+                  covered the simple cases, and teams worked around the rest by stacking rules on top of each other.
+                  When we asked why, we heard the same three problems.
                 </p>
                 <ul>
                   <li>
-                    <strong>Installing dependencies</strong> took 41% of build time, and in 83% of those builds the
-                    lockfile had not changed since the previous deploy.
+                    <strong>Chains of rules were hard to follow.</strong> One team we spoke to needed 14 rules to
+                    handle a single review handoff, and nobody remembered how they fit together.
                   </li>
                   <li>
-                    <strong>Rebuilding unchanged packages</strong> in monorepos took another 27%. A one-line fix to a docs
-                    site rebuilt every app in the repository.
+                    <strong>Every rule ran every time</strong>, even when it only mattered for urgent work, so people
+                    muted notifications they actually needed.
                   </li>
                   <li>
-                    <strong>Exporting the image</strong> took 19%, almost all of it in a single compression step.
+                    <strong>Nobody could see what a rule had done</strong> without opening each task it touched.
                   </li>
                 </ul>
-                <p>Most of a typical build was spent redoing work from the build before it.</p>
+                <p>We rebuilt the rule engine and the editor around those three problems.</p>
 
-                <h2 id="cache-layers">{heading["cache-layers"]}</h2>
+                <h2 id="several-steps">{heading["several-steps"]}</h2>
                 <p>
-                  Lumen has always cached the final image of your last successful build. The trouble is that a final
-                  image is all or nothing: change one file and the whole cache misses. We now cache each step of the
-                  build as its own layer, and keep layers in the region your builds run in, so restoring one is a local
-                  disk read instead of a download.
+                  A rule now starts with one trigger and runs up to ten steps in order. A step can update the task,
+                  notify someone, add a subtask, wait for a set time or post to Slack. Here is the rule our own
+                  website team uses:
                 </p>
+                <figure className="@container overflow-hidden rounded-(--card-radius) border bg-tint-violet">
+                  <ReleaseShot />
+                </figure>
 
-                <h3 id="lockfile-keys">{heading["lockfile-keys"]}</h3>
+                <h3 id="conditions">{heading["conditions"]}</h3>
                 <p>
-                  Each layer gets a key made from the inputs that can change its output. For the install step, that is
-                  your lockfile, your runtime version and the build image. If none of them changed, we restore{" "}
-                  <code>node_modules</code> in about a second and skip the install entirely.
+                  Add a condition between any two steps, and the rest of the rule runs only when it holds. Conditions
+                  can check a task’s priority, assignee, project or due date. The rule above only notifies the owner
+                  when the task is High or Urgent; everything else moves to Done quietly.
                 </p>
-                <p>
-                  You can see and extend the keys in <code>lumen.toml</code>. Most projects never need to, but if your
-                  build reads files outside the usual places, list them so a change invalidates the cache:
-                </p>
-                <CodeWindow title="lumen.toml">
-                  <pre className="m-0 font-mono">
-                    <code>
-                      <span className="block">
-                        <span className="text-panel-foreground">[build]</span>
-                      </span>
-                      <span className="block">command = &quot;npm run build&quot;</span>
-                      <span className="block"> </span>
-                      <span className="block text-panel-muted"># Restore these directories between builds.</span>
-                      <span className="block">cache = [&quot;node_modules&quot;, &quot;.next/cache&quot;]</span>
-                      <span className="block"> </span>
-                      <span className="block text-panel-muted"># Rebuild the install layer when any of these change.</span>
-                      <span className="block">
-                        <span className="text-panel-foreground">[build.cache.keys]</span>
-                      </span>
-                      <span className="block">install = [&quot;package-lock.json&quot;, &quot;.nvmrc&quot;]</span>
-                    </code>
-                  </pre>
-                </CodeWindow>
-
-                <h2 id="build-what-changed">{heading["build-what-changed"]}</h2>
-                <p>
-                  For monorepos, Lumen now reads your workspace configuration and builds a graph of your packages before
-                  the build starts. When you push, we compare the changed files against the graph and rebuild only the
-                  packages they touch, plus anything that depends on them.
-                </p>
-                <p>
-                  This works without configuration for Turborepo, Nx, and npm, pnpm or Yarn workspaces. A change to the
-                  marketing site no longer rebuilds the API, and a change to a shared UI package rebuilds the apps that
-                  import it and nothing else.
-                </p>
-                <PullQuote cite="Daniel Reyes, co-founder and CTO">
-                  The fastest build step is the one you can prove you don’t need to run.
+                <PullQuote cite="Hana Kim, co-founder and CEO">
+                  The best automation is one you set up once and never think about again.
                 </PullQuote>
+
+                <h2 id="recipes">{heading["recipes"]}</h2>
                 <p>
-                  We also tried predicting which tests to skip from the same graph. It saved time, but it skipped a
-                  test that mattered twice in the first week of the beta, so we turned it off. Skipping work is only
-                  safe when the proof is exact.
+                  Most teams want the same handful of rules, so the rule editor now opens with 20 recipes. Pick one,
+                  change what you need and turn it on. These are the five our beta teams turned on most:
+                </p>
+                <ul>
+                  <li>Notify the owner when a task moves to Done</li>
+                  <li>Remind the assignee a day before a task is due</li>
+                  <li>Move a task to In review when every subtask is complete</li>
+                  <li>Post new Urgent tasks to a Slack channel</li>
+                  <li>Create the next task when a recurring task is completed</li>
+                </ul>
+
+                <h2 id="api">{heading["api"]}</h2>
+                <p>
+                  Rules also run on work that starts outside Acme. A task created through the API triggers the same
+                  rules as one created in the app, so a form on your website or a ticket in your help desk can start
+                  the whole process:
+                </p>
+                <CodeWindow />
+                <p>
+                  Install the SDK with <code>npm install @acme/sdk</code>, then create an API key in Settings. Each key
+                  works in one workspace, and read-only keys can never change a task.
                 </p>
 
-                <h2 id="slow-docker-step">{heading["slow-docker-step"]}</h2>
+                <h2 id="runs">{heading["runs"]}</h2>
                 <p>
-                  The last fifth of every build went to exporting the image, and most of that was gzip running on a
-                  single core. We switched layer compression to zstd, which compresses in parallel and decompresses
-                  faster when a new replica starts.
+                  Each time a rule acts on a task, that counts as one run, however many steps it has. Runs reset on the
+                  first of each month:
                 </p>
-                <p>
-                  That one change took export time from 11.6 seconds to 2.4 at the median, and cut cold starts for new
-                  replicas by about a third as a side effect. Here is a build of our own dashboard today:
-                </p>
-                <CodeWindow
-                  title="lumen deploy"
-                  lines={[
-                    "$ lumen deploy",
-                    "→ Building lumen/dashboard from main (7c1e0b4)",
-                    "✓ Restored install layer in 1.1s, lockfile unchanged",
-                    "→ Skipped 38 of 41 packages, unchanged since 3e9d2aa",
-                    "✓ Built 3 packages in 12.9s",
-                    "✓ Exported image in 2.4s with zstd",
-                    "✓ Live at https://dashboard.lumen.app in 17.8s",
-                  ]}
-                />
-
-                <h2 id="results">{heading["results"]}</h2>
-                <p>
-                  We rolled the changes out to 10% of builds in August, then to everyone on September 16. Across every
-                  build in the two weeks that followed:
-                </p>
-                {/* Fits a phone: below 28rem the Before column folds under After, so Change stays in view. */}
                 <figure className="@container">
                   <Table variant="card" className="table-fixed">
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-2/5 px-3 whitespace-normal @md:px-4">Metric</TableHead>
-                        <TableHead className="hidden px-3 text-right @md:table-cell @md:px-4">Before</TableHead>
-                        <TableHead className="px-3 text-right @md:px-4">After</TableHead>
-                        <TableHead className="px-3 text-right @md:px-4">Change</TableHead>
+                        <TableHead className="px-3 @md:px-4">Plan</TableHead>
+                        <TableHead className="px-3 text-right @md:px-4">Runs a month</TableHead>
+                        <TableHead className="px-3 text-right @md:px-4">Price</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {results.map((row) => (
-                        <TableRow key={row.metric}>
-                          <TableCell className="px-3 py-3 font-semibold whitespace-normal @md:px-4">{row.metric}</TableCell>
-                          <TableCell className="hidden px-3 text-right text-muted-foreground @md:table-cell @md:px-4">{row.before}</TableCell>
-                          <TableCell className="px-3 py-3 text-right @md:px-4">
-                            {row.after}
-                            <span className="block text-caption text-muted-foreground @md:hidden">from {row.before}</span>
-                          </TableCell>
-                          <TableCell className="px-3 text-right font-semibold text-success @md:px-4">{row.change}</TableCell>
+                      {plans.map((row) => (
+                        <TableRow key={row.plan}>
+                          <TableCell className="px-3 py-3 font-semibold @md:px-4">{row.plan}</TableCell>
+                          <TableCell className="px-3 py-3 text-right tabular @md:px-4">{row.runs}</TableCell>
+                          <TableCell className="px-3 py-3 text-right tabular @md:px-4">{row.price}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
-                    <TableCaption>1.4 million builds, September 16 to 30, 2026.</TableCaption>
+                    <TableCaption>Prices per member a month, billed annually.</TableCaption>
                   </Table>
                 </figure>
                 <p>
-                  Build minutes are billed by the second, so the change also lowered the bill for most teams. The
-                  median team on the Pro plan used 64% fewer build minutes in the second half of September than in the
-                  first.
+                  A rule that would go over your plan’s limit pauses until the first of the next month, and owners get
+                  an email at 80% and 100%. Nothing else in your workspace changes.
                 </p>
 
                 <h2 id="whats-next">{heading["whats-next"]}</h2>
-                <p>Builds that miss the cache are still slower than we want. Next, we are working on:</p>
+                <p>Automations 2.0 is the start. Next, we are working on:</p>
                 <ul>
                   <li>
-                    <strong>Shared caches across branches</strong>, so a new preview environment starts from the layers
-                    of main instead of from scratch.
+                    <strong>Scheduled rules</strong> that run every Monday morning or at the end of each month, not
+                    only when something changes.
                   </li>
                   <li>
-                    <strong>Faster cold installs</strong>, by fetching your dependencies while the build machine boots.
+                    <strong>Rules across projects</strong>, so one rule can watch every project a team owns.
                   </li>
                   <li>
-                    <strong>Build insights</strong> in the dashboard: a timeline of every step, so you can see where your
-                    own build spends its time.
+                    <strong>Run reports</strong> on your dashboards, showing which rules run most and what they
+                    changed.
                   </li>
                 </ul>
                 <p>
-                  If your builds have not got faster, or you have a setup we did not plan for,{" "}
-                  <Link href="/live/contact">tell us about it</Link>. We read every message.
+                  If a rule you need isn’t possible yet, <Link href="/live/contact">tell us about it</Link>. We read
+                  every message.
                 </p>
               </Prose>
 

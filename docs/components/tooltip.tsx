@@ -6,14 +6,14 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   ArrowUpIcon,
-  CopyIcon,
+  ArchiveIcon,
+  CalendarIcon,
   ExternalLinkIcon,
-  PauseIcon,
-  RocketIcon,
-  RotateCcwIcon,
-  ScrollTextIcon,
+  LinkIcon,
+  PlusIcon,
   SearchIcon,
   Trash2Icon,
+  UserPlusIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
@@ -34,10 +34,10 @@ const placements = [
 ] as const
 
 const actions = [
-  { label: "Redeploy", icon: RotateCcwIcon },
-  { label: "Copy deployment URL", icon: CopyIcon },
-  { label: "Open build logs", icon: ScrollTextIcon },
-  { label: "Visit deployment", icon: ExternalLinkIcon },
+  { label: "Assign", icon: UserPlusIcon },
+  { label: "Set due date", icon: CalendarIcon },
+  { label: "Copy link", icon: LinkIcon },
+  { label: "Open in a new tab", icon: ExternalLinkIcon },
 ]
 
 type Stage = HTMLDivElement | null
@@ -97,10 +97,10 @@ export default function TooltipDocs() {
         title="Icon buttons"
         description="Name every icon-only control. The tooltip shows on hover and on keyboard focus, and the aria-label carries the same words for screen readers."
         code={`<Tooltip>
-  <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Redeploy" />}>
-    <RotateCcwIcon />
+  <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Assign" />}>
+    <UserPlusIcon />
   </TooltipTrigger>
-  <TooltipContent>Redeploy</TooltipContent>
+  <TooltipContent>Assign</TooltipContent>
 </Tooltip>`}
       >
         <TooltipStage className="gap-1 pt-8">
@@ -141,12 +141,12 @@ export default function TooltipDocs() {
                 </TooltipContent>
               </ShownTooltip>
               <Tooltip>
-                <TooltipTrigger render={<Button variant="outline" size="icon" aria-label="Pause deployments" />}>
-                  <PauseIcon />
+                <TooltipTrigger render={<Button variant="outline" size="icon" aria-label="New task" />}>
+                  <PlusIcon />
                 </TooltipTrigger>
                 <TooltipContent container={container} {...pinnedTo(container)}>
-                  Pause deployments
-                  <Kbd>⇧P</Kbd>
+                  New task
+                  <Kbd>C</Kbd>
                 </TooltipContent>
               </Tooltip>
             </>
@@ -157,7 +157,7 @@ export default function TooltipDocs() {
       <Example
         title="Placement"
         description="Top is the default. Pick another side when the tooltip would cover what people are looking at, such as the next row of a table."
-        code={`<TooltipContent side="right">Copy URL</TooltipContent>`}
+        code={`<TooltipContent side="right">Copy link</TooltipContent>`}
       >
         <TooltipStage className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2 py-10">
           {(container) =>
@@ -180,9 +180,9 @@ export default function TooltipDocs() {
         description="A disabled button can’t receive focus or pointer events, so wrap it in a focusable span and put the tooltip on the span."
         code={`<Tooltip>
   <TooltipTrigger render={<span tabIndex={0} />}>
-    <Button disabled>Promote to production</Button>
+    <Button disabled>Archive project</Button>
   </TooltipTrigger>
-  <TooltipContent>Only owners can promote deployments</TooltipContent>
+  <TooltipContent>Only owners can archive</TooltipContent>
 </Tooltip>`}
       >
         <TooltipStage className="pt-8">
@@ -194,11 +194,11 @@ export default function TooltipDocs() {
                 }
               >
                 <Button disabled>
-                  <RocketIcon data-icon="inline-start" />
-                  Promote to production
+                  <ArchiveIcon data-icon="inline-start" />
+                  Archive project
                 </Button>
               </TooltipTrigger>
-              <TooltipContent container={container} {...pinnedTo(container)}>Only owners can promote deployments</TooltipContent>
+              <TooltipContent container={container} {...pinnedTo(container)}>Only owners can archive</TooltipContent>
             </ShownTooltip>
           )}
         </TooltipStage>
@@ -206,7 +206,7 @@ export default function TooltipDocs() {
 
       <Example
         title="On a toolbar"
-        description="Tooltips in a group open instantly once the first one is showing, so people can scan a toolbar quickly. Move the pointer along the bar: Redeploy hands over to the next action without a delay."
+        description="Tooltips in a group open instantly once the first one is showing, so people can scan a toolbar quickly. Move the pointer along the bar: Assign hands over to the next action without a delay."
       >
         <TooltipStage className="pb-10">
           {(container) => (
@@ -232,7 +232,7 @@ export default function TooltipDocs() {
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label="Delete deployment"
+                      aria-label="Delete task"
                       className="text-destructive hover:text-destructive"
                     />
                   }
@@ -240,7 +240,7 @@ export default function TooltipDocs() {
                   <Trash2Icon />
                 </TooltipTrigger>
                 <TooltipContent side="bottom" container={container} {...pinnedTo(container)}>
-                  Delete deployment
+                  Delete task
                 </TooltipContent>
               </Tooltip>
             </div>

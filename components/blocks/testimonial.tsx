@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 export interface TestimonialAuthor {
   name: string
-  /** Role and company, e.g. "CTO, Fernhill". */
+  /** Role and company, e.g. "COO, Northwind". */
   role: string
   /** Shown when there is no photo. */
   initials: string
@@ -17,9 +17,9 @@ export interface TestimonialAuthor {
 }
 
 export interface TestimonialMetric {
-  /** The headline number, e.g. "40s". */
+  /** The headline number, e.g. "50%". */
   value: string
-  /** What the number measures, e.g. "from merge to live". */
+  /** What the number measures, e.g. "fewer status meetings". */
   label: string
 }
 
@@ -29,7 +29,7 @@ export interface TestimonialProps {
   author?: TestimonialAuthor
   /** The result the customer got. Pass null to hide it. */
   metric?: TestimonialMetric | null
-  /** "subtle" sits on a tinted band with a hairline edge, "panel" on a dark panel, "plain" between hairlines. */
+  /** "subtle" sits on a tinted band with a hairline border, "panel" on a dark panel, "plain" between hairlines. */
   tone?: "subtle" | "panel" | "plain"
   /** Renders its own page container and section spacing. Set to false inside your own layout. */
   contained?: boolean
@@ -80,9 +80,9 @@ const tones = {
 } as const
 
 const defaultAuthor: TestimonialAuthor = {
-  name: "Hannah Okoye",
-  role: "CTO, Fernhill",
-  initials: "HO",
+  name: "Elena Ruiz",
+  role: "COO, Northwind",
+  initials: "ER",
   tint: "mint",
 }
 
@@ -91,9 +91,9 @@ const defaultAuthor: TestimonialAuthor = {
  * the result they got as a headline number.
  */
 export function Testimonial({
-  quote = "We moved twelve services to Lumen in a week. Deploys that took an afternoon now go live in under a minute, and nobody on the team has touched a server config since.",
+  quote = "We replaced three tools and our weekly planning meeting with Acme.",
   author = defaultAuthor,
-  metric = { value: "40s", label: "from merge to live" },
+  metric = { value: "50%", label: "fewer status meetings" },
   tone = "subtle",
   contained = true,
   className,

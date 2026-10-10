@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button"
  *
  *   <InputGroup>
  *     <InputGroupAddon><SearchIcon /></InputGroupAddon>
- *     <InputGroupInput placeholder="Search deployments" />
+ *     <InputGroupInput placeholder="Search tasks" />
  *   </InputGroup>
  */
 const inputGroupVariants = cva(
@@ -41,11 +41,11 @@ const inputGroupVariants = cva(
     // Inline addons tighten the control's padding on their side.
     "has-[>[data-align=inline-start]]:[&>input]:ps-2 has-[>[data-align=inline-end]]:[&>input]:pe-2",
     // A text prefix (an addon holding only InputGroupText) is part of the
-    // value, so the value starts right after it: "lumen.app/acme".
+    // value, so the value starts right after it: "app.acme.com/acme".
     "has-[>[data-align=inline-start]>[data-slot=input-group-text]:only-child]:[&>input]:ps-0",
     // A text suffix follows the value instead of sitting at the far edge: the
     // input sizes to its content and the suffix addon takes the rest of the
-    // width, so "acme-web" + ".lumen.app" reads as one URL.
+    // width, so "maya" + "@acme.com" reads as one address.
     "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input]:w-auto",
     "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input]:flex-initial",
     "has-[>[data-align=inline-end]>[data-slot=input-group-text]:only-child]:[&>input]:min-w-8",
@@ -96,7 +96,7 @@ function InputGroup({
  * 16px in a large one. InputGroupText inherits it.
  */
 const inlineText =
-  "text-base md:text-sm group-data-[size=sm]/input-group:text-sm group-data-[size=lg]/input-group:text-base"
+  "text-control group-data-[size=sm]/input-group:text-sm group-data-[size=lg]/input-group:text-base"
 
 const inputGroupAddonVariants = cva(
   [
@@ -214,7 +214,7 @@ function InputGroupInput({
       className={cn(
         "w-full min-w-0 flex-1 self-stretch rounded-none border-0 bg-transparent px-(--control-padding-x)",
         // Long values, such as a read-only URL, end in an ellipsis while unfocused.
-        "text-base text-ellipsis text-foreground outline-none placeholder:text-muted-foreground md:text-sm",
+        "text-control text-ellipsis text-foreground outline-none placeholder:text-muted-foreground",
         "disabled:cursor-not-allowed",
         className
       )}
@@ -232,7 +232,7 @@ function InputGroupTextarea({
       data-slot="input-group-control"
       className={cn(
         "flex field-sizing-content min-h-24 w-full min-w-0 flex-1 resize-none rounded-none border-0 bg-transparent",
-        "px-(--control-padding-x) py-3 text-base leading-relaxed text-foreground outline-none placeholder:text-muted-foreground md:text-sm md:leading-relaxed",
+        "px-(--control-padding-x) py-3 text-control leading-relaxed text-foreground outline-none placeholder:text-muted-foreground",
         "disabled:cursor-not-allowed",
         className
       )}

@@ -1,68 +1,64 @@
 "use client"
 
 import * as React from "react"
-import { CircleXIcon, RotateCcwIcon } from "lucide-react"
+import { CheckIcon, MessageSquareIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Spinner } from "@/components/ui/spinner"
 import { toast } from "@/components/ui/toast"
-import type {
-  ProjectRow,
-  ProjectStatus,
-} from "@/components/blocks/data-table/data"
+import { formatDue, type ProjectRow, type ProjectStatus } from "@/components/blocks/data-table/data"
+import { cn } from "@/lib/utils"
 
-interface Failure {
-  project: string
-  branch: string
-  sha: string
-  error: string
-  author: string
-  time: string
+/** The latest update on each project that needs attention, from its lead. */
+const updates: Record<string, { text: string; time: string }> = {
+  "customer-portal": {
+    text: "Portal sign-in needs a security review we can’t finish before Oct 23. Proposing Nov 6 for the beta.",
+    time: "2 hr ago",
+  },
+  "mobile-app": {
+    text: "Push notifications slip a week while we wait for the app store review. Everything else is on plan.",
+    time: "34 min ago",
+  },
+  "billing-migration": {
+    text: "Invoice export is behind, so 6 tasks moved to next week. Still aiming for Nov 13.",
+    time: "Yesterday",
+  },
 }
-
-const failures: Failure[] = [
-  {
-    project: "api",
-    branch: "feat/rate-limits",
-    sha: "e7b3a90",
-    error: "npm run build exited with code 1: Cannot find module './limits'",
-    author: "Leo Martins",
-    time: "18 min ago",
-  },
-  {
-    project: "mobile-api",
-    branch: "fix/push-tokens",
-    sha: "3c4d7e2",
-    error: "Health check failed: GET /healthz returned 503 after 60s",
-    author: "Daniel Okafor",
-    time: "7 hr ago",
-  },
-]
 
 const statusLabels: Record<ProjectStatus, { label: string; dot: string }> = {
-  ready: { label: "Ready", dot: "bg-panel-success" },
-  building: { label: "Building", dot: "bg-panel-warning" },
-  failed: { label: "Failed", dot: "bg-panel-destructive" },
-  paused: { label: "Paused", dot: "bg-panel-muted" },
+  "on-track": { label: "On track", dot: "bg-panel-success" },
+  "at-risk": { label: "At risk", dot: "bg-panel-warning" },
+  "off-track": { label: "Off track", dot: "bg-panel-destructive" },
+  completed: { label: "Completed", dot: "bg-panel-muted" },
+  // Hollow, so Paused reads apart from Completed at a glance; the label carries the meaning.
+  paused: { label: "Paused", dot: "border border-panel-muted" },
 }
 
-const order: ProjectStatus[] = ["ready", "building", "failed", "paused"]
+const counted: ProjectStatus[] = ["on-track", "at-risk", "off-track", "completed", "paused"]
+
+const firstName = (name: string) => name.split(/\s+/)[0]
 
 /**
- * Dark panel above the projects table: the deployments that failed, with a
- * redeploy for each, and how many projects are in each status.
+ * Dark panel above the projects table: the projects that are off track or at
+ * risk, each with its lead's latest update and a way to ask for a new one,
+ * and how many projects are in each status. The counts are rows on a phone,
+ * five tiles in a band once there is room, and a column of rows beside the
+ * list on wide screens.
  *
  * Status colours use the panel-* tokens (panel-success, panel-warning,
  * panel-destructive), which read on bg-panel in both themes.
  */
 export function ProjectHealth({ projects }: { projects: ProjectRow[] }) {
-  const [queued, setQueued] = React.useState<Set<string>>(() => new Set())
+  const [requested, setRequested] = React.useState<Set<string>>(() => new Set())
+  // Off track first, then at risk.
+  const attention = projects
+    .filter((project) => project.status === "off-track" || project.status === "at-risk")
+    .sort((a, b) => (a.status === b.status ? 0 : a.status === "off-track" ? -1 : 1))
 
-  function redeploy(failure: Failure) {
-    setQueued((current) => new Set(current).add(failure.project))
+  function requestUpdate(project: ProjectRow) {
+    setRequested((current) => new Set(current).add(project.id))
     toast.add({
-      title: `Redeploying ${failure.project}`,
-      description: `Lumen is building ${failure.sha} from ${failure.branch} again. You will get a notification when it finishes.`,
+      title: `Asked ${project.lead} for an update`,
+      description: `${firstName(project.lead)} gets a reminder to post a status update on ${project.name}.`,
     })
   }
 
@@ -75,69 +71,60 @@ export function ProjectHealth({ projects }: { projects: ProjectRow[] }) {
       <div className="grid @min-[60rem]/health:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="grid content-start gap-6 p-(--panel-padding-sm)">
           <div className="grid gap-2">
-            <h2
-              id="project-health-title"
-              className="text-h3 text-panel-foreground"
-            >
-              Two deployments failed
+            <h2 id="project-health-title" className="text-h3 text-panel-foreground">
+              {attention.length} projects need attention
             </h2>
             <p className="max-w-prose text-body text-panel-muted">
-              Both ran on preview branches, so production still serves the last
-              good build. Fix the error and push again, or redeploy to retry
-              with a clean cache.
+              One is off track and {attention.length - 1} are at risk. Read what their leads said last, or ask for a
+              fresh update before Monday’s planning.
             </p>
           </div>
 
           <ul className="grid divide-y divide-panel-border border-y border-panel-border">
-            {failures.map((failure) => {
-              const isQueued = queued.has(failure.project)
+            {attention.map((project) => {
+              const isRequested = requested.has(project.id)
+              const update = updates[project.id]
+              const status = statusLabels[project.status]
               return (
                 <li
-                  key={failure.project}
+                  key={project.id}
                   className="flex flex-col gap-4 py-4 @min-[36rem]/health:flex-row @min-[36rem]/health:items-center @min-[36rem]/health:justify-between @min-[36rem]/health:gap-8"
                 >
                   <div className="flex min-w-0 gap-3">
-                    <CircleXIcon
-                      aria-hidden="true"
-                      className="mt-0.5 size-4 shrink-0 text-panel-destructive"
-                    />
+                    <span aria-hidden="true" className={cn("mt-1.5 size-2 shrink-0 rounded-full", status.dot)} />
                     <div className="grid min-w-0 gap-1.5">
                       <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                        <span className="text-label text-panel-foreground">
-                          {failure.project}
-                        </span>
-                        <span className="font-mono text-xs text-panel-muted">
-                          {failure.branch}
+                        <span className="text-label text-panel-foreground">{project.name}</span>
+                        <span className="text-caption text-panel-muted">
+                          {status.label} · Due {formatDue(project.due)}
                         </span>
                       </p>
-                      {/* The error is the point of the row: it wraps in narrow panels and truncates only when there is room for most of it. */}
-                      <p className="w-fit max-w-full rounded-xs bg-panel-raised px-2 py-0.5 font-mono text-code break-words whitespace-pre-wrap text-panel-foreground @min-[48rem]/health:truncate @min-[48rem]/health:whitespace-nowrap">
-                        {failure.error}
-                      </p>
+                      {update ? (
+                        <p className="max-w-prose rounded-sm bg-panel-raised px-3 py-2 text-sm text-panel-foreground">
+                          {update.text}
+                        </p>
+                      ) : null}
                       <p className="text-caption text-panel-muted">
-                        {failure.author} pushed{" "}
-                        <span className="font-mono text-panel-foreground">
-                          {failure.sha}
-                        </span>
-                        <span aria-hidden="true"> · </span>
-                        <span className="sr-only">, </span>
-                        {failure.time}
+                        {project.lead}
+                        {update ? (
+                          <>
+                            <span aria-hidden="true"> · </span>
+                            <span className="sr-only">, </span>
+                            {update.time}
+                          </>
+                        ) : null}
                       </p>
                     </div>
                   </div>
                   <Button
                     size="sm"
                     variant="inverse"
-                    disabled={isQueued}
-                    onClick={() => redeploy(failure)}
-                    className="ml-7 self-start @min-[36rem]/health:ml-0 @min-[36rem]/health:self-center"
+                    disabled={isRequested}
+                    onClick={() => requestUpdate(project)}
+                    className="ml-5 self-start @min-[36rem]/health:ml-0 @min-[36rem]/health:self-center"
                   >
-                    {isQueued ? (
-                      <Spinner data-icon="inline-start" />
-                    ) : (
-                      <RotateCcwIcon data-icon="inline-start" />
-                    )}
-                    {isQueued ? "Build queued" : "Redeploy"}
+                    {isRequested ? <CheckIcon data-icon="inline-start" /> : <MessageSquareIcon data-icon="inline-start" />}
+                    {isRequested ? "Update requested" : "Request update"}
                   </Button>
                 </li>
               )
@@ -145,24 +132,35 @@ export function ProjectHealth({ projects }: { projects: ProjectRow[] }) {
           </ul>
         </div>
 
-        <dl className="grid grid-cols-2 gap-px border-t border-panel-border bg-panel-border @min-[36rem]/health:grid-cols-4 @min-[60rem]/health:grid-cols-2 @min-[60rem]/health:border-t-0 @min-[60rem]/health:border-l">
-          {order.map((status) => {
-            const count = projects.filter(
-              (project) => project.status === status
-            ).length
+        <dl
+          className={cn(
+            "grid content-start divide-y divide-panel-border border-t border-panel-border",
+            "@min-[44rem]/health:grid-cols-5 @min-[44rem]/health:divide-x @min-[44rem]/health:divide-y-0",
+            "@min-[60rem]/health:grid-cols-1 @min-[60rem]/health:divide-x-0 @min-[60rem]/health:divide-y",
+            "@min-[60rem]/health:border-t-0 @min-[60rem]/health:border-l @min-[60rem]/health:py-3"
+          )}
+        >
+          {counted.map((status) => {
+            const count = projects.filter((project) => project.status === status).length
             return (
               <div
                 key={status}
-                className="grid content-between gap-4 bg-panel px-(--panel-padding-sm) py-6 @min-[60rem]/health:py-(--panel-padding-sm)"
+                className={cn(
+                  "flex items-center justify-between gap-4 px-(--panel-padding-sm) py-3",
+                  "@min-[44rem]/health:flex-col @min-[44rem]/health:items-start @min-[44rem]/health:px-5 @min-[44rem]/health:py-6",
+                  "@min-[60rem]/health:flex-row @min-[60rem]/health:items-center @min-[60rem]/health:px-(--panel-padding-sm) @min-[60rem]/health:py-4"
+                )}
               >
-                <dt className="flex items-center gap-2 text-caption text-panel-muted">
-                  <span
-                    aria-hidden="true"
-                    className={`size-2 rounded-full ${statusLabels[status].dot}`}
-                  />
+                <dt className="flex items-center gap-2 text-caption whitespace-nowrap text-panel-muted">
+                  <span aria-hidden="true" className={cn("size-2 rounded-full", statusLabels[status].dot)} />
                   {statusLabels[status].label}
                 </dt>
-                <dd className="text-h2 text-panel-foreground tabular">
+                <dd
+                  className={cn(
+                    "text-h3 text-panel-foreground tabular",
+                    "@min-[44rem]/health:text-h2 @min-[60rem]/health:text-h3"
+                  )}
+                >
                   {count}
                 </dd>
               </div>

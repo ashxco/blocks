@@ -6,7 +6,7 @@ import { toSettingsTab } from "./_components/settings-tabs"
 export const metadata: Metadata = {
   title: "Settings",
   description:
-    "Manage your Lumen profile, the Acme Inc. workspace, the alerts you get and how you sign in.",
+    "Manage your Acme profile, the Acme Inc. workspace, the notifications you get and how you sign in.",
 }
 
 export default async function SettingsPage({

@@ -18,14 +18,14 @@ const variants = [
   { variant: "ghost", text: "Ghost, for the assistant: plain text on the canvas." },
 ] as const
 
-const suggestions = ["Show the failing step", "Open the build log", "Redeploy the last good commit"]
+const suggestions = ["Show the overdue tasks", "Move the due date to Nov 21", "Draft an update for Hana"]
 
 function SuggestedReplies() {
   const [picked, setPicked] = React.useState<string | null>(null)
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-4">
       <Bubble variant="ghost">
-        <BubbleContent>The preview for feat/preview-comments failed at the install step. What would you like to do?</BubbleContent>
+        <BubbleContent>Customer portal is off track: 22 of 64 tasks are done and it is due Oct 23. What would you like to do?</BubbleContent>
       </Bubble>
       <div className="flex flex-wrap gap-2" role="group" aria-label="Suggested replies">
         {suggestions.map((s) => (
@@ -92,10 +92,10 @@ export default function BubbleDocs() {
             <MessageContent>
               <BubbleGroup>
                 <Bubble variant="secondary">
-                  <BubbleContent>Domains are verified.</BubbleContent>
+                  <BubbleContent>The homepage copy is approved.</BubbleContent>
                 </Bubble>
                 <Bubble variant="secondary">
-                  <BubbleContent>Certificates for lumen.app and www.lumen.app were issued at 09:41.</BubbleContent>
+                  <BubbleContent>Hana signed off on the headline and the pricing section at 09:41.</BubbleContent>
                 </Bubble>
               </BubbleGroup>
             </MessageContent>
@@ -107,7 +107,7 @@ export default function BubbleDocs() {
                   <BubbleContent>Great, thanks.</BubbleContent>
                 </Bubble>
                 <Bubble>
-                  <BubbleContent>Switching the DNS for the docs subdomain next.</BubbleContent>
+                  <BubbleContent>Moving the hero copy task to Done now.</BubbleContent>
                 </Bubble>
               </BubbleGroup>
             </MessageContent>
@@ -121,7 +121,7 @@ export default function BubbleDocs() {
         description="Render BubbleContent as a button to make it clickable. Outline pills work well for suggestions under an assistant reply."
         code={`<Bubble variant="outline">
   <BubbleContent render={<button type="button" />} onClick={send} className="rounded-full">
-    Show the failing step
+    Show the overdue tasks
   </BubbleContent>
 </Bubble>`}
       >
@@ -141,7 +141,7 @@ export default function BubbleDocs() {
       >
         <div className="mx-auto flex w-full max-w-xl flex-col gap-8 pb-2">
           <Bubble variant="secondary">
-            <BubbleContent>Rolled back to a41c9e2. Error rate is back under 0.1%.</BubbleContent>
+            <BubbleContent>Onboarding redesign is done. All 46 tasks closed, two days early.</BubbleContent>
             <BubbleReactions>
               <ThumbsUpIcon aria-hidden="true" />
               <span>3</span>
@@ -151,7 +151,7 @@ export default function BubbleDocs() {
           <Message align="end">
             <MessageContent>
               <Bubble align="end">
-                <BubbleContent>Nice work. Let’s write up what happened tomorrow.</BubbleContent>
+                <BubbleContent>Nice work. Let’s share what went well at Monday’s planning.</BubbleContent>
                 <BubbleReactions align="start">
                   <HeartIcon aria-hidden="true" />
                   <span>2</span>
@@ -159,7 +159,7 @@ export default function BubbleDocs() {
                 </BubbleReactions>
               </Bubble>
               {/* Delivery status is not a reaction: it goes in the footer. */}
-              <MessageFooter className="pt-1">Seen by Mateo</MessageFooter>
+              <MessageFooter className="pt-1">Seen by Jordan</MessageFooter>
             </MessageContent>
           </Message>
         </div>
@@ -174,7 +174,7 @@ export default function BubbleDocs() {
           <Message align="end">
             <MessageContent>
               <Bubble variant="destructive">
-                <BubbleContent>Can you raise the build timeout to 20 minutes for lumen-api?</BubbleContent>
+                <BubbleContent>Can you move the Brand refresh review to Thursday?</BubbleContent>
               </Bubble>
               <MessageFooter className="gap-2 text-destructive">
                 <CircleAlertIcon aria-hidden="true" className="size-3.5" />

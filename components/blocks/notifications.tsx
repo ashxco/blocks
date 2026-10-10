@@ -3,12 +3,12 @@
 import * as React from "react"
 import Link from "next/link"
 import {
+  AtSignIcon,
   BellIcon,
+  CalendarClockIcon,
   CheckCheckIcon,
-  CircleCheckIcon,
-  CircleXIcon,
-  CreditCardIcon,
-  GlobeIcon,
+  FlagIcon,
+  GaugeIcon,
   SettingsIcon,
   UserPlusIcon,
   type LucideIcon,
@@ -25,8 +25,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
-export type NotificationKind =
-  "success" | "failed" | "domain" | "invite" | "billing"
+export type NotificationKind = "mention" | "due" | "status" | "invite" | "usage"
 
 export interface NotificationItem {
   id: string
@@ -63,65 +62,60 @@ export interface NotificationsProps {
 
 const kinds: Record<NotificationKind, { icon: LucideIcon; className: string }> =
   {
-    success: {
-      icon: CircleCheckIcon,
-      className: "bg-success-subtle text-success",
-    },
-    failed: {
-      icon: CircleXIcon,
+    mention: { icon: AtSignIcon, className: "bg-brand-subtle text-brand" },
+    due: { icon: CalendarClockIcon, className: "bg-info-subtle text-info" },
+    status: {
+      icon: FlagIcon,
       className: "bg-destructive-subtle text-destructive",
     },
-    domain: { icon: GlobeIcon, className: "bg-info-subtle text-info" },
-    invite: { icon: UserPlusIcon, className: "bg-brand-subtle text-brand" },
-    billing: {
-      icon: CreditCardIcon,
-      className: "bg-warning-subtle text-warning",
-    },
+    invite: { icon: UserPlusIcon, className: "bg-success-subtle text-success" },
+    usage: { icon: GaugeIcon, className: "bg-warning-subtle text-warning" },
   }
 
+/** Maya Patel’s notifications in Acme Inc.: three unread. */
 export const defaultNotifications: NotificationItem[] = [
   {
     id: "n1",
-    title: "web is live in production",
-    description: "a41c9e2 deployed to acme.dev in 28s.",
-    time: "2 min ago",
-    kind: "success",
+    title: "Jordan Lee mentioned you in Mobile app 2.0",
+    description: "“Can you confirm the scope for push notifications by Monday?”",
+    time: "5 min ago",
+    kind: "mention",
     unread: true,
     href: "/live/app/projects",
   },
   {
     id: "n2",
-    title: "Build failed on api",
-    description: "feat/rate-limits: npm run build exited with code 1.",
-    time: "18 min ago",
-    kind: "failed",
+    title: "3 of your tasks are due Monday",
+    description: "Approve Q4 budget, Review pricing page copy and 1 more.",
+    time: "1 hr ago",
+    kind: "due",
+    unread: true,
+    href: "/live/app/projects",
+  },
+  {
+    id: "n3",
+    title: "Customer portal is off track",
+    description: "Sam Okafor changed the status and posted an update.",
+    time: "2 hr ago",
+    kind: "status",
     unread: true,
     href: "/live/app/projects",
   },
   {
     id: "n4",
-    title: "Certificate issued for status.acme.dev",
-    description: "HTTPS is on. The certificate renews automatically.",
-    time: "1 hr ago",
-    kind: "domain",
-    href: "/live/app/projects",
-  },
-  {
-    id: "n3",
-    title: "Sam Rivera joined Acme Inc.",
-    description: "They accepted Priya Shah’s invite and can now deploy.",
-    time: "2 hr ago",
+    title: "Elena Ruiz joined as a guest",
+    description: "She can open Customer portal. Hana Kim sent the invite.",
+    time: "3 hr ago",
     kind: "invite",
-    unread: true,
     href: "/live/app/team",
   },
   {
     id: "n5",
-    title: "You have used over half your build minutes",
+    title: "Weekly usage: 72% of automation runs used",
     description:
-      "7,240 of 10,000 minutes this cycle. The cycle resets on Nov 1.",
-    time: "2 days ago",
-    kind: "billing",
+      "7,240 of 10,000 runs this cycle. Owners get an email at 80% and 100%. The count resets on Nov 1.",
+    time: "6 hr ago",
+    kind: "usage",
     href: "/live/app/billing",
   },
 ]
@@ -320,14 +314,14 @@ function NotificationsContent({
           />
           <p className="text-label text-foreground">You are all caught up</p>
           <p className="text-caption text-muted-foreground">
-            Deployments, invites and billing alerts show up here.
+            Mentions, due dates and status changes show up here.
           </p>
         </div>
       ) : (
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           <ul className="grid p-(--overlay-padding)">
             {list.map((item) => {
-              const kind = kinds[item.kind ?? "success"]
+              const kind = kinds[item.kind ?? "mention"]
               const content = (
                 <>
                   <span

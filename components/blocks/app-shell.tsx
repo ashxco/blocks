@@ -74,16 +74,18 @@ export interface AppShellProps {
   className?: string
 }
 
+/** Maya Patel’s workspaces: her company, a customer that added her as a guest, and her own. */
 const workspaces = [
   { id: "acme", name: "Acme Inc.", plan: "Pro plan", initial: "A" },
-  { id: "northwind", name: "Northwind Labs", plan: "Team plan", initial: "N" },
-  { id: "personal", name: "Maya Chen", plan: "Hobby plan", initial: "M" },
+  { id: "northwind", name: "Northwind", plan: "Guest", initial: "N" },
+  { id: "personal", name: "Maya’s projects", plan: "Free plan", initial: "M" },
 ]
 
+/** The projects Maya opened last, with their status as a dot and a screen-reader label. */
 const recentProjects = [
-  { name: "web", status: "Ready", dot: "bg-success" },
-  { name: "api", status: "Failed", dot: "bg-destructive" },
-  { name: "dashboard", status: "Building", dot: "bg-warning" },
+  { name: "Website relaunch", status: "On track", dot: "bg-success" },
+  { name: "Mobile app 2.0", status: "At risk", dot: "bg-warning" },
+  { name: "Customer portal", status: "Off track", dot: "bg-destructive" },
 ]
 
 function NavLinks({ currentPath }: { currentPath: string | null }) {
@@ -145,7 +147,7 @@ function RecentProjects() {
                 >
                   <span className={cn("size-1.5 rounded-full", project.dot)} />
                 </span>
-                <span className="font-mono text-xs">{project.name}</span>
+                <span className="min-w-0 truncate text-sm">{project.name}</span>
                 <span className="sr-only">, {project.status}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -156,8 +158,8 @@ function RecentProjects() {
   )
 }
 
-/** Build minutes this cycle. Matches the billing page and Pro on the pricing page. */
-const buildMinutes = { used: 7240, limit: 10_000 }
+/** Automation runs this cycle. Matches the billing page and Pro on the pricing page. */
+const automationRuns = { used: 7240, limit: 10_000 }
 
 function UsagePanel() {
   const format = (value: number) => value.toLocaleString("en-US")
@@ -166,23 +168,24 @@ function UsagePanel() {
   return (
     <div className="grid gap-3 rounded-lg border border-sidebar-border bg-card p-(--card-padding-sm) text-card-foreground group-data-[collapsible=icon]:hidden">
       <div className="flex items-baseline justify-between gap-2">
-        <p className="text-caption font-semibold text-foreground">
-          Build minutes
+        <p className="truncate text-caption font-semibold text-foreground">
+          Automation runs
         </p>
         <p className="text-caption text-muted-foreground tabular">
-          {format(buildMinutes.used)} / {format(buildMinutes.limit)}
+          {Math.round((automationRuns.used / automationRuns.limit) * 100)}%
         </p>
       </div>
       <Progress
-        value={Math.round((buildMinutes.used / buildMinutes.limit) * 100)}
-        aria-label="Build minutes used this cycle"
+        value={Math.round((automationRuns.used / automationRuns.limit) * 100)}
+        aria-label="Automation runs used this cycle"
         getAriaValueText={() =>
-          `${format(buildMinutes.used)} of ${format(buildMinutes.limit)} minutes`
+          `${format(automationRuns.used)} of ${format(automationRuns.limit)} runs`
         }
         className="gap-0"
       />
       <p className="text-caption text-muted-foreground">
-        Resets Nov 1.{" "}
+        <span className="tabular">{format(automationRuns.used)} of {format(automationRuns.limit)}</span>.{" "}
+        <span className="whitespace-nowrap">Resets Nov 1.</span>{" "}
         <Link
           href="/live/app/billing"
           className="rounded-xs font-semibold text-foreground underline-offset-4 outline-none hover:underline focus-visible:focus-ring"
@@ -325,7 +328,7 @@ function useCurrentPath(activeHref: string | undefined, title: string | undefine
 }
 
 /**
- * The frame for every app page: a collapsible sidebar with the Lumen
+ * The frame for every app page: a collapsible sidebar with the Acme
  * navigation, recent projects, usage and a workspace switcher; a top bar
  * with search (Cmd+K), notifications and the user menu; and the content area.
  * On phones the sidebar opens as a sheet. A preview follows its own width:
@@ -385,7 +388,7 @@ export function AppShell({
         <SidebarHeader className="h-(--header-height) shrink-0 flex-row items-center border-b border-sidebar-border px-4 group-data-[collapsible=icon]:px-2.75">
           <Link
             href="/live/app"
-            aria-label="Lumen, go to overview"
+            aria-label="Acme, go to overview"
             className="rounded-sm outline-none focus-visible:focus-ring"
           >
             {/* The shared wordmark; the collapsed rail keeps only its tile. */}

@@ -7,6 +7,8 @@ import {
   CircleCheckIcon,
   EyeIcon,
   EyeOffIcon,
+  CircleUserRoundIcon,
+  KeyRoundIcon,
   MailCheckIcon,
 } from "lucide-react"
 
@@ -62,7 +64,8 @@ export interface AuthFormProps {
 }
 
 type FieldName = keyof AuthFormValues
-type Provider = "GitHub" | "Google"
+/** Google, or the company’s own identity provider over SAML single sign-on (Business and Enterprise). */
+type Provider = "Google" | "SSO"
 type Status =
   | { state: "idle" }
   | { state: "pending"; via: "email" | Provider }
@@ -71,16 +74,16 @@ type Status =
 const COPY = {
   "sign-in": {
     title: "Welcome back",
-    description: "Sign in to deploy, review previews and read your logs.",
+    description: "Sign in to pick up your tasks, projects and docs where you left them.",
     submit: "Sign in",
     pending: "Signing in",
-    switchPrompt: "New to Lumen?",
+    switchPrompt: "New to Acme?",
     switchLabel: "Create an account",
     continueHref: "/live/app",
   },
   "sign-up": {
     title: "Create your account",
-    description: "Deploy from your first Git push. 14 days of Pro, no card needed.",
+    description: "Plan your team’s work in one place. Free for up to 3 members, or try Pro free for 14 days.",
     submit: "Create account",
     pending: "Creating account",
     switchPrompt: "Already have an account?",
@@ -91,7 +94,7 @@ const COPY = {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
-/** Shortest password Lumen accepts. Sign-up and the security settings both read it. */
+/** Shortest password Acme accepts. Sign-up and the security settings both read it. */
 export const PASSWORD_MIN = 12
 
 function validate(values: AuthFormValues, mode: AuthMode) {
@@ -99,7 +102,7 @@ function validate(values: AuthFormValues, mode: AuthMode) {
   if (mode === "sign-up" && !values.name.trim()) errors.name = "Enter your name."
   if (!values.email.trim()) errors.email = "Enter your email address."
   else if (!EMAIL_PATTERN.test(values.email.trim()))
-    errors.email = "Enter an email address like maya@acme.dev."
+    errors.email = "Enter an email address like maya@acme.com."
   if (!values.password)
     errors.password = mode === "sign-in" ? "Enter your password." : "Choose a password."
   else if (mode === "sign-up" && values.password.length < PASSWORD_MIN)
@@ -221,8 +224,9 @@ export function AuthForm({
             </header>
 
             <div className="mt-8 grid grid-cols-2 gap-3">
-              {(["GitHub", "Google"] as const).map((provider) => {
-                const Icon = provider === "GitHub" ? GitHubMark : GoogleMark
+              {(["Google", "SSO"] as const).map((provider) => {
+                // Neutral icons only: third-party logos stay out of sample content.
+                const Icon = provider === "Google" ? CircleUserRoundIcon : KeyRoundIcon
                 const busy = status.state === "pending" && status.via === provider
                 return (
                   <Button
@@ -231,7 +235,7 @@ export function AuthForm({
                     variant="outline"
                     size="lg"
                     disabled={pending}
-                    aria-label={`Continue with ${provider}`}
+                    aria-label={provider === "SSO" ? "Continue with single sign-on" : `Continue with ${provider}`}
                     onClick={() => void run(provider)}
                   >
                     {busy ? <Spinner data-icon="inline-start" /> : <Icon data-icon="inline-start" />}
@@ -257,7 +261,7 @@ export function AuthForm({
                       id={`${id}-name`}
                       name="name"
                       autoComplete="name"
-                      placeholder="Maya Chen"
+                      placeholder="Maya Patel"
                       value={values.name}
                       onChange={update("name")}
                       onBlur={blur("name")}
@@ -278,7 +282,7 @@ export function AuthForm({
                     inputMode="email"
                     autoComplete="email"
                     spellCheck={false}
-                    placeholder="maya@acme.dev"
+                    placeholder="maya@acme.com"
                     value={values.email}
                     onChange={update("email")}
                     onBlur={blur("email")}
@@ -379,29 +383,6 @@ export function AuthForm({
   )
 }
 
-/*
- * Provider marks, drawn in currentColor so they follow the button's ink in
- * both themes. Sized by the button's data-icon rules, like Lucide icons.
- */
-function GitHubMark(props: React.ComponentProps<"svg">) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false" {...props}>
-      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.96c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
-    </svg>
-  )
-}
-
-function GoogleMark(props: React.ComponentProps<"svg">) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false" {...props}>
-      <path d="M21.6 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-2 3.02v2.5h3.24c1.9-1.75 2.98-4.32 2.98-7.35Z" />
-      <path d="M12 22c2.7 0 4.96-.9 6.62-2.42l-3.24-2.5c-.9.6-2.04.95-3.38.95-2.6 0-4.8-1.76-5.59-4.12H3.07v2.59A10 10 0 0 0 12 22Z" />
-      <path d="M6.41 13.91a6 6 0 0 1 0-3.82V7.5H3.07a10 10 0 0 0 0 9l3.34-2.59Z" />
-      <path d="M12 5.98c1.47 0 2.79.5 3.83 1.5l2.87-2.88A9.97 9.97 0 0 0 12 2a10 10 0 0 0-8.93 5.5l3.34 2.59C7.2 7.74 9.4 5.98 12 5.98Z" />
-    </svg>
-  )
-}
-
 function LegalLink({ href, children }: { href?: string; children: React.ReactNode }) {
   if (!href) return <span className="font-semibold text-foreground">{children}</span>
   return (
@@ -451,13 +432,19 @@ function AuthSuccess({
               Open it to verify your address, then set up your workspace.
             </>
           ) : mode === "sign-up" && provider ? (
-            <>Your Lumen account is linked to {provider}. Set up a workspace to deploy your first project.</>
+            <>
+              Your Acme account is linked to {provider === "SSO" ? "your company’s single sign-on" : provider}. Set
+              up a workspace and invite your team.
+            </>
           ) : provider ? (
-            <>Signed in with {provider}. Your projects and previews are ready where you left them.</>
+            <>
+              Signed in with {provider === "SSO" ? "single sign-on" : provider}. Your tasks and projects are where you
+              left them.
+            </>
           ) : (
             <>
-              Signed in as <span className="font-semibold text-foreground">{email}</span>. Your projects and
-              previews are ready where you left them.
+              Signed in as <span className="font-semibold text-foreground">{email}</span>. Your tasks and projects
+              are where you left them.
             </>
           )}
         </p>

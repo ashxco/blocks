@@ -28,14 +28,14 @@ export interface TeamGridProps {
 }
 
 export const defaultTeam: TeamMember[] = [
-  { name: "Maya Okafor", role: "Co-founder, CEO" },
-  { name: "Daniel Reyes", role: "Co-founder, CTO" },
-  { name: "Priya Natarajan", role: "Staff engineer" },
-  { name: "Tom Lindqvist", role: "Infrastructure" },
-  { name: "Hana Sato", role: "Product design" },
-  { name: "Leo Martins", role: "Developer relations" },
-  { name: "Grace Adeyemi", role: "Customer success" },
-  { name: "Sam Cohen", role: "Platform engineer" },
+  { name: "Hana Kim", role: "Co-founder and CEO" },
+  { name: "Daniel Brooks", role: "Co-founder and CTO" },
+  { name: "Maya Patel", role: "Head of Product" },
+  { name: "Jordan Lee", role: "Engineering Lead" },
+  { name: "Sofia Alvarez", role: "Design Lead" },
+  { name: "Sam Okafor", role: "Customer Success" },
+  { name: "Priya Raman", role: "Marketing" },
+  { name: "Lucas Moreau", role: "Operations" },
 ]
 
 /* Neighbours differ across and down in two, three and four columns. */
@@ -52,8 +52,8 @@ function initialsOf(name: string) {
  */
 export function TeamGrid({
   members = defaultTeam,
-  title = "Small team. Big leverage.",
-  description = "Fourteen people across six time zones, building Lumen in the open and shipping a release every two weeks.",
+  title = "The people behind Acme.",
+  description = "Eighteen people across six time zones, with offices in San Francisco and London. We plan every project in Acme, too.",
   hiring = null,
   contained = true,
   className,

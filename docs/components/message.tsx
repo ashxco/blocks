@@ -1,4 +1,4 @@
-import { CheckCheckIcon, CopyIcon, RotateCcwIcon, SunIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react"
+import { CheckCheckIcon, CopyIcon, RotateCcwIcon, SparklesIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -13,10 +13,10 @@ import {
   MessageHeader,
 } from "@/components/ui/message"
 
-function LumenAvatar() {
+function AssistantAvatar() {
   return (
     <MessageAvatar className="bg-primary text-primary-foreground" aria-hidden="true">
-      <SunIcon />
+      <SparklesIcon />
     </MessageAvatar>
   )
 }
@@ -44,24 +44,24 @@ export default function MessageDocs() {
   return (
     <Examples>
       <Example
-        title="Ask Lumen"
+        title="Ask Acme"
         layout="stack"
-        description="A support conversation. The person asking speaks in ink bubbles on the right; Lumen answers in plain text on the canvas, with actions underneath."
+        description="A conversation with the assistant built into Acme. The person asking speaks in ink bubbles on the right; the assistant answers in plain text on the canvas, with actions underneath."
         code={`<MessageGroup>
   <Message align="end">
     <MessageContent>
       <Bubble>
-        <BubbleContent>My preview deploy for feat/preview-comments failed. What happened?</BubbleContent>
+        <BubbleContent>Can you plan Website relaunch so we launch on Nov 14?</BubbleContent>
       </Bubble>
     </MessageContent>
   </Message>
 
   <Message>
-    <MessageAvatar><SunIcon /></MessageAvatar>
+    <MessageAvatar><SparklesIcon /></MessageAvatar>
     <MessageContent>
-      <MessageHeader><strong>Lumen</strong></MessageHeader>
+      <MessageHeader><strong>Acme</strong></MessageHeader>
       <Bubble variant="ghost">
-        <BubbleContent>The build stopped at the install step…</BubbleContent>
+        <BubbleContent>Yes. Working back from Nov 14, the work splits into four phases…</BubbleContent>
       </Bubble>
       <MessageFooter>{/* copy, rate, retry */}</MessageFooter>
     </MessageContent>
@@ -73,26 +73,26 @@ export default function MessageDocs() {
             <Message align="end">
               <MessageContent>
                 <Bubble>
-                  <BubbleContent>My preview deploy for feat/preview-comments failed. What happened?</BubbleContent>
+                  <BubbleContent>Can you plan Website relaunch so we launch on Nov 14?</BubbleContent>
                 </Bubble>
               </MessageContent>
             </Message>
 
             <Message>
-              <LumenAvatar />
+              <AssistantAvatar />
               <MessageContent>
                 <MessageHeader>
-                  <strong>Lumen</strong>
+                  <strong>Acme</strong>
                 </MessageHeader>
                 <Bubble variant="ghost">
                   <BubbleContent>
                     <p>
-                      The build stopped at the install step. Your branch adds <code>@lumen/comments</code> to
-                      package.json but the lockfile was not updated, so pnpm refused to install.
+                      Yes. Working back from Nov 14, the work splits into four phases: copy and design until Oct 16,
+                      pages until Oct 30, review until Nov 9, then launch prep.
                     </p>
                     <p>
-                      Run <code>pnpm install</code> on the branch, commit <code>pnpm-lock.yaml</code> and push. Lumen
-                      starts a new preview build as soon as the commit arrives.
+                      The tightest week is Oct 12. Jordan Lee has 17 open tasks then, so I suggest giving “Fix the
+                      pricing table on mobile” to Sofia Alvarez. Should I create the tasks and assign them?
                     </p>
                   </BubbleContent>
                 </Bubble>
@@ -105,7 +105,7 @@ export default function MessageDocs() {
             <Message align="end">
               <MessageContent>
                 <Bubble>
-                  <BubbleContent>Pushed. Will the preview keep the database from the last build?</BubbleContent>
+                  <BubbleContent>Yes, create them. Keep Priya on the launch announcement.</BubbleContent>
                 </Bubble>
                 <MessageFooter>
                   <CheckCheckIcon aria-hidden="true" className="size-3.5" />
@@ -115,15 +115,15 @@ export default function MessageDocs() {
             </Message>
 
             <Message>
-              <LumenAvatar />
+              <AssistantAvatar />
               <MessageContent>
                 <MessageHeader>
-                  <strong>Lumen</strong>
+                  <strong>Acme</strong>
                 </MessageHeader>
                 <Bubble variant="ghost">
                   <BubbleContent>
-                    Yes. Each branch keeps its preview database until the branch is merged or deleted, so new builds
-                    reuse the same data.
+                    Done. I created 18 tasks across the four phases and assigned the launch announcement to Priya
+                    Raman. They are on the project timeline now.
                   </BubbleContent>
                 </Bubble>
               </MessageContent>
@@ -138,10 +138,10 @@ export default function MessageDocs() {
         description="Between people, every message gets an avatar and a header with the name and time. Other people’s bubbles use the secondary fill."
         code={`<Message>
   <MessageAvatar>
-    <Avatar size="sm"><AvatarFallback>MO</AvatarFallback></Avatar>
+    <Avatar size="sm"><AvatarFallback tone="mint">JL</AvatarFallback></Avatar>
   </MessageAvatar>
   <MessageContent>
-    <MessageHeader><strong>Mateo Ortiz</strong> 14:12</MessageHeader>
+    <MessageHeader><strong>Jordan Lee</strong> 14:12</MessageHeader>
     <Bubble variant="secondary">…</Bubble>
   </MessageContent>
 </Message>`}
@@ -151,20 +151,20 @@ export default function MessageDocs() {
             <Message>
               <MessageAvatar>
                 <Avatar size="sm">
-                  <AvatarFallback>MO</AvatarFallback>
+                  <AvatarFallback tone="mint">JL</AvatarFallback>
                 </Avatar>
               </MessageAvatar>
               <MessageContent>
                 <MessageHeader>
-                  <strong>Mateo Ortiz</strong>
+                  <strong>Jordan Lee</strong>
                   <span>14:12</span>
                 </MessageHeader>
                 <BubbleGroup>
                   <Bubble variant="secondary">
-                    <BubbleContent>Production is on a41c9e2 now.</BubbleContent>
+                    <BubbleContent>The pricing page is ready for review.</BubbleContent>
                   </Bubble>
                   <Bubble variant="secondary">
-                    <BubbleContent>Can someone check the redirect on the apex domain before I announce it?</BubbleContent>
+                    <BubbleContent>Can someone check the plan table on a phone before I mark it done?</BubbleContent>
                   </Bubble>
                 </BubbleGroup>
               </MessageContent>
@@ -173,16 +173,16 @@ export default function MessageDocs() {
             <Message align="end">
               <MessageAvatar>
                 <Avatar size="sm">
-                  <AvatarFallback>PR</AvatarFallback>
+                  <AvatarFallback tone="violet">MP</AvatarFallback>
                 </Avatar>
               </MessageAvatar>
               <MessageContent>
                 <MessageHeader>
-                  <strong>Priya Raman</strong>
+                  <strong>Maya Patel</strong>
                   <span>14:13</span>
                 </MessageHeader>
                 <Bubble>
-                  <BubbleContent>Checked. lumen.app redirects to www with a single 308.</BubbleContent>
+                  <BubbleContent>Checked it on two phones. All four plans line up, so mark it done.</BubbleContent>
                 </Bubble>
               </MessageContent>
             </Message>
@@ -201,12 +201,12 @@ export default function MessageDocs() {
           <Message>
             <MessageAvatar>
               <Avatar size="sm">
-                <AvatarFallback>AK</AvatarFallback>
+                <AvatarFallback tone="rose">SA</AvatarFallback>
               </Avatar>
             </MessageAvatar>
             <MessageContent>
               <MessageHeader>
-                <strong>Aiko Kato</strong>
+                <strong>Sofia Alvarez</strong>
               </MessageHeader>
               <Bubble variant="secondary">
                 <BubbleContent>Starts on the left.</BubbleContent>
@@ -217,7 +217,7 @@ export default function MessageDocs() {
           <Message align="end">
             <MessageAvatar>
               <Avatar size="sm">
-                <AvatarFallback>PR</AvatarFallback>
+                <AvatarFallback tone="violet">MP</AvatarFallback>
               </Avatar>
             </MessageAvatar>
             <MessageContent>

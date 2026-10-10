@@ -151,28 +151,6 @@ export function Meta({ children, className }: { children: React.ReactNode; class
 }
 
 /**
- * Children resolve semantic colours to one theme's values, whatever theme the
- * page is in (`.light` and `.dark` are both scoping classes in tokens.css).
- */
-export function ThemeScope({
-  theme,
-  children,
-  className,
-  style,
-}: {
-  theme: "light" | "dark"
-  children: React.ReactNode
-  className?: string
-  style?: React.CSSProperties
-}) {
-  return (
-    <div className={cn(theme, className)} style={style}>
-      {children}
-    </div>
-  )
-}
-
-/**
  * A small chip of a semantic colour as one theme resolves it. The hairline
  * comes from the page's own theme, so the chip stays visible whatever its
  * value: a dark value on a dark page, a white value on a white page.
@@ -194,28 +172,5 @@ export function ScopedChip({
         <span className="block size-full" style={{ backgroundColor: `var(${cssVar})` }} />
       </span>
     </span>
-  )
-}
-
-/**
- * One theme's swatch of a semantic colour, read from the live CSS variable
- * inside a theme scope. Translucent colours are painted over that theme's
- * canvas (or the panel, for panel roles) so the swatch shows what people see.
- */
-export function ThemeSwatch({
-  cssVar,
-  theme,
-  base = "background",
-  className,
-}: {
-  cssVar: string
-  theme: "light" | "dark"
-  base?: "background" | "panel"
-  className?: string
-}) {
-  return (
-    <ThemeScope theme={theme} className={cn(base === "panel" ? "bg-panel" : "bg-background", className)}>
-      <div className="size-full" style={{ backgroundColor: `var(${cssVar})` }} />
-    </ThemeScope>
   )
 }

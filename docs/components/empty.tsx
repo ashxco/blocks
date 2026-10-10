@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowUpRightIcon, GitBranchIcon, GlobeIcon, SearchXIcon, UsersIcon } from "lucide-react"
+import { ArrowRightIcon, FolderKanbanIcon, SearchXIcon, UsersIcon, ZapIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -24,34 +24,34 @@ export default function EmptyDocs() {
         code={`<Empty>
   <EmptyHeader>
     <EmptyMedia variant="icon">
-      <GitBranchIcon />
+      <FolderKanbanIcon />
     </EmptyMedia>
-    <EmptyTitle>No deployments yet</EmptyTitle>
+    <EmptyTitle>No projects yet</EmptyTitle>
     <EmptyDescription>
-      Push to any branch of lumen-labs/lumen-web and Lumen builds it here.
+      Create a project to plan work, assign tasks and track progress with your team.
     </EmptyDescription>
   </EmptyHeader>
   <EmptyContent>
-    <Button>Deploy main</Button>
-    <Button variant="ghost">Read the guide</Button>
+    <Button>Create project</Button>
+    <Button variant="ghost">Browse templates</Button>
   </EmptyContent>
 </Empty>`}
       >
         <Empty>
           <EmptyHeader>
             <EmptyMedia variant="icon">
-              <GitBranchIcon />
+              <FolderKanbanIcon />
             </EmptyMedia>
-            <EmptyTitle>No deployments yet</EmptyTitle>
+            <EmptyTitle>No projects yet</EmptyTitle>
             <EmptyDescription>
-              Push to any branch of lumen-labs/lumen-web and Lumen builds it here, with its own preview URL.
+              Create a project to plan work, assign tasks and track progress with your team, or start from a template.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Button>Deploy main</Button>
+            <Button>Create project</Button>
             <Button variant="ghost">
-              Read the guide
-              <ArrowUpRightIcon data-icon="inline-end" />
+              Browse templates
+              <ArrowRightIcon data-icon="inline-end" />
             </Button>
           </EmptyContent>
         </Empty>
@@ -69,26 +69,26 @@ export default function EmptyDocs() {
           <Empty variant="subtle">
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <GlobeIcon />
+                <ZapIcon />
               </EmptyMedia>
-              <EmptyTitle>No custom domains</EmptyTitle>
-              <EmptyDescription>lumen-web is live at lumen-web.lumen.app.</EmptyDescription>
+              <EmptyTitle>No automations yet</EmptyTitle>
+              <EmptyDescription>Let Acme move tasks and notify owners for you.</EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-              <Button size="sm">Add domain</Button>
+              <Button size="sm">Create rule</Button>
             </EmptyContent>
           </Empty>
           <div className="flex rounded-(--card-radius) border">
             <Empty variant="plain">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
-                  <GlobeIcon />
+                  <ZapIcon />
                 </EmptyMedia>
-                <EmptyTitle>No custom domains</EmptyTitle>
-                <EmptyDescription>lumen-web is live at lumen-web.lumen.app.</EmptyDescription>
+                <EmptyTitle>No automations yet</EmptyTitle>
+                <EmptyDescription>Let Acme move tasks and notify owners for you.</EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
-                <Button size="sm">Add domain</Button>
+                <Button size="sm">Create rule</Button>
               </EmptyContent>
             </Empty>
           </div>
@@ -102,8 +102,8 @@ export default function EmptyDocs() {
         code={`<Empty variant="plain">
   <EmptyHeader>
     <EmptyMedia variant="icon"><SearchXIcon /></EmptyMedia>
-    <EmptyTitle>No logs match “timeout”</EmptyTitle>
-    <EmptyDescription>Try a shorter query or a longer time range.</EmptyDescription>
+    <EmptyTitle>No tasks match “invoice”</EmptyTitle>
+    <EmptyDescription>Try a shorter query or include completed tasks.</EmptyDescription>
   </EmptyHeader>
   <EmptyContent>
     <Button variant="outline" size="sm">Clear filters</Button>
@@ -115,15 +115,15 @@ export default function EmptyDocs() {
             <EmptyMedia variant="icon">
               <SearchXIcon />
             </EmptyMedia>
-            <EmptyTitle>No logs match “timeout”</EmptyTitle>
-            <EmptyDescription>Nothing in the last 24 hours. Try a shorter query or a longer time range.</EmptyDescription>
+            <EmptyTitle>No tasks match “invoice”</EmptyTitle>
+            <EmptyDescription>Nothing in open tasks. Try a shorter query or include completed tasks.</EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
             <Button variant="outline" size="sm">
               Clear filters
             </Button>
             <Button variant="ghost" size="sm">
-              Search 7 days
+              Include completed
             </Button>
           </EmptyContent>
         </Empty>
@@ -138,7 +138,7 @@ export default function EmptyDocs() {
         <Card className="max-w-prose">
           <CardHeader className="border-b">
             <CardTitle>Members</CardTitle>
-            <CardDescription>People who can deploy to Lumen Labs</CardDescription>
+            <CardDescription>People who can see and edit Website relaunch</CardDescription>
             <CardAction>
               <Button size="sm">Invite</Button>
             </CardAction>
@@ -150,7 +150,7 @@ export default function EmptyDocs() {
               </EmptyMedia>
               <EmptyTitle>You are the only member</EmptyTitle>
               <EmptyDescription>
-                Invite your team to review previews and deploy. <a href="#roles">Compare roles</a>
+                Invite your team to assign tasks and share updates. <a href="#roles">Compare roles</a>
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
@@ -159,7 +159,7 @@ export default function EmptyDocs() {
 
       <Guidelines
         do={[
-          "Say what is missing in the title, in plain words: “No deployments yet”.",
+          "Say what is missing in the title, in plain words: “No projects yet”.",
           "Explain in one sentence how the space fills up.",
           "Offer the single action that fixes it, plus at most one secondary link.",
         ]}

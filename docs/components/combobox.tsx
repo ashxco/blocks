@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, GitBranchIcon, SearchIcon } from "lucide-react"
+import { CheckIcon, SearchIcon, UserRoundIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -27,85 +27,73 @@ import {
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
 import { cn } from "@/lib/utils"
 
-const frameworks = [
-  "Next.js",
-  "Astro",
-  "Remix",
-  "SvelteKit",
-  "Nuxt",
-  "Vite",
-  "Hono",
-  "Express",
-  "Eleventy",
-  "Gatsby",
+const labels = [
+  "Bug",
+  "Design",
+  "Research",
+  "Content",
+  "Legal",
+  "Billing",
+  "Mobile",
+  "Onboarding",
+  "Performance",
+  "Accessibility",
 ]
 
-const branches = [
-  "main",
-  "develop",
-  "staging",
-  "release/2.4",
-  "release/2.5",
-  "feat/checkout-redesign",
-  "feat/edge-images",
-  "fix/checkout-timeout",
-  "fix/preview-urls",
-  "chore/upgrade-next",
-  "docs/api-reference",
-  "perf/cold-starts",
+const members = [
+  "Maya Patel",
+  "Jordan Lee",
+  "Sofia Alvarez",
+  "Hana Kim",
+  "Daniel Brooks",
+  "Sam Okafor",
+  "Priya Raman",
+  "Lucas Moreau",
+  "Noah Fischer",
+  "Aisha Bello",
+  "Kenji Watanabe",
+  "Chloe Martin",
 ]
 
-const regionGroups = [
-  {
-    value: "Europe",
-    items: [
-      { label: "Frankfurt (fra1)", value: "fra1" },
-      { label: "London (lhr1)", value: "lhr1" },
-      { label: "Paris (cdg1)", value: "cdg1" },
-    ],
-  },
+const zoneGroups = [
   {
     value: "Americas",
     items: [
-      { label: "Virginia (iad1)", value: "iad1" },
-      { label: "San Francisco (sfo1)", value: "sfo1" },
-      { label: "São Paulo (gru1)", value: "gru1" },
+      { label: "San Francisco (PT)", value: "san-francisco" },
+      { label: "New York (ET)", value: "new-york" },
+      { label: "Toronto (ET)", value: "toronto" },
+    ],
+  },
+  {
+    value: "Europe",
+    items: [
+      { label: "London (GMT)", value: "london" },
+      { label: "Lisbon (WET)", value: "lisbon" },
+      { label: "Berlin (CET)", value: "berlin" },
     ],
   },
   {
     value: "Asia Pacific",
     items: [
-      { label: "Singapore (sin1)", value: "sin1" },
-      { label: "Tokyo (hnd1)", value: "hnd1" },
-      { label: "Sydney (syd1)", value: "syd1" },
+      { label: "Bengaluru (IST)", value: "bengaluru" },
+      { label: "Tokyo (JST)", value: "tokyo" },
+      { label: "Sydney (AET)", value: "sydney" },
     ],
   },
 ]
 
-type RegionGroup = (typeof regionGroups)[number]
-type Region = RegionGroup["items"][number]
-
-const teammates = [
-  "Maya Chen",
-  "Jonas Weber",
-  "Priya Raman",
-  "Tomás Silva",
-  "Aiko Tanaka",
-  "Sam Okafor",
-  "Lena Novak",
-  "Elena Petrova",
-  "Kwame Mensah",
-]
+type ZoneGroup = (typeof zoneGroups)[number]
+type Zone = ZoneGroup["items"][number]
 
 const projects = [
-  { label: "acme-web", value: "acme-web", tint: "bg-tint-violet" },
-  { label: "acme-api", value: "acme-api", tint: "bg-tint-sky" },
-  { label: "acme-docs", value: "acme-docs", tint: "bg-tint-mint" },
-  { label: "acme-dashboard", value: "acme-dashboard", tint: "bg-tint-sand" },
-  { label: "acme-status", value: "acme-status", tint: "bg-tint-rose" },
-  { label: "acme-blog", value: "acme-blog", tint: "bg-tint-sky" },
-  { label: "acme-emails", value: "acme-emails", tint: "bg-tint-mint" },
-  { label: "acme-workers", value: "acme-workers", tint: "bg-tint-sand" },
+  { label: "Website relaunch", value: "website-relaunch", tint: "bg-tint-violet" },
+  { label: "Mobile app 2.0", value: "mobile-app", tint: "bg-tint-sky" },
+  { label: "Q4 planning", value: "q4-planning", tint: "bg-tint-mint" },
+  { label: "Customer portal", value: "customer-portal", tint: "bg-tint-sand" },
+  { label: "Onboarding redesign", value: "onboarding-redesign", tint: "bg-tint-rose" },
+  { label: "Brand refresh", value: "brand-refresh", tint: "bg-tint-sky" },
+  { label: "Billing migration", value: "billing-migration", tint: "bg-tint-mint" },
+  { label: "Help center", value: "help-center", tint: "bg-tint-sand" },
 ]
 
 type Project = (typeof projects)[number]
@@ -116,18 +104,18 @@ function ProjectMark({ project }: { project: Project }) {
       aria-hidden="true"
       className={`grid size-5 shrink-0 place-items-center rounded-xs text-xs font-bold text-foreground ${project.tint}`}
     >
-      {project.label.replace(/^acme-/, "").charAt(0).toUpperCase()}
+      {project.label.charAt(0)}
     </span>
   )
 }
 
-function TeammatePicker() {
+function FollowerPicker() {
   const anchor = useComboboxAnchor()
 
   return (
     <Field className="w-full max-w-sm">
-      <FieldLabel htmlFor="notify-teammates">Notify on failed deploys</FieldLabel>
-      <Combobox items={teammates} multiple defaultValue={["Maya Chen", "Priya Raman"]}>
+      <FieldLabel htmlFor="task-followers">Followers</FieldLabel>
+      <Combobox items={members} multiple defaultValue={["Maya Patel", "Priya Raman"]}>
         <ComboboxChips ref={anchor}>
           <ComboboxValue>
             {(values: string[]) => (
@@ -136,15 +124,15 @@ function TeammatePicker() {
                   <ComboboxChip key={value}>{value}</ComboboxChip>
                 ))}
                 <ComboboxChipsInput
-                  id="notify-teammates"
-                  placeholder={values.length ? "Add more" : "Add teammates"}
+                  id="task-followers"
+                  placeholder={values.length ? "Add more" : "Add members"}
                 />
               </>
             )}
           </ComboboxValue>
         </ComboboxChips>
         <ComboboxContent anchor={anchor}>
-          <ComboboxEmpty>No teammates match. Invite them from Team settings.</ComboboxEmpty>
+          <ComboboxEmpty>No members match. Invite them from Members settings.</ComboboxEmpty>
           <ComboboxList>
             {(item: string) => (
               <ComboboxItem key={item} value={item}>
@@ -154,13 +142,13 @@ function TeammatePicker() {
           </ComboboxList>
         </ComboboxContent>
       </Combobox>
-      <FieldDescription>They get an email and a Slack message when a production build fails.</FieldDescription>
+      <FieldDescription>They get an email and a Slack message when the status or due date changes.</FieldDescription>
     </Field>
   )
 }
 
 /**
- * Project switcher with the search inside the popup. As in RegionPicker, a
+ * Project switcher with the search inside the popup. As in TimeZonePicker, a
  * picture of the open popup sits under the button so readers see the search
  * row without opening it; it steps aside while the real popup is showing.
  */
@@ -194,7 +182,7 @@ function ProjectSwitcher() {
         </ComboboxTrigger>
         <ComboboxContent>
           <ComboboxInput showTrigger={false} placeholder="Find a project" aria-label="Find a project" />
-          <ComboboxEmpty>No projects match. Search by name, like acme-api.</ComboboxEmpty>
+          <ComboboxEmpty>No projects match. Search by name, like Brand refresh.</ComboboxEmpty>
           <ComboboxList>
             {(project: Project) => (
               <ComboboxItem key={project.value} value={project}>
@@ -206,7 +194,7 @@ function ProjectSwitcher() {
         </ComboboxContent>
       </Combobox>
       <div aria-hidden="true" inert className={cn(comboboxStyles.popup, "flex flex-col overflow-hidden", open && "invisible")}>
-        <div className={cn(comboboxStyles.search, "text-base text-muted-foreground md:text-sm")}>
+        <div className={cn(comboboxStyles.search, "text-control text-muted-foreground")}>
           <SearchIcon className="size-4 shrink-0" />
           Find a project
         </div>
@@ -232,37 +220,37 @@ function ProjectSwitcher() {
 }
 
 /**
- * Region search with grouped results. A picture of the open list sits under
+ * Time zone search with grouped results. A picture of the open list sits under
  * the input, drawn with the combobox's own recipes, so readers see the groups
  * without opening it. It is hidden from assistive technology and steps aside
  * while the real popup, which opens in the same place, is showing.
  */
-function RegionPicker() {
-  const [value, setValue] = React.useState<Region | null>(regionGroups[0].items[0])
+function TimeZonePicker() {
+  const [value, setValue] = React.useState<Zone | null>(zoneGroups[1].items[0])
   const [open, setOpen] = React.useState(false)
 
   return (
     <div className="grid w-full max-w-sm gap-1.5">
       <Field>
-        <FieldLabel htmlFor="combobox-region">Region</FieldLabel>
+        <FieldLabel htmlFor="combobox-time-zone">Time zone</FieldLabel>
         <Combobox
-          items={regionGroups}
+          items={zoneGroups}
           value={value}
-          onValueChange={(next) => setValue(next as Region | null)}
+          onValueChange={(next) => setValue(next as Zone | null)}
           onOpenChange={setOpen}
         >
-          <ComboboxInput id="combobox-region" placeholder="Search regions" />
+          <ComboboxInput id="combobox-time-zone" placeholder="Search time zones" />
           <ComboboxContent>
-            <ComboboxEmpty>No regions match. Try a city or a code like fra1.</ComboboxEmpty>
+            <ComboboxEmpty>No time zones match. Try a city, like Lisbon.</ComboboxEmpty>
             <ComboboxList className="max-h-96">
-              {(group: RegionGroup, index: number) => (
+              {(group: ZoneGroup, index: number) => (
                 <ComboboxGroup key={group.value} items={group.items}>
                   {index > 0 ? <ComboboxSeparator /> : null}
                   <ComboboxLabel>{group.value}</ComboboxLabel>
                   <ComboboxCollection>
-                    {(region: Region) => (
-                      <ComboboxItem key={region.value} value={region}>
-                        {region.label}
+                    {(zone: Zone) => (
+                      <ComboboxItem key={zone.value} value={zone}>
+                        {zone.label}
                       </ComboboxItem>
                     )}
                   </ComboboxCollection>
@@ -274,15 +262,15 @@ function RegionPicker() {
       </Field>
       <div aria-hidden="true" inert className={cn(comboboxStyles.popup, open && "invisible")}>
         <div className={cn(comboboxStyles.list, "max-h-none")}>
-          {regionGroups.map((group, index) => (
+          {zoneGroups.map((group, index) => (
             <div key={group.value}>
               {index > 0 ? <div className={comboboxStyles.separator} /> : null}
               <div className={comboboxStyles.label}>{group.value}</div>
-              {group.items.map((region) => {
-                const selected = region.value === value?.value
+              {group.items.map((zone) => {
+                const selected = zone.value === value?.value
                 return (
-                  <div key={region.value} className={comboboxStyles.item} data-selected={selected ? "" : undefined}>
-                    {region.label}
+                  <div key={zone.value} className={comboboxStyles.item} data-selected={selected ? "" : undefined}>
+                    {zone.label}
                     {selected ? (
                       <span className={comboboxStyles.itemIndicator}>
                         <CheckIcon className="size-4 text-foreground" strokeWidth={2.5} />
@@ -307,11 +295,11 @@ export default function ComboboxDocs() {
         layout="stack"
         description="Type to filter, use the arrow keys to move and Enter to pick. The chevron opens the full list."
         code={`<Field>
-  <FieldLabel htmlFor="framework">Framework</FieldLabel>
-  <Combobox items={frameworks}>
-    <ComboboxInput id="framework" placeholder="Search frameworks" />
+  <FieldLabel htmlFor="label">Label</FieldLabel>
+  <Combobox items={labels}>
+    <ComboboxInput id="label" placeholder="Search labels" />
     <ComboboxContent>
-      <ComboboxEmpty>No frameworks match. Try Next.js, Astro or Remix.</ComboboxEmpty>
+      <ComboboxEmpty>No labels match. Try Bug, Design or Content.</ComboboxEmpty>
       <ComboboxList>
         {(item) => (
           <ComboboxItem key={item} value={item}>
@@ -324,11 +312,11 @@ export default function ComboboxDocs() {
 </Field>`}
       >
         <Field className="max-w-sm">
-          <FieldLabel htmlFor="combobox-framework">Framework</FieldLabel>
-          <Combobox items={frameworks}>
-            <ComboboxInput id="combobox-framework" placeholder="Search frameworks" />
+          <FieldLabel htmlFor="combobox-label">Label</FieldLabel>
+          <Combobox items={labels}>
+            <ComboboxInput id="combobox-label" placeholder="Search labels" />
             <ComboboxContent>
-              <ComboboxEmpty>No frameworks match. Try Next.js, Astro or Remix.</ComboboxEmpty>
+              <ComboboxEmpty>No labels match. Try Bug, Design or Content.</ComboboxEmpty>
               <ComboboxList>
                 {(item: string) => (
                   <ComboboxItem key={item} value={item}>
@@ -346,13 +334,13 @@ export default function ComboboxDocs() {
         layout="stack"
         description="Set showClear to swap the chevron for a clear button once a value is picked."
         code={`<Field>
-  <FieldLabel htmlFor="branch">Production branch</FieldLabel>
-  <Combobox items={branches} defaultValue="main">
-    <ComboboxInput id="branch" showClear placeholder="Search branches">
-      <GitBranchIcon className="order-first me-1.5" />
+  <FieldLabel htmlFor="assignee">Assignee</FieldLabel>
+  <Combobox items={members} defaultValue="Jordan Lee">
+    <ComboboxInput id="assignee" showClear placeholder="Search members">
+      <UserRoundIcon className="order-first me-1.5" />
     </ComboboxInput>
     <ComboboxContent>
-      <ComboboxEmpty>No branches match. Check the spelling, or push the branch first.</ComboboxEmpty>
+      <ComboboxEmpty>No members match. Invite them from Members settings.</ComboboxEmpty>
       <ComboboxList>
         {(item) => (
           <ComboboxItem key={item} value={item}>
@@ -365,13 +353,13 @@ export default function ComboboxDocs() {
 </Field>`}
       >
         <Field className="max-w-sm">
-          <FieldLabel htmlFor="combobox-branch">Production branch</FieldLabel>
-          <Combobox items={branches} defaultValue="main">
-            <ComboboxInput id="combobox-branch" showClear placeholder="Search branches">
-              <GitBranchIcon className="order-first me-1.5" />
+          <FieldLabel htmlFor="combobox-assignee">Assignee</FieldLabel>
+          <Combobox items={members} defaultValue="Jordan Lee">
+            <ComboboxInput id="combobox-assignee" showClear placeholder="Search members">
+              <UserRoundIcon className="order-first me-1.5" />
             </ComboboxInput>
             <ComboboxContent>
-              <ComboboxEmpty>No branches match. Check the spelling, or push the branch first.</ComboboxEmpty>
+              <ComboboxEmpty>No members match. Invite them from Members settings.</ComboboxEmpty>
               <ComboboxList>
                 {(item: string) => (
                   <ComboboxItem key={item} value={item}>
@@ -388,19 +376,19 @@ export default function ComboboxDocs() {
         title="Groups"
         layout="stack"
         description="Pass grouped items and render each group with a label, with a separator before every group but the first. Empty groups disappear as you type. The list is drawn open under the input."
-        code={`<Combobox items={regionGroups}>
-  <ComboboxInput id="region" placeholder="Search regions" />
+        code={`<Combobox items={zoneGroups}>
+  <ComboboxInput id="time-zone" placeholder="Search time zones" />
   <ComboboxContent>
-    <ComboboxEmpty>No regions match. Try a city or a code like fra1.</ComboboxEmpty>
+    <ComboboxEmpty>No time zones match. Try a city, like Lisbon.</ComboboxEmpty>
     <ComboboxList>
       {(group, index) => (
         <ComboboxGroup key={group.value} items={group.items}>
           {index > 0 ? <ComboboxSeparator /> : null}
           <ComboboxLabel>{group.value}</ComboboxLabel>
           <ComboboxCollection>
-            {(region) => (
-              <ComboboxItem key={region.value} value={region}>
-                {region.label}
+            {(zone) => (
+              <ComboboxItem key={zone.value} value={zone}>
+                {zone.label}
               </ComboboxItem>
             )}
           </ComboboxCollection>
@@ -410,7 +398,7 @@ export default function ComboboxDocs() {
   </ComboboxContent>
 </Combobox>`}
       >
-        <RegionPicker />
+        <TimeZonePicker />
       </Example>
 
       <Example
@@ -419,7 +407,7 @@ export default function ComboboxDocs() {
         layout="stack"
         code={`const anchor = useComboboxAnchor()
 
-<Combobox items={teammates} multiple defaultValue={["Maya Chen", "Priya Raman"]}>
+<Combobox items={members} multiple defaultValue={["Maya Patel", "Priya Raman"]}>
   <ComboboxChips ref={anchor}>
     <ComboboxValue>
       {(values) => (
@@ -427,20 +415,20 @@ export default function ComboboxDocs() {
           {values.map((value) => (
             <ComboboxChip key={value}>{value}</ComboboxChip>
           ))}
-          <ComboboxChipsInput id="teammates" placeholder={values.length ? "Add more" : "Add teammates"} />
+          <ComboboxChipsInput id="followers" placeholder={values.length ? "Add more" : "Add members"} />
         </>
       )}
     </ComboboxValue>
   </ComboboxChips>
   <ComboboxContent anchor={anchor}>
-    <ComboboxEmpty>No teammates match. Invite them from Team settings.</ComboboxEmpty>
+    <ComboboxEmpty>No members match. Invite them from Members settings.</ComboboxEmpty>
     <ComboboxList>
       {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
     </ComboboxList>
   </ComboboxContent>
 </Combobox>`}
       >
-        <TeammatePicker />
+        <FollowerPicker />
       </Example>
 
       <Example
@@ -456,7 +444,7 @@ export default function ComboboxDocs() {
   </ComboboxTrigger>
   <ComboboxContent>
     <ComboboxInput showTrigger={false} placeholder="Find a project" aria-label="Find a project" />
-    <ComboboxEmpty>No projects match. Search by name, like acme-api.</ComboboxEmpty>
+    <ComboboxEmpty>No projects match. Search by name, like Brand refresh.</ComboboxEmpty>
     <ComboboxList>
       {(project) => (
         <ComboboxItem key={project.value} value={project}>
@@ -475,36 +463,36 @@ export default function ComboboxDocs() {
         description="Disabled fields fade and ignore input. Invalid fields take aria-invalid on the input and explain the fix below."
         layout="stack"
         code={`<Field>
-  <FieldLabel htmlFor="framework">Framework preset</FieldLabel>
-  <Combobox items={frameworks} defaultValue="Next.js" disabled>
-    <ComboboxInput id="framework" disabled />
+  <FieldLabel htmlFor="label">Label</FieldLabel>
+  <Combobox items={labels} defaultValue="Design" disabled>
+    <ComboboxInput id="label" disabled />
     <ComboboxContent>
       <ComboboxList>
         {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
       </ComboboxList>
     </ComboboxContent>
   </Combobox>
-  <FieldDescription>Detected from package.json.</FieldDescription>
+  <FieldDescription>Set by the Design requests form.</FieldDescription>
 </Field>
 
 <Field data-invalid>
-  <FieldLabel htmlFor="branch">Production branch</FieldLabel>
-  <Combobox items={branches}>
-    <ComboboxInput id="branch" placeholder="Search branches" aria-invalid />
+  <FieldLabel htmlFor="assignee">Assignee</FieldLabel>
+  <Combobox items={members}>
+    <ComboboxInput id="assignee" placeholder="Search members" aria-invalid />
     <ComboboxContent>
-      <ComboboxEmpty>No branches match. Check the spelling, or push the branch first.</ComboboxEmpty>
+      <ComboboxEmpty>No members match. Invite them from Members settings.</ComboboxEmpty>
       <ComboboxList>
         {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
       </ComboboxList>
     </ComboboxContent>
   </Combobox>
-  <FieldError>Choose a branch. Lumen deploys it to production on every push.</FieldError>
+  <FieldError>Choose who owns this task.</FieldError>
 </Field>`}
       >
         <div className="grid w-full max-w-2xl gap-6 @xl:grid-cols-2">
           <Field>
-            <FieldLabel htmlFor="combobox-disabled">Framework preset</FieldLabel>
-            <Combobox items={frameworks} defaultValue="Next.js" disabled>
+            <FieldLabel htmlFor="combobox-disabled">Label</FieldLabel>
+            <Combobox items={labels} defaultValue="Design" disabled>
               <ComboboxInput id="combobox-disabled" disabled />
               <ComboboxContent>
                 <ComboboxList>
@@ -516,14 +504,14 @@ export default function ComboboxDocs() {
                 </ComboboxList>
               </ComboboxContent>
             </Combobox>
-            <FieldDescription>Detected from package.json.</FieldDescription>
+            <FieldDescription>Set by the Design requests form.</FieldDescription>
           </Field>
           <Field data-invalid="true">
-            <FieldLabel htmlFor="combobox-invalid">Production branch</FieldLabel>
-            <Combobox items={branches}>
-              <ComboboxInput id="combobox-invalid" placeholder="Search branches" aria-invalid="true" />
+            <FieldLabel htmlFor="combobox-invalid">Assignee</FieldLabel>
+            <Combobox items={members}>
+              <ComboboxInput id="combobox-invalid" placeholder="Search members" aria-invalid="true" />
               <ComboboxContent>
-                <ComboboxEmpty>No branches match. Check the spelling, or push the branch first.</ComboboxEmpty>
+                <ComboboxEmpty>No members match. Invite them from Members settings.</ComboboxEmpty>
                 <ComboboxList>
                   {(item: string) => (
                     <ComboboxItem key={item} value={item}>
@@ -533,7 +521,7 @@ export default function ComboboxDocs() {
                 </ComboboxList>
               </ComboboxContent>
             </Combobox>
-            <FieldError>Choose a branch. Lumen deploys it to production on every push.</FieldError>
+            <FieldError>Choose who owns this task.</FieldError>
           </Field>
         </div>
       </Example>

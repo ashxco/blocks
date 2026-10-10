@@ -4,7 +4,7 @@ import { ResetRequestForm } from "./_components/reset-request-form"
 
 export const metadata: Metadata = {
   title: "Reset your password",
-  description: "Get a link to choose a new password for your Lumen account.",
+  description: "Get a link to choose a new password for your Acme account.",
 }
 
 export default function ForgotPasswordPage() {

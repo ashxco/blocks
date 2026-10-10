@@ -10,12 +10,12 @@ import { cn } from "@/lib/utils"
 
 export {
   HeroProductMoment,
-  DeploymentsCard,
-  RequestsCard,
-  DeployedCard,
-  DeploymentStatusBadge,
+  MomentListCard,
+  MomentTrendCard,
+  MomentHighlightCard,
+  MomentStatusBadge,
 } from "@/components/blocks/hero/product-moment"
-export type { Deployment, DeploymentStatus } from "@/components/blocks/hero/product-moment"
+export type { MomentListItem, MomentStatus } from "@/components/blocks/hero/product-moment"
 
 export interface HeroAction {
   label: string
@@ -33,7 +33,10 @@ export interface HeroProps {
   primaryAction?: HeroAction | null
   /** Secondary call to action. Pass null to hide it. */
   secondaryAction?: HeroAction | null
-  /** Shell command shown with a copy button. Pass null to hide it. */
+  /**
+   * A one-line command with a copy button, such as an SDK install on a
+   * developer page. Hidden by default.
+   */
   command?: string | null
   /** Replaces the default product moment. Pass null for a copy-only hero. */
   visual?: React.ReactNode
@@ -46,21 +49,21 @@ export interface HeroProps {
 
 const defaultTitle = (
   <>
-    Ship anything.
+    Plan it. Track it.
     <br />
-    {/* A no-break space keeps "Own" with the highlighted word on narrow columns. */}
-    Own{"\u00a0"}
-    <span className="text-brand">everything</span>.
+    {/* A no-break space keeps "it" with the highlighted word on narrow columns. */}
+    Ship it{"\u00a0"}
+    <span className="text-brand">together</span>.
   </>
 )
 
 const defaultDescription =
-  "Push your code and Lumen builds, ships and runs it on our cloud or on servers you own. Every branch gets a preview URL, every deploy can roll back."
+  "Acme is one workspace for your team’s projects, tasks, docs and reports. Everyone sees what’s next, automations handle the handoffs, and nobody chases a status update."
 
 /**
  * The opening section of a marketing page: a display headline with one word
- * in brand violet, a lead, two actions, an install command and a product
- * moment built from real components.
+ * in brand violet, a lead, two actions and a product moment built from real
+ * components. An optional command line suits developer pages.
  */
 export function Hero({
   variant = "split",
@@ -68,7 +71,7 @@ export function Hero({
   description = defaultDescription,
   primaryAction = { label: "Start free trial", href: "/live/sign-up" },
   secondaryAction = { label: "Book a demo", href: "/live/contact" },
-  command = "npm i -g lumen",
+  command = null,
   visual,
   as: Heading = "h1",
   contained = true,

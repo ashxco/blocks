@@ -65,6 +65,9 @@
   --text-label--line-height: 1.4;
   --text-label--letter-spacing: -0.005em;
   --text-label--font-weight: 600;
+  --text-control: 1rem;
+  --text-control--line-height: 1.6;
+  --text-control--letter-spacing: 0em;
   --text-caption: 0.8125rem;
   --text-caption--line-height: 1.45;
   --text-caption--letter-spacing: 0em;
@@ -323,7 +326,7 @@
   --input: var(--bk-ink-200);
   --popover-border: var(--bk-ink-200);
   --ring: var(--bk-violet-600);
-  --overlay: oklch(0.135 0.008 286 / 0.28);
+  --overlay: oklch(0.135 0.008 286 / 0.2);
   --panel: var(--bk-ink-900);
   --panel-foreground: var(--bk-ink-0);
   --panel-muted: oklch(1 0 0 / 0.64);
@@ -545,7 +548,7 @@
   --input: var(--bk-ink-200);
   --popover-border: var(--bk-ink-200);
   --ring: var(--bk-violet-600);
-  --overlay: oklch(0.135 0.008 286 / 0.28);
+  --overlay: oklch(0.135 0.008 286 / 0.2);
   --panel: var(--bk-ink-900);
   --panel-foreground: var(--bk-ink-0);
   --panel-muted: oklch(1 0 0 / 0.64);
@@ -575,4 +578,13 @@
   --panel-success: var(--bk-green-400);
   --panel-warning: var(--bk-amber-400);
   --panel-destructive: var(--bk-red-400);
+}
+
+/* Breakpoint values ($extensions.blocks.breakpoints in the token sources):
+   the base values above apply on phones, these from each breakpoint up. */
+@media (width >= 48rem) {
+  :root {
+    --text-control: 0.875rem;
+    --text-control--line-height: 1.45;
+  }
 }

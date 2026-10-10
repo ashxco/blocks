@@ -1,6 +1,6 @@
 "use client"
 
-import { RocketIcon, ServerIcon, TerminalIcon } from "lucide-react"
+import { ClipboardCheckIcon, SendIcon, UserPlusIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Steps } from "@/components/blocks/steps"
@@ -43,22 +43,22 @@ export default function StepsDocs() {
         layout="full"
         description="Columns follow the number of steps, up to four. Write titles as single verbs."
         code={`<Steps
-  title="Bring your own servers."
-  description="Lumen runs the same pipeline on hardware you already pay for."
+  title="Bring your clients in."
+  description="Share the work with people outside your team, without giving them the whole workspace."
   steps={[
-    { title: "Install", description: "Run one command on any Linux server with SSH access.", icon: <TerminalIcon /> },
-    { title: "Attach", description: "Add the server to a project. Lumen sets up Docker, TLS and logging.", icon: <ServerIcon /> },
-    { title: "Deploy", description: "Push as usual. Builds run on your servers and Lumen routes traffic to them.", icon: <RocketIcon /> },
+    { title: "Invite", description: "Add a client as a guest from any project they work on.", icon: <UserPlusIcon /> },
+    { title: "Share", description: "Guests see only the projects you share, and comment where the work happens.", icon: <SendIcon /> },
+    { title: "Approve", description: "Clients sign off on tasks themselves, so nobody chases approvals by email.", icon: <ClipboardCheckIcon /> },
   ]}
 />`}
       >
         <Steps
-          title="Bring your own servers."
-          description="Lumen runs the same pipeline on hardware you already pay for."
+          title="Bring your clients in."
+          description="Share the work with people outside your team, without giving them the whole workspace."
           steps={[
-            { title: "Install", description: "Run one command on any Linux server with SSH access.", icon: <TerminalIcon /> },
-            { title: "Attach", description: "Add the server to a project. Lumen sets up Docker, TLS and logging.", icon: <ServerIcon /> },
-            { title: "Deploy", description: "Push as usual. Builds run on your servers and Lumen routes traffic to them.", icon: <RocketIcon /> },
+            { title: "Invite", description: "Add a client as a guest from any project they work on.", icon: <UserPlusIcon /> },
+            { title: "Share", description: "Guests see only the projects you share, and comment where the work happens.", icon: <SendIcon /> },
+            { title: "Approve", description: "Clients sign off on tasks themselves, so nobody chases approvals by email.", icon: <ClipboardCheckIcon /> },
           ]}
         />
       </Example>
@@ -78,9 +78,9 @@ export default function StepsDocs() {
 
       <ApiTable
         rows={[
-          { prop: "title", type: "ReactNode | null", default: '"From repo to production in four moves."', description: "Section heading. Pass null to render the steps alone." },
+          { prop: "title", type: "ReactNode | null", default: '"Up and running in an afternoon."', description: "Section heading. Pass null to render the steps alone." },
           { prop: "description", type: "ReactNode", description: "Supporting text beside the heading." },
-          { prop: "steps", type: "{ title: string; description: string; icon: ReactNode }[]", default: "Connect, Configure, Deploy, Grow", description: "The steps, in order. Up to four per row." },
+          { prop: "steps", type: "{ title: string; description: string; icon: ReactNode }[]", default: "Start, Invite, Connect, Automate", description: "The steps, in order. Up to four per row." },
           { prop: "tone", type: '"default" | "panel"', default: '"default"', description: "Render the section on a dark panel." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section spacing." },
           { prop: "className", type: "string", description: "Classes for the section." },

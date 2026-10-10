@@ -1,19 +1,22 @@
 /**
  * Pieces of the viewer overview: the entry tiles and the live miniatures
- * inside them, and the deploy card used for the light and dark comparison.
- * Every miniature is made of real Blocks components or token swatches.
+ * inside them, and the project card used for the light and dark comparison.
+ * Every miniature is made of real Blocks components or token swatches. The
+ * sample content is Acme Inc., the placeholder company of the templates.
  */
 import * as React from "react"
 import Link from "next/link"
 import {
   ArrowRightIcon,
-  GitBranchIcon,
-  GitCommitHorizontalIcon,
-  RocketIcon,
-  RotateCcwIcon,
-  TerminalIcon,
+  CalendarIcon,
+  ChartColumnIcon,
+  ChartGanttIcon,
+  FolderKanbanIcon,
+  ListChecksIcon,
+  SquareKanbanIcon,
 } from "lucide-react"
 
+import { BrandMark } from "@/components/blocks/wordmark"
 import { Avatar, AvatarFallback, AvatarGroup } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -148,17 +151,17 @@ export function ComponentsMiniature() {
   return (
     <div className="grid w-full max-w-80 grid-cols-[minmax(0,1fr)] gap-4 rounded-(--card-radius) border bg-background p-5 sm:max-w-96 sm:p-6">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-title text-foreground">Deploy settings</span>
-        <Badge variant="success">Live</Badge>
+        <span className="text-title text-foreground">Project settings</span>
+        <Badge variant="success">On track</Badge>
       </div>
-      <Input defaultValue="lumen-web" aria-label="Project name" readOnly />
+      <Input defaultValue="Website relaunch" aria-label="Project name" readOnly />
       <div className="flex items-center justify-between gap-3 text-label text-foreground">
-        Deploy on push
-        <Switch defaultChecked aria-label="Deploy on push" />
+        Weekly summary email
+        <Switch defaultChecked aria-label="Weekly summary email" />
       </div>
       <div className="flex items-center gap-3 text-label font-medium text-copy">
-        <Checkbox defaultChecked aria-label="Comment on pull requests" />
-        Comment on pull requests
+        <Checkbox defaultChecked aria-label="Let guests comment" />
+        Let guests comment
       </div>
       <div className="flex gap-2 pt-1">
         <Button size="sm">Save changes</Button>
@@ -178,13 +181,13 @@ export function MoleculesMiniature() {
       <div className="grid gap-4 rounded-(--card-radius) border bg-background p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="grid gap-1">
-            <span className="text-caption font-semibold text-muted-foreground">Deployments this week</span>
+            <span className="text-caption font-semibold text-muted-foreground">Tasks completed this month</span>
             <span className="text-h2 text-foreground tabular">1,284</span>
           </div>
           <Badge variant="success">+12%</Badge>
         </div>
-        {/* Past weeks in a neutral that reads on the card in both themes; only
-            this week takes the series colour. */}
+        {/* Past months in a neutral that reads on the card in both themes; only
+            this month takes the series colour. */}
         <div className="flex h-20 items-end gap-1.5">
           {bars.map((h, i) => (
             <span
@@ -196,11 +199,11 @@ export function MoleculesMiniature() {
       </div>
       <div className="flex items-center gap-3 rounded-(--card-radius) border bg-background p-4">
         <Avatar size="sm">
-          <AvatarFallback>MC</AvatarFallback>
+          <AvatarFallback>MP</AvatarFallback>
         </Avatar>
         {/* Short enough for a phone; it wraps rather than cuts off below sm. */}
         <span className="min-w-0 flex-1 text-label font-medium text-copy sm:truncate">
-          <span className="font-semibold text-foreground">Maya Chen</span> deployed main
+          <span className="font-semibold text-foreground">Maya Patel</span> reviewed homepage copy
         </span>
         <span className="text-caption text-muted-foreground">2m</span>
       </div>
@@ -209,36 +212,44 @@ export function MoleculesMiniature() {
 }
 
 const features = [
-  { icon: GitBranchIcon, label: "Previews", tint: "bg-tint-violet" },
-  { icon: TerminalIcon, label: "Logs", tint: "bg-tint-mint" },
-  { icon: RotateCcwIcon, label: "Rollbacks", tint: "bg-tint-sky" },
+  { icon: SquareKanbanIcon, label: "Boards", tint: "bg-tint-violet" },
+  { icon: ChartGanttIcon, label: "Timelines", tint: "bg-tint-mint" },
+  { icon: ChartColumnIcon, label: "Reports", tint: "bg-tint-sky" },
 ]
 
 export function TemplatesMiniature() {
   return (
     <div className="@container w-full max-w-112 overflow-hidden rounded-(--card-radius) border border-panel-border bg-card text-copy">
       <div className="flex h-8 items-center border-b px-3">
-        <span className="font-mono text-xs text-muted-foreground">lumen.dev</span>
+        <span className="font-mono text-xs text-muted-foreground">acme.com</span>
       </div>
       <div className="grid gap-5 p-5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-1.5 text-label font-extrabold text-foreground">
-            <span className="size-3 rounded-full bg-foreground" />
-            Lumen
+            <BrandMark className="size-4" />
+            Acme
           </span>
           <span className="hidden gap-3 text-xs font-medium text-muted-foreground @sm:flex">
-            <span>Product</span>
+            <span>Features</span>
             <span>Pricing</span>
-            <span>Docs</span>
+            <span>Changelog</span>
           </span>
-          <Button size="sm">Sign up</Button>
+          <Button size="sm" variant="ghost">
+            Log in
+          </Button>
         </div>
         <div className="grid gap-2 py-2">
-          <span className="text-h3 text-foreground">Ship on every push.</span>
-          <span className="text-caption text-copy">Preview URLs for every branch, logs and metrics built in.</span>
+          <span className="text-h3 text-foreground">
+            {/* The Home template's headline; the no-break space keeps "it" with "together". */}
+            Plan it. Track it.
+            <br />
+            Ship it{"\u00a0"}
+            <span className="text-brand">together</span>.
+          </span>
+          <span className="text-caption text-copy">Projects, tasks, docs and reports in one workspace.</span>
         </div>
         <div className="flex gap-2">
-          <Button size="sm">Start deploying</Button>
+          <Button size="sm">Start free trial</Button>
           <Button size="sm" variant="outline">
             Book a demo
           </Button>
@@ -257,58 +268,61 @@ export function TemplatesMiniature() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Deploy card (light and dark comparison)                                     */
+/* Project card (light and dark comparison)                                    */
 /* -------------------------------------------------------------------------- */
 
-export function DeployCard() {
+export function ProjectCard() {
   return (
     <div className="grid w-full max-w-112 gap-5 rounded-(--card-radius) border bg-card p-(--card-padding) text-card-foreground">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-md bg-brand-subtle text-brand-subtle-foreground">
-            <RocketIcon aria-hidden="true" className="size-4" />
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="grid size-10 shrink-0 place-items-center rounded-md bg-brand-subtle text-brand-subtle-foreground">
+            <FolderKanbanIcon aria-hidden="true" className="size-4" />
           </span>
-          <div className="grid">
-            <span className="text-title text-foreground">lumen-web</span>
-            <span className="text-caption text-muted-foreground">Production</span>
+          <div className="grid min-w-0">
+            <span className="truncate text-title text-foreground">Website relaunch</span>
+            <span className="truncate text-caption text-muted-foreground">Marketing</span>
           </div>
         </div>
-        <Badge variant="success">Ready</Badge>
+        <Badge variant="success" className="shrink-0">
+          On track
+        </Badge>
       </div>
       <div className="grid gap-2 text-caption text-copy">
         <span className="flex items-center gap-2">
-          <GitBranchIcon aria-hidden="true" className="size-3.5 text-muted-foreground" />
-          main
+          <CalendarIcon aria-hidden="true" className="size-3.5 text-muted-foreground" />
+          Launches Nov 14
         </span>
         <span className="flex items-center gap-2">
-          <GitCommitHorizontalIcon aria-hidden="true" className="size-3.5 text-muted-foreground" />
-          <span className="font-mono">3f9c2e1</span> Add preview comments
+          <ListChecksIcon aria-hidden="true" className="size-3.5 text-muted-foreground" />
+          Next up: Review homepage copy
         </span>
       </div>
       <div className="grid gap-2">
         <div className="flex items-center justify-between text-caption">
-          <span className="font-semibold text-foreground">Build</span>
-          <span className="text-muted-foreground tabular">42s</span>
+          <span className="font-semibold text-foreground">Tasks done</span>
+          <span className="text-muted-foreground tabular">38 of 52</span>
         </div>
-        <Progress value={100} aria-label="Build progress" />
+        <Progress value={73} aria-label="Tasks done" />
       </div>
-      <div className="flex items-center justify-between gap-3 border-t pt-5">
+      {/* This row wraps on the narrowest phones rather than push the card past the screen. */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-5">
         <AvatarGroup>
           <Avatar size="sm">
-            <AvatarFallback>MC</AvatarFallback>
+            <AvatarFallback>PR</AvatarFallback>
           </Avatar>
           <Avatar size="sm">
-            <AvatarFallback>JS</AvatarFallback>
+            <AvatarFallback>MP</AvatarFallback>
           </Avatar>
           <Avatar size="sm">
-            <AvatarFallback>AR</AvatarFallback>
+            <AvatarFallback>SA</AvatarFallback>
           </Avatar>
         </AvatarGroup>
         <div className="flex gap-2">
           <Button size="sm" variant="outline">
-            View logs
+            Share
           </Button>
-          <Button size="sm">Visit</Button>
+          <Button size="sm">Open</Button>
         </div>
       </div>
     </div>

@@ -13,27 +13,32 @@ function wait(ms: number) {
 type ToastOptions = Parameters<typeof toast.add>[0]
 
 const types: (ToastOptions & { label: string; type?: "success" | "info" | "warning" | "error" })[] = [
-  { label: "Success", title: "Deployment ready", description: "lumen-web is live on lumen.app.", type: "success" },
+  {
+    label: "Success",
+    title: "Invite sent",
+    description: "Sam Okafor will get an email with a link to Mobile app 2.0.",
+    type: "success",
+  },
   {
     label: "Info",
-    title: "Invite sent",
-    description: "Priya Raman will get an email with a link to join the team.",
+    title: "Report scheduled",
+    description: "The workload report goes to your inbox every Monday at 9:00.",
     type: "info",
   },
   {
     label: "Warning",
-    title: "Build is slower than usual",
-    description: "The cache was cleared, so this build installs every package.",
+    title: "Due date falls on a weekend",
+    description: "“Plan the launch email” is now due Saturday, Oct 31.",
     type: "warning",
   },
   {
     label: "Error",
-    title: "Could not add domain",
-    description: "lumen.app is already used by another project.",
+    title: "Couldn’t send the invite",
+    description: "priya@acme.com already belongs to this workspace.",
     type: "error",
     priority: "high",
   },
-  { label: "Plain", title: "Copied preview URL" },
+  { label: "Plain", title: "Link to task copied" },
 ]
 
 /**
@@ -72,7 +77,7 @@ function TypesDemo() {
 }
 
 function ActionDemo() {
-  const [state, setState] = React.useState<"deleted" | "restored" | "closed">("deleted")
+  const [state, setState] = React.useState<"archived" | "restored" | "closed">("archived")
   return (
     <ToastDemo
       actions={
@@ -80,27 +85,27 @@ function ActionDemo() {
           variant="outline"
           onClick={() => {
             const id = toast.add({
-              title: "Environment variable deleted",
-              description: "DATABASE_URL was removed from Preview.",
+              title: "Project archived",
+              description: "Onboarding redesign moved to the archive.",
               timeout: 8000,
               actionProps: {
                 children: "Undo",
                 onClick: () => {
                   toast.close(id)
-                  toast.add({ title: "DATABASE_URL restored", type: "success" })
+                  toast.add({ title: "Onboarding redesign restored", type: "success" })
                 },
               },
             })
           }}
         >
-          Delete variable
+          Archive project
         </Button>
       }
     >
-      {state === "deleted" ? (
+      {state === "archived" ? (
         <ToastCard
-          title="Environment variable deleted"
-          description="DATABASE_URL was removed from Preview."
+          title="Project archived"
+          description="Onboarding redesign moved to the archive."
           action={
             <Button variant="outline" size="xs" onClick={() => setState("restored")}>
               Undo
@@ -110,7 +115,7 @@ function ActionDemo() {
         />
       ) : null}
       {state === "restored" ? (
-        <ToastCard type="success" title="DATABASE_URL restored" onClose={() => setState("closed")} />
+        <ToastCard type="success" title="Onboarding redesign restored" onClose={() => setState("closed")} />
       ) : null}
     </ToastDemo>
   )
@@ -124,13 +129,13 @@ function PromiseDemo() {
           <Button
             onClick={() =>
               toast.promise(wait(2400), {
-                loading: { title: "Redeploying lumen-web", description: "Building from main" },
-                success: { title: "Redeploy complete", description: "Live in 3 regions." },
-                error: { title: "Redeploy failed", description: "Open the logs to see why." },
+                loading: { title: "Exporting the workload report", description: "October, all projects" },
+                success: { title: "Report ready", description: "We emailed the CSV file to maya@acme.com." },
+                error: { title: "Export failed", description: "Try again in a minute." },
               })
             }
           >
-            Redeploy
+            Export report
           </Button>
           <Button
             variant="outline"
@@ -157,8 +162,8 @@ function PromiseDemo() {
         </>
       }
     >
-      <StaticToast type="loading" title="Redeploying lumen-web" description="Building from main" />
-      <StaticToast type="success" title="Redeploy complete" description="Live in 3 regions." />
+      <StaticToast type="loading" title="Exporting the workload report" description="October, all projects" />
+      <StaticToast type="success" title="Report ready" description="We emailed the CSV file to maya@acme.com." />
       <StaticToast
         type="error"
         title="Could not rotate the key"
@@ -177,7 +182,7 @@ function UpdateDemo() {
           onClick={async () => {
             const id = toast.add({
               title: "Uploading 24 files",
-              description: "Static assets for lumen-docs",
+              description: "Attachments for Website relaunch",
               type: "loading",
               timeout: 0,
             })
@@ -192,7 +197,7 @@ function UpdateDemo() {
             })
           }}
         >
-          Upload assets
+          Upload files
         </Button>
       }
     >
@@ -210,8 +215,8 @@ export default function ToastDocs() {
         code={`import { toast } from "@/components/ui/toast"
 
 toast.add({
-  title: "Deployment ready",
-  description: "lumen-web is live on lumen.app.",
+  title: "Invite sent",
+  description: "Sam Okafor will get an email with a link to Mobile app 2.0.",
   type: "success",
 })`}
       >
@@ -222,12 +227,12 @@ toast.add({
         title="With an action"
         description="Offer one short action, such as undo. Keep the toast open longer so people have time to use it."
         code={`toast.add({
-  title: "Environment variable deleted",
-  description: "DATABASE_URL was removed from Preview.",
+  title: "Project archived",
+  description: "Onboarding redesign moved to the archive.",
   timeout: 8000,
   actionProps: {
     children: "Undo",
-    onClick: () => restoreVariable(),
+    onClick: () => restoreProject(),
   },
 })`}
       >
@@ -236,11 +241,11 @@ toast.add({
 
       <Example
         title="Loading and promises"
-        description="Pass a promise to show a loading toast that turns into success or error when it settles. In the demo, Redeploy succeeds and Rotate API key times out."
-        code={`toast.promise(redeploy(), {
-  loading: { title: "Redeploying lumen-web", description: "Building from main" },
-  success: { title: "Redeploy complete", description: "Live in 3 regions." },
-  error: { title: "Redeploy failed", description: "Open the logs to see why." },
+        description="Pass a promise to show a loading toast that turns into success or error when it settles. In the demo, Export report succeeds and Rotate API key times out."
+        code={`toast.promise(exportReport(), {
+  loading: { title: "Exporting the workload report", description: "October, all projects" },
+  success: { title: "Report ready", description: "We emailed the CSV file to maya@acme.com." },
+  error: { title: "Export failed", description: "Try again in a minute." },
 })`}
       >
         <PromiseDemo />
@@ -258,7 +263,7 @@ toast.update(id, { title: "Upload complete", type: "success", timeout: 4000 })`}
 
       <Guidelines
         do={[
-          "Use a toast to confirm an action the person just took: saved, sent, deployed.",
+          "Use a toast to confirm an action the person just took: saved, sent, archived.",
           "Write the title as the outcome in a few words. Add a description only if it helps.",
           "Offer undo for actions that remove something.",
           "Use priority high for errors, so screen readers announce them right away.",

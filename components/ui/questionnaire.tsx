@@ -273,7 +273,7 @@ function QuestionnaireInput({
       <QuestionnairePrimitive.Input
         data-slot="questionnaire-input"
         className={cn(
-          "h-(--control-height-md) w-full min-w-0 rounded-(--control-radius) border border-input bg-muted px-(--control-padding-x) text-base text-foreground md:text-sm",
+          "h-(--control-height-md) w-full min-w-0 rounded-(--control-radius) border border-input bg-muted px-(--control-padding-x) text-control text-foreground",
           "outline-none transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard",
           "placeholder:text-muted-foreground hover:border-foreground/25",
           "focus-visible:border-ring focus-visible:bg-background focus-visible:focus-ring",

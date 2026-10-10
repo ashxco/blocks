@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, GlobeIcon } from "lucide-react"
+import { CheckIcon, MailIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines, tokenPx } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -10,66 +10,71 @@ import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
-const domainPattern = /^(?!-)[a-z0-9-]+(\.[a-z0-9-]+)+$/
+const emailPattern = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/
+const members = [
+  "maya", "hana", "daniel", "lucas", "jordan", "sofia", "priya", "sam", "noah",
+  "aisha", "kenji", "chloe", "rui", "ava", "leila", "arjun", "ben", "tom",
+].map((name) => `${name}@acme.com`)
 
-function AddDomain() {
+function InviteByEmail() {
   const id = React.useId()
   const [value, setValue] = React.useState("")
   const [error, setError] = React.useState<string | null>(null)
-  const [domains, setDomains] = React.useState(["acme.dev", "www.acme.dev"])
+  const [invites, setInvites] = React.useState(["theo@acme.com", "ines@acme.com"])
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const domain = value.trim().toLowerCase()
-    if (!domain) return setError("Enter a domain to add.")
-    if (/^https?:\/\//.test(domain)) return setError("Leave out https://. Enter just the domain, like docs.acme.dev.")
-    if (!domainPattern.test(domain)) return setError("Enter a full domain with a dot, like docs.acme.dev.")
-    if (domains.includes(domain)) return setError(`${domain} is already on this project.`)
-    setDomains((d) => [...d, domain])
+    const email = value.trim().toLowerCase()
+    if (!email) return setError("Enter an email address to send an invite.")
+    if (/[<>]/.test(email)) return setError("Leave out the name. Enter just the address, like alex@acme.com.")
+    if (!emailPattern.test(email)) return setError("Enter a full email address, like alex@acme.com.")
+    if (members.includes(email)) return setError(`${email} is already a member of this workspace.`)
+    if (invites.includes(email)) return setError(`${email} already has an invite.`)
+    setInvites((list) => [...list, email])
     setValue("")
     setError(null)
   }
 
   return (
-    <Card className="@container/domains w-full max-w-md">
+    <Card className="@container/invites w-full max-w-md">
       <CardHeader>
-        <CardTitle>Domains</CardTitle>
-        <CardDescription className="text-pretty">Point a domain at this project. Lumen issues the certificate.</CardDescription>
+        <CardTitle>Invite members</CardTitle>
+        <CardDescription className="text-pretty">Add people to the Acme Inc. workspace. They join as members.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
         <form noValidate onSubmit={onSubmit}>
           <Field data-invalid={Boolean(error)}>
-            <FieldLabel htmlFor={`${id}-domain`}>Domain</FieldLabel>
+            <FieldLabel htmlFor={`${id}-email`}>Email</FieldLabel>
             <div className="flex gap-2">
               <Input
-                id={`${id}-domain`}
+                id={`${id}-email`}
+                type="email"
                 value={value}
                 onChange={(e) => {
                   setValue(e.target.value)
                   if (error) setError(null)
                 }}
-                placeholder="docs.acme.dev"
+                placeholder="alex@acme.com"
                 autoComplete="off"
                 spellCheck={false}
-                inputMode="url"
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? `${id}-error` : undefined}
               />
-              <Button type="submit">Add</Button>
+              <Button type="submit">Invite</Button>
             </div>
             <FieldError id={`${id}-error`}>{error}</FieldError>
           </Field>
         </form>
         <ul className="grid divide-y border-t">
-          {domains.map((d) => (
-            <li key={d} className="flex items-center justify-between gap-4 py-3">
+          {invites.map((email) => (
+            <li key={email} className="flex items-center justify-between gap-4 py-3">
               <span className="flex min-w-0 items-center gap-3">
-                <GlobeIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-                <span className="truncate text-label text-foreground">{d}</span>
+                <MailIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                <span className="truncate text-label text-foreground">{email}</span>
               </span>
               <span className="flex shrink-0 items-center gap-1.5 text-caption text-success">
                 <CheckIcon aria-hidden="true" className="size-3.5" strokeWidth={2.5} />
-                <span className="sr-only @sm/domains:not-sr-only">Valid configuration</span>
+                <span className="sr-only @sm/invites:not-sr-only">Invite sent</span>
               </span>
             </li>
           ))}
@@ -104,12 +109,12 @@ export default function InputDocs() {
         description="A filled control that turns to the canvas colour with a violet border and outline while focused. Always pair it with a label."
         code={`<Field>
   <FieldLabel htmlFor="name">Project name</FieldLabel>
-  <Input id="name" placeholder="acme-web" />
+  <Input id="name" placeholder="Website relaunch" />
 </Field>`}
       >
         <Field className="max-w-sm">
           <FieldLabel htmlFor="input-default">Project name</FieldLabel>
-          <Input id="input-default" placeholder="acme-web" />
+          <Input id="input-default" placeholder="Website relaunch" />
         </Field>
       </Example>
 
@@ -119,15 +124,15 @@ export default function InputDocs() {
         description="Heights come from --control-height-sm, -md and -lg and match buttons of the same size. Medium is the default; keep one size per form."
         code={`<Field>
   <FieldLabel htmlFor="filter-sm">Small</FieldLabel>
-  <Input id="filter-sm" size="sm" placeholder="Filter logs" />
+  <Input id="filter-sm" size="sm" placeholder="Filter tasks" />
 </Field>
 <Field>
   <FieldLabel htmlFor="filter-md">Medium</FieldLabel>
-  <Input id="filter-md" placeholder="Filter logs" />
+  <Input id="filter-md" placeholder="Filter tasks" />
 </Field>
 <Field>
   <FieldLabel htmlFor="filter-lg">Large</FieldLabel>
-  <Input id="filter-lg" size="lg" placeholder="Filter logs" />
+  <Input id="filter-lg" size="lg" placeholder="Filter tasks" />
 </Field>`}
       >
         <div className="grid w-full max-w-sm gap-6">
@@ -136,7 +141,7 @@ export default function InputDocs() {
               <FieldLabel htmlFor={`input-size-${size}`}>
                 {label} <span className="font-normal text-muted-foreground">{height}</span>
               </FieldLabel>
-              <Input id={`input-size-${size}`} size={size} placeholder="Filter logs" />
+              <Input id={`input-size-${size}`} size={size} placeholder="Filter tasks" />
             </Field>
           ))}
         </div>
@@ -148,12 +153,12 @@ export default function InputDocs() {
         description="Read-only fields drop the fill so they read as values, not inputs. Invalid fields take a destructive border and an error that says how to fix them."
         code={`<Field>
   <FieldLabel htmlFor="name">Project name</FieldLabel>
-  <Input id="name" placeholder="acme-web" />
+  <Input id="name" placeholder="Website relaunch" />
 </Field>
 
 <Field>
   <FieldLabel htmlFor="name-filled">Project name</FieldLabel>
-  <Input id="name-filled" defaultValue="acme-web" />
+  <Input id="name-filled" defaultValue="Mobile app 2.0" />
 </Field>
 
 <Field>
@@ -162,28 +167,28 @@ export default function InputDocs() {
 </Field>
 
 <Field data-disabled>
-  <FieldLabel htmlFor="branch">Production branch</FieldLabel>
-  <Input id="branch" disabled defaultValue="main" />
-  <FieldDescription>Set by the Git integration.</FieldDescription>
+  <FieldLabel htmlFor="email">Email</FieldLabel>
+  <Input id="email" disabled defaultValue="maya@acme.com" />
+  <FieldDescription>Only an admin can change member emails.</FieldDescription>
 </Field>
 
 <Field data-invalid>
-  <FieldLabel htmlFor="name-invalid">Project name</FieldLabel>
-  <Input id="name-invalid" aria-invalid aria-describedby="name-invalid-error" defaultValue="Acme Web" />
-  <FieldError id="name-invalid-error">Use lowercase letters, numbers and hyphens, like acme-web.</FieldError>
+  <FieldLabel htmlFor="slug-invalid">Workspace URL</FieldLabel>
+  <Input id="slug-invalid" aria-invalid aria-describedby="slug-invalid-error" defaultValue="Acme Inc." />
+  <FieldError id="slug-invalid-error">Use lowercase letters, numbers and hyphens, like acme.</FieldError>
 </Field>`}
       >
         <div className="grid w-full max-w-2xl gap-x-6 gap-y-8 @xl:grid-cols-2">
           <StateCell state="Empty">
             <Field>
               <FieldLabel htmlFor="input-empty">Project name</FieldLabel>
-              <Input id="input-empty" placeholder="acme-web" />
+              <Input id="input-empty" placeholder="Website relaunch" />
             </Field>
           </StateCell>
           <StateCell state="Filled">
             <Field>
               <FieldLabel htmlFor="input-filled">Project name</FieldLabel>
-              <Input id="input-filled" defaultValue="acme-web" />
+              <Input id="input-filled" defaultValue="Mobile app 2.0" />
             </Field>
           </StateCell>
           <StateCell state="Read-only">
@@ -194,16 +199,16 @@ export default function InputDocs() {
           </StateCell>
           <StateCell state="Disabled">
             <Field data-disabled="true">
-              <FieldLabel htmlFor="input-disabled">Production branch</FieldLabel>
-              <Input id="input-disabled" disabled defaultValue="main" />
-              <FieldDescription>Set by the Git integration.</FieldDescription>
+              <FieldLabel htmlFor="input-disabled">Email</FieldLabel>
+              <Input id="input-disabled" disabled defaultValue="maya@acme.com" />
+              <FieldDescription>Only an admin can change member emails.</FieldDescription>
             </Field>
           </StateCell>
           <StateCell state="Invalid" className="@xl:col-span-2">
             <Field data-invalid>
-              <FieldLabel htmlFor="input-invalid">Project name</FieldLabel>
-              <Input id="input-invalid" aria-invalid aria-describedby="input-invalid-error" defaultValue="Acme Web" />
-              <FieldError id="input-invalid-error">Use lowercase letters, numbers and hyphens, like acme-web.</FieldError>
+              <FieldLabel htmlFor="input-invalid">Workspace URL</FieldLabel>
+              <Input id="input-invalid" aria-invalid aria-describedby="input-invalid-error" defaultValue="Acme Inc." />
+              <FieldError id="input-invalid-error">Use lowercase letters, numbers and hyphens, like acme.</FieldError>
             </Field>
           </StateCell>
         </div>
@@ -215,7 +220,7 @@ export default function InputDocs() {
         description="Use the type that matches the value so browsers offer the right keyboard and autofill."
         code={`<Field>
   <FieldLabel htmlFor="email">Work email</FieldLabel>
-  <Input id="email" type="email" autoComplete="email" placeholder="jamie@acme.dev" />
+  <Input id="email" type="email" autoComplete="email" placeholder="maya@acme.com" />
 </Field>
 
 <Field>
@@ -224,58 +229,58 @@ export default function InputDocs() {
 </Field>
 
 <Field>
-  <FieldLabel htmlFor="concurrency">Build concurrency</FieldLabel>
-  <Input id="concurrency" type="number" min={1} max={20} defaultValue={4} className="max-w-24 tabular" />
+  <FieldLabel htmlFor="seats">Seats</FieldLabel>
+  <Input id="seats" type="number" min={1} max={500} defaultValue={18} className="max-w-24 tabular" />
 </Field>
 
 <Field>
   <FieldLabel htmlFor="webhook">Webhook URL</FieldLabel>
-  <Input id="webhook" type="url" inputMode="url" autoComplete="url" placeholder="https://hooks.acme.dev/deploys" />
+  <Input id="webhook" type="url" inputMode="url" autoComplete="url" placeholder="https://example.com/hook" />
 </Field>`}
       >
         <div className="grid w-full max-w-2xl gap-6 @xl:grid-cols-2">
           <Field>
             <FieldLabel htmlFor="input-email">Work email</FieldLabel>
-            <Input id="input-email" type="email" autoComplete="email" placeholder="jamie@acme.dev" />
+            <Input id="input-email" type="email" autoComplete="email" placeholder="maya@acme.com" />
           </Field>
           <Field>
             <FieldLabel htmlFor="input-password">Password</FieldLabel>
             <Input id="input-password" type="password" autoComplete="current-password" defaultValue="correct-horse" />
           </Field>
           <Field>
-            <FieldLabel htmlFor="input-number">Build concurrency</FieldLabel>
-            <Input id="input-number" type="number" min={1} max={20} defaultValue={4} className="max-w-24 tabular" />
+            <FieldLabel htmlFor="input-number">Seats</FieldLabel>
+            <Input id="input-number" type="number" min={1} max={500} defaultValue={18} className="max-w-24 tabular" />
           </Field>
           <Field>
             <FieldLabel htmlFor="input-url">Webhook URL</FieldLabel>
-            <Input id="input-url" type="url" inputMode="url" autoComplete="url" placeholder="https://hooks.acme.dev/deploys" />
+            <Input id="input-url" type="url" inputMode="url" autoComplete="url" placeholder="https://example.com/hook" />
           </Field>
         </div>
       </Example>
 
       <Example
-        title="Add a domain"
-        description="An input and its action on one line. Errors appear below the row and clear as soon as the person edits the value. Try https://docs.acme.dev."
+        title="Invite by email"
+        description="An input and its action on one line. Errors appear below the row and clear as soon as the person edits the value. Try alex@acme or maya@acme.com."
         code={`<form onSubmit={onSubmit}>
   <Field data-invalid={!!error}>
-    <FieldLabel htmlFor="domain">Domain</FieldLabel>
+    <FieldLabel htmlFor="email">Email</FieldLabel>
     <div className="flex gap-2">
-      <Input id="domain" aria-invalid={!!error} aria-describedby="domain-error" />
-      <Button type="submit">Add</Button>
+      <Input id="email" type="email" aria-invalid={!!error} aria-describedby="email-error" />
+      <Button type="submit">Invite</Button>
     </div>
-    <FieldError id="domain-error">{error}</FieldError>
+    <FieldError id="email-error">{error}</FieldError>
   </Field>
 </form>`}
         surface="subtle"
       >
-        <AddDomain />
+        <InviteByEmail />
       </Example>
 
       <Guidelines
         do={[
           "Give every input a visible label. Placeholders vanish as soon as people type.",
           "Use the type, inputMode and autoComplete that match the value.",
-          "Size the field to the value it takes: a port number does not need the full width.",
+          "Size the field to the value it takes: a seat count does not need the full width.",
           "Explain the format in a FieldDescription before people get it wrong.",
         ]}
         dont={[

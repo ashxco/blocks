@@ -1,15 +1,21 @@
 "use client"
 
 import {
-  ActivityIcon,
-  GaugeIcon,
-  RocketIcon,
+  CalendarCheckIcon,
+  FolderKanbanIcon,
+  ListChecksIcon,
+  TimerIcon,
   TriangleAlertIcon,
   ZapIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { StatCard } from "@/components/blocks/stat-card"
+
+/** The Acme Inc. dashboard metrics: the same figures as the Dashboard template. */
+const activeProjects = [18, 19, 19, 20, 21, 21, 22, 21, 22, 23, 23, 24]
+const onTime = [84, 85, 87, 86, 88, 87, 89, 88, 90, 89, 91, 92]
+const cycleTime = [4.6, 4.4, 4.5, 4.2, 4.1, 4.2, 3.9, 4, 3.8, 3.7, 3.6, 3.4]
 
 export default function StatCardDocs() {
   return (
@@ -18,59 +24,62 @@ export default function StatCardDocs() {
         title="Default"
         description="A label, the headline figure, the change against the previous period and a twelve-point trend in quiet ink. The change carries the colour, so the trend line never contradicts it."
         code={`<StatCard
-  label="Edge requests"
-  value="2.41M"
-  change={18.2}
-  changeLabel="vs previous 7 days"
-  trend={[42, 46, 44, 51, 49, 58, 55, 61, 64, 60, 71, 76]}
+  label="Tasks completed"
+  value="1,284"
+  change={12}
+  changeLabel="vs last month"
+  trend={[236, 251, 244, 262, 258, 271, 266, 280, 277, 291, 286, 302]}
 />`}
       >
-        <StatCard className="w-full max-w-80" icon={ActivityIcon} />
+        <StatCard className="w-full max-w-80" icon={ListChecksIcon} />
       </Example>
 
       <Example
         title="A row of metrics"
-        description="Four cards across on wide screens, two on tablets and one on phones, from a container query on the row. Each card reads its own width, so the sparkline drops out when it gets too narrow."
+        description="Four cards across on wide screens, two on tablets and one on phones, from a container query on the row. Each card reads its own width, so the sparkline drops out when it gets too narrow. A change can be relative (12%) or absolute: points for a rate that moved, days for a duration, a plain number for a count."
         layout="full"
         surface="subtle"
         code={`<div className="@container">
   <div className="grid gap-4 @min-[36rem]:grid-cols-2 @min-[68rem]:grid-cols-4">
-    <StatCard label="Edge requests" value="2.41M" change={18.2} />
-    <StatCard label="Deployments" value="148" change={12} />
-    <StatCard label="p95 latency" value="112" unit="ms" change={-8.4} goodWhen="down" />
-    <StatCard label="Error rate" value="0.04" unit="%" change={21.5} goodWhen="down" />
+    <StatCard label="Active projects" value="24" change={3} changeUnit="" changeLabel="this month" />
+    <StatCard label="Tasks completed" value="1,284" change={12} changeLabel="vs last month" />
+    <StatCard label="On-time delivery" value="92" unit="%" change={4} changeUnit="pts" />
+    <StatCard label="Average cycle time" value="3.4" unit="days" change={-0.6} changeUnit="days" goodWhen="down" />
   </div>
 </div>`}
       >
         <div className="@container">
           <div className="grid gap-4 p-6 @min-[36rem]:grid-cols-2 @min-[48rem]:p-10 @min-[68rem]:grid-cols-4">
-            <StatCard icon={ActivityIcon} />
             <StatCard
-              label="Deployments"
-              value="148"
-              change={12}
-              icon={RocketIcon}
-              trend={[9, 14, 11, 18, 16, 21, 19, 24, 22, 20, 27, 25]}
+              label="Active projects"
+              value="24"
+              change={3}
+              changeUnit=""
+              changeLabel="this month"
+              icon={FolderKanbanIcon}
+              trend={activeProjects}
             />
+            <StatCard icon={ListChecksIcon} />
             <StatCard
-              label="p95 latency"
-              value="112"
-              unit="ms"
-              change={-8.4}
-              goodWhen="down"
-              icon={GaugeIcon}
-              trend={[
-                138, 131, 134, 128, 126, 129, 121, 118, 120, 116, 114, 112,
-              ]}
-            />
-            <StatCard
-              label="Error rate"
-              value="0.04"
+              label="On-time delivery"
+              value="92"
               unit="%"
-              change={21.5}
+              change={4}
+              changeUnit="pts"
+              changeLabel="vs last month"
+              icon={CalendarCheckIcon}
+              trend={onTime}
+            />
+            <StatCard
+              label="Average cycle time"
+              value="3.4"
+              unit="days"
+              change={-0.6}
+              changeUnit="days"
+              changeLabel="vs last month"
               goodWhen="down"
-              icon={TriangleAlertIcon}
-              trend={[3, 3, 2, 4, 3, 3, 5, 4, 4, 5, 4, 5]}
+              icon={TimerIcon}
+              trend={cycleTime}
             />
           </div>
         </div>
@@ -80,31 +89,35 @@ export default function StatCardDocs() {
         title="Emphasis"
         description="The panel tone turns one card dark to anchor a row. Use it for the figure the page is about, and only once."
         layout="full"
-        code={`<StatCard tone="panel" label="Deployments" value="148" change={12} />`}
+        code={`<StatCard tone="panel" label="On-time delivery" value="92" unit="%" change={4} changeUnit="pts" />`}
       >
         <div className="@container">
           <div className="grid gap-4 p-6 @min-[40rem]:grid-cols-3 @min-[48rem]:p-10">
             <StatCard
               tone="panel"
-              label="Deployments"
-              value="148"
-              change={12}
-              icon={RocketIcon}
-              trend={[9, 14, 11, 18, 16, 21, 19, 24, 22, 20, 27, 25]}
-            />
-            <StatCard
-              label="Cache hit rate"
-              value="94.2"
+              label="On-time delivery"
+              value="92"
               unit="%"
-              change={1.8}
-              changeLabel="vs previous 7 days"
-              icon={ZapIcon}
-              trend={[88, 89, 89, 90, 91, 90, 92, 92, 93, 93, 94, 94]}
+              change={4}
+              changeUnit="pts"
+              changeLabel="vs last month"
+              icon={CalendarCheckIcon}
+              trend={onTime}
             />
             <StatCard
-              label="Failed builds"
-              value="3"
-              change={-50}
+              label="Automation runs"
+              value="7,240"
+              change={18}
+              changeLabel="vs September"
+              icon={ZapIcon}
+              trend={[410, 460, 455, 520, 540, 610, 590, 640, 700, 690, 760, 810]}
+            />
+            <StatCard
+              label="Overdue tasks"
+              value="7"
+              change={-3}
+              changeUnit=""
+              changeLabel="since Monday"
               goodWhen="down"
               icon={TriangleAlertIcon}
               trend={[]}
@@ -115,9 +128,10 @@ export default function StatCardDocs() {
 
       <Guidelines
         do={[
-          "Format the number before passing it (“2.41M”, “$1,284”) and pass units through unit: value=\"112\" unit=\"ms\".",
-          "Name the comparison period in changeLabel so the percentage means something.",
-          'Set goodWhen="down" for latency, errors and cost, so a drop shows in green.',
+          "Format the number before passing it (“1,284”, “$216”) and pass units through unit: value=\"3.4\" unit=\"days\".",
+          "Name the comparison period in changeLabel so the change means something.",
+          "Use changeUnit for absolute changes: “pts” for a rate that moved, “days” for a duration, \"\" for a count.",
+          'Set goodWhen="down" for cycle time, overdue tasks and cost, so a drop shows in green.',
         ]}
         dont={[
           "Don’t put more than one panel-tone card in a row.",
@@ -131,32 +145,38 @@ export default function StatCardDocs() {
           {
             prop: "label",
             type: "string",
-            default: '"Edge requests"',
+            default: '"Tasks completed"',
             description: "What is measured, in sentence case.",
           },
           {
             prop: "value",
             type: "ReactNode",
-            default: '"2.41M"',
+            default: '"1,284"',
             description:
               "The formatted headline figure, set in the text-h2 role with tabular figures.",
           },
           {
             prop: "unit",
             type: "string",
-            description: "Small unit after the value, such as “ms” or “%”.",
+            description: "Small unit after the value, such as “%” or “days”.",
           },
           {
             prop: "change",
             type: "number",
-            default: "18.2",
+            default: "12",
+            description: "Change against the previous period. Negative for a drop.",
+          },
+          {
+            prop: "changeUnit",
+            type: "string",
+            default: '"%"',
             description:
-              "Change against the previous period in percent. Negative for a drop.",
+              "“%” for a relative change; a word such as “pts” or “days” for an absolute one; \"\" for a count.",
           },
           {
             prop: "changeLabel",
             type: "string",
-            default: '"vs previous 7 days"',
+            default: '"vs last month"',
             description: "The period the change compares against.",
           },
           {

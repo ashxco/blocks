@@ -11,10 +11,10 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
  * height and radius); the list is a flat overlay (popover surface, hairline
  * border, overlay radius) that fades in with a 4px slide. No shadows.
  *
- *   <Select items={regions} defaultValue="fra1">
+ *   <Select items={priorities} defaultValue="medium">
  *     <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
  *     <SelectContent>
- *       {regions.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
+ *       {priorities.map((p) => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}
  *     </SelectContent>
  *   </Select>
  */
@@ -68,7 +68,7 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
    not zoom on focus and the value matches inputs beside it), 14px from md. */
 const triggerSize = {
   sm: "h-(--control-height-sm) ps-3 pe-2.5 text-sm",
-  default: "h-(--control-height-md) ps-(--control-padding-x) pe-3 text-base md:text-sm",
+  default: "h-(--control-height-md) ps-(--control-padding-x) pe-3 text-control",
   lg: "h-(--control-height-lg) ps-4 pe-3.5 text-base",
 } as const
 

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { GitBranchIcon, RocketIcon, SlidersHorizontalIcon, TrendingUpIcon } from "lucide-react"
+import { LayoutTemplateIcon, PlugIcon, UserPlusIcon, ZapIcon } from "lucide-react"
 
 import { SectionHeading } from "@/components/blocks/section-heading"
 import { cn } from "@/lib/utils"
@@ -8,7 +8,7 @@ import { Kern } from "@/components/ui/kern"
 export interface Step {
   title: string
   description: string
-  /** A lucide icon element, e.g. <RocketIcon />. */
+  /** A lucide icon element, e.g. <UserPlusIcon />. */
   icon: React.ReactNode
 }
 
@@ -26,24 +26,24 @@ export interface StepsProps {
 
 const defaultSteps: Step[] = [
   {
+    title: "Start",
+    description: "Pick a template such as Product roadmap or Sprint planning, or import tasks from a spreadsheet.",
+    icon: <LayoutTemplateIcon />,
+  },
+  {
+    title: "Invite",
+    description: "Add your team as members and bring clients in as guests who see only what you share.",
+    icon: <UserPlusIcon />,
+  },
+  {
     title: "Connect",
-    description: "Link a GitHub or GitLab repository, or point the CLI at any folder on your machine.",
-    icon: <GitBranchIcon />,
+    description: "Link Slack, Google Drive and GitHub, so updates reach people where they already work.",
+    icon: <PlugIcon />,
   },
   {
-    title: "Configure",
-    description: "Lumen detects your framework, build command and port. Override anything in lumen.toml.",
-    icon: <SlidersHorizontalIcon />,
-  },
-  {
-    title: "Deploy",
-    description: "Every push builds in isolation, starts beside the running version and takes traffic when healthy.",
-    icon: <RocketIcon />,
-  },
-  {
-    title: "Grow",
-    description: "Add domains, Postgres databases and teammates as you need them, without changing hosts.",
-    icon: <TrendingUpIcon />,
+    title: "Automate",
+    description: "Turn on rules for the handoffs and reminders, then let the reports fill themselves in.",
+    icon: <ZapIcon />,
   },
 ]
 
@@ -54,12 +54,12 @@ const defaultSteps: Step[] = [
 export function Steps({
   title = (
     <>
-      From repo to production
+      Up and running
       <br />
-      in four moves.
+      in an afternoon.
     </>
   ),
-  description = "No agent on your servers and no black box. Every step is visible in the dashboard and in the CLI.",
+  description = "No consultants and no week of setup. Most teams plan their first project in Acme the day they sign up.",
   steps = defaultSteps,
   tone = "default",
   contained = true,

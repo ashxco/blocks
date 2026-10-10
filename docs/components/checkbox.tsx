@@ -18,16 +18,16 @@ import {
 import { Label } from "@/components/ui/label"
 
 const events = [
-  { id: "deploys", label: "Production deployments" },
-  { id: "failures", label: "Failed builds" },
-  { id: "comments", label: "Comments on previews" },
-  { id: "domains", label: "Domain and certificate renewals" },
+  { id: "assigned", label: "Tasks assigned to me" },
+  { id: "mentions", label: "Comments and mentions" },
+  { id: "due", label: "Tasks due tomorrow" },
+  { id: "status", label: "Project status changes" },
 ] as const
 
 type EventId = (typeof events)[number]["id"]
 
 function NotificationGroup() {
-  const [selected, setSelected] = React.useState<EventId[]>(["deploys", "failures"])
+  const [selected, setSelected] = React.useState<EventId[]>(["assigned", "mentions"])
   const all = selected.length === events.length
   const some = selected.length > 0 && !all
 
@@ -65,10 +65,10 @@ function NotificationGroup() {
   )
 }
 
-const addons = [
-  { value: "analytics", title: "Web analytics", description: "Page views and top referrers, without cookies.", price: "Included" },
-  { value: "speed", title: "Speed insights", description: "Core Web Vitals from real visits, by route.", price: "$10 / month" },
-  { value: "drains", title: "Log drains", description: "Stream build and runtime logs to your own store.", price: "$20 / month" },
+const copyOptions = [
+  { value: "tasks", title: "Tasks and subtasks", description: "Keeps assignees and priorities. Due dates are cleared.", count: "42 tasks" },
+  { value: "docs", title: "Docs", description: "Specs and meeting notes, with their comments.", count: "6 docs" },
+  { value: "automations", title: "Automations", description: "Rules start paused until you turn them on.", count: "3 rules" },
 ]
 
 export default function CheckboxDocs() {
@@ -79,16 +79,16 @@ export default function CheckboxDocs() {
         layout="stack"
         description="A hairline square that fills with ink when checked. Violet appears only as the focus outline."
         code={`<div className="flex items-center gap-3">
-  <Checkbox id="failures" defaultChecked />
-  <Label htmlFor="failures" className="font-medium">
-    Email me when a build fails
+  <Checkbox id="overdue" defaultChecked />
+  <Label htmlFor="overdue" className="font-medium">
+    Email me when a task is overdue
   </Label>
 </div>`}
       >
         <div className="flex items-center gap-3">
           <Checkbox id="cb-default" defaultChecked />
           <Label htmlFor="cb-default" className="font-medium">
-            Email me when a build fails
+            Email me when a task is overdue
           </Label>
         </div>
       </Example>
@@ -126,34 +126,34 @@ export default function CheckboxDocs() {
         description="Wrap the label and description in FieldContent. The box aligns to the first line of the label."
         code={`<FieldGroup>
   <Field orientation="horizontal">
-    <Checkbox id="protect" defaultChecked />
+    <Checkbox id="approval" defaultChecked />
     <FieldContent>
-      <FieldLabel htmlFor="protect">Protect preview deployments</FieldLabel>
-      <FieldDescription>Visitors sign in with Lumen before they see a preview.</FieldDescription>
+      <FieldLabel htmlFor="approval">Require approval</FieldLabel>
+      <FieldDescription>Tasks move to Done only after the project owner approves them.</FieldDescription>
     </FieldContent>
   </Field>
   <Field orientation="horizontal">
-    <Checkbox id="skew" />
+    <Checkbox id="subtasks" />
     <FieldContent>
-      <FieldLabel htmlFor="skew">Skew protection</FieldLabel>
-      <FieldDescription>Keep each visitor on the build they loaded until they refresh.</FieldDescription>
+      <FieldLabel htmlFor="subtasks">Close subtasks with their parent</FieldLabel>
+      <FieldDescription>When a task is marked done, its open subtasks are completed too.</FieldDescription>
     </FieldContent>
   </Field>
 </FieldGroup>`}
       >
         <FieldGroup className="max-w-md">
           <Field orientation="horizontal">
-            <Checkbox id="cb-protect" defaultChecked />
+            <Checkbox id="cb-approval" defaultChecked />
             <FieldContent>
-              <FieldLabel htmlFor="cb-protect">Protect preview deployments</FieldLabel>
-              <FieldDescription>Visitors sign in with Lumen before they see a preview.</FieldDescription>
+              <FieldLabel htmlFor="cb-approval">Require approval</FieldLabel>
+              <FieldDescription>Tasks move to Done only after the project owner approves them.</FieldDescription>
             </FieldContent>
           </Field>
           <Field orientation="horizontal">
-            <Checkbox id="cb-skew" />
+            <Checkbox id="cb-subtasks" />
             <FieldContent>
-              <FieldLabel htmlFor="cb-skew">Skew protection</FieldLabel>
-              <FieldDescription>Keep each visitor on the build they loaded until they refresh.</FieldDescription>
+              <FieldLabel htmlFor="cb-subtasks">Close subtasks with their parent</FieldLabel>
+              <FieldDescription>When a task is marked done, its open subtasks are completed too.</FieldDescription>
             </FieldContent>
           </Field>
         </FieldGroup>
@@ -163,7 +163,7 @@ export default function CheckboxDocs() {
         title="Select all"
         layout="stack"
         description="A parent checkbox is indeterminate while only some children are on, and toggles all of them. The children sit indented under it."
-        code={`const [selected, setSelected] = React.useState(["deploys", "failures"])
+        code={`const [selected, setSelected] = React.useState(["assigned", "mentions"])
 const all = selected.length === events.length
 const some = selected.length > 0 && !all
 
@@ -202,17 +202,17 @@ const some = selected.length > 0 && !all
         layout="stack"
         description="For options that need more than a line, wrap a horizontal field in FieldLabel. As on every choice card, the text leads and the box sits at the top right; checked cards take an ink border."
         code={`<FieldSet>
-  <FieldLegend variant="label">Add-ons</FieldLegend>
+  <FieldLegend variant="label">Copy into the new project</FieldLegend>
   <div className="grid gap-3">
-    {addons.map((addon, index) => (
-      <FieldLabel key={addon.value}>
+    {copyOptions.map((option, index) => (
+      <FieldLabel key={option.value}>
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldTitle>{addon.title}</FieldTitle>
-            <FieldDescription>{addon.description}</FieldDescription>
-            <p className="mt-1 text-label text-foreground tabular">{addon.price}</p>
+            <FieldTitle>{option.title}</FieldTitle>
+            <FieldDescription>{option.description}</FieldDescription>
+            <p className="mt-1 text-label text-foreground tabular">{option.count}</p>
           </FieldContent>
-          <Checkbox name="addons" value={addon.value} defaultChecked={index === 0} />
+          <Checkbox name="copy" value={option.value} defaultChecked={index === 0} />
         </Field>
       </FieldLabel>
     ))}
@@ -220,17 +220,17 @@ const some = selected.length > 0 && !all
 </FieldSet>`}
       >
         <FieldSet className="w-full max-w-md">
-          <FieldLegend variant="label">Add-ons</FieldLegend>
+          <FieldLegend variant="label">Copy into the new project</FieldLegend>
           <div className="grid gap-3">
-            {addons.map((addon, index) => (
-              <FieldLabel key={addon.value}>
+            {copyOptions.map((option, index) => (
+              <FieldLabel key={option.value}>
                 <Field orientation="horizontal">
                   <FieldContent>
-                    <FieldTitle>{addon.title}</FieldTitle>
-                    <FieldDescription>{addon.description}</FieldDescription>
-                    <p className="mt-1 text-label text-foreground tabular">{addon.price}</p>
+                    <FieldTitle>{option.title}</FieldTitle>
+                    <FieldDescription>{option.description}</FieldDescription>
+                    <p className="mt-1 text-label text-foreground tabular">{option.count}</p>
                   </FieldContent>
-                  <Checkbox name="addons" value={addon.value} defaultChecked={index === 0} />
+                  <Checkbox name="copy" value={option.value} defaultChecked={index === 0} />
                 </Field>
               </FieldLabel>
             ))}
@@ -245,7 +245,7 @@ const some = selected.length > 0 && !all
         code={`<Field orientation="horizontal" data-invalid>
   <Checkbox id="terms" aria-invalid aria-describedby="terms-error" />
   <FieldContent>
-    <FieldLabel htmlFor="terms">I understand this deletes every deployment of acme-web</FieldLabel>
+    <FieldLabel htmlFor="terms">I understand this deletes every task in Onboarding redesign</FieldLabel>
     <FieldError id="terms-error">Tick the box to confirm, then delete the project.</FieldError>
   </FieldContent>
 </Field>`}
@@ -256,7 +256,7 @@ const some = selected.length > 0 && !all
             <FieldContent>
               <FieldLabel htmlFor="cb-terms">
                 <span>
-                  I understand this deletes every deployment of <span className="whitespace-nowrap">acme-web</span>
+                  I understand this deletes every task in <span className="whitespace-nowrap">Onboarding redesign</span>
                 </span>
               </FieldLabel>
               <FieldError id="cb-terms-error">Tick the box to confirm, then delete the project.</FieldError>
@@ -268,7 +268,7 @@ const some = selected.length > 0 && !all
       <Guidelines
         do={[
           "Use checkboxes for independent options and for settings saved with a button.",
-          "Write labels as positive statements: “Email me about failed builds”.",
+          "Write labels as positive statements: “Email me about overdue tasks”.",
           "Use indeterminate only for a parent whose children are partly selected.",
           "Put the box before a one-line label and let the label toggle it too. In choice cards it moves to the top right.",
         ]}

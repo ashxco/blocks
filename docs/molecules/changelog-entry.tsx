@@ -14,7 +14,7 @@ export default function ChangelogEntryDocs() {
       <Example
         title="Timeline"
         layout="full"
-        description="Releases newest first on one rail. The latest release gets a brand dot. When the slot is wide, date and version move to the left of the rail."
+        description="Updates newest first on one rail. The latest gets a brand dot. When the slot is wide, the date moves to the left of the rail."
         code={`<ChangelogTimeline />`}
       >
         <ChangelogTimeline />
@@ -23,7 +23,7 @@ export default function ChangelogEntryDocs() {
       <Example
         title="Single entry"
         layout="full"
-        description="An entry on its own, with the built-in preview environment card in a tint. Pass media={true} for that card, or your own image or component."
+        description="An entry on its own, with the built-in automation rule card in a tint. Pass media={true} for that card, or your own image or component."
         code={`<ChangelogEntry />`}
       >
         <div className="p-6 @2xl:p-10">
@@ -32,19 +32,19 @@ export default function ChangelogEntryDocs() {
       </Example>
 
       <Example
-        title="Custom media and a link"
+        title="Custom media, a version and a link"
         layout="full"
         surface="subtle"
-        description="Any component can fill the media slot, such as a terminal for a CLI release. Children render under the list. Wrap commands, flags and file names in ChangelogCode."
+        description="Any component can fill the media slot, such as a code sample for an SDK release. Set version for releases that have one; product updates leave it out. Children render under the list. Wrap API fields, events and package names in ChangelogCode."
         code={`<ChangelogEntry
-  date="Mar 4, 2026"
-  dateTime="2026-03-04"
-  version="v2.0.0"
-  title="A CLI that starts in 50 ms"
+  date="Sep 24, 2026"
+  dateTime="2026-09-24"
+  version="v3.2.0"
+  title="Recurring tasks in the SDK"
   description="…"
   mediaTint="mint"
   media={<CodeWindow lines={[…]} />}
-  items={[<><ChangelogCode>lumen open</ChangelogCode> jumps to the project dashboard</>, …]}
+  items={[<>New <ChangelogCode>repeat</ChangelogCode> field on <ChangelogCode>tasks.create</ChangelogCode></>, …]}
 >
   <Button variant="link" nativeButton={false} render={<Link href="/live/blog/post" />}>
     Read the release notes
@@ -53,31 +53,35 @@ export default function ChangelogEntryDocs() {
       >
         <div className="p-6 @2xl:p-10">
           <ChangelogEntry
-            date="Mar 4, 2026"
-            dateTime="2026-03-04"
-            version="v2.0.0"
-            title="A CLI that starts in 50 ms"
-            description="A rewrite of the CLI in Go. It starts in under 50 ms, streams build logs as they happen and works offline for everything that doesn’t need the API."
+            date="Sep 24, 2026"
+            dateTime="2026-09-24"
+            version="v3.2.0"
+            title="Recurring tasks in the SDK"
+            description="Version 3.2 of @acme/sdk can create recurring tasks and read their schedule, so tasks you create from your own tools repeat like the ones made in the app."
             mediaTint="mint"
             media={
               <div className="p-6 @2xl:p-10">
                 <CodeWindow
-                  wrap
-                  title="~/acme"
+                  title="weekly-report.ts"
                   lines={[
-                    "$ lumen deploy --prod",
-                    "→ Uploading 214 files (1.8 MB)",
-                    "→ Building with 3 cached layers",
-                    "✓ Live at acme.lumen.app in 19s",
+                    "// A report task every Friday, owned by Maya",
+                    "await acme.tasks.create({",
+                    '  title: "Send the weekly report",',
+                    '  projectId: "q4-planning",',
+                    '  assignee: "maya@acme.com",',
+                    '  repeat: { every: "week", on: "friday" },',
+                    "})",
                   ]}
                 />
               </div>
             }
             items={[
               <>
-                <ChangelogCode>lumen open</ChangelogCode> jumps to the project dashboard
+                New <ChangelogCode>repeat</ChangelogCode> field on <ChangelogCode>tasks.create</ChangelogCode>
               </>,
-              "Shell completions for zsh, bash and fish",
+              <>
+                Webhooks now send <ChangelogCode>task.repeated</ChangelogCode> when the next task appears
+              </>,
             ]}
           >
             <Button variant="link" nativeButton={false} render={<Link href="/live/blog/post" />}>
@@ -97,19 +101,19 @@ export default function ChangelogEntryDocs() {
         dont={[
           "Don’t add a screenshot to every entry; save it for releases people will look for.",
           "Don’t mark more than one entry as latest.",
-          "Don’t write version numbers in the title; they already sit by the date.",
+          "Don’t write version numbers in the title; set version and it sits by the date.",
         ]}
       />
 
       <ApiTable
         title="ChangelogEntry"
         rows={[
-          { prop: "date", type: "string", default: '"Oct 6, 2026"', description: "Display date." },
+          { prop: "date", type: "string", default: '"Oct 1, 2026"', description: "Display date." },
           { prop: "dateTime", type: "string", description: "Machine-readable date for the time element." },
-          { prop: "version", type: "string", default: '"v2.12.0"', description: "Release version, shown in mono." },
+          { prop: "version", type: "string", description: "Release version, shown in mono, such as an SDK release. Leave it out for product updates." },
           { prop: "title", type: "ReactNode", description: "What shipped, in the text-h3 role." },
           { prop: "description", type: "ReactNode", description: "One or two sentences on why it matters." },
-          { prop: "media", type: "ReactNode | true", description: "Screenshot slot in a tinted frame. true draws the built-in preview environment card (ReleaseShot)." },
+          { prop: "media", type: "ReactNode | true", description: "Screenshot slot in a tinted frame. true draws the built-in automation rule card (ReleaseShot)." },
           { prop: "mediaTint", type: '"violet" | "mint" | "sand" | "sky" | "rose"', default: '"violet"', description: "Fill behind the media." },
           { prop: "items", type: "ReactNode[]", description: "Smaller changes as a bullet list." },
           { prop: "latest", type: "boolean", default: "false", description: "Brand dot on the rail for the newest release." },
@@ -121,7 +125,7 @@ export default function ChangelogEntryDocs() {
       <ApiTable
         title="ChangelogCode"
         rows={[
-          { prop: "children", type: "ReactNode", description: "A command, flag, config key or file name inside release notes, set in mono on a muted chip." },
+          { prop: "children", type: "ReactNode", description: "An API field, webhook event, SDK method or package name inside release notes, set in mono on a muted chip." },
           { prop: "className", type: "string", description: "Classes for the code element." },
         ]}
       />
@@ -129,7 +133,7 @@ export default function ChangelogEntryDocs() {
       <ApiTable
         title="ChangelogTimeline"
         rows={[
-          { prop: "entries", type: "ChangelogEntryProps[]", default: "Four Lumen releases", description: "Releases newest first. The first is marked latest." },
+          { prop: "entries", type: "ChangelogEntryProps[]", default: "Five Acme updates", description: "Updates newest first. The first is marked latest." },
           { prop: "children", type: "ReactNode", description: "Your own ChangelogEntry elements, instead of entries." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section padding." },
           { prop: "className", type: "string", description: "Classes for the section." },

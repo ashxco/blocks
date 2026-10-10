@@ -5,16 +5,18 @@ import {
   ArrowRightIcon,
   BookOpenIcon,
   BracesIcon,
-  DatabaseIcon,
-  GitBranchIcon,
-  GlobeIcon,
-  LineChartIcon,
+  ChartColumnIcon,
+  FileTextIcon,
+  FolderKanbanIcon,
+  ListTodoIcon,
   MenuIcon,
-  ScrollTextIcon,
-  TerminalIcon,
+  NewspaperIcon,
+  PlugIcon,
+  ZapIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { Wordmark } from "@/components/blocks/wordmark"
 import { Button } from "@/components/ui/button"
 import { Kern } from "@/components/ui/kern"
 import {
@@ -37,17 +39,18 @@ import {
 } from "@/components/ui/sheet"
 
 const product = [
-  { title: "Deployments", description: "Every git push builds and gets its own preview URL.", icon: GitBranchIcon },
-  { title: "Logs", description: "Search runtime and build logs across every region.", icon: ScrollTextIcon },
-  { title: "Metrics", description: "Requests, latency and errors for each deployment.", icon: LineChartIcon },
-  { title: "Domains", description: "Custom domains with certificates that renew on their own.", icon: GlobeIcon },
-  { title: "Databases", description: "Managed Postgres next to your app, with daily backups.", icon: DatabaseIcon },
+  { title: "Projects", description: "List, board, timeline and calendar views.", icon: FolderKanbanIcon },
+  { title: "Tasks", description: "Assignees, due dates and priorities.", icon: ListTodoIcon },
+  { title: "Docs", description: "Specs and notes next to the work.", icon: FileTextIcon },
+  { title: "Automations", description: "Rules that move work along for you.", icon: ZapIcon },
+  { title: "Reports", description: "Workload, on-time delivery and cycle time.", icon: ChartColumnIcon },
+  { title: "Integrations", description: "Slack, Google Drive, GitHub and more.", icon: PlugIcon },
 ]
 
-const developers = [
-  { title: "Documentation", description: "Guides for every framework Lumen builds.", icon: BookOpenIcon },
-  { title: "CLI", description: "Deploy, tail logs and roll back from a terminal.", icon: TerminalIcon },
-  { title: "API reference", description: "Automate projects, domains and teams.", icon: BracesIcon },
+const resources = [
+  { title: "Guides", description: "Set up your workspace and first project.", icon: BookOpenIcon },
+  { title: "Blog", description: "Product news, planning tips and customer stories.", icon: NewspaperIcon },
+  { title: "API reference", description: "Create and sync tasks with the Acme SDK.", icon: BracesIcon },
 ]
 
 function PanelLink({
@@ -122,28 +125,28 @@ function SiteNav({ container }: { container: Stage }) {
                 ))}
               </ul>
               <a
-                href="#preview-deployments"
+                href="#automations-2"
                 className="group/feature hidden flex-col justify-between gap-6 rounded-(--overlay-item-radius) border border-panel-border bg-panel-raised p-5 text-panel-foreground outline-none focus-visible:focus-ring md:flex"
               >
                 <span className="grid gap-2">
-                  <span className="text-title text-panel-foreground">Preview every pull request</span>
+                  <span className="text-title text-panel-foreground">Automations 2.0</span>
                   <span className="text-caption text-panel-muted">
-                    Lumen comments a live URL on each pull request, so reviewers click instead of pulling the branch.
+                    Rules can now run several steps and check a condition between them, so the busywork runs itself.
                   </span>
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-label text-panel-foreground">
-                  How previews work
+                  See what’s new
                   <ArrowRightIcon className="size-4 transition-transform duration-(--duration-fast) group-hover/feature:translate-x-0.5" />
                 </span>
               </a>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        <NavigationMenuItem value="developers">
-          <NavigationMenuTrigger>Developers</NavigationMenuTrigger>
+        <NavigationMenuItem value="resources">
+          <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
           <NavigationMenuContent className="w-[min(var(--popover-width-lg),calc(100cqw-4rem))]">
             <ul className="grid gap-1">
-              {developers.map((item) => (
+              {resources.map((item) => (
                 <li key={item.title}>
                   <PanelLink {...item} />
                 </li>
@@ -172,12 +175,7 @@ function SiteNavDemo() {
     <div ref={setContainer} className="relative isolate">
       <header className="flex h-(--header-height) items-center justify-between gap-6 border-b px-gutter">
         <div className="flex items-center gap-8">
-          <a
-            href="#lumen"
-            className="rounded-xs text-xl font-extrabold tracking-tight text-foreground outline-none focus-visible:focus-ring"
-          >
-            Lumen
-          </a>
+          <Wordmark href="#acme" />
           <div className="max-md:hidden">
             <SiteNav container={container} />
           </div>
@@ -186,35 +184,35 @@ function SiteNavDemo() {
           <Button variant="ghost" size="sm" className="max-sm:hidden">
             Log in
           </Button>
-          <Button size="sm">Start deploying</Button>
+          <Button size="sm">Start free trial</Button>
           <MobileNav />
         </div>
       </header>
       {/* From md the Product panel is open on load: the copy starts below it, so the panel never covers it. */}
       <div className="grid gap-4 px-gutter py-16 md:pt-88">
         <h3 className="max-w-prose text-h2">
-          <Kern>Push to deploy. Everything else is handled.</Kern>
+          <Kern>Plan, track and ship your team’s work in one place.</Kern>
         </h3>
         <p className="max-w-prose text-lead text-copy">
-          Open Product or Developers in the bar above. Panels open on hover and on click, and close with Escape.
+          Open Product or Resources in the bar above, or the menu button on a phone. Panels open on hover and on click, and close with Escape.
         </p>
       </div>
     </div>
   )
 }
 
-function DevelopersNav() {
+function ResourcesNav() {
   const [container, setContainer] = React.useState<Stage>(null)
-  const shown = useShownPanel("developers", container)
+  const shown = useShownPanel("resources", container)
   return (
     <div ref={setContainer} className="relative isolate flex w-full justify-center self-start">
       <NavigationMenu {...shown}>
         <NavigationMenuList>
-          <NavigationMenuItem value="developers">
-            <NavigationMenuTrigger>Developers</NavigationMenuTrigger>
+          <NavigationMenuItem value="resources">
+            <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
             <NavigationMenuContent className="w-[min(var(--popover-width-lg),calc(100cqw-4rem))]">
               <ul className="grid gap-1">
-                {developers.map((item) => (
+                {resources.map((item) => (
                   <li key={item.title}>
                     <PanelLink {...item} />
                   </li>
@@ -223,8 +221,8 @@ function DevelopersNav() {
             </NavigationMenuContent>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuLink href="#status" className={navigationMenuTriggerStyle()}>
-              Status
+            <NavigationMenuLink href="#customers" className={navigationMenuTriggerStyle()}>
+              Customers
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
@@ -237,7 +235,7 @@ function DevelopersNav() {
 function MobileNav() {
   const groups = [
     { label: "Product", items: product },
-    { label: "Developers", items: developers },
+    { label: "Resources", items: resources },
   ]
   return (
     <Sheet>
@@ -246,7 +244,7 @@ function MobileNav() {
       </SheetTrigger>
       <SheetContent side="right">
         <SheetHeader>
-          <SheetTitle>Lumen</SheetTitle>
+          <SheetTitle>Acme</SheetTitle>
           <SheetDescription className="sr-only">Site navigation</SheetDescription>
         </SheetHeader>
         <SheetBody className="gap-8">
@@ -302,7 +300,7 @@ export default function NavigationMenuDocs() {
       <NavigationMenuContent className="w-180">
         <ul className="grid grid-cols-2 gap-1">
           <li>
-            <NavigationMenuLink render={<Link href="/deployments" />}>
+            <NavigationMenuLink render={<Link href="/product/projects" />}>
               …
             </NavigationMenuLink>
           </li>
@@ -331,15 +329,15 @@ export default function NavigationMenuDocs() {
         code={`<NavigationMenuContent className="w-(--popover-width-lg)">
   <ul className="grid gap-1">
     <li>
-      <NavigationMenuLink href="/docs/cli">
-        <TerminalIcon />
-        CLI
+      <NavigationMenuLink href="/guides">
+        <BookOpenIcon />
+        Guides
       </NavigationMenuLink>
     </li>
   </ul>
 </NavigationMenuContent>`}
       >
-        <DevelopersNav />
+        <ResourcesNav />
       </Example>
 
       <Example
@@ -348,26 +346,21 @@ export default function NavigationMenuDocs() {
         code={`<NavigationMenuLink
   className={navigationMenuTriggerStyle()}
   aria-current="page"
-  render={<Link href="/docs" />}
+  render={<Link href="/pricing" />}
 >
-  Docs
+  Pricing
 </NavigationMenuLink>`}
       >
         {/* One row when it fits; below that the links move to a row of their own under the logo. */}
         <div className="grid w-full max-w-176 grid-cols-[1fr_auto] items-center gap-x-6 gap-y-1.5 rounded-(--card-radius) border bg-background py-2.5 pr-2.5 pl-5 @2xl:flex">
-          <a
-            href="#lumen"
-            className="justify-self-start rounded-xs text-lg font-extrabold tracking-tight text-foreground outline-none focus-visible:focus-ring"
-          >
-            Lumen
-          </a>
+          <Wordmark href="#acme" className="justify-self-start" />
           <NavigationMenu className="col-span-2 row-start-2 -ml-3 justify-self-start @2xl:mr-auto @2xl:ml-0">
             <NavigationMenuList>
-              {["Product", "Docs", "Pricing", "Customers"].map((label) => (
-                <NavigationMenuItem key={label} className={label === "Customers" ? "@max-md:hidden" : undefined}>
+              {["Product", "Pricing", "Customers", "Blog"].map((label) => (
+                <NavigationMenuItem key={label} className={label === "Blog" ? "@max-md:hidden" : undefined}>
                   <NavigationMenuLink
                     href={`#${label.toLowerCase()}`}
-                    aria-current={label === "Docs" ? "page" : undefined}
+                    aria-current={label === "Pricing" ? "page" : undefined}
                     className={navigationMenuTriggerStyle()}
                   >
                     {label}
@@ -377,7 +370,7 @@ export default function NavigationMenuDocs() {
             </NavigationMenuList>
           </NavigationMenu>
           <Button size="sm" className="col-start-2 row-start-1">
-            Start deploying
+            Start free trial
           </Button>
         </div>
       </Example>

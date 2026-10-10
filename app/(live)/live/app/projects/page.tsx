@@ -1,9 +1,10 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { FolderGit2Icon, PlusIcon } from "lucide-react"
+import { LayoutTemplateIcon, PlusIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/blocks/data-table"
+import { isActiveProject } from "@/components/blocks/data-table/data"
 import { PageHeader } from "@/components/blocks/page-header"
 
 import { ProjectHealth } from "./_components/project-health"
@@ -12,22 +13,24 @@ import { projects } from "./_data/projects"
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Every app and service in the Acme Inc. workspace on Lumen, with build status, traffic and the latest deployment of each.",
+    "Every project in the Acme Inc. workspace, with its status, lead, progress and due date, and the ones that need attention first.",
 }
+
+const activeCount = projects.filter(isActiveProject).length
 
 export default function ProjectsPage() {
   return (
     <div className="grid gap-8 md:gap-10">
       <PageHeader
         title="Projects"
-        description={`The ${projects.length} apps and services in Acme Inc. Push to a connected branch and Lumen builds, checks and deploys it.`}
+        description={`${projects.length} projects in Acme Inc., ${activeCount} of them active. Open one to see its board, timeline and docs.`}
         actions={
           <>
-            <Button variant="outline" nativeButton={false} render={<Link href="/live/onboarding" />}>
-              <FolderGit2Icon data-icon="inline-start" />
-              Import repository
+            <Button variant="outline" nativeButton={false} render={<Link href="/live/onboarding?step=template" />}>
+              <LayoutTemplateIcon data-icon="inline-start" />
+              Browse templates
             </Button>
-            <Button nativeButton={false} render={<Link href="/live/onboarding" />}>
+            <Button nativeButton={false} render={<Link href="/live/onboarding?step=template" />}>
               <PlusIcon data-icon="inline-start" />
               New project
             </Button>

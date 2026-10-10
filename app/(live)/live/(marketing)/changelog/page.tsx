@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import type * as React from "react"
 
 import {
   ChangelogCode as Code,
@@ -10,95 +9,80 @@ import {
 import { CtaBand } from "@/components/blocks/cta-band"
 import { NewsletterForm } from "@/components/blocks/newsletter-form"
 
-import { LogsShot, SpendLimitShot } from "./_components/release-media"
+import { DashboardShot, TimelineShot } from "./_components/release-media"
 
 export const metadata: Metadata = {
   title: "Changelog",
   description:
-    "New features, improvements and fixes in Lumen, newest first. Database branching, live logs, new regions and more.",
+    "New features and improvements in Acme, newest first: Automations 2.0, timeline view, guest access, shared dashboards and recurring tasks.",
 }
 
 const releases: ChangelogEntryProps[] = [
   {
-    date: "Oct 6, 2026",
-    dateTime: "2026-10-06",
-    version: "v2.12.0",
-    title: "Branch your database with every preview",
+    date: "Oct 1, 2026",
+    dateTime: "2026-10-01",
+    title: "Automations 2.0",
     description:
-      "Preview environments now get a copy-on-write branch of your Postgres database. Run migrations against real data without touching production. Lumen deletes the branch when the pull request closes.",
+      "Rules can now run several steps, check a condition before they act and post to the apps your team uses. Start from one of 20 recipes, or build your own in the new rule editor.",
     media: <ReleaseShot />,
     mediaTint: "violet",
     items: [
-      "Branches are ready in under two seconds, whatever the size of the database",
+      "Add up to ten steps to a rule, with a condition between any two",
+      "A run history shows every task a rule touched and what it changed",
       <>
-        Seed scripts run after branching when you set <Code>preview.seed</Code> in <Code>lumen.toml</Code>
+        Trigger rules from your own tools with the new <Code>automation.run</Code> API event
       </>,
-      "Fixed preview URLs returning 404 for a few seconds after a force push",
+      "Runs still count against your plan: 1,000 a month on Free, 10,000 on Pro and 50,000 on Business",
     ],
   },
   {
-    date: "Sep 24, 2026",
-    dateTime: "2026-09-24",
-    version: "v2.11.0",
-    title: "Live logs in your terminal",
-    description: (
-      <>
-        <Code>lumen logs</Code> now streams from every replica at once, with filters for level, route and status
-        code. Leave it running through a deploy and the stream moves to the new version on its own.
-      </>
-    ),
-    media: <LogsShot />,
+    date: "Sep 17, 2026",
+    dateTime: "2026-09-17",
+    title: "Timeline view",
+    description:
+      "See a project as bars across the calendar. Drag a bar to change its dates, link tasks that depend on each other and spot clashes before they happen.",
+    media: <TimelineShot />,
     mediaTint: "sand",
     items: [
-      <>
-        Filter with <Code>--level error</Code>, <Code>--route /api</Code> or <Code>--status 5xx</Code>
-      </>,
-      <>
-        Search the last 30 days with <Code>--since 30d</Code> on Pro and Scale
-      </>,
-      "Timestamps now use your local time zone",
+      "Zoom from days to quarters",
+      "Linked tasks move together when you reschedule one",
+      "Milestones show as diamonds, so launch dates stand out",
     ],
   },
   {
-    date: "Sep 10, 2026",
-    dateTime: "2026-09-10",
-    version: "v2.10.0",
-    title: "New regions in São Paulo, Mumbai and Sydney",
+    date: "Sep 3, 2026",
+    dateTime: "2026-09-03",
+    title: "Guest access",
     description:
-      "You can now deploy to 14 regions. Choose regions per project, and Lumen sends each request to the nearest healthy replica.",
+      "Invite clients, contractors and agencies to the projects they work on. Guests see only what you share with them, and they never take a member seat.",
     items: [
-      "Move a project between regions without downtime",
-      "Latency from each region now shows on the metrics page",
-      "Postgres read replicas are available in every region on Scale",
+      "Guests can comment on tasks and complete the ones assigned to them",
+      "Owners and Admins see every guest on the Members page",
+      "Pro includes 10 guests, and Business and Enterprise include more",
     ],
   },
   {
-    date: "Aug 27, 2026",
-    dateTime: "2026-08-27",
-    version: "v2.9.0",
-    title: "Spending caps and usage alerts",
+    date: "Aug 20, 2026",
+    dateTime: "2026-08-20",
+    title: "Shared dashboards",
     description:
-      "Set a monthly cap on usage charges for each workspace. Owners get an email at 50%, 80% and 100%, and you decide what happens at the cap: pause previews, or keep everything running.",
-    media: <SpendLimitShot />,
+      "Share a report dashboard with your whole workspace, or with one team. Dashboards update as tasks move, so the numbers in the weekly review are always current.",
+    media: <DashboardShot />,
     mediaTint: "mint",
-    items: [
-      "Caps apply to bandwidth, build minutes and database storage",
-      "Alerts can also post to a Slack channel or a webhook",
-    ],
+    items: ["Pin a dashboard to the top of any project", "Send a weekly summary to a Slack channel or by email"],
   },
   {
-    date: "Aug 13, 2026",
-    dateTime: "2026-08-13",
-    version: "v2.8.2",
-    title: "Faster cold starts for Node.js",
+    date: "Aug 6, 2026",
+    dateTime: "2026-08-06",
+    title: "Recurring tasks",
     description:
-      "Node.js services now start from a snapshot of the warmed-up process. The median cold start dropped from 1.4 seconds to 310 milliseconds.",
+      "Set a task to repeat every day, week or month. The next one appears when you complete the current one, with the same owner, subtasks and project.",
     items: [
-      "Works with Node.js 20 and 22, with no code changes",
+      "Repeat on weekdays only, or on the last Friday of each month",
+      "Skip one date without breaking the schedule",
       <>
-        Turn it off with <Code>runtime.snapshot = false</Code> in <Code>lumen.toml</Code>
+        Create recurring tasks from the API with the <Code>repeat</Code> field
       </>,
-      "Fixed health checks timing out on services that only listen on IPv6",
     ],
   },
 ]
@@ -111,14 +95,14 @@ export default function ChangelogPage() {
           <div className="grid gap-6">
             <h1 className="text-display text-foreground">Changelog</h1>
             <p className="max-w-prose text-lead text-copy">
-              New features, improvements and fixes in Lumen, newest first. We ship a release every two weeks and write up
-              everything you would notice.
+              New features and improvements in Acme, newest first. Something new ships every two weeks, and every change
+              you would notice is written up here.
             </p>
           </div>
 
-          {/* Flush with the right edge on wide screens, under the lead on phones. */}
+          {/* Flush right on wide screens, under the lead on phones. */}
           <div className="grid w-full gap-3 lg:max-w-112 lg:justify-self-end lg:pb-2">
-            <NewsletterForm label="Email address for release notes" buttonLabel="Subscribe" />
+            <NewsletterForm label="Email address for product updates" buttonLabel="Subscribe" />
             <p className="pl-5 text-caption text-muted-foreground">
               One email a month with the highlights. Unsubscribe in one click.
             </p>
@@ -131,13 +115,13 @@ export default function ChangelogPage() {
       {/* Lines up with the entries: past the date column and the rail. */}
       <div className="container-page pt-16">
         <div className="@container">
-          <p className="pl-10 text-caption text-muted-foreground @narrow:ml-48">Showing the 5 newest of 94 releases.</p>
+          <p className="pl-10 text-caption text-muted-foreground @narrow:ml-48">Showing the 5 newest of 86 updates.</p>
         </div>
       </div>
 
       <CtaBand
-        title="Try what shipped this week."
-        description="Every release on this page is live now. Start a 14-day Pro trial and get a preview URL for your first branch in about a minute."
+        title="Try what shipped this month."
+        description="Every update on this page is live now. Start a 14-day Pro trial and set up your first automation in a few minutes."
       />
     </>
   )

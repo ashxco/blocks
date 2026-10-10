@@ -14,7 +14,7 @@ import { LATEST_COUNT, categories, featuredPost, posts } from "./_data/posts"
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "Product news, engineering deep dives and practical guides from the team building Lumen, the deployment platform.",
+    "Product news, practical guides, customer stories and company updates from the team building Acme.",
 }
 
 export default function BlogPage() {
@@ -25,10 +25,10 @@ export default function BlogPage() {
           as="h1"
           title={
             <>
-              Notes from the team building <span className="text-brand">Lumen</span>.
+              Notes from the team building <span className="text-brand">Acme</span>.
             </>
           }
-          description="Product updates, engineering deep dives and practical guides for shipping on Lumen. A new post every week or two."
+          description="Product updates, guides for planning and running projects, and stories from teams who work in Acme. A new post most weeks."
         >
           <Button nativeButton={false} render={<Link href="#newsletter" />}>
             Get posts by email

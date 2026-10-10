@@ -55,71 +55,81 @@ export interface PostCardProps extends Partial<Post> {
 }
 
 const defaultPost: Post = {
-  title: "A database branch for every pull request",
+  title: "How we run weekly planning in 30 minutes",
   excerpt:
-    "Preview environments now get a copy-on-write branch of your Postgres database, ready in under two seconds and deleted when the pull request closes.",
-  category: "Product",
-  date: "Oct 7, 2026",
-  dateTime: "2026-10-07",
+    "One board, one agenda and a rule that the meeting ends when the board is right. The template we use every Monday, step by step.",
+  category: "Guides",
+  date: "Sep 29, 2026",
+  dateTime: "2026-09-29",
   readTime: "5 min read",
   href: "/live/blog/post",
-  cover: { pattern: "branch", tint: "mint" },
+  cover: { pattern: "board", tint: "mint" },
 }
 
-/** The six newest posts from the Lumen blog template, so docs and pages agree. */
+/** The six newest posts from the Acme blog template, so docs and pages agree. */
 export const defaultPosts: Post[] = [
   defaultPost,
   {
-    title: "Live logs from every replica at once",
+    title: "Designing a calmer inbox",
     excerpt:
-      "One command now streams every replica and follows your app through a deploy. Here is how to filter it down to the requests that matter.",
+      "Fewer pings, smarter grouping and a single place for everything that needs you. How we redesigned the Acme inbox around what people act on.",
     category: "Product",
-    date: "Sep 24, 2026",
-    dateTime: "2026-09-24",
-    readTime: "4 min read",
+    date: "Sep 22, 2026",
+    dateTime: "2026-09-22",
+    readTime: "7 min read",
     href: "/live/blog/post",
-    cover: { pattern: "fields", tint: "sand" },
+    cover: { pattern: "inbox", tint: "sand" },
   },
   {
-    title: "Fernhill moved twelve services to Lumen in a week",
+    title: "Plan in weeks with the new timeline view",
     excerpt:
-      "Their platform team replaced a hand-rolled Kubernetes setup and gave every engineer a preview URL. They told us how it went.",
-    category: "Customers",
+      "Drag bars to change dates, link tasks that depend on each other and see clashes before they happen. A tour of timeline view.",
+    category: "Product",
     date: "Sep 17, 2026",
     dateTime: "2026-09-17",
-    readTime: "6 min read",
+    readTime: "4 min read",
     href: "/live/blog/post",
-    cover: { pattern: "grid", tint: "sky" },
+    cover: { pattern: "timeline", tint: "sky" },
   },
   {
-    title: "Deploy a Next.js app in five minutes",
-    excerpt: "Connect a repository, push to main and get a production URL with HTTPS. No config file needed.",
-    category: "Guides",
-    date: "Sep 12, 2026",
-    dateTime: "2026-09-12",
+    title: "How Northwind cut status meetings in half",
+    excerpt:
+      "Northwind’s operations team replaced three tools and their weekly planning meeting with Acme. Their COO told us what changed.",
+    category: "Customers",
+    date: "Sep 10, 2026",
+    dateTime: "2026-09-10",
     readTime: "6 min read",
     href: "/live/blog/post",
-    cover: { pattern: "window", tint: "rose" },
+    cover: {
+      pattern: "compare",
+      tint: "rose",
+      figures: [
+        { label: "Status meetings a week, before", value: "4", share: 1 },
+        { label: "With Acme", value: "2", share: 0.5 },
+      ],
+    },
   },
   {
-    title: "Our seed round, and what comes next",
-    excerpt: "We raised $8M to keep Lumen open source and build the self-hosted edition teams keep asking for.",
-    category: "Company",
-    date: "Aug 28, 2026",
-    dateTime: "2026-08-28",
+    title: "Guest access for clients and contractors",
+    excerpt:
+      "Invite the people outside your team to the projects they work on. They see only what you share, and they never take a member seat.",
+    category: "Product",
+    date: "Sep 3, 2026",
+    dateTime: "2026-09-03",
     readTime: "3 min read",
     href: "/live/blog/post",
-    cover: { pattern: "orbit", tint: "violet" },
+    cover: { pattern: "window", tint: "violet" },
   },
   {
-    title: "Zero-downtime deploys, explained",
-    excerpt: "Health checks, connection draining and the order we swap containers in, step by step.",
-    category: "Engineering",
-    date: "Aug 14, 2026",
-    dateTime: "2026-08-14",
-    readTime: "10 min read",
+    title: "Write a project brief people finish reading",
+    excerpt:
+      "Five headings, one page and a doc that sits next to the work it describes. Our template for briefs that answer questions before they come up.",
+    category: "Guides",
+    date: "Aug 27, 2026",
+    dateTime: "2026-08-27",
+    readTime: "6 min read",
     href: "/live/blog/post",
-    cover: { pattern: "uptime", tint: "panel" },
+    cover: { pattern: "stack", tint: "panel" },
   },
 ]
 
@@ -207,23 +217,16 @@ export interface FeaturedPostProps extends Partial<Post> {
 }
 
 const defaultFeatured: Post = {
-  title: "How we cut build times by 70%",
+  title: "Introducing Automations 2.0",
   excerpt:
-    "Layer caching, a smarter dependency graph and one very slow Docker step. A tour of the build changes we shipped in September, with the numbers.",
-  category: "Engineering",
-  date: "Sep 30, 2026",
-  dateTime: "2026-09-30",
-  readTime: "8 min read",
+    "Rules with several steps, conditions and actions in the apps your team already uses. Here is what changed, why we rebuilt it and how to set up your first rule.",
+  category: "Product",
+  date: "Oct 1, 2026",
+  dateTime: "2026-10-01",
+  readTime: "6 min read",
   href: "/live/blog/post",
-  cover: {
-    pattern: "compare",
-    tint: "violet",
-    figures: [
-      { label: "Median build, June", value: "61s", share: 1 },
-      { label: "Median build, today", value: "18s", share: 0.29 },
-    ],
-  },
-  author: { name: "Priya Natarajan", role: "Staff engineer" },
+  cover: { pattern: "flow", tint: "violet" },
+  author: { name: "Maya Patel", role: "Head of Product" },
 }
 
 /**

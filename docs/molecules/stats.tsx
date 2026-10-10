@@ -18,28 +18,28 @@ export default function StatsDocs() {
       <Example
         title="With a heading, on a tinted band"
         layout="full"
-        description="Add a heading when the numbers need context, such as an open-source or company section."
+        description="Add a heading when the numbers need context, such as a company section on an about page."
         code={`<Stats
   tone="subtle"
-  title="Open source, in the open."
-  description="Lumen is Apache 2.0. Run it yourself, read every line, send a pull request."
+  title="A small company, on purpose."
+  description="Acme Inc. is eighteen people, remote-first since 2019, with offices in San Francisco and London."
   stats={[
-    { value: "12.4k", label: "GitHub stars" },
-    { value: "186", label: "Contributors" },
-    { value: "94", label: "Releases", detail: "One every two weeks" },
-    { value: "2.1k", label: "Self-hosted installs", detail: "Reported by opt-in telemetry" },
+    { value: "2019", label: "Founded", detail: "Remote-first from day one" },
+    { value: "18", label: "People on the team" },
+    { value: "6", label: "Time zones", detail: "From San Francisco to Tokyo" },
+    { value: "2", label: "Offices", detail: "San Francisco and London" },
   ]}
 />`}
       >
         <Stats
           tone="subtle"
-          title="Open source, in the open."
-          description="Lumen is Apache 2.0. Run it yourself, read every line, send a pull request."
+          title="A small company, on purpose."
+          description="Acme Inc. is eighteen people, remote-first since 2019, with offices in San Francisco and London."
           stats={[
-            { value: "12.4k", label: "GitHub stars" },
-            { value: "186", label: "Contributors" },
-            { value: "94", label: "Releases", detail: "One every two weeks" },
-            { value: "2.1k", label: "Self-hosted installs", detail: "Reported by opt-in telemetry" },
+            { value: "2019", label: "Founded", detail: "Remote-first from day one" },
+            { value: "18", label: "People on the team" },
+            { value: "6", label: "Time zones", detail: "From San Francisco to Tokyo" },
+            { value: "2", label: "Offices", detail: "San Francisco and London" },
           ]}
         />
       </Example>
@@ -63,8 +63,8 @@ export default function StatsDocs() {
           <Stats
             contained={false}
             stats={[
-              { value: "4×", label: "Faster releases", detail: "Four minutes from merge to live" },
-              { value: "−38%", label: "Hosting bill", detail: "After moving twelve services" },
+              { value: "50%", label: "Fewer status meetings", detail: "Northwind, after six months" },
+              { value: "3", label: "Tools replaced", detail: "Tasks, docs and reporting" },
             ]}
           />
         </div>
@@ -73,7 +73,7 @@ export default function StatsDocs() {
       <Guidelines
         do={[
           "Use real, current numbers and say where they come from in the detail line.",
-          "Keep values short: “4.2M”, not “4,213,551”.",
+          "Keep values short: “4.8M”, not “4,812,377”.",
           "Use two or four stats so the grid stays even.",
         ]}
         dont={[
@@ -85,7 +85,7 @@ export default function StatsDocs() {
 
       <ApiTable
         rows={[
-          { prop: "stats", type: "{ value: string; label: string; detail?: string }[]", default: "Four Lumen numbers", description: "The numbers, already formatted." },
+          { prop: "stats", type: "{ value: string; label: string; detail?: string }[]", default: "Four Acme numbers", description: "The numbers, already formatted." },
           { prop: "title", type: "ReactNode", description: "Optional heading above the band." },
           { prop: "description", type: "ReactNode", description: "Supporting text beside the heading." },
           { prop: "tone", type: '"default" | "subtle" | "panel"', default: '"default"', description: "Between hairlines, on a tinted band or on a dark panel." },

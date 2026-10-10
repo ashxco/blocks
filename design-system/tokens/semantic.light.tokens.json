@@ -146,8 +146,8 @@
       "$description": "Focus outline."
     },
     "overlay": {
-      "$value": "oklch(0.135 0.008 286 / 0.28)",
-      "$description": "Backdrop behind dialogs and sheets."
+      "$value": "oklch(0.135 0.008 286 / 0.2)",
+      "$description": "Backdrop behind dialogs and sheets. Pair with backdrop-blur-glass."
     },
     "panel": {
       "$value": "{color.ink.900}",

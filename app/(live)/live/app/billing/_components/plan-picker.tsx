@@ -23,21 +23,22 @@ import { toast } from "@/components/ui/toast"
 import {
   DAYS_LEFT,
   RENEWS_ON,
-  SEATS_IN_USE,
+  SEATS,
   formatUsd,
+  monthlyTotal,
   proratedCharge,
-  type LumenPlan,
+  type PlanOption,
 } from "./billing-data"
 
 export interface PlanPickerProps {
-  plans: LumenPlan[]
+  plans: PlanOption[]
   currentPlanId: string
   /** A downgrade that starts at renewal. */
   scheduledPlanId: string | null
   /** Shown in the upgrade summary, e.g. "Visa ending in 4242". */
   paymentLabel: string
-  onUpgrade: (plan: LumenPlan) => void | Promise<void>
-  onSchedule: (plan: LumenPlan) => void | Promise<void>
+  onUpgrade: (plan: PlanOption) => void | Promise<void>
+  onSchedule: (plan: PlanOption) => void | Promise<void>
   onCancelScheduled: () => void
   /** Anchor for links that jump to the picker, e.g. "change-plan". */
   anchorId?: string
@@ -45,13 +46,12 @@ export interface PlanPickerProps {
 }
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-const seatsLabel = (seats?: number) =>
-  seats === undefined ? "Unlimited team seats" : seats === 1 ? "1 seat" : `${seats} team seats`
 
 /**
- * Every plan side by side, with the current one outlined in ink. Upgrades
- * start today at a prorated price; downgrades are scheduled for renewal and
- * can be cancelled until then.
+ * The self-serve plans side by side, with the current one outlined in ink.
+ * Prices are per member per month, billed annually. Upgrades start today at a
+ * prorated price for every seat; downgrades are scheduled for the next
+ * invoice and can be cancelled until then.
  */
 export function PlanPicker({
   plans,
@@ -70,10 +70,10 @@ export function PlanPicker({
 
   const [open, setOpen] = React.useState(false)
   // The plan pair is captured when the dialog opens, so its copy stays put while the plan changes underneath.
-  const [change, setChange] = React.useState<{ from: LumenPlan; to: LumenPlan } | null>(null)
+  const [change, setChange] = React.useState<{ from: PlanOption; to: PlanOption } | null>(null)
   const [pending, setPending] = React.useState(false)
 
-  function choose(plan: LumenPlan) {
+  function choose(plan: PlanOption) {
     setChange({ from: current, to: plan })
     setOpen(true)
   }
@@ -90,7 +90,7 @@ export function PlanPicker({
         upgrade
           ? {
               title: `You’re on ${to.name} now`,
-              description: `We charged ${formatUsd(proratedCharge(from, to))} to your ${paymentLabel}.`,
+              description: `We charged ${formatUsd(proratedCharge(from, to))} for ${SEATS} seats to your ${paymentLabel}.`,
             }
           : {
               title: `${to.name} starts on ${RENEWS_ON}`,
@@ -125,8 +125,8 @@ export function PlanPicker({
             Change plan
           </h2>
           <p className="max-w-prose text-body text-copy">
-            Upgrades start today and you pay the difference for the rest of the month. Downgrades start on {RENEWS_ON},
-            so you keep what you’ve paid for.
+            Prices are per member per month, billed annually. Upgrades start today and you pay the difference for the
+            rest of the month. Downgrades start on {RENEWS_ON}, so you keep what you’ve paid for.
           </p>
         </div>
         <Button variant="link" nativeButton={false} render={<Link href="/live/pricing" />} className="self-start @min-[48rem]/plans:self-end">
@@ -141,7 +141,7 @@ export function PlanPicker({
             {scheduled.name} starts on {RENEWS_ON}
           </AlertTitle>
           <AlertDescription>
-            You keep everything in {current.name} until then. Your next invoice is {formatUsd(scheduled.price)}.
+            You keep everything in {current.name} until then. Your next invoice is {formatUsd(monthlyTotal(scheduled))}.
           </AlertDescription>
           <AlertAction>
             <Button variant="outline" size="sm" onClick={cancelScheduled}>
@@ -151,7 +151,7 @@ export function PlanPicker({
         </Alert>
       ) : null}
 
-      <ul className="grid gap-4 @min-[36rem]/plans:grid-cols-2 @min-[66rem]/plans:grid-cols-4">
+      <ul className="grid gap-4 @min-[48rem]/plans:grid-cols-3">
         {plans.map((plan) => {
           const isCurrent = plan.id === current.id
           const isScheduled = plan.id === scheduled?.id
@@ -171,16 +171,25 @@ export function PlanPicker({
                 {isCurrent ? <Badge variant="secondary">Current</Badge> : null}
                 {isScheduled ? <Badge variant="brand">From Nov 1</Badge> : null}
               </div>
-              {/* Two lines tall in the four-column row, so prices line up across plans. */}
-              <p className="mt-1 text-sm text-copy @min-[66rem]/plans:min-h-[2lh]">{plan.description}</p>
+              {/* Two lines tall in the three-column row, so prices line up across plans. */}
+              <p className="mt-1 text-sm text-copy @min-[48rem]/plans:min-h-[2lh]">{plan.description}</p>
 
-              <p className="mt-6 flex items-baseline gap-1.5">
-                <span className="text-h2 text-foreground tabular-nums">{formatUsd(plan.price)}</span>
-                <span className="text-sm text-muted-foreground">per month</span>
-              </p>
+              <div className="mt-6 grid gap-1">
+                <p className="flex items-baseline gap-1.5">
+                  <span className="text-h2 text-foreground tabular-nums">{formatUsd(plan.price)}</span>
+                  <span className="text-sm text-muted-foreground">
+                    {plan.price > 0 ? "per member / month" : "forever"}
+                  </span>
+                </p>
+                <p className="text-caption text-muted-foreground tabular-nums">
+                  {plan.price > 0
+                    ? `Billed annually, or ${formatUsd(plan.monthlyPrice)} monthly`
+                    : "No card needed"}
+                </p>
+              </div>
 
               <ul className="mt-6 grid gap-3 border-t pt-6 text-sm text-copy">
-                {[seatsLabel(plan.seats), ...plan.highlights].map((line) => (
+                {plan.highlights.map((line) => (
                   <li key={line} className="flex gap-2.5">
                     <CheckIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-foreground" />
                     <span>{line}</span>
@@ -233,15 +242,15 @@ function ConfirmBody({
   pending,
   onConfirm,
 }: {
-  from: LumenPlan
-  to: LumenPlan
+  from: PlanOption
+  to: PlanOption
   paymentLabel: string
   pending: boolean
   onConfirm: () => void
 }) {
   const upgrade = target.price > current.price
   const charge = proratedCharge(current, target)
-  const short = target.seats !== undefined && target.seats < SEATS_IN_USE
+  const short = target.seats !== undefined && target.seats < SEATS
 
   return (
     <>
@@ -251,8 +260,8 @@ function ConfirmBody({
         </AlertDialogTitle>
         <AlertDialogDescription>
           {upgrade
-            ? `${target.name} starts right away. You pay the difference for the ${DAYS_LEFT} days left in October, then the full price from ${RENEWS_ON}.`
-            : `You keep everything in ${current.name} until then. After that you pay ${formatUsd(target.price)} a month.`}
+            ? `${target.name} starts right away. You pay the difference for ${SEATS} seats for the ${DAYS_LEFT} days left in October, then the full price from ${RENEWS_ON}.`
+            : `You keep everything in ${current.name} until then. After that you pay ${formatUsd(monthlyTotal(target))} a month.`}
         </AlertDialogDescription>
       </AlertDialogHeader>
 
@@ -264,7 +273,9 @@ function ConfirmBody({
           </div>
           <div className="flex items-baseline justify-between gap-4">
             <dt className="text-muted-foreground">From {RENEWS_ON}</dt>
-            <dd className="text-foreground tabular-nums">{formatUsd(target.price)} per month</dd>
+            <dd className="text-foreground tabular-nums">
+              {formatUsd(monthlyTotal(target))} per month, {SEATS} seats
+            </dd>
           </div>
           <div className="flex items-baseline justify-between gap-4 border-t pt-3">
             <dt className="text-muted-foreground">Charged to</dt>
@@ -277,11 +288,11 @@ function ConfirmBody({
         <Alert variant="warning">
           <TriangleAlertIcon aria-hidden="true" />
           <AlertTitle>
-            {target.name} includes {seatsLabel(target.seats).toLowerCase()}
+            {target.name} allows up to {target.seats} members
           </AlertTitle>
           <AlertDescription>
-            Acme Inc. uses {SEATS_IN_USE}, including pending invites. Remove members or revoke invites before {RENEWS_ON}{" "}
-            or the switch won’t go through. <Link href="/live/app/team">Manage team</Link>
+            Acme Inc. has {SEATS}. Remove members before {RENEWS_ON} or the switch won’t go through.{" "}
+            <Link href="/live/app/team">Manage team</Link>
           </AlertDescription>
         </Alert>
       ) : null}

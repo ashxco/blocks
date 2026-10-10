@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { PortalScope } from "@/lib/portal-container"
 import { CodeBlock } from "@/components/viewer/code-block"
 import { CopyButton } from "@/components/viewer/copy-button"
-import { deviceOrder, devices, type Device } from "@/components/viewer/devices"
+import { deviceOrder, devices, viewportStyle, type Device } from "@/components/viewer/devices"
 import { slugify } from "@/components/viewer/nav"
 import { useElementSize } from "@/components/viewer/scaled-frame"
 import { Segmented } from "@/components/viewer/segmented"
@@ -312,14 +312,12 @@ function ExampleThumbnail({
     >
       <div
         className="bk-viewport @container origin-top-left"
-        style={
-          {
-            width: virtualWidth,
-            height: virtualHeight,
-            transform: `scale(${scale})`,
-            "--bk-vw": `${virtualWidth / 100}px`,
-          } as React.CSSProperties
-        }
+        style={{
+          ...viewportStyle(virtualWidth),
+          width: virtualWidth,
+          height: virtualHeight,
+          transform: `scale(${scale})`,
+        }}
       >
         <div
           ref={contentRef}
@@ -367,8 +365,10 @@ const deviceOptions = deviceOrder.map((value) => ({
  *
  * Tablet and mobile render the example in a virtual viewport of exactly that
  * width, scaled down when the canvas is narrower. Container queries respond to
- * the frame, and every fluid token (type, gutter, section rhythm) is computed
- * for the device width, so the preview matches a real phone or tablet.
+ * the frame, every fluid token (type, gutter, section rhythm) is computed for
+ * the device width, and tokens with breakpoint values (such as the 16px text
+ * in form controls on phones) take the value for that width, so the preview
+ * matches a real phone or tablet.
  */
 export function Example({
   title,
@@ -489,13 +489,13 @@ export function Example({
                   )}
                   style={
                     virtualWidth
-                      ? ({
+                      ? {
+                          ...viewportStyle(virtualWidth),
                           width: virtualWidth,
                           transform: scale < 1 ? `scale(${scale})` : undefined,
-                          "--bk-vw": `${virtualWidth / 100}px`,
-                        } as React.CSSProperties)
+                        }
                       : layout === "full" && stage
-                        ? ({ "--bk-vw": `${stage.width / 100}px` } as React.CSSProperties)
+                        ? viewportStyle(stage.width)
                         : undefined
                   }
                 >

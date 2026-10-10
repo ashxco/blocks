@@ -1,12 +1,12 @@
 import * as React from "react"
 import {
-  CircleXIcon,
-  DatabaseIcon,
-  GlobeIcon,
-  KeyRoundIcon,
-  RocketIcon,
-  Undo2Icon,
+  CalendarClockIcon,
+  CircleCheckIcon,
+  FileTextIcon,
+  FlagIcon,
+  MessageSquareIcon,
   UserPlusIcon,
+  ZapIcon,
   type LucideIcon,
 } from "lucide-react"
 
@@ -14,9 +14,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { personTone, type PersonTone } from "@/components/blocks/members-list/people"
+import { BrandMark } from "@/components/blocks/wordmark"
 
 export type ActivityKind =
-  "deploy" | "failed" | "rollback" | "domain" | "member" | "env" | "database"
+  "task" | "comment" | "status" | "due" | "automation" | "doc" | "member"
 
 export interface ActivityActor {
   name: string
@@ -28,22 +29,22 @@ export interface ActivityActor {
    * shared people list, so a name has one colour on every page.
    */
   tone?: PersonTone
-  /** The product itself (builds, checks, renewals): drawn as the Lumen mark instead of initials. */
+  /** The product itself (automations, reminders): drawn as the Acme mark instead of initials. */
   system?: boolean
 }
 
 export interface ActivityItem {
   id: string
   actor: ActivityActor
-  /** Verb phrase, e.g. "deployed". */
+  /** Verb phrase, e.g. "completed". */
   action: string
-  /** The object of the action, shown in bold, e.g. "web". */
+  /** The object of the action, shown in bold, e.g. "Homepage hero copy". */
   target?: string
-  /** The rest of the sentence, e.g. "to production" or "on". */
+  /** The rest of the sentence, e.g. "in Website relaunch". */
   context?: string
-  /** A branch, commit or other code name that ends the sentence, set in mono: "feat/rate-limits". */
+  /** A task key or other short code that ends the sentence, set in mono: "WEB-142". */
   code?: string
-  /** A commit message, command or other supporting line, set in mono. */
+  /** A comment, status update or automation rule, quoted under the sentence. */
   detail?: string
   /** Relative time label, e.g. "2 min ago". */
   time: string
@@ -69,90 +70,81 @@ const kinds: Record<
   ActivityKind,
   { icon: LucideIcon; className: string; label: string }
 > = {
-  deploy: { icon: RocketIcon, className: "text-success", label: "Deployment" },
-  failed: {
-    icon: CircleXIcon,
-    className: "text-destructive",
-    label: "Failed build",
-  },
-  rollback: { icon: Undo2Icon, className: "text-warning", label: "Rollback" },
-  domain: { icon: GlobeIcon, className: "text-info", label: "Domain" },
+  task: { icon: CircleCheckIcon, className: "text-success", label: "Task completed" },
+  comment: { icon: MessageSquareIcon, className: "text-info", label: "Comment" },
+  status: { icon: FlagIcon, className: "text-warning", label: "Status change" },
+  due: { icon: CalendarClockIcon, className: "text-muted-foreground", label: "Due date" },
+  automation: { icon: ZapIcon, className: "text-brand", label: "Automation" },
+  doc: { icon: FileTextIcon, className: "text-info", label: "Doc" },
   member: { icon: UserPlusIcon, className: "text-brand", label: "Team" },
-  env: {
-    icon: KeyRoundIcon,
-    className: "text-muted-foreground",
-    label: "Environment",
-  },
-  database: { icon: DatabaseIcon, className: "text-info", label: "Database" },
 }
 
+/** What happened in Acme Inc. this week. The dashboard shows the first three. */
 export const defaultActivity: ActivityItem[] = [
   {
     id: "a1",
-    actor: { name: "Maya Chen" },
-    action: "deployed",
-    target: "web",
-    context: "to production",
-    detail: "a41c9e2  Fix redirect loop on checkout",
-    time: "2 min ago",
-    kind: "deploy",
+    actor: { name: "Sofia Alvarez" },
+    action: "completed",
+    target: "Homepage hero copy",
+    context: "in Website relaunch",
+    time: "4 min ago",
+    kind: "task",
   },
   {
     id: "a2",
-    actor: { name: "Lumen", system: true },
-    action: "failed to build",
-    target: "api",
-    context: "on",
-    code: "feat/rate-limits",
-    detail: "npm run build exited with code 1",
-    time: "18 min ago",
-    kind: "failed",
+    actor: { name: "Acme", system: true },
+    action: "notified",
+    target: "Priya Raman",
+    context: "that Homepage hero copy is done",
+    detail: "When a task moves to Done, notify the owner",
+    time: "4 min ago",
+    kind: "automation",
   },
   {
     id: "a3",
-    actor: { name: "Daniel Okafor" },
-    action: "added the domain",
-    target: "status.acme.dev",
-    context: "to docs",
-    time: "1 hr ago",
-    kind: "domain",
+    actor: { name: "Jordan Lee" },
+    action: "marked",
+    target: "Mobile app 2.0",
+    context: "as at risk",
+    detail: "Push notifications slip a week while we wait for the app store review. Everything else is on plan.",
+    time: "34 min ago",
+    kind: "status",
   },
   {
     id: "a4",
-    actor: { name: "Priya Shah" },
+    actor: { name: "Sam Okafor" },
+    action: "commented on",
+    target: "Export invoices as CSV",
+    context: "in Customer portal",
+    detail: "Northwind needs this before their Q4 close. Can we pull it into this sprint?",
+    time: "2 hr ago",
+    kind: "comment",
+  },
+  {
+    id: "a5",
+    actor: { name: "Hana Kim" },
     action: "invited",
-    target: "sam@acme.dev",
-    context: "as a developer",
+    target: "elena@northwind.com",
+    context: "as a guest on Customer portal",
     time: "3 hr ago",
     kind: "member",
   },
   {
-    id: "a5",
-    actor: { name: "Leo Martins" },
-    action: "rolled back",
-    target: "api",
-    context: "to",
-    code: "7f02b1d",
-    time: "Yesterday",
-    kind: "rollback",
-  },
-  {
     id: "a6",
-    actor: { name: "Maya Chen" },
-    action: "updated 3 environment variables in",
-    target: "web",
-    context: "for production",
+    actor: { name: "Daniel Brooks" },
+    action: "moved 6 tasks in",
+    target: "Billing migration",
+    context: "to the week of Oct 12",
     time: "Yesterday",
-    kind: "env",
+    kind: "due",
   },
   {
     id: "a7",
-    actor: { name: "Daniel Okafor" },
-    action: "created the database",
-    target: "orders-db",
-    context: "in Frankfurt",
+    actor: { name: "Maya Patel" },
+    action: "created the doc",
+    target: "Q4 planning: goals and owners",
     time: "2 days ago",
-    kind: "database",
+    kind: "doc",
   },
 ]
 
@@ -195,13 +187,8 @@ export function ActivityFeed({
             ) : null}
             <div className="relative shrink-0 self-start">
               {item.actor.system ? (
-                // The product's own events carry its mark, so they never read as a person called "L".
-                <span
-                  aria-hidden="true"
-                  className="grid size-(--avatar-size-md) place-items-center rounded-sm bg-foreground"
-                >
-                  <span className="size-2.5 rounded-full bg-brand" />
-                </span>
+                // The product's own events carry its mark, so they never read as a person called "A".
+                <BrandMark className="size-(--avatar-size-md)" />
               ) : (
                 <Avatar>
                   {item.actor.image ? (
@@ -240,7 +227,7 @@ export function ActivityFeed({
                 {item.code ? (
                   <>
                     {" "}
-                    {/* inline-block keeps a branch name whole on one line; it only wraps when it is wider than the column. */}
+                    {/* inline-block keeps a task key whole on one line; it only wraps when it is wider than the column. */}
                     <code className="inline-block max-w-full font-mono text-code font-normal break-words text-foreground">
                       {item.code}
                     </code>
@@ -249,8 +236,8 @@ export function ActivityFeed({
                 {kind ? <span className="sr-only"> ({kind.label})</span> : null}
               </p>
               {item.detail ? (
-                // Wraps instead of truncating: a commit message or an error is only useful whole.
-                <p className="w-fit max-w-full rounded-xs bg-muted px-2 py-0.5 font-mono text-code break-words whitespace-pre-wrap text-copy">
+                // Wraps instead of truncating: a comment or a status update is only useful whole.
+                <p className="w-fit max-w-full rounded-sm bg-muted px-3 py-2 text-sm break-words text-copy">
                   {item.detail}
                 </p>
               ) : null}

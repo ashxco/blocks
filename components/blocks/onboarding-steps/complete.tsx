@@ -5,15 +5,15 @@ import Link from "next/link"
 import { ArrowRightIcon, CheckIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { CodeWindow } from "@/components/blocks/code-window"
-
-import { PROVIDERS, type OnboardingRepository, type OnboardingValues } from "./types"
 import { Kern } from "@/components/ui/kern"
+import { cn } from "@/lib/utils"
+
+import { DEFAULT_TEMPLATES, type OnboardingTemplate, type OnboardingValues } from "./types"
 
 export function OnboardingComplete({
   values,
   invitesSent,
-  repository,
+  template = DEFAULT_TEMPLATES[0],
   domain,
   dashboardHref,
   autoFocus = true,
@@ -21,7 +21,8 @@ export function OnboardingComplete({
 }: {
   values: OnboardingValues
   invitesSent: number
-  repository?: OnboardingRepository
+  /** The template the first project was made from. */
+  template?: OnboardingTemplate
   domain: string
   dashboardHref: string
   /** Move focus to the heading on mount, after people finish. Off when a page opens on this state. */
@@ -30,45 +31,36 @@ export function OnboardingComplete({
 }) {
   const titleId = React.useId()
   const headingRef = React.useRef<HTMLHeadingElement>(null)
-  const repoName = repository?.name ?? "your repository"
-  const provider = PROVIDERS.find((p) => p.value === values.provider)?.label ?? "GitHub"
-  const host = `${(repository?.name.split("/").pop() ?? "app").toLowerCase()}-${values.workspaceSlug}.${domain}`
 
-  const lines = React.useMemo(
-    () => [
-      `→ Importing ${repoName} from ${provider}`,
-      "→ Cloning main (3f9c2e1)",
-      `✓ Detected ${repository?.framework ?? "your framework"}`,
-      "✓ Installed dependencies in 8.4s",
-      "✓ Built production bundle in 41s",
-      `✓ Live at https://${host}`,
-    ],
-    [repoName, provider, repository?.framework, host]
+  // The starter tasks, column by column, in the order they appear.
+  const cards = React.useMemo(
+    () => template.sections.flatMap((section, column) => section.tasks.map((task) => ({ column, task }))),
+    [template]
   )
-  const [shown, setShown] = React.useState(1)
+  const [shown, setShown] = React.useState(0)
 
-  // Stream the log in one line at a time. Under reduced motion the first tick
-  // shows every line at once. State only changes inside the timer callback.
   // Read once: the heading takes focus when the state appears, never again.
   const focusOnMount = React.useRef(autoFocus)
   React.useEffect(() => {
     if (focusOnMount.current) headingRef.current?.focus({ preventScroll: true })
   }, [])
 
+  // Fill the board one card at a time. Under reduced motion the first tick
+  // shows every card at once. State only changes inside the timer callback.
   React.useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     const timer = setInterval(
       () => {
         setShown((n) => {
-          const next = reduce ? lines.length : Math.min(n + 1, lines.length)
-          if (next >= lines.length) clearInterval(timer)
+          const next = reduce ? cards.length : Math.min(n + 1, cards.length)
+          if (next >= cards.length) clearInterval(timer)
           return next
         })
       },
-      reduce ? 0 : 650
+      reduce ? 0 : 450
     )
     return () => clearInterval(timer)
-  }, [lines])
+  }, [cards])
 
   const summary = [
     { term: "Workspace", detail: `${domain}/${values.workspaceSlug}`, mono: true },
@@ -76,7 +68,7 @@ export function OnboardingComplete({
       term: "Team",
       detail: invitesSent ? `${invitesSent} ${invitesSent === 1 ? "invite" : "invites"} sent` : "Just you for now",
     },
-    { term: "Repository", detail: repoName, mono: true },
+    { term: "First project", detail: template.name },
   ]
 
   return (
@@ -98,7 +90,10 @@ export function OnboardingComplete({
             <Kern>{`${values.workspaceName.trim() || "Your workspace"} is ready.`}</Kern>
           </h2>
           <p className="mt-4 max-w-prose text-lead">
-            Lumen is deploying {repoName} from main. Your first production URL will be live in about a minute.
+            Acme set up {template.name} with {template.tasks} starter tasks.{" "}
+            {invitesSent
+              ? "Your team gets an email to join, and anything here can change later."
+              : "Invite your team from the Team page whenever you’re ready."}
           </p>
           <dl className="mt-8 grid gap-3 border-t border-panel-border pt-6">
             {summary.map((row) => (
@@ -120,15 +115,61 @@ export function OnboardingComplete({
             </Button>
           </div>
         </div>
-        {/* The log is sentence-like, so it wraps on phones instead of cutting lines off. The
-            minimum height holds the space while lines stream in. The title is the repository
-            alone (the log names the branch), so it fits the title bar on a phone. */}
-        <CodeWindow
-          title={repoName}
-          lines={lines.slice(0, shown)}
-          wrap
-          className="min-h-56 @narrow/complete:min-h-72"
-        />
+
+        {/* The new project, its starter tasks landing in their sections. Every card is laid out from the
+            start, so the board never changes height while it fills. */}
+        <div className="min-w-0 overflow-hidden rounded-(--card-radius) border border-panel-border bg-panel-raised">
+          <div className="flex items-center justify-between gap-4 border-b border-panel-border px-5 py-4">
+            <p className="min-w-0 truncate text-label text-panel-foreground">{template.name}</p>
+            <p className="shrink-0 text-caption text-panel-muted tabular">{template.tasks} starter tasks</p>
+          </div>
+          <div className="@container/board p-3">
+            <ol className="grid grid-cols-1 gap-3 @min-[22rem]/board:grid-cols-3">
+              {template.sections.map((section, column) => {
+                const more = section.count - section.tasks.length
+                // The section's sample cards have all landed once its last one is shown.
+                const filled = cards.findIndex((card) => card.column === column) + section.tasks.length <= shown
+                return (
+                  <li key={section.name} className="grid content-start gap-2 rounded-(--control-radius) bg-panel p-2.5">
+                    <p className="flex items-center justify-between gap-2 px-1 text-caption">
+                      <span className="truncate font-semibold text-panel-foreground">{section.name}</span>
+                      <span className="tabular">{section.count}</span>
+                    </p>
+                    <ul className="grid gap-2">
+                      {section.tasks.map((task) => {
+                        const index = cards.findIndex((card) => card.column === column && card.task === task)
+                        const visible = index < shown
+                        return (
+                          <li
+                            key={task}
+                            aria-hidden={visible ? undefined : true}
+                            className={cn(
+                              "rounded-xs border border-panel-border bg-panel-raised px-3 py-2.5 text-sm text-panel-foreground transition-[opacity,translate] duration-(--duration-base) ease-out",
+                              visible ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
+                            )}
+                          >
+                            {task}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                    {more > 0 ? (
+                      <p
+                        aria-hidden={filled ? undefined : true}
+                        className={cn(
+                          "px-1 text-caption tabular transition-opacity duration-(--duration-base) ease-out",
+                          filled ? "opacity-100" : "opacity-0"
+                        )}
+                      >
+                        +{more} more
+                      </p>
+                    ) : null}
+                  </li>
+                )
+              })}
+            </ol>
+          </div>
+        </div>
       </div>
     </section>
   )

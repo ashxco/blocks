@@ -96,10 +96,10 @@ export function RecoveryCodesDialog({
 
         <ul
           aria-label={`${unused.length} unused recovery codes`}
-          className="grid grid-cols-2 gap-x-6 gap-y-2.5 rounded-(--card-radius) bg-terminal p-5 font-mono text-code text-terminal-foreground"
+          className="grid grid-cols-2 gap-x-6 gap-y-2.5 rounded-(--card-radius) border bg-subtle p-5 font-mono text-code text-foreground"
         >
           {codes.map((c) => (
-            <li key={c.code} className={cn("tabular", c.used && "text-terminal-foreground/40 line-through")}>
+            <li key={c.code} className={cn("tabular", c.used && "text-muted-foreground line-through")}>
               {c.code}
               {c.used ? <span className="sr-only"> (used)</span> : null}
             </li>

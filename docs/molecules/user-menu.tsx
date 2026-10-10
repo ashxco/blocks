@@ -35,7 +35,7 @@ export default function UserMenuDocs() {
       <Example
         title="Avatar"
         description="For top bars. Opens account links, a theme switch and sign out; the theme switch changes this site’s theme too. Shown open; click the avatar to close it."
-        code={`<UserMenu user={{ name: "Maya Chen", email: "maya@acme.dev" }} />`}
+        code={`<UserMenu user={{ name: "Maya Patel", email: "maya@acme.com" }} />`}
       >
         <OpenStage />
       </Example>
@@ -84,7 +84,7 @@ export default function UserMenuDocs() {
           {
             prop: "user",
             type: "{ name: string; email: string; initials?: string; image?: string; tone?: string }",
-            default: "Maya Chen",
+            default: "Maya Patel",
             description:
               "The signed-in person. The avatar fill comes from the shared people list, so the same person looks the same in the team list and the activity feed; tone overrides it.",
           },

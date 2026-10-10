@@ -17,10 +17,10 @@ export default function PageHeaderDocs() {
         layout="full"
         code={`<PageHeader
   title="Projects"
-  description="Every app and service in Acme Inc. Push to a connected branch and Lumen builds and deploys it."
+  description="Every project in Acme Inc., with its status, lead and due date. Open one to see its board, timeline and docs."
   actions={
     <>
-      <Button variant="outline">Import repository</Button>
+      <Button variant="outline">Browse templates</Button>
       <Button nativeButton={false} render={<Link href="/live/app/projects/new" />}>
         <PlusIcon data-icon="inline-start" />
         New project
@@ -30,7 +30,8 @@ export default function PageHeaderDocs() {
 />`}
       >
         <div className="p-6 @prose:p-10">
-          <PageHeader />
+          {/* h2 in previews: the docs page already has its h1. */}
+          <PageHeader as="h2" />
         </div>
       </Example>
 
@@ -46,6 +47,7 @@ export default function PageHeaderDocs() {
       >
         <div className="p-6 @prose:p-10">
           <PageHeader
+            as="h2"
             title="Settings"
             description="Manage your profile, notifications and the Acme Inc. workspace."
             divider={false}
@@ -69,7 +71,7 @@ export default function PageHeaderDocs() {
         surface="subtle"
         code={`<PageHeader
   title="Team"
-  description="Six people can open Acme Inc. Invite more on the Pro plan."
+  description="18 members and 6 guests can open Acme Inc. Each new member adds a seat on Pro."
   actions={
     <Button nativeButton={false} render={<Link href="/live/app/team" />}>
       <UserPlusIcon data-icon="inline-start" />
@@ -80,8 +82,9 @@ export default function PageHeaderDocs() {
       >
         <div className="p-6 @prose:p-10">
           <PageHeader
+            as="h2"
             title="Team"
-            description="Six people can open Acme Inc. Invite more on the Pro plan."
+            description="18 members and 6 guests can open Acme Inc. Each new member adds a seat on Pro."
             actions={
               <Button
                 nativeButton={false}
@@ -101,12 +104,12 @@ export default function PageHeaderDocs() {
         layout="center"
         code={`<PageHeader
   as="h2"
-  title="Domains"
-  description="Point a domain at web and Lumen issues the certificate."
+  title="Automations"
+  description="Rules that run on Website relaunch when its tasks change."
   actions={
     <Button size="sm">
       <PlusIcon data-icon="inline-start" />
-      Add domain
+      New rule
     </Button>
   }
 />`}
@@ -114,12 +117,12 @@ export default function PageHeaderDocs() {
         <div className="w-full max-w-80 rounded-lg border border-border bg-background p-5">
           <PageHeader
             as="h2"
-            title="Domains"
-            description="Point a domain at web and Lumen issues the certificate."
+            title="Automations"
+            description="Rules that run on Website relaunch when its tasks change."
             actions={
               <Button size="sm">
                 <PlusIcon data-icon="inline-start" />
-                Add domain
+                New rule
               </Button>
             }
           />
@@ -145,7 +148,7 @@ export default function PageHeaderDocs() {
             prop: "title",
             type: "ReactNode",
             description:
-              "Page title, set in the text-h2 role (text-h3 when the header is narrower than 20rem). Without a title the Lumen projects example renders.",
+              "Page title, set in the text-h2 role (text-h3 when the header is narrower than 20rem). Without a title the Acme projects example renders.",
           },
           {
             prop: "description",

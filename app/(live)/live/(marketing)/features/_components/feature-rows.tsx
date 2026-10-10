@@ -1,105 +1,96 @@
 import * as React from "react"
 import { CheckIcon } from "lucide-react"
 
-import { CodeWindow } from "@/components/blocks/code-window"
-
-import { AuditCard, DatabaseCard, LatencyCard, PreviewCard } from "./row-visuals"
+import { ReleaseShot } from "@/components/blocks/changelog-entry"
+import {
+  BoardScreen,
+  ReportScreen,
+  ScreenFrame,
+  TimelineScreen,
+} from "@/components/blocks/product-tour/screens"
 import { Kern } from "@/components/ui/kern"
+
+import { DetailsCard, RunHistoryCard, StatusCard, TrendCard } from "./row-visuals"
 
 interface Feature {
   id: string
   title: React.ReactNode
   description: React.ReactNode
   points: string[]
-  windowTitle: string
-  lines: string[]
-  /** A small product card laid over the bottom of the terminal. */
+  /** The product screen for the area, built from components. */
+  screen: React.ReactNode
+  /** A small product card laid over the empty band at the foot of the screen. */
   card: React.ReactNode
 }
 
 const features: Feature[] = [
   {
-    id: "deploy",
-    title: "Ship on every push.",
+    id: "plan",
+    title: "Plan in the view that fits.",
     description:
-      "Every commit builds in isolation into a versioned image. Every branch gets its own preview URL, and any deploy rolls back in one click.",
+      "Every project has list, board, timeline and calendar views of the same tasks. Planners work from the timeline, the team works from the board, and nobody copies anything between them.",
     points: [
-      "A preview URL for every pull request",
-      "One-click rollback to any earlier deploy",
-      "Monorepo aware: only changed apps rebuild",
+      "Timeline with milestones and linked tasks",
+      "Templates for roadmaps, sprints and client work",
+      "Docs for specs and notes beside the plan",
     ],
-    windowTitle: "lumen — acme/web",
-    lines: [
-      "$ git push origin feat/billing",
-      "→ Received push to feat/billing (7f02b1d)",
-      "→ Restoring build cache (92% hit)",
-      "✓ Built image in 12.8s",
-      "✓ Preview ready at feat-billing.acme.dev",
-      "→ Linked the preview on pull request #482",
-    ],
-    card: <PreviewCard />,
+    screen: (
+      <ScreenFrame view="Timeline" className="pb-14">
+        <TimelineScreen />
+      </ScreenFrame>
+    ),
+    card: <StatusCard />,
   },
   {
-    id: "observe",
-    title: "See problems before users do.",
+    id: "track",
+    title: "Every task has an owner.",
     description:
-      "Logs, metrics and alerts stream from the first request, with nothing to install on your servers. Search a week of logs across every replica in one place.",
+      "Tasks carry an assignee, a due date, a priority and the subtasks it takes to finish. Comments keep the discussion on the task instead of in a chat thread.",
     points: [
-      "Live tail across every replica and region",
-      "CPU, memory, latency and error charts",
-      "Alerts to email, Slack or a webhook",
+      "Priorities from Urgent to Low",
+      "Subtasks, comments and recurring tasks",
+      "An inbox for everything that needs you",
     ],
-    windowTitle: "lumen logs — acme/api",
-    lines: [
-      "$ lumen logs --tail --service api",
-      "12:04:01 GET  /v1/projects 200 23ms",
-      "12:04:01 POST /v1/deploys  201 88ms",
-      "12:04:02 GET  /v1/health   200  3ms",
-      "12:04:03 POST /v1/sessions 401 12ms",
-      "12:04:03 GET  /v1/usage    200 41ms",
-      "→ Streaming from 4 replicas in fra1 and iad1",
-    ],
-    card: <LatencyCard />,
+    screen: (
+      <ScreenFrame view="Board" className="pb-14">
+        <BoardScreen />
+      </ScreenFrame>
+    ),
+    card: <DetailsCard />,
   },
   {
-    id: "secure",
-    title: "Safe by default.",
+    id: "automate",
+    title: "Let rules do the busywork.",
     description:
-      "TLS, encrypted secrets and edge protection are on from the first deploy. There is nothing to switch on and no security upgrade to buy.",
+      "Automations move tasks along, remind owners and post updates to Slack, so handoffs happen even when nobody remembers them.",
     points: [
-      "Automatic TLS for every domain",
-      "Secrets encrypted and scoped per environment",
-      "Roles and audit log from Pro, SAML on Scale",
+      "Start from a recipe or build your own rule",
+      "Conditions, several steps and a run history",
+      "1,000 runs a month on Free, 10,000 on Pro",
     ],
-    windowTitle: "lumen — acme/api",
-    lines: [
-      "$ lumen secrets set STRIPE_SECRET_KEY --env production",
-      "→ Encrypting with the project key",
-      "→ Scoped to production only",
-      "✓ Saved STRIPE_SECRET_KEY (version 4)",
-      "✓ Redeployed api and worker with the new value",
-    ],
-    card: <AuditCard />,
+    screen: (
+      <ScreenFrame title="Automations" view="Rule" className="pb-14">
+        <ReleaseShot className="p-4 @lg:p-6" />
+      </ScreenFrame>
+    ),
+    card: <RunHistoryCard />,
   },
   {
-    id: "data",
-    title: "Databases next to your app.",
+    id: "report",
+    title: "Know where every project stands.",
     description:
-      "Create Postgres and Redis in the same region as your services. Lumen wires up the connection string, takes backups on a schedule and gives each preview its own copy of the data.",
+      "Reports build themselves from the work: workload by person, on-time delivery and cycle time. Share a dashboard and skip the status meeting.",
     points: [
-      "Managed Postgres 17 and Redis 7",
-      "Point-in-time restore from Pro",
-      "A database branch for every preview deploy",
+      "Dashboards for workload and delivery",
+      "Share with the workspace or one team",
+      "A weekly summary to Slack or email",
     ],
-    windowTitle: "lumen — acme",
-    lines: [
-      "$ lumen db create orders --engine postgres@17",
-      "→ Provisioning 2 vCPU, 4 GB RAM and 50 GB in fra1",
-      "→ Creating a read replica in iad1",
-      "✓ orders is ready (38s)",
-      "✓ Added DATABASE_URL to acme/web and acme/worker",
-    ],
-    card: <DatabaseCard />,
+    screen: (
+      <ScreenFrame title="Delivery report" view="Report" className="pb-14">
+        <ReportScreen />
+      </ScreenFrame>
+    ),
+    card: <TrendCard />,
   },
 ]
 
@@ -125,11 +116,10 @@ function FeatureRow({ feature, reverse }: { feature: Feature; reverse: boolean }
         </ul>
       </div>
 
-      <div className="min-w-0 rounded-(--panel-radius) bg-subtle p-3 sm:p-8 xl:p-10">
-        <CodeWindow wrap title={feature.windowTitle} lines={feature.lines} className="pb-14" />
-        <div aria-hidden="true" className="relative -mt-12 flex justify-end pr-3 pl-8 sm:pr-6 sm:pl-16">
-          {feature.card}
-        </div>
+      {/* The screen and its card illustrate the copy beside them, so they stay out of the way of assistive technology. */}
+      <div aria-hidden="true" inert className="min-w-0 rounded-(--panel-radius) bg-subtle p-3 sm:p-8 xl:p-10">
+        {feature.screen}
+        <div className="relative -mt-12 flex justify-end pr-3 pl-8 sm:pr-6 sm:pl-16">{feature.card}</div>
       </div>
     </section>
   )
@@ -137,8 +127,8 @@ function FeatureRow({ feature, reverse }: { feature: Feature; reverse: boolean }
 
 /**
  * Four product areas in alternating rows: copy with a short checklist on one
- * side, a terminal with a product card laid over it on the other. Rows are
- * separated by hairlines.
+ * side, a product screen with a small card laid over it on the other. Rows
+ * are separated by hairlines.
  */
 export function FeatureRows() {
   return (

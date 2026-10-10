@@ -11,29 +11,34 @@ import { Badge } from "@/components/ui/badge"
 
 const faq = [
   {
-    value: "deploy",
-    question: "How does a deployment start?",
+    value: "trial",
+    question: "How does the free trial work?",
     answer:
-      "Connect a Git repository and push. Lumen builds every commit, gives each branch a preview URL and promotes main to production when the build passes.",
+      "Pro is free for 14 days and you don’t need a card to start. When the trial ends, add a card to stay on Pro, or keep working on Free with up to 3 members and 5 projects.",
   },
   {
-    value: "rollback",
-    question: "Can I roll back a bad release?",
+    value: "guests",
+    question: "Can I invite people from outside my company?",
     answer:
-      "Yes. Every deployment is kept. Open Deployments, pick a previous build and choose Promote to production. Traffic moves in a few seconds and nothing is rebuilt.",
+      "Yes. On Pro and above, invite clients and contractors as guests. Guests see only the projects you share with them, and you can remove their access at any time.",
   },
   {
-    value: "domains",
-    question: "Do I need to manage certificates for custom domains?",
+    value: "import",
+    question: "Can I bring my work over from another tool?",
     answer:
-      "No. Add the domain, point its DNS records at Lumen and a certificate is issued within minutes. Certificates renew 30 days before they expire.",
+      "Yes. Import a CSV file and Acme maps the title, assignee, due date and priority columns for you. Most teams move a project over in an afternoon.",
   },
   {
-    value: "regions",
-    question: "Where does my app run?",
+    value: "runs",
+    question: "What counts as an automation run?",
     answer:
-      "In the regions you choose for each project. Static files are cached at the edge in 38 cities; functions run in the regions next to your database.",
+      "One run is one rule firing once. If “When a task moves to Done, notify the owner” fires for 40 tasks, that is 40 runs. Pro includes 10,000 runs a month.",
   },
+]
+
+const unmatched = [
+  { name: "J. Lee", detail: "Row 42 · 3 tasks" },
+  { name: "Design team", detail: "Row 118 · 7 tasks" },
 ]
 
 export default function AccordionDocs() {
@@ -43,17 +48,17 @@ export default function AccordionDocs() {
         title="Default"
         description="Hairline-separated rows with bold titles. The plus turns ink and rotates into a cross when its row is open."
         layout="stack"
-        code={`<Accordion defaultValue={["deploy"]}>
-  <AccordionItem value="deploy">
-    <AccordionTrigger>How does a deployment start?</AccordionTrigger>
+        code={`<Accordion defaultValue={["trial"]}>
+  <AccordionItem value="trial">
+    <AccordionTrigger>How does the free trial work?</AccordionTrigger>
     <AccordionContent>
-      Connect a Git repository and push. …
+      Pro is free for 14 days and you don’t need a card to start. …
     </AccordionContent>
   </AccordionItem>
-  <AccordionItem value="rollback">…</AccordionItem>
+  <AccordionItem value="guests">…</AccordionItem>
 </Accordion>`}
       >
-        <Accordion defaultValue={["deploy"]} className="max-w-narrow">
+        <Accordion defaultValue={["trial"]} className="max-w-narrow">
           {faq.map((item) => (
             <AccordionItem key={item.value} value={item.value}>
               <AccordionTrigger>{item.question}</AccordionTrigger>
@@ -84,9 +89,9 @@ export default function AccordionDocs() {
         title="Several open at once"
         description="By default opening one row closes the others. Set multiple to let people compare answers."
         layout="stack"
-        code={`<Accordion multiple defaultValue={["deploy", "rollback"]}>…</Accordion>`}
+        code={`<Accordion multiple defaultValue={["trial", "guests"]}>…</Accordion>`}
       >
-        <Accordion multiple defaultValue={["deploy", "rollback"]} className="max-w-narrow">
+        <Accordion multiple defaultValue={["trial", "guests"]} className="max-w-narrow">
           {faq.slice(0, 3).map((item) => (
             <AccordionItem key={item.value} value={item.value}>
               <AccordionTrigger>{item.question}</AccordionTrigger>
@@ -100,68 +105,77 @@ export default function AccordionDocs() {
         title="Disabled row"
         description="Disable a row whose content is not available yet, and say why in the title."
         layout="stack"
-        code={`<AccordionItem value="sso" disabled>…</AccordionItem>`}
+        code={`<AccordionItem value="residency" disabled>…</AccordionItem>`}
       >
         <Accordion className="max-w-narrow">
           <AccordionItem value="audit">
             <AccordionTrigger>Audit log</AccordionTrigger>
             <AccordionContent>
-              Every change to projects, domains and members, kept for 90 days on the Pro plan.
+              Every change to projects, tasks, members and permissions, with who made it and when.
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="sso" disabled>
-            <AccordionTrigger>Single sign-on, available on Enterprise</AccordionTrigger>
-            <AccordionContent>Connect Okta, Entra ID or Google Workspace.</AccordionContent>
+          <AccordionItem value="sso">
+            <AccordionTrigger>SSO and SAML</AccordionTrigger>
+            <AccordionContent>Sign in with your identity provider, on Business and Enterprise.</AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="residency" disabled>
+            <AccordionTrigger>Data residency, available on Enterprise</AccordionTrigger>
+            <AccordionContent>Keep your workspace data stored in the EU or the US.</AccordionContent>
           </AccordionItem>
         </Accordion>
       </Example>
 
       <Example
-        title="Build checks"
-        description="Rich content works inside a row: status, code and links. Keep the title short and put detail in the panel."
+        title="Import summary"
+        description="Rich content works inside a row: status, lists and links. Keep the title short and put detail in the panel."
         layout="stack"
       >
-        <Accordion variant="contained" defaultValue={["lint"]} className="max-w-narrow">
-          <AccordionItem value="install">
+        <Accordion variant="contained" defaultValue={["assignees"]} className="max-w-narrow">
+          <AccordionItem value="tasks">
             <AccordionTrigger>
               <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
-                Install dependencies
-                <Badge variant="success">Passed</Badge>
+                Tasks
+                <Badge variant="success">284 imported</Badge>
               </span>
             </AccordionTrigger>
             <AccordionContent>
               <p>
-                Restored 1,284 packages from cache in <span className="tabular">6.1s</span>.
+                Imported 284 tasks into Client projects in <span className="tabular">6 seconds</span>, with their
+                due dates and priorities.
               </p>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="lint">
+          <AccordionItem value="assignees">
             <AccordionTrigger>
               <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
-                Type check
-                <Badge variant="destructive">2 errors</Badge>
+                Assignees
+                <Badge variant="warning">2 not matched</Badge>
               </span>
             </AccordionTrigger>
             <AccordionContent>
-              <p>The build stopped because tsc found two errors.</p>
-              <pre className="overflow-x-auto rounded-(--control-radius) border bg-terminal p-4 font-mono text-code text-terminal-foreground">
-                {`app/deployments/page.tsx:42:7  Type 'string' is not assignable to type 'Status'.
-lib/regions.ts:18:3             Property 'fra1' is missing in type 'Regions'.`}
-              </pre>
+              <p>Two names in the file don’t match anyone in Acme Inc., so their tasks have no assignee yet.</p>
+              <ul className="divide-y rounded-(--control-radius) border">
+                {unmatched.map((row) => (
+                  <li key={row.name} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 px-3 py-2">
+                    <span className="font-semibold text-foreground">{row.name}</span>
+                    <span className="text-caption text-muted-foreground tabular-nums">{row.detail}</span>
+                  </li>
+                ))}
+              </ul>
               <p>
-                Fix them locally with npm run typecheck, then push again. <a href="#typescript">Read the TypeScript guide</a>
+                Pick a member for each name, or leave the tasks unassigned. <a href="#import-guide">Read the import guide</a>
               </p>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="build">
+          <AccordionItem value="comments">
             <AccordionTrigger>
               <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
-                Build
+                Comments
                 <Badge variant="secondary">Skipped</Badge>
               </span>
             </AccordionTrigger>
             <AccordionContent>
-              <p>Skipped because an earlier step failed.</p>
+              <p>Skipped because the file has no comments column.</p>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

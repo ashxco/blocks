@@ -7,17 +7,17 @@ import { cn } from "@/lib/utils"
 export { ReleaseShot } from "@/components/blocks/changelog-entry/release-shot"
 
 export interface ChangelogEntryProps {
-  /** Display date, e.g. "Oct 6, 2026". */
+  /** Display date, e.g. "Oct 1, 2026". */
   date?: string
-  /** Machine-readable date for the <time> element, e.g. "2026-10-06". */
+  /** Machine-readable date for the <time> element, e.g. "2026-10-01". */
   dateTime?: string
-  /** Release version, shown in mono. */
+  /** Release version, shown in mono, e.g. for an SDK release. Leave it out for product updates. */
   version?: string
   title?: React.ReactNode
   /** One or two sentences on what changed and why it matters. */
   description?: React.ReactNode
   /**
-   * Screenshot slot. Pass true for the built-in preview environment card, or
+   * Screenshot slot. Pass true for the built-in automation rule card, or
    * your own image or component. It sits in a tinted, rounded frame.
    */
   media?: React.ReactNode
@@ -35,9 +35,9 @@ export interface ChangelogEntryProps {
 }
 
 /**
- * Inline code in release notes: commands, flags, config keys and file names.
- * A token never breaks across lines, so `--since 30d` stays one pill on a
- * phone; keep each one short (under about 30 characters).
+ * Inline code in release notes: API fields, webhook events, SDK methods and
+ * package names. A token never breaks across lines, so `task.completed`
+ * stays one pill on a phone; keep each one short (under about 30 characters).
  */
 export function ChangelogCode({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
@@ -53,35 +53,34 @@ export function ChangelogCode({ children, className }: { children: React.ReactNo
   )
 }
 
-/* Defaults match the Lumen changelog template, so docs and pages tell one story. */
+/* Defaults match the Acme changelog template, so docs and pages tell one story. */
 const defaultEntry = {
-  date: "Oct 6, 2026",
-  dateTime: "2026-10-06",
-  version: "v2.12.0",
-  title: "Branch your database with every preview",
+  date: "Oct 1, 2026",
+  dateTime: "2026-10-01",
+  title: "Automations 2.0",
   description:
-    "Preview environments now get a copy-on-write branch of your Postgres database. Run migrations against real data without touching production. Lumen deletes the branch when the pull request closes.",
+    "Rules can now run several steps, check a condition before they act and post to the apps your team uses. Start from a recipe or build your own in the new rule editor.",
   media: true,
   mediaTint: "violet" as const,
   items: [
-    "Branches are ready in under two seconds, whatever the size of the database",
+    "Add up to ten steps to a rule, with a condition between any two",
+    "A run history shows every task a rule touched and what it changed",
     <>
-      Seed scripts run after branching when you set <ChangelogCode>preview.seed</ChangelogCode> in{" "}
-      <ChangelogCode>lumen.toml</ChangelogCode>
+      Trigger rules from your own tools with the new <ChangelogCode>automation.run</ChangelogCode> API event
     </>,
-    "Fixed preview URLs returning 404 for a few seconds after a force push",
   ],
 }
 
 /**
- * One release on a vertical rail: a dot on the rail, the date and version,
- * a title, a short summary, an optional screenshot and a list of smaller
- * changes. On wide screens the date and version move to the left of the rail.
+ * One update on a vertical rail: a dot on the rail, the date (and a
+ * version, for an SDK release), a title, a short summary, an optional
+ * screenshot and a list of smaller changes. On wide screens the date moves
+ * to the left of the rail.
  */
 export function ChangelogEntry({
   date = defaultEntry.date,
   dateTime = defaultEntry.dateTime,
-  version = defaultEntry.version,
+  version,
   title = defaultEntry.title,
   description = defaultEntry.description,
   media = defaultEntry.media,
@@ -159,50 +158,36 @@ export function ChangelogEntry({
 export const defaultChangelog: ChangelogEntryProps[] = [
   defaultEntry,
   {
-    date: "Sep 24, 2026",
-    dateTime: "2026-09-24",
-    version: "v2.11.0",
-    title: "Live logs in your terminal",
-    description: (
-      <>
-        <ChangelogCode>lumen logs</ChangelogCode> now streams from every replica at once, with filters for level, route
-        and status code. Leave it running through a deploy and the stream moves to the new version on its own.
-      </>
-    ),
-    items: [
-      <>
-        Filter with <ChangelogCode>--level error</ChangelogCode>, <ChangelogCode>--route /api</ChangelogCode> or{" "}
-        <ChangelogCode>--status 5xx</ChangelogCode>
-      </>,
-      <>
-        Search the last 30 days with <ChangelogCode>--since 30d</ChangelogCode> on Pro and Scale
-      </>,
-      "Timestamps now use your local time zone",
-    ],
+    date: "Sep 17, 2026",
+    dateTime: "2026-09-17",
+    title: "Timeline view",
+    description:
+      "See a project as bars across the calendar. Drag a bar to change its dates, link tasks that depend on each other and spot clashes before they happen.",
+    items: ["Zoom from days to quarters", "Linked tasks move together when you reschedule one"],
   },
   {
-    date: "Sep 10, 2026",
-    dateTime: "2026-09-10",
-    version: "v2.10.0",
-    title: "New regions in São Paulo, Mumbai and Sydney",
+    date: "Sep 3, 2026",
+    dateTime: "2026-09-03",
+    title: "Guest access",
     description:
-      "You can now deploy to 14 regions. Choose regions per project, and Lumen sends each request to the nearest healthy replica.",
-    items: [
-      "Move a project between regions without downtime",
-      "Latency from each region now shows on the metrics page",
-    ],
+      "Invite clients, contractors and agencies to the projects they work on. Guests see only what you share with them, and they never take a member seat.",
+    items: ["Guests can comment on tasks and complete the ones assigned to them", "Pro includes 10 guests"],
   },
   {
-    date: "Aug 27, 2026",
-    dateTime: "2026-08-27",
-    version: "v2.9.0",
-    title: "Spending caps and usage alerts",
+    date: "Aug 20, 2026",
+    dateTime: "2026-08-20",
+    title: "Shared dashboards",
     description:
-      "Set a monthly cap on usage charges for each workspace. Owners get an email at 50%, 80% and 100%, and you decide what happens at the cap.",
-    items: [
-      "Caps apply to bandwidth, build minutes and database storage",
-      "Alerts can also post to a Slack channel or a webhook",
-    ],
+      "Share a report dashboard with your whole workspace, or with one team. Dashboards update as tasks move, so the numbers are always current.",
+    items: ["Pin a dashboard to the top of a project", "Send a weekly summary to a Slack channel"],
+  },
+  {
+    date: "Aug 6, 2026",
+    dateTime: "2026-08-06",
+    title: "Recurring tasks",
+    description:
+      "Set a task to repeat every day, week or month. The next one appears when you complete the current one, with the same owner, subtasks and project.",
+    items: ["Repeat on weekdays only, or on the last Friday of each month", "Skip one date without breaking the schedule"],
   },
 ]
 
@@ -232,7 +217,7 @@ export function ChangelogTimeline({
         {children ??
           entries.map((entry, i) => (
             <ChangelogEntry
-              key={entry.version ?? i}
+              key={entry.dateTime ?? entry.version ?? i}
               description={null}
               media={null}
               items={[]}

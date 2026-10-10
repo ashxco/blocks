@@ -4,7 +4,7 @@ import { NotFoundPanel } from "./_components/not-found-panel"
 
 export const metadata: Metadata = {
   title: "Page not found",
-  description: "The page you asked for doesn’t exist on Lumen. Head back home or contact support.",
+  description: "There is no page at this address on acme.com. Head back home, or contact support.",
   robots: { index: false },
 }
 

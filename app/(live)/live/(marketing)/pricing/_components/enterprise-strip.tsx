@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRightIcon, HeadsetIcon, KeyRoundIcon, ServerIcon, ShieldCheckIcon, type LucideIcon } from "lucide-react"
+import { ArrowRightIcon, FileSignatureIcon, GlobeLockIcon, HeadsetIcon, ShieldCheckIcon, type LucideIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -13,24 +13,24 @@ interface EnterprisePoint {
 
 const points: EnterprisePoint[] = [
   {
-    icon: ServerIcon,
-    title: "Single-tenant or self-hosted",
-    description: "Run Lumen in a dedicated region, inside your own cloud account or on servers in your data centre.",
+    icon: HeadsetIcon,
+    title: "A dedicated success manager",
+    description: "One person who knows your rollout, from the first import to every team working in Acme.",
   },
   {
-    icon: KeyRoundIcon,
-    title: "SAML, SCIM and audit export",
-    description: "Provision teams from your identity provider and stream every audit event to your SIEM.",
+    icon: FileSignatureIcon,
+    title: "Custom contracts",
+    description: "Annual terms, purchase orders and invoicing, on your paper or ours.",
+  },
+  {
+    icon: GlobeLockIcon,
+    title: "Data residency",
+    description: "Keep your workspace data stored in the United States or the European Union.",
   },
   {
     icon: ShieldCheckIcon,
-    title: "99.99% uptime, in the contract",
-    description: "A financially backed SLA with service credits, and a written incident report within 48 hours.",
-  },
-  {
-    icon: HeadsetIcon,
-    title: "A named migration engineer",
-    description: "We plan the move with your team and stay on call from the first import to launch day.",
+    title: "Security reviews, answered",
+    description: "Our SOC 2 Type II report, a GDPR data processing agreement and a 99.9% uptime SLA.",
   },
 ]
 
@@ -42,14 +42,14 @@ export function EnterpriseStrip({ className }: { className?: string }) {
   return (
     <section aria-labelledby="enterprise-title" className={cn("container-page", className)}>
       <div className="grid overflow-hidden rounded-(--panel-radius) border lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.3fr)]">
-        <div className="flex flex-col justify-between gap-10 bg-subtle p-8 sm:p-12">
+        <div className="flex flex-col justify-start gap-8 bg-subtle p-8 sm:p-12">
           <div className="grid gap-5">
             <h2 id="enterprise-title" className="text-h2 text-foreground">
-              <Kern>Lumen for enterprise.</Kern>
+              <Kern>Acme for enterprise.</Kern>
             </h2>
             <p className="max-w-prose text-lead text-copy">
-              Volume pricing and custom terms for teams with strict compliance needs, more than 50 engineers or their
-              own hardware.
+              Everything in Business, with volume pricing and custom terms for companies rolling Acme out to every
+              team.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -57,7 +57,7 @@ export function EnterpriseStrip({ className }: { className?: string }) {
               Talk to sales
               <ArrowRightIcon data-icon="inline-end" />
             </Button>
-            <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/live/features" />}>
+            <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/live/features#capabilities" />}>
               Security features
             </Button>
           </div>

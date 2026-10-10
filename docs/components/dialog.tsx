@@ -1,9 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { GlobeIcon, MoreHorizontalIcon, PencilIcon, ArrowRightLeftIcon, Trash2Icon } from "lucide-react"
+import { ArchiveIcon, MoreHorizontalIcon, PencilIcon, PlusIcon, Trash2Icon, UserPlusIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { initialsTone } from "@/components/blocks/members-list/people"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -32,35 +35,29 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 
 const shortcuts = [
-  { keys: ["⌘", "K"], label: "Search projects and pages" },
-  { keys: ["G", "D"], label: "Go to deployments" },
-  { keys: ["G", "L"], label: "Go to logs" },
-  { keys: ["⌘", "⇧", "R"], label: "Redeploy the latest commit" },
-  { keys: ["⌘", "."], label: "Cancel the running build" },
+  { keys: ["⌘", "K"], label: "Search tasks, projects and docs" },
+  { keys: ["C"], label: "Create a task" },
+  { keys: ["G", "I"], label: "Go to your inbox" },
+  { keys: ["G", "M"], label: "Go to my tasks" },
+  { keys: ["⌘", "↵"], label: "Mark the open task as done" },
   { keys: ["?"], label: "Show keyboard shortcuts" },
 ]
 
-const buildLog = [
-  "12:04:31  Cloning github.com/lumen-labs/web (branch: main, commit: 8f2c1a9)",
-  "12:04:32  Cloning completed in 912ms",
-  "12:04:33  Restored build cache from previous deployment",
-  "12:04:33  Detected Next.js 16.3 and Node.js 22.x",
-  "12:04:34  Running \"npm install\"",
-  "12:04:41  added 412 packages, audited 413 packages in 7s",
-  "12:04:41  found 0 vulnerabilities",
-  "12:04:41  Running \"npm run build\"",
-  "12:04:44  Creating an optimized production build",
-  "12:04:58  Compiled successfully in 14.2s",
-  "12:04:58  Linting and checking validity of types",
-  "12:05:01  Collecting page data",
-  "12:05:02  Generating static pages (38/38)",
-  "12:05:04  Collecting build traces",
-  "12:05:04  Finalizing page optimization",
-  "12:05:05  Uploading build output to 3 regions",
-  "12:05:07  fra1 ready, iad1 ready",
-  "12:05:08  sin1 ready",
-  "12:05:09  Assigned lumen.app and www.lumen.app",
-  "12:05:09  Deployment ready at lumen-web-8f2c1a9.lumen.app",
+/** The history of one task, newest first: long enough to scroll inside the dialog. */
+const taskHistory = [
+  { initials: "PR", name: "Priya Raman", action: "moved the task to In review", time: "10:42" },
+  { initials: "PR", name: "Priya Raman", action: "completed the subtask Draft the blog post", time: "10:40" },
+  { initials: "SA", name: "Sofia Alvarez", action: "attached Hero image v3 from Figma", time: "09:58" },
+  { initials: "JL", name: "Jordan Lee", action: "commented: the pricing section still says $10", time: "09:31" },
+  { initials: "PR", name: "Priya Raman", action: "completed the subtask Outline the key messages", time: "Yesterday" },
+  { initials: "MP", name: "Maya Patel", action: "changed the priority from Medium to High", time: "Yesterday" },
+  { initials: "MP", name: "Maya Patel", action: "moved the due date to Oct 14", time: "Yesterday" },
+  { initials: "HK", name: "Hana Kim", action: "asked to sign off before it goes out", time: "Oct 6" },
+  { initials: "PR", name: "Priya Raman", action: "added 4 subtasks", time: "Oct 5" },
+  { initials: "PR", name: "Priya Raman", action: "moved the task to In progress", time: "Oct 5" },
+  { initials: "SO", name: "Sam Okafor", action: "linked the doc Support FAQ for launch day", time: "Oct 4" },
+  { initials: "MP", name: "Maya Patel", action: "assigned the task to Priya Raman", time: "Oct 2" },
+  { initials: "MP", name: "Maya Patel", action: "created the task in Website relaunch", time: "Oct 2" },
 ]
 
 type Stage = HTMLDivElement | null
@@ -71,16 +68,19 @@ type Stage = HTMLDivElement | null
  */
 const inStage = "max-h-[calc(100%-2rem)] overscroll-auto"
 
-function AddDomainDialog({ container }: { container: Stage }) {
+/** Loose enough to catch typos such as a missing domain, without rejecting real addresses. */
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+function InviteMembersDialog({ container }: { container: Stage }) {
   const [open, setOpen] = React.useState(true)
-  const [domain, setDomain] = React.useState("")
+  const [emails, setEmails] = React.useState("")
   const [error, setError] = React.useState<string | null>(null)
   const [pending, setPending] = React.useState(false)
 
   function handleOpenChange(next: boolean) {
     setOpen(next)
     if (!next) {
-      setDomain("")
+      setEmails("")
       setError(null)
       setPending(false)
     }
@@ -88,9 +88,17 @@ function AddDomainDialog({ container }: { container: Stage }) {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const value = domain.trim()
-    if (!/^([a-z0-9-]+\.)+[a-z]{2,}$/i.test(value)) {
-      setError("Enter a domain such as app.example.com, without https://.")
+    const list = emails
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean)
+    if (list.length === 0) {
+      setError("Enter at least one email address, such as jordan@acme.com.")
+      return
+    }
+    const invalid = list.find((value) => !emailPattern.test(value))
+    if (invalid) {
+      setError(`“${invalid}” is not a full email address. Check it has a name, an @ and a domain.`)
       return
     }
     setError(null)
@@ -101,30 +109,32 @@ function AddDomainDialog({ container }: { container: Stage }) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange} modal={false} disablePointerDismissal>
       <DialogTrigger render={<Button />}>
-        <GlobeIcon data-icon="inline-start" />
-        Add domain
+        <UserPlusIcon data-icon="inline-start" />
+        Invite members
       </DialogTrigger>
       <DialogContent container={container} initialFocus={false} className={inStage}>
         <form onSubmit={handleSubmit} noValidate className="contents">
           <DialogHeader>
-            <DialogTitle>Add a domain</DialogTitle>
+            <DialogTitle>Invite members</DialogTitle>
             <DialogDescription>
-              Point a domain you own at lumen-web. We issue the certificate as soon as DNS resolves.
+              They join Acme Inc. as members and can see every project that isn’t private.
             </DialogDescription>
           </DialogHeader>
           <Field data-invalid={error ? true : undefined}>
-            <FieldLabel htmlFor="dialog-domain">Domain</FieldLabel>
+            <FieldLabel htmlFor="dialog-invite-emails">Email addresses</FieldLabel>
             <Input
-              id="dialog-domain"
-              placeholder="app.example.com"
+              id="dialog-invite-emails"
+              type="text"
+              inputMode="email"
+              placeholder="name@company.com"
               autoComplete="off"
-              value={domain}
+              value={emails}
               aria-invalid={error ? true : undefined}
-              aria-describedby="dialog-domain-help"
-              onChange={(event) => setDomain(event.target.value)}
+              aria-describedby="dialog-invite-help"
+              onChange={(event) => setEmails(event.target.value)}
             />
-            <FieldDescription id="dialog-domain-help" className={error ? "text-destructive" : undefined}>
-              {error ?? "Subdomains work too. You can add more later."}
+            <FieldDescription id="dialog-invite-help" className={error ? "text-destructive" : undefined}>
+              {error ?? "Separate addresses with commas. Invites expire after 7 days."}
             </FieldDescription>
           </Field>
           <DialogFooter>
@@ -133,7 +143,7 @@ function AddDomainDialog({ container }: { container: Stage }) {
             </DialogClose>
             <Button type="submit" disabled={pending}>
               {pending ? <Spinner data-icon="inline-start" /> : null}
-              {pending ? "Adding domain" : "Add domain"}
+              {pending ? "Sending invites" : "Send invites"}
             </Button>
           </DialogFooter>
         </form>
@@ -142,7 +152,7 @@ function AddDomainDialog({ container }: { container: Stage }) {
   )
 }
 
-/** A menu item that opens a dialog. The dialog starts open; close it and choose Transfer to open it again. */
+/** A menu item that opens a dialog. The dialog starts open; close it and choose Archive to open it again. */
 function ProjectMenuWithDialog({ container }: { container: Stage }) {
   const [open, setOpen] = React.useState(true)
 
@@ -159,8 +169,8 @@ function ProjectMenuWithDialog({ container }: { container: Stage }) {
               Rename
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setOpen(true)}>
-              <ArrowRightLeftIcon />
-              Transfer
+              <ArchiveIcon />
+              Archive
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
@@ -174,22 +184,23 @@ function ProjectMenuWithDialog({ container }: { container: Stage }) {
       <Dialog open={open} onOpenChange={setOpen} modal={false} disablePointerDismissal>
         <DialogContent container={container} initialFocus={false} className={inStage}>
           <DialogHeader>
-            <DialogTitle>Transfer lumen-web</DialogTitle>
+            <DialogTitle>Archive Help center</DialogTitle>
             <DialogDescription>
-              The project moves with its deployments and domains. Members of the new team get access straight away.
+              The project leaves the sidebar and project lists, and its docs become read-only. Restore it from Settings
+              at any time.
             </DialogDescription>
           </DialogHeader>
           <Field>
-            <FieldLabel htmlFor="dialog-transfer-team">Team</FieldLabel>
-            <NativeSelect id="dialog-transfer-team" defaultValue="marketing" className="w-full">
-              <NativeSelectOption value="marketing">Marketing site</NativeSelectOption>
-              <NativeSelectOption value="internal">Internal tools</NativeSelectOption>
-              <NativeSelectOption value="platform">Platform</NativeSelectOption>
+            <FieldLabel htmlFor="dialog-archive-tasks">The 21 open tasks</FieldLabel>
+            <NativeSelect id="dialog-archive-tasks" defaultValue="keep" className="w-full">
+              <NativeSelectOption value="keep">Leave them open</NativeSelectOption>
+              <NativeSelectOption value="done">Mark them as done</NativeSelectOption>
+              <NativeSelectOption value="move">Move them to Customer portal</NativeSelectOption>
             </NativeSelect>
           </Field>
           <DialogFooter>
             <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
-            <DialogClose render={<Button />}>Transfer project</DialogClose>
+            <DialogClose render={<Button />}>Archive project</DialogClose>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -203,44 +214,72 @@ function ProjectMenuWithDialog({ container }: { container: Stage }) {
  * containing block for the fixed overlay and popup, and isolate keeps them
  * under the site header. The dialog is non-modal there, so the page still
  * scrolls, and a click elsewhere leaves it open. Close it to reach the trigger.
- * The overlay keeps its tint but not its blur, which in a stage this small only
- * smears the page into grey.
+ * The overlay tints and blurs the page behind it, as it does over a real page.
  */
-function DialogStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
+function DialogStage({
+  className,
+  project = websiteRelaunch,
+  children,
+}: {
+  className?: string
+  project?: StageProject
+  children: (container: Stage) => React.ReactNode
+}) {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className={cn("relative isolate h-full min-h-112 w-full overflow-hidden contain-layout [&_[data-slot=dialog-overlay]]:backdrop-blur-none", className)}>
-      <StagePage action={children(container)} />
+    <div ref={setContainer} className={cn("relative isolate h-full min-h-112 w-full overflow-hidden contain-layout", className)}>
+      <StagePage project={project} action={children(container)} />
     </div>
   )
 }
 
-const projectSettings = [
-  { label: "Framework", value: "Next.js" },
-  { label: "Build command", value: "npm run build", mono: true },
-  { label: "Output directory", value: ".next", mono: true },
-  { label: "Node.js version", value: "22.x" },
-  { label: "Region", value: "Frankfurt, Germany" },
-]
+interface StageProject {
+  name: string
+  meta: string
+  details: { label: string; value: React.ReactNode }[]
+}
+
+const websiteRelaunch: StageProject = {
+  name: "Website relaunch",
+  meta: "Marketing · updated 4 minutes ago",
+  details: [
+    { label: "Status", value: <Badge variant="success">On track</Badge> },
+    { label: "Owner", value: "Maya Patel" },
+    { label: "Due date", value: "Nov 14, 2026" },
+    { label: "Progress", value: "38 of 52 tasks done" },
+    { label: "Default view", value: "Board" },
+  ],
+}
+
+/** The paused project the archive example acts on. */
+const helpCenter: StageProject = {
+  name: "Help center",
+  meta: "Customer Success · paused by Sam Okafor on Sep 30",
+  details: [
+    { label: "Status", value: <Badge variant="secondary">Paused</Badge> },
+    { label: "Owner", value: "Sam Okafor" },
+    { label: "Due date", value: "Dec 15, 2026" },
+    { label: "Progress", value: "9 of 30 tasks done" },
+    { label: "Default view", value: "List" },
+  ],
+}
 
 /** The project page the open dialog sits on. */
-function StagePage({ action }: { action: React.ReactNode }) {
+function StagePage({ project, action }: { project: StageProject; action: React.ReactNode }) {
   return (
     <div className="grid content-start gap-8 p-6 sm:p-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="grid gap-1">
-          <p className="text-h3 text-foreground">lumen-web</p>
-          <p className="text-caption text-muted-foreground">Production · updated 4 minutes ago</p>
+          <p className="text-h3 text-foreground">{project.name}</p>
+          <p className="text-caption text-muted-foreground">{project.meta}</p>
         </div>
         {action}
       </div>
       <dl className="grid divide-y border-y">
-        {projectSettings.map((row) => (
+        {project.details.map((row) => (
           <div key={row.label} className="flex items-center justify-between gap-6 py-4">
             <dt className="text-sm text-muted-foreground">{row.label}</dt>
-            <dd className={row.mono ? "font-mono text-code text-foreground" : "text-sm font-medium text-foreground"}>
-              {row.value}
-            </dd>
+            <dd className="text-sm font-medium text-foreground">{row.value}</dd>
           </div>
         ))}
       </dl>
@@ -306,9 +345,9 @@ function SizeContent({ size }: { size: DialogSize }) {
       <>
         <DialogHeader>
           <DialogTitle>Copy invite link</DialogTitle>
-          <DialogDescription>Anyone with this link can join Lumen Labs as a member.</DialogDescription>
+          <DialogDescription>Anyone with this link can join Acme Inc. as a member.</DialogDescription>
         </DialogHeader>
-        <Input readOnly aria-label="Invite link" defaultValue="lumen.app/join/7Hq2-vK9p" />
+        <Input readOnly aria-label="Invite link" defaultValue="app.acme.com/acme/join/7hq2xl" className="text-ellipsis" />
         <DialogFooter>
           <DialogClose render={<Button />}>Copy link</DialogClose>
         </DialogFooter>
@@ -319,22 +358,36 @@ function SizeContent({ size }: { size: DialogSize }) {
     return (
       <>
         <DialogHeader>
-          <DialogTitle>Add environment variable</DialogTitle>
-          <DialogDescription>Variables are encrypted and available to every build of this project.</DialogDescription>
+          <DialogTitle>Add a task</DialogTitle>
+          <DialogDescription>It goes to the top of To do in Website relaunch.</DialogDescription>
         </DialogHeader>
+        <Field>
+          <FieldLabel htmlFor="dialog-task-name">Task name</FieldLabel>
+          <Input id="dialog-task-name" placeholder="Write the launch announcement" />
+        </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field>
-            <FieldLabel htmlFor="dialog-env-key">Key</FieldLabel>
-            <Input id="dialog-env-key" placeholder="DATABASE_URL" className="font-mono" />
+            <FieldLabel htmlFor="dialog-task-assignee">Assignee</FieldLabel>
+            <NativeSelect id="dialog-task-assignee" defaultValue="priya" className="w-full">
+              <NativeSelectOption value="maya">Maya Patel</NativeSelectOption>
+              <NativeSelectOption value="priya">Priya Raman</NativeSelectOption>
+              <NativeSelectOption value="sofia">Sofia Alvarez</NativeSelectOption>
+              <NativeSelectOption value="jordan">Jordan Lee</NativeSelectOption>
+            </NativeSelect>
           </Field>
           <Field>
-            <FieldLabel htmlFor="dialog-env-value">Value</FieldLabel>
-            <Input id="dialog-env-value" type="password" placeholder="postgres://…" />
+            <FieldLabel htmlFor="dialog-task-priority">Priority</FieldLabel>
+            <NativeSelect id="dialog-task-priority" defaultValue="medium" className="w-full">
+              <NativeSelectOption value="urgent">Urgent</NativeSelectOption>
+              <NativeSelectOption value="high">High</NativeSelectOption>
+              <NativeSelectOption value="medium">Medium</NativeSelectOption>
+              <NativeSelectOption value="low">Low</NativeSelectOption>
+            </NativeSelect>
           </Field>
         </div>
         <DialogFooter>
           <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
-          <DialogClose render={<Button />}>Save variable</DialogClose>
+          <DialogClose render={<Button />}>Add task</DialogClose>
         </DialogFooter>
       </>
     )
@@ -343,7 +396,7 @@ function SizeContent({ size }: { size: DialogSize }) {
     <>
       <DialogHeader>
         <DialogTitle>Keyboard shortcuts</DialogTitle>
-        <DialogDescription>Shortcuts work anywhere in the dashboard except inside text fields.</DialogDescription>
+        <DialogDescription>Shortcuts work anywhere in Acme except inside text fields.</DialogDescription>
       </DialogHeader>
       <ul className="grid divide-y border-y">
         {shortcuts.map((shortcut) => (
@@ -369,21 +422,21 @@ export default function DialogDocs() {
         description="A short, focused task on top of the page. The title says what happens; the footer ends with the action that does it."
         layout="full"
         code={`<Dialog>
-  <DialogTrigger render={<Button variant="outline" />}>Rename project</DialogTrigger>
+  <DialogTrigger render={<Button />}>New project</DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Rename project</DialogTitle>
+      <DialogTitle>Create project</DialogTitle>
       <DialogDescription>
-        The new name shows in the dashboard and in new preview URLs.
+        A project holds the tasks, docs and timeline for one piece of work.
       </DialogDescription>
     </DialogHeader>
     <Field>
       <FieldLabel htmlFor="name">Project name</FieldLabel>
-      <Input id="name" defaultValue="lumen-web" />
+      <Input id="name" placeholder="Spring campaign" />
     </Field>
     <DialogFooter>
       <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
-      <Button type="submit">Save name</Button>
+      <Button type="submit">Create project</Button>
     </DialogFooter>
   </DialogContent>
 </Dialog>`}
@@ -391,21 +444,24 @@ export default function DialogDocs() {
         <DialogStage>
           {(container) => (
             <Dialog {...inlineDialog}>
-              <DialogTrigger render={<Button variant="outline" />}>Rename project</DialogTrigger>
+              <DialogTrigger render={<Button />}>
+                <PlusIcon data-icon="inline-start" />
+                New project
+              </DialogTrigger>
               <DialogContent container={container} initialFocus={false} className={inStage}>
                 <DialogHeader>
-                  <DialogTitle>Rename project</DialogTitle>
+                  <DialogTitle>Create project</DialogTitle>
                   <DialogDescription>
-                    The new name shows in the dashboard and in new preview URLs. Existing URLs keep working.
+                    A project holds the tasks, docs and timeline for one piece of work. Invite people once it exists.
                   </DialogDescription>
                 </DialogHeader>
                 <Field>
                   <FieldLabel htmlFor="dialog-basic-name">Project name</FieldLabel>
-                  <Input id="dialog-basic-name" defaultValue="lumen-web" />
+                  <Input id="dialog-basic-name" placeholder="Spring campaign" />
                 </Field>
                 <DialogFooter>
                   <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
-                  <DialogClose render={<Button />}>Save name</DialogClose>
+                  <DialogClose render={<Button />}>Create project</DialogClose>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -429,26 +485,26 @@ export default function DialogDocs() {
         description="Validate on submit and say how to fix the problem. While the request runs, disable both buttons and show a spinner in the action."
         layout="full"
         code={`<Dialog open={open} onOpenChange={setOpen}>
-  <DialogTrigger render={<Button />}>Add domain</DialogTrigger>
+  <DialogTrigger render={<Button />}>Invite members</DialogTrigger>
   <DialogContent>
     <form onSubmit={handleSubmit} className="contents">
       <DialogHeader>…</DialogHeader>
       <Field data-invalid={!!error}>
-        <FieldLabel htmlFor="domain">Domain</FieldLabel>
-        <Input id="domain" aria-invalid={!!error} />
-        <FieldDescription>{error ?? "Subdomains work too."}</FieldDescription>
+        <FieldLabel htmlFor="emails">Email addresses</FieldLabel>
+        <Input id="emails" aria-invalid={!!error} />
+        <FieldDescription>{error ?? "Separate addresses with commas."}</FieldDescription>
       </Field>
       <DialogFooter>
         <DialogClose render={<Button variant="outline" />} disabled={pending}>
           Cancel
         </DialogClose>
-        <Button type="submit" disabled={pending}>Add domain</Button>
+        <Button type="submit" disabled={pending}>Send invites</Button>
       </DialogFooter>
     </form>
   </DialogContent>
 </Dialog>`}
       >
-        <DialogStage>{(container) => <AddDomainDialog container={container} />}</DialogStage>
+        <DialogStage>{(container) => <InviteMembersDialog container={container} />}</DialogStage>
       </Example>
 
       <Example
@@ -468,20 +524,20 @@ export default function DialogDocs() {
               <DialogTrigger render={<Button variant="outline" />}>What’s new</DialogTrigger>
               <DialogContent showCloseButton={false} container={container} initialFocus={false} className={inStage}>
                 <DialogHeader>
-                  <DialogTitle>Instant rollbacks are here</DialogTitle>
+                  <DialogTitle>Automations 2.0 is here</DialogTitle>
                   <DialogDescription>
-                    Roll production back to any earlier deployment in one step. Lumen swaps traffic at the edge, so
-                    there is no rebuild and no downtime.
+                    Rules can now run several steps and check a condition between them. The automations you already
+                    have keep working as they are.
                   </DialogDescription>
                 </DialogHeader>
                 <ul className="grid gap-3 text-sm text-copy">
                   <li className="flex gap-3">
                     <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
-                    Open a deployment and choose Roll back to this deployment.
+                    Add an If step to route tasks by priority or assignee.
                   </li>
                   <li className="flex gap-3">
                     <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
-                    Domains, environment variables and logs move with it.
+                    Start from one of 20 recipes.
                   </li>
                 </ul>
                 <DialogFooter showCloseButton>
@@ -496,44 +552,56 @@ export default function DialogDocs() {
       <Example
         title="Long content"
         layout="full"
-        description="The dialog never grows past the viewport. Put long output in its own scrolling region so the title and actions stay in view."
+        description="The dialog never grows past the viewport. Put a long list in its own scrolling region so the title and actions stay in view."
         code={`<DialogContent size="lg">
   <DialogHeader>
-    <DialogTitle>Build log</DialogTitle>
-    <DialogDescription>lumen-web · main · 8f2c1a9 · built in 38s</DialogDescription>
+    <DialogTitle>Task history</DialogTitle>
+    <DialogDescription>Write the launch announcement · Website relaunch</DialogDescription>
   </DialogHeader>
-  <pre
+  <ol
     tabIndex={0}
-    aria-label="Build log"
-    className="max-h-64 overflow-auto rounded-(--control-radius) border bg-terminal p-4 font-mono text-code text-terminal-foreground"
+    aria-label="Task history"
+    className="max-h-72 divide-y overflow-auto rounded-(--control-radius) border"
   >
-    {log}
-  </pre>
+    {history.map((entry) => <li key={entry.id}>…</li>)}
+  </ol>
   <DialogFooter>
     <DialogClose render={<Button variant="outline" />}>Close</DialogClose>
-    <Button>Download log</Button>
+    <Button>Export as CSV</Button>
   </DialogFooter>
 </DialogContent>`}
       >
         <DialogStage className="min-h-144">
           {(container) => (
             <Dialog {...inlineDialog}>
-              <DialogTrigger render={<Button variant="outline" />}>View build log</DialogTrigger>
+              <DialogTrigger render={<Button variant="outline" />}>View task history</DialogTrigger>
               <DialogContent size="lg" container={container} initialFocus={false} className={inStage}>
                 <DialogHeader>
-                  <DialogTitle>Build log</DialogTitle>
-                  <DialogDescription>lumen-web · main · 8f2c1a9 · built in 38s</DialogDescription>
+                  <DialogTitle>Task history</DialogTitle>
+                  <DialogDescription>
+                    Write the launch announcement · Website relaunch · {taskHistory.length} changes
+                  </DialogDescription>
                 </DialogHeader>
-                <pre
+                <ol
                   tabIndex={0}
-                  aria-label="Build log"
-                  className="max-h-64 overflow-auto rounded-(--control-radius) border bg-terminal p-4 font-mono text-code text-terminal-foreground outline-none focus-visible:focus-ring"
+                  aria-label="Task history"
+                  className="grid max-h-72 divide-y overflow-auto rounded-(--control-radius) border outline-none focus-visible:focus-ring"
                 >
-                  {buildLog.join("\n")}
-                </pre>
+                  {taskHistory.map((entry) => (
+                    <li key={`${entry.time}-${entry.action}`} className="flex items-center gap-3 px-4 py-3">
+                      <Avatar size="sm">
+                        <AvatarFallback tone={initialsTone(entry.initials)}>{entry.initials}</AvatarFallback>
+                      </Avatar>
+                      <p className="min-w-0 flex-1 text-sm text-copy">
+                        <span className="font-semibold text-foreground">{entry.name}</span> {entry.action}
+                      </p>
+                      <span className="shrink-0 text-caption text-muted-foreground tabular">{entry.time}</span>
+                    </li>
+                  ))}
+                </ol>
                 <DialogFooter>
                   <DialogClose render={<Button variant="outline" />}>Close</DialogClose>
-                  <Button>Download log</Button>
+                  <Button>Export as CSV</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -544,22 +612,22 @@ export default function DialogDocs() {
       <Example
         title="Open from a menu"
         layout="full"
-        description="Control the dialog with open and onOpenChange when something other than a trigger opens it, such as a menu item. Close this one, then choose Transfer in the project menu."
+        description="Control the dialog with open and onOpenChange when something other than a trigger opens it, such as a menu item. Close this one, then choose Archive in the project menu."
         code={`const [open, setOpen] = React.useState(false)
 
-<DropdownMenuItem onClick={() => setOpen(true)}>Rename</DropdownMenuItem>
+<DropdownMenuItem onClick={() => setOpen(true)}>Archive</DropdownMenuItem>
 
 <Dialog open={open} onOpenChange={setOpen}>
   <DialogContent>…</DialogContent>
 </Dialog>`}
       >
-        <DialogStage>{(container) => <ProjectMenuWithDialog container={container} />}</DialogStage>
+        <DialogStage project={helpCenter}>{(container) => <ProjectMenuWithDialog container={container} />}</DialogStage>
       </Example>
 
       <Guidelines
         do={[
           "Use a dialog for a short task that needs an answer before people carry on.",
-          "Match the title and the action: “Rename project” and “Save name”.",
+          "Match the title and the action: “Archive Help center” and “Archive project”.",
           "Put Cancel first and the action last, so the action sits on the right.",
           "Return focus to the trigger on close. The dialog does this for you when it has a trigger.",
         ]}

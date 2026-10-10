@@ -5,7 +5,7 @@ import {
   ArrowUpIcon,
   CircleAlertIcon,
   DownloadIcon,
-  FileCodeIcon,
+  FileSpreadsheetIcon,
   FileTextIcon,
   ImageIcon,
   PaperclipIcon,
@@ -29,16 +29,16 @@ import {
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 
-type Draft = { id: string; name: string; meta: string; kind: "text" | "code" | "image" }
+type Draft = { id: string; name: string; meta: string; kind: "text" | "sheet" | "image" }
 
 const initialDrafts: Draft[] = [
-  { id: "a1", name: "build-log-dpl_7d1q.txt", meta: "Text · 18 KB", kind: "text" },
-  { id: "a2", name: "lumen.json", meta: "JSON · 1 KB", kind: "code" },
-  { id: "a3", name: "preview-error.png", meta: "PNG · 412 KB", kind: "image" },
+  { id: "a1", name: "homepage-brief.pdf", meta: "PDF · 240 KB", kind: "text" },
+  { id: "a2", name: "pricing-table.xlsx", meta: "Spreadsheet · 24 KB", kind: "sheet" },
+  { id: "a3", name: "hero-mockup.png", meta: "PNG · 412 KB", kind: "image" },
 ]
 
 function DraftIcon({ kind }: { kind: Draft["kind"] }) {
-  if (kind === "code") return <FileCodeIcon />
+  if (kind === "sheet") return <FileSpreadsheetIcon />
   if (kind === "image") return <ImageIcon />
   return <FileTextIcon />
 }
@@ -70,14 +70,14 @@ function Composer() {
           ))}
         </AttachmentGroup>
       ) : null}
-      <label htmlFor="ask-lumen" className="sr-only">
-        Ask Lumen
+      <label htmlFor="ask-acme" className="sr-only">
+        Ask Acme
       </label>
       <textarea
-        id="ask-lumen"
+        id="ask-acme"
         rows={2}
-        placeholder="Ask about a deploy, a domain or your usage"
-        className="w-full resize-none bg-transparent px-2 py-1.5 text-base/6 text-foreground outline-none placeholder:text-muted-foreground sm:text-sm/6"
+        placeholder="Ask about a project, a task or your team"
+        className="w-full resize-none bg-transparent px-2 py-1.5 text-control leading-6 text-foreground outline-none placeholder:text-muted-foreground"
       />
       <div className="flex items-center justify-between gap-2">
         <Button
@@ -107,11 +107,11 @@ export default function AttachmentDocs() {
   <Attachment size="sm">
     <AttachmentMedia><FileTextIcon /></AttachmentMedia>
     <AttachmentContent>
-      <AttachmentTitle>build-log-dpl_7d1q.txt</AttachmentTitle>
-      <AttachmentDescription>Text · 18 KB</AttachmentDescription>
+      <AttachmentTitle>homepage-brief.pdf</AttachmentTitle>
+      <AttachmentDescription>PDF · 240 KB</AttachmentDescription>
     </AttachmentContent>
     <AttachmentActions>
-      <AttachmentAction aria-label="Remove build-log-dpl_7d1q.txt"><XIcon /></AttachmentAction>
+      <AttachmentAction aria-label="Remove homepage-brief.pdf"><XIcon /></AttachmentAction>
     </AttachmentActions>
   </Attachment>
 </AttachmentGroup>`}
@@ -144,7 +144,7 @@ export default function AttachmentDocs() {
               <Spinner />
             </AttachmentMedia>
             <AttachmentContent>
-              <AttachmentTitle>database-dump.sql</AttachmentTitle>
+              <AttachmentTitle>brand-guidelines-v2.pdf</AttachmentTitle>
               <AttachmentDescription>Uploading · 64% of 18.2 MB</AttachmentDescription>
             </AttachmentContent>
             <AttachmentActions>
@@ -158,8 +158,8 @@ export default function AttachmentDocs() {
               <Spinner />
             </AttachmentMedia>
             <AttachmentContent>
-              <AttachmentTitle>preview-error.png</AttachmentTitle>
-              <AttachmentDescription>Scanning for secrets</AttachmentDescription>
+              <AttachmentTitle>hero-mockup.png</AttachmentTitle>
+              <AttachmentDescription>Making a thumbnail</AttachmentDescription>
             </AttachmentContent>
           </Attachment>
           <Attachment state="error" className="w-full">
@@ -167,28 +167,28 @@ export default function AttachmentDocs() {
               <CircleAlertIcon />
             </AttachmentMedia>
             <AttachmentContent>
-              <AttachmentTitle>full-backup.tar.gz</AttachmentTitle>
+              <AttachmentTitle>launch-video.mov</AttachmentTitle>
               <AttachmentDescription>Too large. Files must be under 25 MB.</AttachmentDescription>
             </AttachmentContent>
             <AttachmentActions>
               <AttachmentAction aria-label="Try again">
                 <RotateCcwIcon />
               </AttachmentAction>
-              <AttachmentAction aria-label="Remove full-backup.tar.gz">
+              <AttachmentAction aria-label="Remove launch-video.mov">
                 <XIcon />
               </AttachmentAction>
             </AttachmentActions>
           </Attachment>
           <Attachment state="done" className="w-full">
             <AttachmentMedia>
-              <FileCodeIcon />
+              <FileSpreadsheetIcon />
             </AttachmentMedia>
             <AttachmentContent>
-              <AttachmentTitle>lumen.json</AttachmentTitle>
-              <AttachmentDescription>JSON · 1 KB</AttachmentDescription>
+              <AttachmentTitle>pricing-table.xlsx</AttachmentTitle>
+              <AttachmentDescription>Spreadsheet · 24 KB</AttachmentDescription>
             </AttachmentContent>
             <AttachmentActions>
-              <AttachmentAction aria-label="Remove lumen.json">
+              <AttachmentAction aria-label="Remove pricing-table.xlsx">
                 <XIcon />
               </AttachmentAction>
             </AttachmentActions>
@@ -209,7 +209,7 @@ export default function AttachmentDocs() {
               <FileTextIcon />
             </AttachmentMedia>
             <AttachmentContent>
-              <AttachmentTitle>runbook.md</AttachmentTitle>
+              <AttachmentTitle>meeting-notes.md</AttachmentTitle>
               {size !== "xs" ? <AttachmentDescription>Markdown · 6 KB</AttachmentDescription> : null}
             </AttachmentContent>
           </Attachment>
@@ -247,7 +247,7 @@ export default function AttachmentDocs() {
             <ImageIcon className="text-foreground/60" />
           </AttachmentMedia>
           <AttachmentContent>
-            <AttachmentTitle>logs-view.png</AttachmentTitle>
+            <AttachmentTitle>board-view.png</AttachmentTitle>
             <AttachmentDescription>Uploading · 38%</AttachmentDescription>
           </AttachmentContent>
         </Attachment>
@@ -266,7 +266,7 @@ export default function AttachmentDocs() {
         title="Open on click"
         description="Add AttachmentTrigger to make the whole card a button or link. Actions stay clickable above it."
         code={`<Attachment>
-  <AttachmentTrigger aria-label="Open incident-report.pdf" onClick={open} />
+  <AttachmentTrigger aria-label="Open q3-workload-report.pdf" onClick={open} />
   …
   <AttachmentActions>
     <AttachmentAction aria-label="Download"><DownloadIcon /></AttachmentAction>
@@ -274,16 +274,16 @@ export default function AttachmentDocs() {
 </Attachment>`}
       >
         <Attachment>
-          <AttachmentTrigger aria-label="Open incident-report-oct-6.pdf" />
+          <AttachmentTrigger aria-label="Open q3-workload-report.pdf" />
           <AttachmentMedia>
             <FileTextIcon />
           </AttachmentMedia>
           <AttachmentContent>
-            <AttachmentTitle>incident-report-oct-6.pdf</AttachmentTitle>
+            <AttachmentTitle>q3-workload-report.pdf</AttachmentTitle>
             <AttachmentDescription>PDF · 3 pages</AttachmentDescription>
           </AttachmentContent>
           <AttachmentActions>
-            <AttachmentAction aria-label="Download incident-report-oct-6.pdf">
+            <AttachmentAction aria-label="Download q3-workload-report.pdf">
               <DownloadIcon />
             </AttachmentAction>
           </AttachmentActions>

@@ -15,14 +15,14 @@ export default function SectionHeadingDocs() {
         layout="full"
         description="The default. Title on the left, the supporting sentence on the right, sitting on the title’s last line. Stacks in narrow slots."
         code={`<SectionHeading
-  title="See every request, from edge to database."
-  description="Logs, traces and metrics arrive in one view. No agent to install, and nothing sampled away."
+  title="See every project, from plan to done."
+  description="Timelines, boards and reports share the same tasks, so the status is never out of date."
 />`}
       >
         <div className="p-8 @2xl:p-12">
           <SectionHeading
-            title="See every request, from edge to database."
-            description="Logs, traces and metrics arrive in one view. No agent to install, and nothing sampled away."
+            title="See every project, from plan to done."
+            description="Timelines, boards and reports share the same tasks, so the status is never out of date."
           />
         </div>
       </Example>
@@ -34,8 +34,8 @@ export default function SectionHeadingDocs() {
         description="For sections that stand alone, such as pricing or a closing pitch. Actions go in children."
         code={`<SectionHeading
   align="center"
-  title="Pay for traffic, not teammates."
-  description="Every plan includes unlimited deploys, automatic HTTPS and a preview URL for every branch."
+  title="Start free. Grow at your own pace."
+  description="Free for up to 3 members. Pro adds unlimited projects, guests and integrations."
 >
   <Button nativeButton={false} render={<Link href="/live/pricing" />}>
     See pricing <ArrowRightIcon data-icon="inline-end" />
@@ -48,8 +48,8 @@ export default function SectionHeadingDocs() {
         <div className="p-8 @2xl:p-12">
           <SectionHeading
             align="center"
-            title="Pay for traffic, not teammates."
-            description="Every plan includes unlimited deploys, automatic HTTPS and a preview URL for every branch."
+            title="Start free. Grow at your own pace."
+            description="Free for up to 3 members. Pro adds unlimited projects, guests and integrations."
           >
             <Button nativeButton={false} render={<Link href="/live/pricing" />}>
               See pricing
@@ -66,13 +66,13 @@ export default function SectionHeadingDocs() {
         title="Left"
         layout="full"
         description="One column for content-led pages, where the section reads like an article."
-        code={`<SectionHeading align="left" title="Everything included." description="…" />`}
+        code={`<SectionHeading align="left" title="Everything in one place." description="…" />`}
       >
         <div className="p-8 @2xl:p-12">
           <SectionHeading
             align="left"
-            title="Everything included. Nothing bolted on."
-            description="Logs, metrics, domains and databases ship with every plan. There is no add-on store to shop in."
+            title="Everything in one place. Nothing to stitch together."
+            description="Projects, tasks, docs and reports share one workspace, so the plan and the work never drift apart."
           />
         </div>
       </Example>
@@ -82,17 +82,17 @@ export default function SectionHeadingDocs() {
         layout="full"
         description="Brand colour on one word draws the eye. Use it once per page at most."
         code={`<SectionHeading
-  title={<>Ship anything. Own <span className="text-brand">everything</span>.</>}
+  title={<>Plan it. Track it. Ship it <span className="text-brand">together</span>.</>}
 />`}
       >
         <div className="p-8 @2xl:p-12">
           <SectionHeading
             title={
               <>
-                Ship anything. Own <span className="text-brand">everything</span>.
+                Plan it. Track it. Ship it <span className="text-brand">together</span>.
               </>
             }
-            description="Run on our cloud today and move to your own servers tomorrow, with the same pipeline."
+            description="One workspace for your team’s projects, tasks, docs and reports."
           />
         </div>
       </Example>
@@ -109,7 +109,7 @@ export default function SectionHeadingDocs() {
             as="h1"
             align="left"
             title="Changelog"
-            description="New features, fixes and improvements to Lumen, every two weeks."
+            description="New features and improvements in Acme, every two weeks."
           />
         </div>
       </Example>

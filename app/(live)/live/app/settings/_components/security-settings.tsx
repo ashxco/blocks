@@ -1,14 +1,16 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import {
+  Building2Icon,
   FingerprintIcon,
   KeyRoundIcon,
   LaptopIcon,
   MonitorIcon,
   ShieldCheckIcon,
   SmartphoneIcon,
-  TerminalIcon,
+  TabletIcon,
   type LucideIcon,
 } from "lucide-react"
 
@@ -57,15 +59,16 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
  */
 const itemList = "@container/items -my-3.5"
 const itemActions = "@max-[28rem]/items:basis-full @max-[28rem]/items:pl-14"
-/** Two-step rows vary in height (the passkey list), so every action sits at the top, beside the title. */
+/** Two-factor rows vary in height (the passkey list), so every action sits at the top, beside the title. */
 const methodActions = cn(itemActions, "self-start")
 
-/** Security tab: password, two-step verification and signed-in devices. */
+/** Security tab: password, two-factor authentication, single sign-on and signed-in devices. */
 export function SecuritySettings() {
   return (
     <div className="divide-y">
       <PasswordSection />
-      <TwoStepSection />
+      <TwoFactorSection />
+      <SingleSignOnSection />
       <SessionsSection />
     </div>
   )
@@ -105,7 +108,7 @@ function PasswordSection() {
     >
       <FieldGroup>
         {/* Lets password managers file the new password under the right account. */}
-        <input type="email" name="username" autoComplete="username" value="maya@acme.dev" readOnly hidden />
+        <input type="email" name="username" autoComplete="username" value="maya@acme.com" readOnly hidden />
 
         <Field>
           <FieldLabel htmlFor={`${id}-current`}>Current password</FieldLabel>
@@ -162,7 +165,7 @@ function PasswordSection() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Two-step verification                                                       */
+/* Two-factor authentication                                                   */
 /* -------------------------------------------------------------------------- */
 
 const passkeys = [
@@ -170,7 +173,7 @@ const passkeys = [
   { id: "yubikey", name: "YubiKey 5C NFC", meta: "Added Jan 12, 2026 · Used 9 days ago" },
 ]
 
-function TwoStepSection() {
+function TwoFactorSection() {
   const requireId = React.useId()
   const [authenticator, setAuthenticator] = React.useState(true)
   const [confirmOff, setConfirmOff] = React.useState(false)
@@ -185,13 +188,13 @@ function TwoStepSection() {
 
   function setUp() {
     setAuthenticator(true)
-    toast.add({ title: "Authenticator app connected", description: "Lumen asks for a code the next time you sign in." })
+    toast.add({ title: "Authenticator app connected", description: "Acme asks for a code the next time you sign in." })
   }
 
   return (
     <SettingsSection
-      title="Two-step verification"
-      description="A second step at sign-in keeps your account safe if your password leaks."
+      title="Two-factor authentication"
+      description="A second factor at sign-in keeps your account safe if your password leaks."
       hideFooter
     >
       <div className="grid gap-6">
@@ -281,10 +284,10 @@ function TwoStepSection() {
               <ShieldCheckIcon aria-hidden="true" />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle className="text-label" id={`${requireId}-title`}>Require it in Acme Inc.</ItemTitle>
+              <ItemTitle className="text-label" id={`${requireId}-title`}>Require two-factor authentication</ItemTitle>
               <ItemDescription id={`${requireId}-description`} className="line-clamp-none text-caption">
-                Members without two-step verification set it up the next time they sign in. Only owners and admins
-                can change this.
+                Members of Acme Inc. who haven’t turned it on are asked to set it up the next time they sign in.
+                Only owners and admins can change this.
               </ItemDescription>
             </ItemContent>
             <ItemActions className={methodActions}>
@@ -294,7 +297,7 @@ function TwoStepSection() {
                 defaultChecked={false}
                 onCheckedChange={(on) =>
                   toast.add({
-                    title: on ? "Two-step verification is now required" : "Two-step verification is optional again",
+                    title: on ? "Two-factor authentication is now required" : "Two-factor authentication is optional again",
                     description: on ? "4 members will be asked to set it up at their next sign-in." : undefined,
                   })
                 }
@@ -309,8 +312,8 @@ function TwoStepSection() {
           <AlertDialogHeader>
             <AlertDialogTitle>Turn off the authenticator app?</AlertDialogTitle>
             <AlertDialogDescription>
-              You can still sign in with your passkeys. Workspaces that require two-step verification will ask you to
-              set it up again.
+              You can still sign in with your passkeys. Workspaces that require two-factor authentication will ask
+              you to set it up again.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -321,6 +324,49 @@ function TwoStepSection() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+    </SettingsSection>
+  )
+}
+
+/* -------------------------------------------------------------------------- */
+/* Single sign-on                                                              */
+/* -------------------------------------------------------------------------- */
+
+/** SAML single sign-on is a Business feature; on Pro the row points to the plan that has it. */
+function SingleSignOnSection() {
+  return (
+    <SettingsSection
+      title="Single sign-on"
+      description="Let people sign in with your company’s identity provider, and lose access when they leave."
+      hideFooter
+    >
+      <ItemGroup variant="divided" className={itemList}>
+        <Item role="listitem">
+          <ItemMedia variant="icon">
+            <Building2Icon aria-hidden="true" />
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle className="text-label">
+              SAML single sign-on
+              <Badge variant="outline">Business</Badge>
+            </ItemTitle>
+            <ItemDescription className="line-clamp-none text-caption">
+              Available on the Business plan, with the audit log and advanced permissions. Acme Inc. is on Pro.
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions className={methodActions}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              nativeButton={false}
+              render={<Link href="/live/app/billing#change-plan" />}
+            >
+              Compare plans
+            </Button>
+          </ItemActions>
+        </Item>
+      </ItemGroup>
     </SettingsSection>
   )
 }
@@ -344,7 +390,7 @@ const initialSessions: Session[] = [
     id: "mbp",
     device: "MacBook Pro",
     client: "Chrome 141 on macOS",
-    location: "Berlin, Germany",
+    location: "San Francisco, United States",
     lastActive: "Active now",
     icon: LaptopIcon,
     current: true,
@@ -352,26 +398,26 @@ const initialSessions: Session[] = [
   {
     id: "iphone",
     device: "iPhone 17",
-    client: "Lumen for iOS 3.4",
-    location: "Berlin, Germany",
+    client: "Acme for iOS 4.2",
+    location: "San Francisco, United States",
     lastActive: "Active 2 hours ago",
     icon: SmartphoneIcon,
   },
   {
-    id: "studio",
-    device: "Studio desktop",
-    client: "Firefox 143 on Windows",
-    location: "Lisbon, Portugal",
-    lastActive: "Active 5 days ago",
-    icon: MonitorIcon,
+    id: "ipad",
+    device: "iPad Air",
+    client: "Acme for iPadOS 4.2",
+    location: "London, United Kingdom",
+    lastActive: "Active 4 days ago",
+    icon: TabletIcon,
   },
   {
-    id: "cli",
-    device: "Lumen CLI",
-    client: "lumen 4.2.0 on Linux",
-    location: "Frankfurt, Germany",
+    id: "office",
+    device: "Office desktop",
+    client: "Firefox 143 on Windows",
+    location: "London, United Kingdom",
     lastActive: "Active 3 weeks ago",
-    icon: TerminalIcon,
+    icon: MonitorIcon,
   },
 ]
 
@@ -404,7 +450,7 @@ function SessionsSection() {
   return (
     <SettingsSection
       title="Active sessions"
-      description="Devices signed in to your account. If you don’t recognise one, sign it out and change your password."
+      description="Devices signed in to your account. If you don’t recognize one, sign it out and change your password."
       hideFooter
     >
       <div className="grid gap-6">
@@ -451,8 +497,8 @@ function SessionsSection() {
           <AlertDialogHeader>
             <AlertDialogTitle>Sign out of every other session?</AlertDialogTitle>
             <AlertDialogDescription>
-              {confirmCount === 1 ? "1 device has" : `${confirmCount} devices have`} to sign in again. Deploy tokens
-              used in CI keep working.
+              {confirmCount === 1 ? "1 device has" : `${confirmCount} devices have`} to sign in again. Integrations
+              such as Slack and API keys keep working.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

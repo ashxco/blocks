@@ -7,8 +7,8 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 /**
- * Blocks marker. Quiet inline status inside a conversation: "Lumen is
- * reading the build log", "Priya joined", "Yesterday". Caption-sized, muted,
+ * Blocks marker. Quiet inline status inside a conversation: "Acme is
+ * reading the project brief", "Priya joined", "Yesterday". Caption-sized, muted,
  * with an optional leading icon, spinner or status dot.
  *
  * - default: a single line of status.

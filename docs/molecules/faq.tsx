@@ -6,19 +6,19 @@ import { Faq } from "@/components/blocks/faq"
 const billingItems = [
   {
     question: "When am I charged?",
-    answer: "On the first of each month, for your plan and any usage above it in the month before.",
+    answer: "Invoices are dated the 1st of each month. On annual billing you pay the lower annual rate: $12 per member on Pro instead of $15.",
   },
   {
-    question: "Can I set a spending limit?",
-    answer: "Yes. Set a monthly cap in Billing. Lumen emails the owners at 80% and pauses previews, never production, at 100%.",
+    question: "What happens when someone joins mid-month?",
+    answer: "New members are prorated to the day and appear on your next invoice. Guests are never charged.",
   },
   {
     question: "Do you offer annual billing?",
-    answer: "Yes. Pay yearly and save 20% on any plan. You can switch at your next renewal.",
+    answer: "Yes. Pay annually and save about 20%: Pro is $12 per member a month instead of $15, and Business $24 instead of $29.",
   },
   {
     question: "Which payment methods do you accept?",
-    answer: "Cards from Visa, Mastercard and American Express, and invoices with bank transfer on yearly Scale plans.",
+    answer: "Cards from Visa, Mastercard and American Express, and invoices with bank transfer on annual Business and Enterprise plans.",
   },
 ]
 
@@ -46,8 +46,8 @@ export default function FaqDocs() {
   defaultOpen={null}
   multiple
   items={[
-    { question: "When am I charged?", answer: "On the first of each month, …" },
-    { question: "Can I set a spending limit?", answer: "Yes. Set a monthly cap in Billing. …" },
+    { question: "When am I charged?", answer: "Invoices are dated the 1st of each month. …" },
+    { question: "Do you offer annual billing?", answer: "Yes. Pay annually and save about 20%. …" },
   ]}
 />`}
       >
@@ -89,7 +89,7 @@ export default function FaqDocs() {
         rows={[
           { prop: "title", type: "ReactNode", default: '"Questions, answered."', description: "Heading in the left column." },
           { prop: "description", type: "ReactNode", description: "Supporting text under the heading." },
-          { prop: "items", type: "{ question: string; answer: ReactNode }[]", default: "Six Lumen questions", description: "Questions and answers, in order." },
+          { prop: "items", type: "{ question: string; answer: ReactNode }[]", default: "Six Acme questions", description: "Questions and answers, in order." },
           { prop: "action", type: "{ label: string; href: string } | null", default: '"Contact us" → /live/contact', description: "Outline button under the heading. Pass null to hide it." },
           { prop: "defaultOpen", type: "number | null", default: "0", description: "Index of the answer open on load. Pass null to start closed." },
           { prop: "multiple", type: "boolean", default: "false", description: "Allow more than one answer open at a time." },

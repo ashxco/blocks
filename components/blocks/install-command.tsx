@@ -14,18 +14,18 @@ export interface InstallCommandProps {
   /**
    * Wrap a long command onto more lines, with a hanging indent, instead of
    * scrolling it sideways. Use it in narrow slots, where a command cut off at
-   * the edge looks broken. The copy button still copies it as one line.
+   * the side looks broken. The copy button still copies it as one line.
    */
   wrap?: boolean
   className?: string
 }
 
 /**
- * A one-line shell command with a copy button. The button confirms with
- * "Copied" for a moment after a successful copy.
+ * A one-line shell command, such as an SDK install, with a copy button. The
+ * button confirms with "Copied" for a moment after a successful copy.
  */
 export function InstallCommand({
-  command = "npm i -g lumen",
+  command = "npm install @acme/sdk",
   tone = "default",
   wrap = false,
   className,

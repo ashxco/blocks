@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, CopyIcon, LinkIcon, LockIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react"
+import { CheckIcon, CopyIcon, LinkIcon, PlusIcon, XIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -13,7 +13,6 @@ import {
   FieldTitle,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
@@ -23,18 +22,19 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/toast"
+import { cn } from "@/lib/utils"
 
 import {
   INVITE_ROLES,
-  PROVIDERS,
   RESERVED_SLUGS,
   SLUG_PATTERN,
-  type GitProvider,
+  VIEW_LABELS,
   type InviteRole,
   type OnboardingInvite,
-  type OnboardingRepository,
+  type OnboardingTemplate,
   type OnboardingValues,
   type StepErrors,
+  type TemplateView,
 } from "./types"
 import { WorkspaceUrlInput } from "./workspace-url-input"
 
@@ -120,7 +120,7 @@ export function WorkspaceStep({
 /* Step 2: invite the team ----------------------------------------------- */
 
 let rowCount = 0
-export const newInvite = (role: InviteRole = "developer"): OnboardingInvite => ({
+export const newInvite = (role: InviteRole = "member"): OnboardingInvite => ({
   id: `invite-${++rowCount}`,
   email: "",
   role,
@@ -135,9 +135,9 @@ export function TeamStep({
 }: StepProps & { onInvitesChange: (invites: OnboardingInvite[]) => void }) {
   const [copied, setCopied] = React.useState(false)
   const slug = values.workspaceSlug || SLUG_PLACEHOLDER
-  const mailDomain = `${slug.split("-")[0]}.dev`
+  const mailDomain = `${slug.split("-")[0]}.com`
   const inviteLink = `${domain}/${slug}/join/k7Qm2x`
-  const examples = ["sam", "ana", "kai", "noor", "eli"]
+  const examples = ["jordan", "sofia", "sam", "priya", "lucas"]
 
   React.useEffect(() => {
     if (!copied) return
@@ -248,114 +248,105 @@ export function TeamStep({
   )
 }
 
-/* Step 3: connect a repository ------------------------------------------ */
+/* Step 3: pick a template ---------------------------------------------- */
 
-export function RepositoryStep({
+/**
+ * A small drawing of the view a template opens in: list rows, board columns,
+ * timeline bars or a calendar month. Neutral fills; the marks that carry
+ * the view turn ink when the template is chosen.
+ */
+function TemplatePreview({ view }: { view: TemplateView }) {
+  const mark = "bg-muted-foreground/35 transition-colors duration-(--duration-fast) group-has-data-checked/template:bg-foreground"
+  const quiet = "bg-muted-foreground/15"
+  return (
+    <div aria-hidden="true" className="h-24 overflow-hidden rounded-(--control-radius) border bg-subtle p-3">
+      {view === "list" ? (
+        <div className="grid gap-2.5 pt-0.5">
+          {["w-3/5", "w-4/5", "w-2/5", "w-3/4"].map((width, index) => (
+            <div key={width} className="flex items-center gap-2">
+              <span className={cn("size-2.5 shrink-0 rounded-full border border-muted-foreground/50", index === 0 && "border-0", index === 0 && mark)} />
+              <span className={cn("h-1.5 rounded-full", width, index === 0 ? mark : quiet)} />
+            </div>
+          ))}
+        </div>
+      ) : view === "board" ? (
+        <div className="grid h-full grid-cols-3 gap-2">
+          {[3, 2, 1].map((cards, column) => (
+            <div key={column} className="grid content-start gap-1.5 rounded-xs bg-muted-foreground/10 p-1.5">
+              {Array.from({ length: cards }, (_, card) => (
+                <span key={card} className={cn("h-3 rounded-xs border bg-card", column === 1 && card === 0 && "border-0", column === 1 && card === 0 && mark)} />
+              ))}
+            </div>
+          ))}
+        </div>
+      ) : view === "timeline" ? (
+        <div className="grid h-full content-center gap-2.5">
+          {[
+            { offset: "ml-0", width: "w-2/5" },
+            { offset: "ml-[22%]", width: "w-1/2" },
+            { offset: "ml-[48%]", width: "w-1/3" },
+          ].map((bar, index) => (
+            <span key={bar.offset} className={cn("h-2.5 rounded-full", bar.offset, bar.width, index === 1 ? mark : quiet)} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-7 gap-1">
+          {Array.from({ length: 21 }, (_, day) => (
+            <span key={day} className={cn("h-4 rounded-xs", [3, 9, 16].includes(day) ? mark : quiet)} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function TemplateStep({
   idPrefix,
   values,
   errors,
-  repositories,
-  account,
-  onProviderChange,
-  onRepositoryChange,
+  templates,
+  onTemplateChange,
 }: StepProps & {
-  repositories: OnboardingRepository[]
-  account: string
-  onProviderChange: (provider: GitProvider) => void
-  onRepositoryChange: (id: string) => void
+  templates: OnboardingTemplate[]
+  onTemplateChange: (id: string) => void
 }) {
-  const [query, setQuery] = React.useState("")
-  const q = query.trim().toLowerCase()
-  const visible = q
-    ? repositories.filter((r) => `${r.name} ${r.framework}`.toLowerCase().includes(q))
-    : repositories
-  const provider = PROVIDERS.find((p) => p.value === values.provider)?.label ?? "GitHub"
-
   return (
-    <div className="grid gap-8">
-      <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
-        <Field className="w-auto">
-          <FieldLabel htmlFor={`${idPrefix}-provider`}>Git provider</FieldLabel>
-          <Select
-            id={`${idPrefix}-provider`}
-            items={PROVIDERS}
-            value={values.provider}
-            onValueChange={(value) => value && onProviderChange(value)}
+    <Field data-invalid={Boolean(errors.templateId)}>
+      <FieldTitle id={`${idPrefix}-templates-label`}>Template</FieldTitle>
+      <RadioGroup
+        id={`${idPrefix}-templates`}
+        value={values.templateId ?? ""}
+        onValueChange={(value) => onTemplateChange(String(value))}
+        aria-labelledby={`${idPrefix}-templates-label`}
+        aria-describedby={errors.templateId ? `${idPrefix}-templates-error` : `${idPrefix}-templates-hint`}
+        className="grid gap-3 @prose:grid-cols-2"
+      >
+        {templates.map((template) => (
+          <label
+            key={template.id}
+            className="group/template flex cursor-pointer flex-col gap-4 rounded-(--card-radius) border bg-card p-4 transition-colors duration-(--duration-fast) hover:border-border-strong has-data-checked:border-foreground"
           >
-            <SelectTrigger className="w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PROVIDERS.map((p) => (
-                <SelectItem key={p.value} value={p.value}>
-                  {p.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
-        <p className="flex items-center gap-2 pb-3 text-sm text-copy">
-          <span className="size-2 rounded-full bg-success" aria-hidden="true" />
-          Connected to {provider} as <span className="font-semibold text-foreground">{account}</span>
-        </p>
-      </div>
-
-      <Field data-invalid={Boolean(errors.repositoryId)}>
-        <FieldTitle id={`${idPrefix}-repos-label`}>Repository</FieldTitle>
-        <InputGroup>
-          <InputGroupAddon>
-            <SearchIcon aria-hidden="true" />
-          </InputGroupAddon>
-          <InputGroupInput
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search repositories"
-            aria-label="Search repositories"
-          />
-        </InputGroup>
-        <RadioGroup
-          id={`${idPrefix}-repos`}
-          value={values.repositoryId ?? ""}
-          onValueChange={(value) => onRepositoryChange(String(value))}
-          aria-labelledby={`${idPrefix}-repos-label`}
-          aria-describedby={errors.repositoryId ? `${idPrefix}-repos-error` : undefined}
-          className="gap-0 divide-y overflow-hidden rounded-(--control-radius) border"
-        >
-          {visible.map((repo) => (
-            <label
-              key={repo.id}
-              className="flex cursor-pointer items-center gap-4 px-4 py-3.5 transition-colors duration-(--duration-fast) hover:bg-accent has-data-checked:bg-accent"
-            >
-              <RadioGroupItem value={repo.id} />
-              <span className="grid min-w-0 flex-1 gap-0.5">
-                <span className="flex min-w-0 items-center gap-2">
-                  <span className="truncate font-mono text-sm font-semibold text-foreground">{repo.name}</span>
-                  {repo.private ? (
-                    <>
-                      <LockIcon className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
-                      <span className="sr-only">Private</span>
-                    </>
-                  ) : null}
-                </span>
+            <TemplatePreview view={template.view} />
+            <span className="flex items-start gap-3">
+              <span className="grid min-w-0 flex-1 gap-1">
+                <span className="text-label text-foreground">{template.name}</span>
+                <span className="text-caption text-copy">{template.description}</span>
                 <span className="text-caption text-muted-foreground">
-                  {repo.framework} · Updated {repo.updated}
+                  {VIEW_LABELS[template.view]} view · {template.tasks} starter tasks
                 </span>
               </span>
-            </label>
-          ))}
-          {visible.length === 0 ? (
-            <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-              No repositories match “{query.trim()}”.
-            </p>
-          ) : null}
-        </RadioGroup>
-        {errors.repositoryId ? (
-          <FieldError id={`${idPrefix}-repos-error`}>{errors.repositoryId}</FieldError>
-        ) : (
-          <FieldDescription>Every push to the default branch deploys to production. Other branches get previews.</FieldDescription>
-        )}
-      </Field>
-    </div>
+              <RadioGroupItem value={template.id} className="mt-0.5" />
+            </span>
+          </label>
+        ))}
+      </RadioGroup>
+      {errors.templateId ? (
+        <FieldError id={`${idPrefix}-templates-error`}>{errors.templateId}</FieldError>
+      ) : (
+        <FieldDescription id={`${idPrefix}-templates-hint`}>
+          Every project has list, board, timeline and calendar views. The template only picks the one it opens in.
+        </FieldDescription>
+      )}
+    </Field>
   )
 }

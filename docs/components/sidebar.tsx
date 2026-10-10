@@ -2,21 +2,21 @@
 
 import * as React from "react"
 import {
+  ChartColumnIcon,
   ChevronRightIcon,
   ChevronsUpDownIcon,
-  DatabaseIcon,
-  GitBranchIcon,
-  GlobeIcon,
+  FileTextIcon,
   HouseIcon,
-  LineChartIcon,
+  InboxIcon,
+  ListTodoIcon,
   MoreHorizontalIcon,
   PlusIcon,
-  ScrollTextIcon,
   SettingsIcon,
-  UsersIcon,
+  ZapIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { BrandMark } from "@/components/blocks/wordmark"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   Breadcrumb,
@@ -60,35 +60,37 @@ const framed =
   "relative isolate min-h-[36rem] overflow-hidden contain-layout **:data-[slot=sidebar-container]:absolute **:data-[slot=sidebar-container]:h-full"
 
 const nav = [
-  { title: "Overview", icon: HouseIcon },
-  { title: "Deployments", icon: GitBranchIcon, badge: "3" },
-  { title: "Logs", icon: ScrollTextIcon },
-  { title: "Analytics", icon: LineChartIcon },
-  { title: "Domains", icon: GlobeIcon },
-  { title: "Databases", icon: DatabaseIcon },
+  { title: "Home", icon: HouseIcon },
+  { title: "My tasks", icon: ListTodoIcon },
+  { title: "Inbox", icon: InboxIcon, badge: "3" },
+  { title: "Docs", icon: FileTextIcon },
+  { title: "Automations", icon: ZapIcon },
+  { title: "Reports", icon: ChartColumnIcon },
 ]
 
-const projects = ["lumen-web", "lumen-api", "docs"]
+/** Status dots follow the project badges: success on track, warning at risk, destructive off track. */
+const projects = [
+  { name: "Website relaunch", dot: "bg-success" },
+  { name: "Mobile app 2.0", dot: "bg-warning" },
+  { name: "Q4 planning", dot: "bg-success" },
+  { name: "Customer portal", dot: "bg-destructive" },
+]
 
-const recent = [
-  { message: "Add usage-based billing page", project: "lumen-web", hash: "8f2c1a9", time: "4m ago", dot: "bg-success" },
-  { message: "Add preview comments to pull requests", project: "lumen-web", hash: "7f03b1d", time: "9m ago", dot: "bg-info" },
-  { message: "Rate-limit the deployments endpoint", project: "lumen-api", hash: "c41e7b2", time: "1h ago", dot: "bg-success" },
+const dueSoon = [
+  { title: "Write the launch announcement", project: "Website relaunch", due: "Oct 14", overdue: false },
+  { title: "Fix crash when uploading photos", project: "Mobile app 2.0", due: "Oct 7", overdue: true },
+  { title: "Draft the Q4 hiring plan", project: "Q4 planning", due: "Oct 14", overdue: false },
 ]
 
 function WorkspaceButton() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" aria-label="Workspace: Lumen Labs">
-          <span
-            aria-hidden="true"
-            className="grid size-8 shrink-0 place-items-center rounded-sm bg-primary text-sm font-extrabold text-primary-foreground"
-          >
-            L
-          </span>
+        <SidebarMenuButton size="lg" aria-label="Workspace: Acme Inc.">
+          {/* The menu button sizes every icon to size-4; the workspace mark keeps its tile size. */}
+          <BrandMark className="size-8!" />
           <span className="grid min-w-0 flex-1">
-            <span className="truncate text-label text-foreground">Lumen Labs</span>
+            <span className="truncate text-label text-foreground">Acme Inc.</span>
             <span className="truncate text-caption font-normal text-muted-foreground">Pro plan</span>
           </span>
           <ChevronsUpDownIcon className="ml-auto text-muted-foreground" />
@@ -102,13 +104,13 @@ function UserButton() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" aria-label="Account: Priya Raman">
+        <SidebarMenuButton size="lg" aria-label="Account: Maya Patel">
           <Avatar size="sm">
-            <AvatarFallback>PR</AvatarFallback>
+            <AvatarFallback tone="violet">MP</AvatarFallback>
           </Avatar>
           <span className="grid min-w-0 flex-1">
-            <span className="truncate text-label text-foreground">Priya Raman</span>
-            <span className="truncate text-caption font-normal text-muted-foreground">priya@lumen.app</span>
+            <span className="truncate text-label text-foreground">Maya Patel</span>
+            <span className="truncate text-caption font-normal text-muted-foreground">maya@acme.com</span>
           </span>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -134,7 +136,7 @@ function useNarrowFrame(frame: HTMLElement | null) {
 }
 
 function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset" | "floating" }) {
-  const [active, setActive] = React.useState("Overview")
+  const [active, setActive] = React.useState("Home")
   const [frame, setFrame] = React.useState<HTMLDivElement | null>(null)
   // A narrow frame forces the phone layout. Otherwise the window decides, since
   // the desktop sidebar itself shows from the md breakpoint of the window.
@@ -176,14 +178,14 @@ function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset"
             </SidebarGroupAction>
             <SidebarGroupContent>
               <SidebarMenu>
-                {projects.map((name) => (
+                {projects.map(({ name, dot }) => (
                   <SidebarMenuItem key={name}>
                     <SidebarMenuButton
                       isActive={active === name}
                       onClick={() => setActive(name)}
                     >
                       <span aria-hidden="true" className="grid size-4 place-items-center">
-                        <span className="size-1.5 rounded-full bg-success" />
+                        <span className={`size-1.5 rounded-full ${dot}`} />
                       </span>
                       <span>{name}</span>
                     </SidebarMenuButton>
@@ -208,7 +210,7 @@ function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset"
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="max-sm:hidden">
-                <BreadcrumbLink href="#lumen-labs">Lumen Labs</BreadcrumbLink>
+                <BreadcrumbLink href="#acme">Acme</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="max-sm:hidden" />
               <BreadcrumbItem>
@@ -224,9 +226,9 @@ function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset"
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             {[
-              ["Requests", "2.4M"],
-              ["P95 latency", "84 ms"],
-              ["Error rate", "0.02%"],
+              ["Active projects", "24"],
+              ["Tasks completed", "1,284"],
+              ["On-time delivery", "92%"],
             ].map(([label, value]) => (
               <div key={label} className="grid gap-1 rounded-(--card-radius) border bg-card p-5">
                 <p className="text-caption text-muted-foreground">{label}</p>
@@ -234,22 +236,25 @@ function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset"
               </div>
             ))}
           </div>
-          <section aria-labelledby="sidebar-recent" className="grid gap-3">
-            <h4 id="sidebar-recent" className="text-title text-foreground">
-              Recent deployments
+          <section aria-labelledby="sidebar-due" className="grid gap-3">
+            <h4 id="sidebar-due" className="text-title text-foreground">
+              Due soon
             </h4>
             <ul className="grid divide-y rounded-(--card-radius) border bg-card">
-              {recent.map((d) => (
-                <li key={d.hash} className="flex items-center justify-between gap-4 px-4 py-3">
+              {dueSoon.map((task) => (
+                <li key={task.title} className="flex items-center justify-between gap-4 px-4 py-3">
                   <span className="grid min-w-0 gap-0.5">
-                    <span className="truncate text-sm font-medium text-foreground">{d.message}</span>
-                    <span className="truncate text-caption text-muted-foreground">
-                      {d.project} · <span className="font-mono">{d.hash}</span>
-                    </span>
+                    <span className="truncate text-sm font-medium text-foreground">{task.title}</span>
+                    <span className="truncate text-caption text-muted-foreground">{task.project}</span>
                   </span>
-                  <span className="flex shrink-0 items-center gap-1.5 text-caption text-muted-foreground">
-                    <span aria-hidden="true" className={`size-1.5 rounded-full ${d.dot}`} />
-                    {d.time}
+                  <span
+                    className={
+                      task.overdue
+                        ? "shrink-0 text-caption font-semibold text-destructive tabular"
+                        : "shrink-0 text-caption text-muted-foreground tabular"
+                    }
+                  >
+                    {task.overdue ? `Overdue · ${task.due}` : task.due}
                   </span>
                 </li>
               ))}
@@ -277,11 +282,11 @@ export default function SidebarDocs() {
           <SidebarMenuItem>
             <SidebarMenuButton
               isActive
-              tooltip="Overview"
-              render={<Link href="/overview" />}
+              tooltip="Home"
+              render={<Link href="/acme/home" />}
             >
               <HouseIcon />
-              <span>Overview</span>
+              <span>Home</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -324,8 +329,8 @@ export default function SidebarDocs() {
   <CollapsibleContent>
     <SidebarMenuSub>
       <SidebarMenuSubItem>
-        <SidebarMenuSubButton href="/settings/domains" isActive>
-          Domains
+        <SidebarMenuSubButton href="/settings/members" isActive>
+          Members
         </SidebarMenuSubButton>
       </SidebarMenuSubItem>
     </SidebarMenuSub>
@@ -339,8 +344,8 @@ export default function SidebarDocs() {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <UsersIcon />
-                      <span>Members</span>
+                      <ChartColumnIcon />
+                      <span>Reports</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <Collapsible defaultOpen render={<SidebarMenuItem />}>
@@ -351,9 +356,9 @@ export default function SidebarDocs() {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <SidebarMenuSub>
-                        {["General", "Domains", "Environment variables", "Git"].map((label) => (
+                        {["General", "Members", "Notifications", "Integrations"].map((label) => (
                           <SidebarMenuSubItem key={label}>
-                            <SidebarMenuSubButton href={`#${label.toLowerCase()}`} isActive={label === "Domains"}>
+                            <SidebarMenuSubButton href={`#${label.toLowerCase()}`} isActive={label === "Members"}>
                               <span>{label}</span>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -381,24 +386,24 @@ export default function SidebarDocs() {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton isActive>
-                      <GitBranchIcon />
-                      <span>Deployments</span>
+                      <InboxIcon />
+                      <span>Inbox</span>
                     </SidebarMenuButton>
                     <SidebarMenuBadge>12</SidebarMenuBadge>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <ScrollTextIcon />
-                      <span>Logs</span>
+                      <ListTodoIcon />
+                      <span>My tasks</span>
                     </SidebarMenuButton>
-                    <SidebarMenuAction showOnHover aria-label="More actions for Logs">
+                    <SidebarMenuAction showOnHover aria-label="More actions for My tasks">
                       <MoreHorizontalIcon />
                     </SidebarMenuAction>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton disabled>
-                      <DatabaseIcon />
-                      <span>Databases</span>
+                      <ZapIcon />
+                      <span>Automations</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>

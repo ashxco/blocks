@@ -3,25 +3,50 @@
 import * as React from "react"
 import { PauseIcon, PlayIcon } from "lucide-react"
 
-import { CodeWindow } from "@/components/blocks/code-window"
+import {
+  BoardScreen,
+  ReportScreen,
+  ScreenFrame,
+  TaskScreen,
+  TimelineScreen,
+} from "@/components/blocks/product-tour/screens"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { Kern } from "@/components/ui/kern"
+import { cn } from "@/lib/utils"
 
-export interface PipelineStep {
+export {
+  BoardScreen,
+  PriorityBadge,
+  PersonAvatar,
+  ReportScreen,
+  ScreenFrame,
+  TaskScreen,
+  TimelineScreen,
+} from "@/components/blocks/product-tour/screens"
+export type {
+  BoardCard,
+  BoardColumn,
+  ReportFigure,
+  ReportScreenProps,
+  ScreenFrameProps,
+  TaskPriority,
+  TimelineItem,
+} from "@/components/blocks/product-tour/screens"
+
+export interface ProductTourStep {
   title: string
   description: string
-  /** Short readout on the right of the step, such as a duration. */
+  /** Short readout on the right of the step, such as the view it opens. Also shown in the window bar. */
   meta?: string
-  /** Terminal output for this step. "$" prompts, "✓" successes, "→" notes. */
-  lines: string[]
+  /** The product screen for this step, such as <BoardScreen />. It fills the window under the bar. */
+  screen: React.ReactNode
 }
 
-export interface PipelineShowcaseProps {
+export interface ProductTourProps {
   title?: React.ReactNode
   description?: React.ReactNode
-  steps?: PipelineStep[]
-  /** Label in the terminal title bar. */
+  steps?: ProductTourStep[]
+  /** Page name in the window bar. */
   windowTitle?: string
   /** Advance through the steps on a timer until someone interacts. Off when reduced motion is on. */
   autoPlay?: boolean
@@ -34,69 +59,30 @@ export interface PipelineShowcaseProps {
   className?: string
 }
 
-const defaultSteps: PipelineStep[] = [
+const defaultSteps: ProductTourStep[] = [
   {
-    title: "Push",
-    description: "Push to git, run lumen deploy or start a deploy from your editor.",
-    meta: "0.4s",
-    lines: [
-      "$ git push origin main",
-      "→ Received push to main (a41c9e2)",
-      "→ Detected Next.js 16 on Node 22",
-      "→ Using lumen.toml from the repository root",
-      "✓ Queued build on fra1",
-    ],
+    title: "Plan",
+    description: "Lay out the work on a timeline, set milestones and see where tasks overlap.",
+    meta: "Timeline",
+    screen: <TimelineScreen />,
   },
   {
-    title: "Build",
-    description: "Every commit builds in isolation into a versioned image.",
-    meta: "14.2s",
-    lines: [
-      "→ Restoring build cache (92% hit)",
-      "$ npm ci",
-      "→ Installed 612 packages in 3.1s",
-      "$ npm run build",
-      "→ Compiled 214 routes in 11.8s",
-      "✓ Image lumen/web:a41c9e2 (14.2s)",
-    ],
+    title: "Assign",
+    description: "Give every task one owner, a due date, a priority and the subtasks it needs.",
+    meta: "Task",
+    screen: <TaskScreen />,
   },
   {
-    title: "Ship",
-    description: "The new version starts beside the old one on a private network.",
-    meta: "6.1s",
-    lines: [
-      "→ Pushing image to fra1 and iad1",
-      "→ Starting 2 replicas in each region",
-      "→ Waiting for GET /healthz",
-      "→ fra1: 2 of 2 healthy",
-      "→ iad1: 2 of 2 healthy",
-      "✓ a41c9e2 ready beside a3f7d10",
-    ],
+    title: "Track",
+    description: "Move cards across the board as work happens. Everyone sees the same status.",
+    meta: "Board",
+    screen: <BoardScreen />,
   },
   {
-    title: "Route",
-    description: "Domains, TLS and edge rules apply, then traffic switches over.",
-    meta: "1.8s",
-    lines: [
-      "→ Certificate valid for web.acme.dev",
-      "→ Applying 3 edge rules",
-      "→ Shifting traffic 0% → 25% → 100%",
-      "→ Draining a3f7d10",
-      "✓ Live at https://web.acme.dev",
-    ],
-  },
-  {
-    title: "Watch",
-    description: "Logs and metrics stream in from the first request.",
-    meta: "live",
-    lines: [
-      "$ lumen logs --tail",
-      "GET  /             200  8ms",
-      "GET  /pricing      200 11ms",
-      "POST /api/login    200 41ms",
-      "GET  /api/projects 200 23ms",
-      "✓ p95 112ms, error rate 0.0%",
-    ],
+    title: "Report",
+    description: "Delivery, workload and cycle time update on their own, ready for the weekly review.",
+    meta: "Report",
+    screen: <ReportScreen />,
   },
 ]
 
@@ -131,30 +117,29 @@ function useInView(ref: React.RefObject<HTMLElement | null>) {
 }
 
 /**
- * A dark panel that walks through the deploy pipeline. Steps are listed on
- * the left as a vertical tab list; the terminal on the right shows the
- * selected step's output. It advances on its own every few seconds while on
+ * A dark panel that walks through a product tour. Steps are listed on the
+ * left as a vertical tab list; the app window on the right shows the product
+ * screen for the selected step. It advances on its own every few seconds while on
  * screen, pauses on hover, and stops for good once someone picks a step or
  * presses pause. With reduced motion it never advances on its own.
  */
-export function PipelineShowcase({
+export function ProductTour({
   title = (
     <>
-      {/* No-break spaces keep each phrase whole when the title wraps on phones. */}
-      One{"\u00a0"}push. Five{"\u00a0"}steps.
+      From first plan
       <br />
-      Zero{"\u00a0"}config.
+      to final report.
     </>
   ),
-  description = "Follow a commit from git push to live traffic. Every step streams to your terminal and to the dashboard as it happens.",
+  description = "Follow one project through Acme. Every step happens in the same workspace, so nothing gets lost between tools and nobody asks for a status update.",
   steps = defaultSteps,
-  windowTitle = "lumen — acme/web",
+  windowTitle = "Website relaunch",
   autoPlay = true,
   interval = 4500,
   defaultStep = 0,
   contained = true,
   className,
-}: PipelineShowcaseProps) {
+}: ProductTourProps) {
   const id = React.useId()
   const rootRef = React.useRef<HTMLElement>(null)
   const tabRefs = React.useRef<(HTMLButtonElement | null)[]>([])
@@ -178,12 +163,6 @@ export function PipelineShowcase({
 
   const current = steps[Math.min(active, count - 1)]
   if (!current) return null
-
-  // Stacked under the steps, the terminal sizes to its content. Shorter steps
-  // are padded with blank rows up to the longest one, so the window keeps one
-  // height as it advances.
-  const rows = Math.max(...steps.map((step) => step.lines.length))
-  const lines = [...current.lines, ...Array.from({ length: rows - current.lines.length }, () => "")]
 
   function select(index: number, focus = false) {
     setActive(index)
@@ -212,25 +191,25 @@ export function PipelineShowcase({
   return (
     <section
       ref={rootRef}
-      data-slot="pipeline-showcase"
+      data-slot="product-tour"
       className={cn(contained && "container-wide py-section", className)}
     >
-      <div className="@container/pipeline rounded-(--panel-radius) bg-panel p-(--panel-padding) text-panel-foreground">
+      <div className="@container/tour rounded-(--panel-radius) bg-panel p-(--panel-padding) text-panel-foreground">
         <div className="mx-auto max-w-page">
           {/* The same split as SectionHeading: title left, lead right, sharing a baseline. */}
-          <div className="mb-12 grid gap-6 @narrow/pipeline:mb-16 @narrow/pipeline:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] @narrow/pipeline:items-end @narrow/pipeline:gap-16">
+          <div className="mb-12 grid gap-6 @narrow/tour:mb-16 @narrow/tour:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] @narrow/tour:items-end @narrow/tour:gap-16">
             {title ? (
               <h2 className="max-w-narrow text-h2 text-panel-foreground">
                 <Kern>{title}</Kern>
               </h2>
             ) : null}
             {description ? (
-              <p className="max-w-prose text-lead text-panel-muted @narrow/pipeline:pb-1.5">{description}</p>
+              <p className="max-w-prose text-lead text-panel-muted @narrow/tour:pb-1.5">{description}</p>
             ) : null}
           </div>
 
           <div
-            className="grid gap-6 @narrow/pipeline:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] @narrow/pipeline:gap-10"
+            className="grid gap-6 @narrow/tour:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] @narrow/tour:gap-10"
             onPointerEnter={() => setHovered(true)}
             onPointerLeave={() => setHovered(false)}
           >
@@ -238,7 +217,7 @@ export function PipelineShowcase({
               <div
                 role="tablist"
                 aria-orientation="vertical"
-                aria-label="Pipeline steps"
+                aria-label="Tour steps"
                 className="grid w-full content-start gap-1"
                 onFocus={() => setUserPlaying(false)}
               >
@@ -273,7 +252,7 @@ export function PipelineShowcase({
                           {step.title}
                         </span>
                         {step.meta ? (
-                          <span className="font-mono text-caption text-panel-muted tabular">{step.meta}</span>
+                          <span className="text-caption text-panel-muted">{step.meta}</span>
                         ) : null}
                       </span>
                       <span
@@ -307,14 +286,38 @@ export function PipelineShowcase({
               ) : null}
             </div>
 
-            {/* Beside the steps, the terminal runs the full height of the list and the pause button. */}
+            {/* Beside the steps, the window runs the full height of the list and the pause button. */}
             <div
               role="tabpanel"
               id={panelId}
               aria-labelledby={tabId(active)}
-              className="min-w-0 self-start @narrow/pipeline:flex @narrow/pipeline:flex-col @narrow/pipeline:self-stretch"
+              className="min-w-0 self-start @narrow/tour:flex @narrow/tour:flex-col @narrow/tour:self-stretch"
             >
-              <CodeWindow wrap title={windowTitle} lines={lines} className="@narrow/pipeline:flex-1" />
+              <ScreenFrame title={windowTitle} view={current.meta} className="@narrow/tour:flex-1">
+                {/* Every screen sits in the same cell, so the window takes the height of the tallest and never jumps. */}
+                <div className="grid flex-1">
+                  {steps.map((step, i) => {
+                    const shown = i === active
+                    return (
+                      // The shown screen is announced as one image; the screen inside stays inert.
+                      <div
+                        key={step.title}
+                        role={shown ? "img" : undefined}
+                        aria-label={shown ? `${step.title}: ${step.description}` : undefined}
+                        aria-hidden={shown ? undefined : true}
+                        className={cn(
+                          "col-start-1 row-start-1 flex min-w-0 flex-col transition-opacity duration-(--duration-slow) ease-out",
+                          shown ? "opacity-100" : "invisible opacity-0"
+                        )}
+                      >
+                        <div inert className="flex min-w-0 flex-1 flex-col">
+                          {step.screen}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </ScreenFrame>
             </div>
           </div>
         </div>

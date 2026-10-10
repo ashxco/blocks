@@ -9,7 +9,7 @@ export default function CtaBandDocs() {
       <Example
         title="Default"
         layout="full"
-        description="The closing section of a marketing page. Pitch and actions on the left, the CLI install on the right for people who prefer a terminal."
+        description="The closing section of a marketing page. Pitch and actions on the left, a box of reassurances on the right."
         code={`<CtaBand />`}
       >
         <CtaBand />
@@ -19,35 +19,35 @@ export default function CtaBandDocs() {
         title="Custom copy"
         layout="full"
         surface="subtle"
-        description="Change the pitch, actions, command and reassurances to fit the page it closes."
+        description="Change the pitch, actions and reassurances to fit the page it closes. On a developer page, add a command to the box."
         code={`<CtaBand
-  title="Bring your app over."
-  description="Import from Heroku, Render or Fly with one command. Your environment variables and domains come with you."
-  primaryAction={{ label: "Start migrating", href: "/live/sign-up" }}
-  secondaryAction={{ label: "Read the guide", href: "/live/blog/post" }}
-  installLabel="Import an existing app"
-  command="lumen import"
-  points={["Keeps your environment variables", "Zero-downtime DNS switch"]}
+  title="Connect Acme to your own tools."
+  description="Create tasks from any system you run and react to changes with webhooks."
+  primaryAction={{ label: "Read the API reference", href: "#" }}
+  secondaryAction={{ label: "See integrations", href: "/live/features" }}
+  boxTitle="Install the SDK"
+  command="npm install @acme/sdk"
+  points={["Typed for TypeScript", "Webhooks for every task change"]}
 />`}
       >
         <CtaBand
-          title="Bring your app over."
-          description="Import from Heroku, Render or Fly with one command. Your environment variables and domains come with you."
-          primaryAction={{ label: "Start migrating", href: "/live/sign-up" }}
-          secondaryAction={{ label: "Read the guide", href: "/live/blog/post" }}
-          installLabel="Import an existing app"
-          command="lumen import"
-          points={["Keeps your environment variables", "Zero-downtime DNS switch"]}
+          title="Connect Acme to your own tools."
+          description="Create tasks from any system you run and react to changes with webhooks."
+          primaryAction={{ label: "Read the API reference", href: "#" }}
+          secondaryAction={{ label: "See integrations", href: "/live/features" }}
+          boxTitle="Install the SDK"
+          command="npm install @acme/sdk"
+          points={["Typed for TypeScript", "Webhooks for every task change"]}
         />
       </Example>
 
       <Example
         title="Your own box"
         layout="full"
-        description="Pass aside to replace the install box with content that fits the page, such as open roles on a careers band. Set command to null instead to keep the box with only its title and checks."
+        description="Pass aside to replace the box with content that fits the page, such as open roles on a careers band."
         code={`<CtaBand
   title="We’re hiring."
-  primaryAction={{ label: "See all six roles", href: "/careers" }}
+  primaryAction={{ label: "See all three roles", href: "/careers" }}
   secondaryAction={{ label: "Ask us a question", href: "/contact" }}
   aside={
     <>
@@ -59,16 +59,16 @@ export default function CtaBandDocs() {
       >
         <CtaBand
           title="We’re hiring."
-          description="Six open roles in engineering, design and support, anywhere between UTC−7 and UTC+9."
-          primaryAction={{ label: "See all six roles", href: "/live/about#careers" }}
+          description="Three open roles in engineering, design and customer success, remote or in San Francisco and London."
+          primaryAction={{ label: "See all three roles", href: "/live/about#careers" }}
           secondaryAction={{ label: "Ask us a question", href: "/live/contact" }}
           aside={
             <>
               <p className="text-label text-panel-foreground">Open now</p>
               <ul className="-my-1 grid divide-y divide-panel-border">
                 {[
-                  { title: "Senior platform engineer", detail: "Engineering · UTC−5 to UTC+3" },
-                  { title: "Product designer", detail: "Design · UTC−3 to UTC+3" },
+                  { title: "Senior product engineer", detail: "Engineering · UTC−8 to UTC+1" },
+                  { title: "Product designer", detail: "Design · UTC−5 to UTC+2" },
                 ].map((role) => (
                   <li key={role.title} className="grid gap-0.5 py-3.5">
                     <span className="text-title text-panel-foreground">{role.title}</span>
@@ -85,13 +85,13 @@ export default function CtaBandDocs() {
         title="Compact"
         layout="full"
         surface="subtle"
-        description="Pass aside={null} to drop the box. The pitch spans the panel and the actions move to its right edge. Use it where the page above already showed the product, so closing bands differ from page to page."
-        code={`<CtaBand aside={null} title="See it on your own code." />`}
+        description="Pass aside={null} to drop the box. The pitch spans the panel and the actions move to its right side. Use it where the page above already showed the product, so closing bands differ from page to page."
+        code={`<CtaBand aside={null} title="See it with your own projects." />`}
       >
         <CtaBand
           aside={null}
-          title="See it on your own code."
-          description="Connect a repository and get a preview URL in about a minute. Pro is free for 14 days."
+          title="See it with your own projects."
+          description="Import a spreadsheet or start from a template, and invite your team in a few minutes. Pro is free for 14 days."
         />
       </Example>
 
@@ -102,24 +102,22 @@ export default function CtaBandDocs() {
         code={`<CtaBand
   contained={false}
   secondaryAction={null}
-  title="Try Lumen on your next side project."
-  description="Hobby starts at $5 a month, with preview URLs and logs included."
-  primaryAction={{ label: "Choose Hobby", href: "/live/pricing" }}
-  installLabel="What Hobby includes"
-  command={null}
-  points={["3 projects", "Preview URL for every push", "100 GB bandwidth"]}
+  title="Plan your next project in Acme."
+  description="Free for up to 3 members, with every view, docs and reports."
+  primaryAction={{ label: "Start for free", href: "/live/sign-up" }}
+  boxTitle="What Free includes"
+  points={["5 projects", "1,000 automation runs a month", "2 GB storage"]}
 />`}
       >
         <div className="max-w-prose p-6 @2xl:p-10">
           <CtaBand
             contained={false}
             secondaryAction={null}
-            title="Try Lumen on your next side project."
-            description="Hobby starts at $5 a month, with preview URLs and logs included."
-            primaryAction={{ label: "Choose Hobby", href: "/live/pricing" }}
-            installLabel="What Hobby includes"
-            command={null}
-            points={["3 projects", "Preview URL for every push", "100 GB bandwidth"]}
+            title="Plan your next project in Acme."
+            description="Free for up to 3 members, with every view, docs and reports."
+            primaryAction={{ label: "Start for free", href: "/live/sign-up" }}
+            boxTitle="What Free includes"
+            points={["5 projects", "1,000 automation runs a month", "2 GB storage"]}
           />
         </div>
       </Example>
@@ -129,7 +127,7 @@ export default function CtaBandDocs() {
           "Use one call to action band per page, near the end.",
           "Keep the title to one line on desktop; say what people get.",
           "Use the inverse button for the main action on the panel.",
-          "Vary the box from page to page: the install command, your own content, or none.",
+          "Vary the box from page to page: reassurances, your own content, or none.",
         ]}
         dont={[
           "Don’t stack two dark panels on top of each other.",
@@ -140,12 +138,12 @@ export default function CtaBandDocs() {
 
       <ApiTable
         rows={[
-          { prop: "title", type: "ReactNode", default: '"Ship on Lumen today."', description: "The pitch. Keep it to one line on desktop." },
+          { prop: "title", type: "ReactNode", default: '"Plan your next project in Acme."', description: "The pitch. Keep it to one line on desktop." },
           { prop: "description", type: "ReactNode", description: "One or two sentences under the title." },
           { prop: "primaryAction", type: "{ label: string; href: string }", default: '"Start free trial" → /live/sign-up', description: "Inverse button. Use the same label as the header and hero for the same destination." },
           { prop: "secondaryAction", type: "{ label: string; href: string } | null", default: '"Talk to sales" → /live/contact', description: "Outline button. Pass null to hide it." },
-          { prop: "installLabel", type: "string", default: '"Or start from your terminal"', description: "Title of the box, above the command." },
-          { prop: "command", type: "string | null", default: '"npm i -g lumen"', description: "Command in the box. Pass null for a box with the title and checks only." },
+          { prop: "boxTitle", type: "string", default: '"Every trial includes"', description: "Title of the box, above the checks." },
+          { prop: "command", type: "string | null", default: "null", description: "A one-line command in the box, such as an SDK install on a developer page." },
           { prop: "points", type: "string[]", default: "3 reassurances", description: "Short checks in the box. Pass [] to hide." },
           { prop: "aside", type: "ReactNode | null", description: "Your own content for the box. null drops the box for a compact band with the actions on the right." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section padding. Set to false inside your own layout." },

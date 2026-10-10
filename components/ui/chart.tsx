@@ -11,8 +11,8 @@ import type { TooltipValueType } from "recharts"
  * Colour every series from the chart tokens through the config, then read it
  * back as var(--color-<key>):
  *
- *   const config = { deploys: { label: "Deploys", color: "var(--chart-1)" } } satisfies ChartConfig
- *   <Bar dataKey="deploys" fill="var(--color-deploys)" />
+ *   const config = { completed: { label: "Completed", color: "var(--chart-1)" } } satisfies ChartConfig
+ *   <Bar dataKey="completed" fill="var(--color-completed)" />
  *
  * Grid and axis lines use the border colour, tick labels the muted colour,
  * and the tooltip is styled like an overlay. Area fills are flat at low
@@ -143,7 +143,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
  * ease-out curve, instead of Recharts' 1.5s default. Spread it on every
  * Area, Bar and Line:
  *
- *   <Area dataKey="requests" {...chartMotion} />
+ *   <Area dataKey="completed" {...chartMotion} />
  *
  * Recharts already skips the animation when people ask for reduced motion.
  */

@@ -1,84 +1,107 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, CircleCheckIcon, GitBranchIcon } from "lucide-react"
+import { CheckIcon, ZapIcon } from "lucide-react"
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { personTone } from "@/components/blocks/members-list/people"
 
 /* -------------------------------------------------------------------------- */
-/* Deployment status                                                          */
+/* Status badge                                                               */
 /* -------------------------------------------------------------------------- */
 
-export type DeploymentStatus = "ready" | "preview" | "building" | "failed"
+/** Project status. On track, at risk and off track carry the status colours; completed and paused stay neutral. */
+export type MomentStatus = "on-track" | "at-risk" | "off-track" | "completed" | "paused"
 
-const statusStyles: Record<DeploymentStatus, { label: string; className: string; pulse?: boolean }> = {
-  ready: { label: "Ready", className: "bg-success-subtle text-success" },
-  preview: { label: "Preview", className: "bg-brand-subtle text-brand-subtle-foreground" },
-  building: { label: "Building", className: "bg-warning-subtle text-warning", pulse: true },
-  failed: { label: "Failed", className: "bg-destructive-subtle text-destructive" },
+const statusStyles: Record<
+  MomentStatus,
+  { label: string; variant: "success" | "warning" | "destructive" | "secondary" }
+> = {
+  "on-track": { label: "On track", variant: "success" },
+  "at-risk": { label: "At risk", variant: "warning" },
+  "off-track": { label: "Off track", variant: "destructive" },
+  completed: { label: "Completed", variant: "secondary" },
+  paused: { label: "Paused", variant: "secondary" },
 }
 
-/** Status badge for a deployment row. Colour comes from the status tokens. */
-export function DeploymentStatusBadge({ status }: { status: DeploymentStatus }) {
+/** Status badge for a project row. Colour comes from the status tokens. */
+export function MomentStatusBadge({ status }: { status: MomentStatus }) {
   const s = statusStyles[status]
   return (
-    <Badge variant="secondary" data-status={status} className={cn("gap-1.5", s.className)}>
-      <span aria-hidden="true" className={s.pulse ? "size-1.5 animate-pulse rounded-full bg-current" : "size-1.5 rounded-full bg-current"} />
+    <Badge variant={s.variant} data-status={status}>
+      <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
       {s.label}
     </Badge>
   )
 }
 
 /* -------------------------------------------------------------------------- */
-/* Deployments card                                                           */
+/* List card                                                                  */
 /* -------------------------------------------------------------------------- */
 
-export interface Deployment {
-  sha: string
-  branch: string
-  status: DeploymentStatus
-  /** Build time or an ellipsis while building. */
-  time: string
+export interface MomentListItem {
+  /** Project name. */
+  name: string
+  /** Project owner, shown as initials. */
+  owner: string
+  /** Share of tasks done, from 0 to 100. */
+  progress: number
+  status: MomentStatus
 }
 
-const defaultDeployments: Deployment[] = [
-  { sha: "a41c9e2", branch: "main", status: "ready", time: "12s" },
-  { sha: "7f02b1d", branch: "feat/billing", status: "preview", time: "18s" },
-  { sha: "c3e88a0", branch: "fix/auth-redirect", status: "building", time: "…" },
+const defaultItems: MomentListItem[] = [
+  { name: "Website relaunch", owner: "Priya Raman", progress: 73, status: "on-track" },
+  { name: "Mobile app 2.0", owner: "Jordan Lee", progress: 52, status: "at-risk" },
+  { name: "Q4 planning", owner: "Lucas Moreau", progress: 70, status: "on-track" },
 ]
 
-export function DeploymentsCard({
-  project = "acme/web",
-  deployments = defaultDeployments,
+function initialsOf(name: string) {
+  const parts = name.trim().split(/\s+/)
+  return ((parts[0]?.[0] ?? "") + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase()
+}
+
+/** Projects with their owner, progress and status. Progress shows from 22rem. */
+export function MomentListCard({
+  title = "Projects",
+  meta = "Acme Inc.",
+  items = defaultItems,
   className,
 }: {
-  project?: string
-  deployments?: Deployment[]
+  /** Card title. */
+  title?: string
+  /** Small text on the right of the title, such as the workspace. */
+  meta?: string
+  items?: MomentListItem[]
   className?: string
 }) {
   return (
-    <Card className={cn("@container/deploys gap-0 p-0", className)}>
+    <Card className={cn("@container/list gap-0 p-0", className)}>
       <div className="flex items-center justify-between gap-3 px-4 pt-4 pb-3">
-        <p className="text-label font-bold text-foreground">Deployments</p>
-        <span className="truncate font-mono text-caption text-muted-foreground">{project}</span>
+        <p className="text-label font-bold text-foreground">{title}</p>
+        <span className="truncate text-caption text-muted-foreground">{meta}</span>
       </div>
       <ul className="divide-y border-t">
-        {deployments.map((d) => (
+        {items.map((item) => (
           <li
-            key={d.sha}
-            className="grid grid-cols-[4.25rem_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 @min-[22rem]/deploys:grid-cols-[4.25rem_minmax(0,1fr)_auto_2rem]"
+            key={item.name}
+            className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 @min-[22rem]/list:grid-cols-[minmax(0,1fr)_5.5rem_auto]"
           >
-            <span className="font-mono text-caption text-foreground">{d.sha}</span>
-            <span className="flex min-w-0 items-center gap-1.5 text-caption text-muted-foreground">
-              <GitBranchIcon aria-hidden="true" className="size-3.5 shrink-0" />
-              <span className="truncate">{d.branch}</span>
+            <span className="flex min-w-0 items-center gap-2.5">
+              <Avatar size="sm">
+                <AvatarFallback tone={personTone(item.owner)}>{initialsOf(item.owner)}</AvatarFallback>
+              </Avatar>
+              <span className="truncate text-sm font-semibold text-foreground">{item.name}</span>
             </span>
-            <DeploymentStatusBadge status={d.status} />
-            <span className="hidden text-right text-caption text-muted-foreground tabular @min-[22rem]/deploys:block">
-              {d.time}
+            <span className="hidden items-center gap-2 @min-[22rem]/list:flex">
+              <span className="h-1 flex-1 overflow-hidden rounded-full bg-secondary">
+                <span className="block h-full rounded-full bg-foreground" style={{ width: `${item.progress}%` }} />
+              </span>
+              <span className="w-8 text-right text-caption text-muted-foreground tabular">{item.progress}%</span>
             </span>
+            <MomentStatusBadge status={item.status} />
           </li>
         ))}
       </ul>
@@ -87,32 +110,42 @@ export function DeploymentsCard({
 }
 
 /* -------------------------------------------------------------------------- */
-/* Requests card                                                              */
+/* Trend card                                                                 */
 /* -------------------------------------------------------------------------- */
 
-/** Hourly requests, [served from the edge, served by origin], as a share of the busiest hour. */
+/**
+ * Tasks completed each day for the last 30 days, Sep 10 to Oct 9, as [on
+ * time, late]. The daily totals are the dashboard chart's (ChartCard): they
+ * add up to 1,284, 92% of them on time. Weekends are quiet.
+ */
 const defaultBars: [number, number][] = [
-  [26, 10], [32, 12], [29, 11], [41, 14], [38, 12], [49, 15],
-  [44, 13], [56, 16], [52, 14], [63, 17], [60, 15], [72, 19],
+  [39, 3], [46, 4], [27, 2], [27, 2], [44, 4], [45, 4], [47, 4], [40, 4], [43, 4], [26, 2],
+  [28, 2], [47, 4], [42, 4], [45, 4], [42, 4], [45, 4], [25, 2], [27, 2], [41, 4], [45, 4],
+  [40, 4], [49, 3], [47, 4], [29, 2], [25, 2], [40, 4], [47, 4], [44, 5], [45, 4], [44, 4],
 ]
 
-export function RequestsCard({
-  value = "2.4M",
-  unit = "/ day",
-  change = "+18%",
+/** A headline figure over daily bars, split into on time and late. */
+export function MomentTrendCard({
+  title = "Tasks completed",
+  value = "1,284",
+  unit = "this month",
+  change = "+12%",
   bars = defaultBars,
   className,
 }: {
+  title?: string
   value?: string
   unit?: string
   change?: string
+  /** One bar per day, oldest first: [finished on time, finished late]. Heights scale to the busiest day. */
   bars?: [number, number][]
   className?: string
 }) {
+  const busiest = Math.max(1, ...bars.map(([onTime, late]) => onTime + late))
   return (
     <Card className={cn("gap-0 p-4", className)}>
       <div className="flex items-center justify-between gap-3">
-        <p className="text-label font-bold text-foreground">Requests</p>
+        <p className="text-label font-bold text-foreground">{title}</p>
         <span className="text-caption font-semibold text-success tabular">{change}</span>
       </div>
       <p className="mt-2 flex items-baseline gap-1.5">
@@ -121,28 +154,28 @@ export function RequestsCard({
       </p>
       <div
         role="img"
-        aria-label={`Requests over the last ${bars.length} hours, rising steadily. Most are served from the edge.`}
-        className="mt-4 flex h-20 items-end gap-1"
+        aria-label={`${title} each day for the last ${bars.length} days, quieter at weekends. Most finish on time.`}
+        className="mt-4 flex h-20 items-end gap-px"
       >
-        {bars.map(([edge, origin], i) => (
+        {bars.map(([onTime, late], i) => (
           <div
             key={i}
-            className="flex flex-1 flex-col gap-px overflow-hidden rounded-t-xs"
-            style={{ height: `${Math.min(100, edge + origin)}%` }}
+            className="flex flex-1 flex-col overflow-hidden rounded-t-xs"
+            style={{ height: `${((onTime + late) / busiest) * 100}%` }}
           >
-            <div className="bg-foreground/20" style={{ flexGrow: origin }} />
-            <div className="bg-foreground" style={{ flexGrow: edge }} />
+            <div className="bg-foreground/20" style={{ flexGrow: late }} />
+            <div className="bg-foreground" style={{ flexGrow: onTime }} />
           </div>
         ))}
       </div>
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-caption text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
           <span aria-hidden="true" className="size-2 rounded-full bg-foreground" />
-          Edge cache
+          On time
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span aria-hidden="true" className="size-2 rounded-full bg-foreground/20" />
-          Origin
+          Late
         </span>
       </div>
     </Card>
@@ -150,20 +183,23 @@ export function RequestsCard({
 }
 
 /* -------------------------------------------------------------------------- */
-/* Deployed card (dark)                                                       */
+/* Highlight card (dark)                                                      */
 /* -------------------------------------------------------------------------- */
 
-const defaultChecks = ["Built in 14.2s", "2 replicas healthy", "Traffic shifted to 100%"]
+const defaultChecks = ["Notified Maya Patel", "Posted in #website-relaunch on Slack"]
 
-export function DeployedCard({
-  title = "Deployed to production",
-  url = "web.acme.dev",
-  time = "31s",
+/** A dark card for one moment of emphasis, such as an automation that just ran. */
+export function MomentHighlightCard({
+  title = "Automation ran",
+  detail = "Sitemap moved to Done",
+  time = "Just now",
   checks = defaultChecks,
   className,
 }: {
   title?: string
-  url?: string
+  /** One line under the title, such as what set the rule off. */
+  detail?: string
+  /** When it happened. */
   time?: string
   checks?: string[]
   className?: string
@@ -171,18 +207,20 @@ export function DeployedCard({
   return (
     <Card className={cn("justify-between gap-5 border-panel-border bg-panel p-4 text-panel-foreground", className)}>
       <div className="flex items-center justify-between gap-3">
-        <CircleCheckIcon aria-hidden="true" className="size-5 text-panel-success" />
-        <span className="font-mono text-caption text-panel-muted tabular">{time}</span>
+        <span className="grid size-7 place-items-center rounded-sm bg-panel-raised">
+          <ZapIcon aria-hidden="true" className="size-4 text-panel-foreground" />
+        </span>
+        <span className="text-caption text-panel-muted">{time}</span>
       </div>
       <div className="grid gap-3">
-        <div>
+        <div className="grid gap-1">
           <p className="text-title text-panel-foreground">{title}</p>
-          <p className="truncate font-mono text-caption text-panel-muted">{url}</p>
+          <p className="text-caption text-panel-muted">{detail}</p>
         </div>
         <ul className="grid gap-1.5 border-t border-panel-border pt-3">
           {checks.map((c) => (
-            <li key={c} className="flex items-center gap-2 text-caption text-panel-muted">
-              <CheckIcon aria-hidden="true" className="size-3.5 shrink-0 text-panel-success" />
+            <li key={c} className="flex items-start gap-2 text-caption text-panel-muted">
+              <CheckIcon aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-panel-success" />
               {c}
             </li>
           ))}
@@ -203,9 +241,10 @@ export interface HeroProductMomentProps {
 }
 
 /**
- * The product moment beside the hero copy: deployments, requests and a dark
- * "Deployed to production" card, flat and bordered on a tinted stage.
- * It lays itself out from its own width, so it works beside copy or full width.
+ * The product moment beside the hero copy: projects with their status,
+ * tasks completed each week and a dark card for an automation that just ran,
+ * flat and bordered on a tinted stage. It lays itself out from its own
+ * width, so it works beside copy or full width.
  */
 export function HeroProductMoment({ stage = true, className }: HeroProductMomentProps) {
   return (
@@ -214,9 +253,9 @@ export function HeroProductMoment({ stage = true, className }: HeroProductMoment
       <div className={cn(stage && "rounded-(--panel-radius) border bg-subtle p-3 @min-[30rem]/moment:p-4")}>
         {/* Two-up from 24rem, so the moment stays short beside the hero copy just past its 60rem split. */}
         <div className="grid gap-3 @min-[24rem]/moment:grid-cols-2 @narrow/moment:grid-cols-[1.45fr_1fr_1fr]">
-          <DeploymentsCard className="@min-[24rem]/moment:col-span-2 @narrow/moment:col-span-1" />
-          <RequestsCard />
-          <DeployedCard />
+          <MomentListCard className="@min-[24rem]/moment:col-span-2 @narrow/moment:col-span-1" />
+          <MomentTrendCard />
+          <MomentHighlightCard />
         </div>
       </div>
     </div>
