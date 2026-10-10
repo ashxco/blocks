@@ -79,7 +79,7 @@ export default function CardDocs() {
   </CardHeader>
   <CardContent>…</CardContent>
   <CardFooter>
-    <Button size="sm" variant="outline">Share summary</Button>
+    <Button size="sm" variant="outline">Share Summary</Button>
   </CardFooter>
 </Card>`}
       >
@@ -97,7 +97,7 @@ export default function CardDocs() {
           <CardFooter className="flex-wrap justify-between gap-y-3">
             <p className="text-caption text-muted-foreground">Updated 2 minutes ago</p>
             <Button size="sm" variant="outline">
-              Share summary
+              Share Summary
             </Button>
           </CardFooter>
         </Card>
@@ -113,7 +113,7 @@ export default function CardDocs() {
     <CardTitle>Integrations</CardTitle>
     <CardDescription>3 apps connected.</CardDescription>
     <CardAction>
-      <Button size="sm">Add app</Button>
+      <Button size="sm">Add App</Button>
     </CardAction>
   </CardHeader>
   <CardContent>…</CardContent>
@@ -124,7 +124,7 @@ export default function CardDocs() {
             <CardTitle>Integrations</CardTitle>
             <CardDescription>3 apps connected.</CardDescription>
             <CardAction>
-              <Button size="sm">Add app</Button>
+              <Button size="sm">Add App</Button>
             </CardAction>
           </CardHeader>
           <CardContent>
@@ -166,7 +166,7 @@ export default function CardDocs() {
                 <CardContent>
                   <p
                     className={cn(
-                      "text-3xl font-extrabold tabular",
+                      "font-heading text-3xl font-extrabold tabular",
                       card.variant === "panel" ? "text-panel-foreground" : "text-foreground"
                     )}
                   >

@@ -180,7 +180,7 @@ export default function TooltipDocs() {
         description="A disabled button can’t receive focus or pointer events, so wrap it in a focusable span and put the tooltip on the span."
         code={`<Tooltip>
   <TooltipTrigger render={<span tabIndex={0} />}>
-    <Button disabled>Archive project</Button>
+    <Button disabled>Archive Project</Button>
   </TooltipTrigger>
   <TooltipContent>Only owners can archive</TooltipContent>
 </Tooltip>`}
@@ -195,7 +195,7 @@ export default function TooltipDocs() {
               >
                 <Button disabled>
                   <ArchiveIcon data-icon="inline-start" />
-                  Archive project
+                  Archive Project
                 </Button>
               </TooltipTrigger>
               <TooltipContent container={container} {...pinnedTo(container)}>Only owners can archive</TooltipContent>
@@ -207,10 +207,25 @@ export default function TooltipDocs() {
       <Example
         title="On a toolbar"
         description="Tooltips in a group open instantly once the first one is showing, so people can scan a toolbar quickly. Move the pointer along the bar: Assign hands over to the next action without a delay."
+        code={`<TooltipProvider>
+  <div role="toolbar" aria-label="Task actions" className="flex items-center gap-1 rounded-(--button-radius) border p-1">
+    <Tooltip>
+      <TooltipTrigger render={<Button variant="ghost" size="icon-sm" aria-label="Assign" />}>
+        <UserPlusIcon />
+      </TooltipTrigger>
+      <TooltipContent side="bottom">Assign</TooltipContent>
+    </Tooltip>
+    …
+  </div>
+</TooltipProvider>`}
       >
         <TooltipStage className="pb-10">
           {(container) => (
-            <div className="flex items-center gap-1 rounded-(--button-radius) border bg-background p-1">
+            <div
+              role="toolbar"
+              aria-label="Task actions"
+              className="flex items-center gap-1 rounded-(--button-radius) border bg-background p-1"
+            >
               {actions.slice(0, 3).map(({ label, icon: Icon }, index) => {
                 // The first action shows its tooltip on load; hover along the bar and it hands over.
                 const Root = index === 0 ? ShownTooltip : Tooltip

@@ -85,7 +85,7 @@ export default function CheckboxDocs() {
   </Label>
 </div>`}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex w-fit items-center gap-3">
           <Checkbox id="cb-default" defaultChecked />
           <Label htmlFor="cb-default" className="font-medium">
             Email me when a task is overdue

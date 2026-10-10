@@ -27,8 +27,10 @@ const buttonVariants = cva(
         brand: "bg-brand text-brand-foreground hover:bg-brand/88",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/65 aria-expanded:bg-secondary/65",
+        // Transparent in dark, where the canvas is the darkest step and would
+        // show as a hole on cards, popovers and tinted alerts.
         outline:
-          "border-border-strong bg-background text-foreground hover:border-foreground aria-expanded:border-foreground",
+          "border-border-strong bg-background text-foreground hover:border-foreground aria-expanded:border-foreground dark:bg-transparent",
         ghost:
           "text-foreground hover:bg-accent hover:text-accent-foreground aria-expanded:bg-accent",
         link: "h-auto! rounded-none! px-0! text-brand link-underline",

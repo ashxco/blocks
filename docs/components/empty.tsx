@@ -32,8 +32,8 @@ export default function EmptyDocs() {
     </EmptyDescription>
   </EmptyHeader>
   <EmptyContent>
-    <Button>Create project</Button>
-    <Button variant="ghost">Browse templates</Button>
+    <Button>Create Project</Button>
+    <Button variant="ghost">Browse Templates</Button>
   </EmptyContent>
 </Empty>`}
       >
@@ -48,9 +48,9 @@ export default function EmptyDocs() {
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Button>Create project</Button>
+            <Button>Create Project</Button>
             <Button variant="ghost">
-              Browse templates
+              Browse Templates
               <ArrowRightIcon data-icon="inline-end" />
             </Button>
           </EmptyContent>
@@ -65,21 +65,9 @@ export default function EmptyDocs() {
 <Empty variant="plain">…</Empty>`}
       >
         {/* Equal cells and the same action, so only the frame differs. */}
-        <div className="grid gap-4 md:auto-rows-fr md:grid-cols-2">
-          <Empty variant="subtle">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <ZapIcon />
-              </EmptyMedia>
-              <EmptyTitle>No automations yet</EmptyTitle>
-              <EmptyDescription>Let Acme move tasks and notify owners for you.</EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              <Button size="sm">Create rule</Button>
-            </EmptyContent>
-          </Empty>
-          <div className="flex rounded-(--card-radius) border">
-            <Empty variant="plain">
+        <div className="grid gap-x-4 gap-y-6 md:grid-cols-2">
+          <figure className="grid grid-rows-[1fr_auto] gap-3">
+            <Empty variant="subtle">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
                   <ZapIcon />
@@ -88,10 +76,28 @@ export default function EmptyDocs() {
                 <EmptyDescription>Let Acme move tasks and notify owners for you.</EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
-                <Button size="sm">Create rule</Button>
+                <Button size="sm">Create Rule</Button>
               </EmptyContent>
             </Empty>
-          </div>
+            <figcaption className="font-mono text-code text-muted-foreground">variant=&quot;subtle&quot;</figcaption>
+          </figure>
+          <figure className="grid grid-rows-[1fr_auto] gap-3">
+            <div className="flex rounded-(--card-radius) border bg-card">
+              <Empty variant="plain">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <ZapIcon />
+                  </EmptyMedia>
+                  <EmptyTitle>No automations yet</EmptyTitle>
+                  <EmptyDescription>Let Acme move tasks and notify owners for you.</EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent>
+                  <Button size="sm">Create Rule</Button>
+                </EmptyContent>
+              </Empty>
+            </div>
+            <figcaption className="font-mono text-code text-muted-foreground">variant=&quot;plain&quot;</figcaption>
+          </figure>
         </div>
       </Example>
 
@@ -106,7 +112,7 @@ export default function EmptyDocs() {
     <EmptyDescription>Try a shorter query or include completed tasks.</EmptyDescription>
   </EmptyHeader>
   <EmptyContent>
-    <Button variant="outline" size="sm">Clear filters</Button>
+    <Button variant="outline" size="sm">Clear Filters</Button>
   </EmptyContent>
 </Empty>`}
       >
@@ -120,10 +126,10 @@ export default function EmptyDocs() {
           </EmptyHeader>
           <EmptyContent>
             <Button variant="outline" size="sm">
-              Clear filters
+              Clear Filters
             </Button>
             <Button variant="ghost" size="sm">
-              Include completed
+              Include Completed
             </Button>
           </EmptyContent>
         </Empty>

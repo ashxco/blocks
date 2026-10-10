@@ -184,6 +184,8 @@ function ItemTitle({ className, ...props }: React.ComponentProps<"div">) {
       className={cn(
         "flex w-fit max-w-full items-center gap-2 text-title text-foreground underline-offset-4",
         "group-data-[size=sm]/item:text-label group-data-[size=xs]/item:text-label",
+        // The label role sets no font, so the smaller titles return to the body face.
+        "group-data-[size=sm]/item:font-sans group-data-[size=xs]/item:font-sans",
         "[&>span:not([data-slot])]:truncate",
         className
       )}

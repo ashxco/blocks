@@ -216,6 +216,20 @@ export default function HoverCardDocs() {
       <Example
         title="Task preview"
         description="Preview a linked object, such as a task or a doc, with its status and the one detail people check most."
+        code={`<HoverCard>
+  <HoverCardTrigger href="/tasks/fix-the-pricing-table">Fix the pricing table</HoverCardTrigger>
+  <HoverCardContent>
+    <div className="flex items-start justify-between gap-3">
+      <p className="text-title">Fix the pricing table on mobile</p>
+      <Badge variant="info">In progress</Badge>
+    </div>
+    <p className="text-caption text-muted-foreground">Jordan Lee · updated 2 hours ago</p>
+    <dl className="grid grid-cols-2 gap-3 border-t pt-3">
+      <div><dt>Due</dt><dd>Oct 15</dd></div>
+      <div><dt>Subtasks</dt><dd>2 of 3 done</dd></div>
+    </dl>
+  </HoverCardContent>
+</HoverCard>`}
       >
         <HoverCardStage className="min-h-64">{(container) => <TaskCard container={container} />}</HoverCardStage>
       </Example>

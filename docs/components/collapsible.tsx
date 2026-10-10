@@ -39,7 +39,7 @@ function Subtasks() {
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="grid w-full max-w-xl justify-items-start">
       <CollapsibleTrigger render={<Button variant="outline" size="sm" />}>
-        {open ? "Hide subtasks" : `Show ${subtasks.length} subtasks`}
+        {open ? "Hide Subtasks" : `Show ${subtasks.length} Subtasks`}
         <ChevronDownIcon
           data-icon="inline-end"
           className="transition-transform duration-(--duration-base) ease-out group-data-panel-open/collapsible-trigger:rotate-180"
@@ -79,7 +79,7 @@ export default function CollapsibleDocs() {
         layout="stack"
         code={`<Collapsible>
   <CollapsibleTrigger render={<Button variant="outline" size="sm" />}>
-    Show 4 subtasks
+    Show 4 Subtasks
     <ChevronDownIcon
       data-icon="inline-end"
       className="transition-transform group-data-panel-open/collapsible-trigger:rotate-180"
@@ -103,7 +103,7 @@ export default function CollapsibleDocs() {
     <ul>{the rest}</ul>
   </CollapsibleContent>
   <CollapsibleTrigger render={<Button variant="link" />}>
-    Show 3 more
+    Show 3 More
   </CollapsibleTrigger>
 </Collapsible>`}
       >
@@ -126,7 +126,7 @@ export default function CollapsibleDocs() {
               </ul>
             </CollapsibleContent>
             <CollapsibleTrigger render={<Button variant="link" className="mt-3" />}>
-              {open ? "Show fewer" : `Show ${fields.length - 3} more`}
+              {open ? "Show Fewer" : `Show ${fields.length - 3} More`}
             </CollapsibleTrigger>
           </Collapsible>
         </section>

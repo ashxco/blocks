@@ -115,6 +115,8 @@ function MessageScrollerButton({
         "data-[active=false]:pointer-events-none data-[active=false]:scale-95 data-[active=false]:opacity-0 data-[active=false]:ease-in",
         "data-[direction=end]:bottom-4 data-[direction=end]:data-[active=false]:translate-y-2",
         "data-[direction=start]:top-4 data-[direction=start]:data-[active=false]:-translate-y-2 data-[direction=start]:[&_svg]:rotate-180",
+        // It floats over the messages, so the outline button keeps an opaque fill in dark.
+        variant === "outline" && "dark:bg-background",
         className
       )}
       render={render ?? <Button variant={variant} size={size} />}

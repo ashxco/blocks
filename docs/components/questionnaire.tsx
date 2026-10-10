@@ -89,7 +89,7 @@ function Onboarding() {
         </div>
         <div>
           <Button variant="outline" onClick={() => setSummary(null)}>
-            Start again
+            Start Again
           </Button>
         </div>
       </div>
@@ -248,10 +248,10 @@ function InChat() {
                 </Bubble>
                 <div className="flex flex-wrap gap-2">
                   <Button size="sm" variant="outline">
-                    Show slow tasks
+                    Show Slow Tasks
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setAnswer(null)}>
-                    Answer again
+                    Answer Again
                   </Button>
                 </div>
               </MessageContent>

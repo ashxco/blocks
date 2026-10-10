@@ -77,7 +77,7 @@ export default function AlertDocs() {
   <AlertTitle>Mobile app 2.0 is at risk</AlertTitle>
   <AlertDescription>61 of 118 tasks are done and the project is due Nov 20.</AlertDescription>
   <AlertAction>
-    <Button size="sm" variant="outline">Review plan</Button>
+    <Button size="sm" variant="outline">Review Plan</Button>
   </AlertAction>
 </Alert>`}
       >
@@ -89,7 +89,7 @@ export default function AlertDocs() {
           </AlertDescription>
           <AlertAction>
             <Button size="sm" variant="outline">
-              Review plan
+              Review Plan
             </Button>
           </AlertAction>
         </Alert>
@@ -146,7 +146,7 @@ export default function AlertDocs() {
             </AlertDescription>
             <AlertAction>
               <Button size="sm" variant="outline">
-                Upgrade plan
+                Upgrade Plan
               </Button>
             </AlertAction>
           </Alert>

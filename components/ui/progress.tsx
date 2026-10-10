@@ -64,7 +64,11 @@ function ProgressIndicator({
 function ProgressLabel({ className, ...props }: ProgressPrimitive.Label.Props) {
   return (
     <ProgressPrimitive.Label
-      className={cn("text-sm font-semibold tracking-tight text-foreground", className)}
+      // Tight, relative to the theme's own text-sm tracking (-0.025em where it has none).
+      className={cn(
+        "text-sm font-semibold tracking-[calc(var(--text-sm--letter-spacing)-0.025em)] text-foreground",
+        className
+      )}
       data-slot="progress-label"
       {...props}
     />

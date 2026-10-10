@@ -89,7 +89,7 @@ function DrawerOverlay({
       data-slot="drawer-overlay"
       className={cn(
         "fixed inset-0 isolate z-(--z-overlay) min-h-dvh bg-overlay backdrop-blur-glass select-none supports-[-webkit-touch-callout:none]:absolute",
-        "opacity-[max(var(--drawer-overlay-min-opacity,0),calc(1-var(--drawer-swipe-progress)))] data-snap-points:[--drawer-overlay-min-opacity:0.5]",
+        "opacity-[max(var(--drawer-overlay-min-opacity,0),calc(1-var(--drawer-swipe-progress)))] data-snap-points:[--drawer-overlay-min-opacity:1]",
         "transition-opacity duration-(--duration-slow) ease-out data-swiping:duration-0",
         "data-starting-style:opacity-0 data-ending-style:pointer-events-none data-ending-style:opacity-0 data-ending-style:duration-[calc(var(--drawer-swipe-strength)*var(--duration-slow))]",
         className

@@ -15,7 +15,7 @@ import {
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { initialsTone } from "@/components/blocks/members-list/people"
+import { initialsTone } from "@/docs/sample/people"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -170,6 +170,22 @@ export default function TabsDocs() {
         title="With icons and counts"
         description="Icons sit before the label. Counts use a small badge after it. When the row can run wider than a phone, put the list in an overflow-x-auto wrapper so it scrolls."
         layout="stack"
+        code={`<Tabs defaultValue="tasks">
+  <div className="no-scrollbar overflow-x-auto">
+    <TabsList className="min-w-full gap-6 data-horizontal:w-max">
+      <TabsTrigger value="tasks">
+        <ListTodoIcon />
+        Tasks
+      </TabsTrigger>
+      <TabsTrigger value="overdue">
+        <ClockAlertIcon />
+        Overdue
+        <Badge variant="destructive">2</Badge>
+      </TabsTrigger>
+      <TabsTrigger value="automations" disabled>…</TabsTrigger>
+    </TabsList>
+  </div>
+</Tabs>`}
       >
         <Tabs defaultValue="tasks" className="min-w-0">
           {/* The row scrolls rather than overflow the page. On a phone the disabled tab drops
@@ -254,6 +270,22 @@ export default function TabsDocs() {
         title="In a project page"
         description="Tabs switch between views of one project. Each panel keeps its own layout."
         layout="stack"
+        code={`<section className="grid gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)">
+  <div className="grid gap-1">
+    <h3 className="text-h4">Mobile app 2.0</h3>
+    <p className="text-sm text-muted-foreground">At risk · 2 tasks overdue · due Nov 20</p>
+  </div>
+  <Tabs defaultValue="tasks">
+    <TabsList>
+      <TabsTrigger value="tasks">Tasks</TabsTrigger>
+      <TabsTrigger value="activity">Activity</TabsTrigger>
+      <TabsTrigger value="progress">Progress</TabsTrigger>
+    </TabsList>
+    <TabsContent value="tasks">…</TabsContent>
+    <TabsContent value="activity">…</TabsContent>
+    <TabsContent value="progress">…</TabsContent>
+  </Tabs>
+</section>`}
       >
         <section className="grid gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)">
           <div className="grid gap-1">
@@ -312,7 +344,7 @@ export default function TabsDocs() {
                 ].map(([label, value]) => (
                   <div key={label} className="grid gap-1 rounded-(--control-radius) bg-subtle p-4">
                     <dt className="text-caption text-muted-foreground">{label}</dt>
-                    <dd className="text-2xl font-extrabold text-foreground tabular">{value}</dd>
+                    <dd className="font-heading text-2xl font-extrabold text-foreground tabular">{value}</dd>
                   </div>
                 ))}
               </dl>

@@ -167,7 +167,7 @@ function VerifySignIn() {
               setStatus("idle")
             }}
           >
-            Try again
+            Try Again
           </Button>
         </CardFooter>
       </Card>
@@ -216,7 +216,7 @@ function VerifySignIn() {
         </CardContent>
         <CardFooter className="flex-col items-stretch">
           <Button type="submit" className="w-full">
-            Verify and sign in
+            Verify and Sign In
           </Button>
           <p className="text-center text-caption text-muted-foreground" aria-live="polite">
             {resent ? (

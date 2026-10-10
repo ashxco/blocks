@@ -114,7 +114,7 @@ export default function PaginationDocs() {
     <Examples>
       <Example
         title="Default"
-        description="Round page links with the current page in solid ink. Try it: the window of pages follows the current one."
+        description="Page links take the theme's button shape, with the current page in solid ink. Try it: the window of pages follows the current one."
         code={`<Pagination>
   <PaginationContent>
     <PaginationItem>
@@ -186,6 +186,22 @@ export default function PaginationDocs() {
         title="Under a list"
         description="Say what the page shows on the left and put the controls on the right."
         layout="stack"
+        code={`<div className="flex items-center justify-between gap-3 border-t bg-subtle px-5 py-3">
+  <p className="text-caption text-muted-foreground tabular">Showing 51–60 of 312 tasks</p>
+  <Pagination className="mx-0 w-auto">
+    <PaginationContent>
+      <PaginationItem>
+        <PaginationLink href="?page=5" size="icon-sm" aria-label="Go to previous page">
+          <ChevronLeftIcon />
+        </PaginationLink>
+      </PaginationItem>
+      <PaginationItem>
+        <PaginationLink href="?page=6" size="icon-sm" isActive>6</PaginationLink>
+      </PaginationItem>
+      …
+    </PaginationContent>
+  </Pagination>
+</div>`}
       >
         <section className="overflow-hidden rounded-(--card-radius) border bg-card">
           <ul className="divide-y">

@@ -16,7 +16,7 @@ import {
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
-import { Wordmark } from "@/components/blocks/wordmark"
+import { AcmeWordmark } from "@/docs/sample/acme-wordmark"
 import { Button } from "@/components/ui/button"
 import { Kern } from "@/components/ui/kern"
 import {
@@ -175,16 +175,16 @@ function SiteNavDemo() {
     <div ref={setContainer} className="relative isolate">
       <header className="flex h-(--header-height) items-center justify-between gap-6 border-b px-gutter">
         <div className="flex items-center gap-8">
-          <Wordmark href="#acme" />
+          <AcmeWordmark href="#acme" />
           <div className="max-md:hidden">
             <SiteNav container={container} />
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" className="max-sm:hidden">
-            Log in
+            Log In
           </Button>
-          <Button size="sm">Start free trial</Button>
+          <Button size="sm">Start Free Trial</Button>
           <MobileNav />
         </div>
       </header>
@@ -353,7 +353,7 @@ export default function NavigationMenuDocs() {
       >
         {/* One row when it fits; below that the links move to a row of their own under the logo. */}
         <div className="grid w-full max-w-176 grid-cols-[1fr_auto] items-center gap-x-6 gap-y-1.5 rounded-(--card-radius) border bg-background py-2.5 pr-2.5 pl-5 @2xl:flex">
-          <Wordmark href="#acme" className="justify-self-start" />
+          <AcmeWordmark href="#acme" className="justify-self-start" />
           <NavigationMenu className="col-span-2 row-start-2 -ml-3 justify-self-start @2xl:mr-auto @2xl:ml-0">
             <NavigationMenuList>
               {["Product", "Pricing", "Customers", "Blog"].map((label) => (
@@ -370,7 +370,7 @@ export default function NavigationMenuDocs() {
             </NavigationMenuList>
           </NavigationMenu>
           <Button size="sm" className="col-start-2 row-start-1">
-            Start free trial
+            Start Free Trial
           </Button>
         </div>
       </Example>

@@ -83,7 +83,8 @@ function AvatarFallback({
       data-slot="avatar-fallback"
       data-tone={resolvedTone}
       className={cn(
-        "flex size-full items-center justify-center rounded-full text-sm font-bold tracking-tight text-foreground uppercase",
+        // Tight, relative to the theme's own text-sm tracking (-0.025em where it has none).
+        "flex size-full items-center justify-center rounded-full text-sm font-bold tracking-[calc(var(--text-sm--letter-spacing)-0.025em)] text-foreground uppercase",
         "group-data-[size=sm]/avatar:text-xs group-data-[size=lg]/avatar:text-base group-data-[size=xl]/avatar:text-2xl",
         "[&>svg]:size-[45%] [&>svg]:text-muted-foreground",
         toneClasses[resolvedTone],

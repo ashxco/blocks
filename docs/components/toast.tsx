@@ -98,7 +98,7 @@ function ActionDemo() {
             })
           }}
         >
-          Archive project
+          Archive Project
         </Button>
       }
     >
@@ -135,7 +135,7 @@ function PromiseDemo() {
               })
             }
           >
-            Export report
+            Export Report
           </Button>
           <Button
             variant="outline"
@@ -157,7 +157,7 @@ function PromiseDemo() {
                 .catch(() => {})
             }
           >
-            Rotate API key
+            Rotate API Key
           </Button>
         </>
       }
@@ -197,7 +197,7 @@ function UpdateDemo() {
             })
           }}
         >
-          Upload files
+          Upload Files
         </Button>
       }
     >

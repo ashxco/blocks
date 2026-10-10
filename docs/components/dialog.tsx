@@ -5,7 +5,7 @@ import { ArchiveIcon, MoreHorizontalIcon, PencilIcon, PlusIcon, Trash2Icon, User
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { initialsTone } from "@/components/blocks/members-list/people"
+import { initialsTone } from "@/docs/sample/people"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -110,7 +110,7 @@ function InviteMembersDialog({ container }: { container: Stage }) {
     <Dialog open={open} onOpenChange={handleOpenChange} modal={false} disablePointerDismissal>
       <DialogTrigger render={<Button />}>
         <UserPlusIcon data-icon="inline-start" />
-        Invite members
+        Invite Members
       </DialogTrigger>
       <DialogContent container={container} initialFocus={false} className={inStage}>
         <form onSubmit={handleSubmit} noValidate className="contents">
@@ -143,7 +143,7 @@ function InviteMembersDialog({ container }: { container: Stage }) {
             </DialogClose>
             <Button type="submit" disabled={pending}>
               {pending ? <Spinner data-icon="inline-start" /> : null}
-              {pending ? "Sending invites" : "Send invites"}
+              {pending ? "Sending Invites" : "Send Invites"}
             </Button>
           </DialogFooter>
         </form>
@@ -200,7 +200,7 @@ function ProjectMenuWithDialog({ container }: { container: Stage }) {
           </Field>
           <DialogFooter>
             <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
-            <DialogClose render={<Button />}>Archive project</DialogClose>
+            <DialogClose render={<Button />}>Archive Project</DialogClose>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -328,7 +328,7 @@ function SizesDemo() {
       <DialogStage className="min-h-144">
         {(container) => (
           <Dialog open={open} onOpenChange={setOpen} modal={false} disablePointerDismissal>
-            <DialogTrigger render={<Button variant="outline" />}>Open dialog</DialogTrigger>
+            <DialogTrigger render={<Button variant="outline" />}>Open Dialog</DialogTrigger>
             <DialogContent size={size} container={container} initialFocus={false} className={inStage}>
               <SizeContent size={size} />
             </DialogContent>
@@ -349,7 +349,7 @@ function SizeContent({ size }: { size: DialogSize }) {
         </DialogHeader>
         <Input readOnly aria-label="Invite link" defaultValue="app.acme.com/acme/join/7hq2xl" className="text-ellipsis" />
         <DialogFooter>
-          <DialogClose render={<Button />}>Copy link</DialogClose>
+          <DialogClose render={<Button />}>Copy Link</DialogClose>
         </DialogFooter>
       </>
     )
@@ -387,7 +387,7 @@ function SizeContent({ size }: { size: DialogSize }) {
         </div>
         <DialogFooter>
           <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
-          <DialogClose render={<Button />}>Add task</DialogClose>
+          <DialogClose render={<Button />}>Add Task</DialogClose>
         </DialogFooter>
       </>
     )
@@ -422,7 +422,7 @@ export default function DialogDocs() {
         description="A short, focused task on top of the page. The title says what happens; the footer ends with the action that does it."
         layout="full"
         code={`<Dialog>
-  <DialogTrigger render={<Button />}>New project</DialogTrigger>
+  <DialogTrigger render={<Button />}>New Project</DialogTrigger>
   <DialogContent>
     <DialogHeader>
       <DialogTitle>Create project</DialogTitle>
@@ -436,7 +436,7 @@ export default function DialogDocs() {
     </Field>
     <DialogFooter>
       <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
-      <Button type="submit">Create project</Button>
+      <Button type="submit">Create Project</Button>
     </DialogFooter>
   </DialogContent>
 </Dialog>`}
@@ -446,7 +446,7 @@ export default function DialogDocs() {
             <Dialog {...inlineDialog}>
               <DialogTrigger render={<Button />}>
                 <PlusIcon data-icon="inline-start" />
-                New project
+                New Project
               </DialogTrigger>
               <DialogContent container={container} initialFocus={false} className={inStage}>
                 <DialogHeader>
@@ -461,7 +461,7 @@ export default function DialogDocs() {
                 </Field>
                 <DialogFooter>
                   <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
-                  <DialogClose render={<Button />}>Create project</DialogClose>
+                  <DialogClose render={<Button />}>Create Project</DialogClose>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -485,7 +485,7 @@ export default function DialogDocs() {
         description="Validate on submit and say how to fix the problem. While the request runs, disable both buttons and show a spinner in the action."
         layout="full"
         code={`<Dialog open={open} onOpenChange={setOpen}>
-  <DialogTrigger render={<Button />}>Invite members</DialogTrigger>
+  <DialogTrigger render={<Button />}>Invite Members</DialogTrigger>
   <DialogContent>
     <form onSubmit={handleSubmit} className="contents">
       <DialogHeader>…</DialogHeader>
@@ -498,7 +498,7 @@ export default function DialogDocs() {
         <DialogClose render={<Button variant="outline" />} disabled={pending}>
           Cancel
         </DialogClose>
-        <Button type="submit" disabled={pending}>Send invites</Button>
+        <Button type="submit" disabled={pending}>Send Invites</Button>
       </DialogFooter>
     </form>
   </DialogContent>
@@ -514,14 +514,14 @@ export default function DialogDocs() {
         code={`<DialogContent showCloseButton={false}>
   …
   <DialogFooter showCloseButton>
-    <Button variant="ghost">Read the changelog</Button>
+    <Button variant="ghost">Read the Changelog</Button>
   </DialogFooter>
 </DialogContent>`}
       >
         <DialogStage>
           {(container) => (
             <Dialog {...inlineDialog}>
-              <DialogTrigger render={<Button variant="outline" />}>What’s new</DialogTrigger>
+              <DialogTrigger render={<Button variant="outline" />}>What’s New</DialogTrigger>
               <DialogContent showCloseButton={false} container={container} initialFocus={false} className={inStage}>
                 <DialogHeader>
                   <DialogTitle>Automations 2.0 is here</DialogTitle>
@@ -541,7 +541,7 @@ export default function DialogDocs() {
                   </li>
                 </ul>
                 <DialogFooter showCloseButton>
-                  <Button variant="ghost">Read the changelog</Button>
+                  <Button variant="ghost">Read the Changelog</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -574,7 +574,7 @@ export default function DialogDocs() {
         <DialogStage className="min-h-144">
           {(container) => (
             <Dialog {...inlineDialog}>
-              <DialogTrigger render={<Button variant="outline" />}>View task history</DialogTrigger>
+              <DialogTrigger render={<Button variant="outline" />}>View Task History</DialogTrigger>
               <DialogContent size="lg" container={container} initialFocus={false} className={inStage}>
                 <DialogHeader>
                   <DialogTitle>Task history</DialogTitle>

@@ -1,15 +1,16 @@
 import * as React from "react"
 
 /*
- * Plus Jakarta Sans, the default theme's font, keeps wide side bearings on
- * commas and full stops. At display sizes, with the type roles' tight
- * tracking, they look detached from the word before them ("Ship anything .").
- * Kern pulls them back in.
+ * Plus Jakarta Sans, the default theme's heading font, keeps wide side
+ * bearings on commas and full stops. At display sizes, with the type roles'
+ * tight tracking, they look detached from the word before them ("Ship
+ * anything ."). Kern pulls them back in.
  *
- * How far depends on the font, so the pull is a themed token,
- * --kern-pull (component.kern.pull): 0.08em for Plus Jakarta Sans, less for
- * the tighter punctuation of Inter Tight, Manrope and DM Sans, and none for
- * Geist, where a pull would make the mark touch the letter before it.
+ * How far depends on the theme's heading font, so the pull is a themed
+ * token, --kern-pull (component.kern.pull). Each theme sets it for its
+ * heading face: a face with wide bearings, or a monospaced one that gives
+ * every mark a full cell, needs a larger pull; a face that already sets its
+ * marks close to the letter needs little or none. Never hard-code a pull.
  *
  * Use it inside text-hero, text-display, text-h1 and text-h2 headings:
  *

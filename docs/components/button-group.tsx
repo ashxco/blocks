@@ -135,7 +135,7 @@ export default function ButtonGroupDocs() {
         title="Split button"
         description="A primary action with a menu of related ones. Put a separator between filled buttons so the split stays visible."
         code={`<ButtonGroup aria-label="Create task">
-  <Button>Create task</Button>
+  <Button>Create Task</Button>
   <ButtonGroupSeparator />
   <DropdownMenu>
     <DropdownMenuTrigger render={<Button size="icon" aria-label="More ways to create a task" />}>
@@ -150,7 +150,7 @@ export default function ButtonGroupDocs() {
 </ButtonGroup>
 
 <ButtonGroup aria-label="Draft">
-  <Button variant="secondary">Save draft</Button>
+  <Button variant="secondary">Save Draft</Button>
   <ButtonGroupSeparator />
   <DropdownMenu>
     <DropdownMenuTrigger render={<Button variant="secondary" size="icon" aria-label="More save options" />}>
@@ -165,7 +165,7 @@ export default function ButtonGroupDocs() {
 </ButtonGroup>`}
       >
         <ButtonGroup aria-label="Create task">
-          <Button>Create task</Button>
+          <Button>Create Task</Button>
           <ButtonGroupSeparator />
           <DropdownMenu>
             <DropdownMenuTrigger render={<Button size="icon" aria-label="More ways to create a task" />}>
@@ -188,7 +188,7 @@ export default function ButtonGroupDocs() {
           </DropdownMenu>
         </ButtonGroup>
         <ButtonGroup aria-label="Draft">
-          <Button variant="secondary">Save draft</Button>
+          <Button variant="secondary">Save Draft</Button>
           <ButtonGroupSeparator />
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -298,7 +298,7 @@ export default function ButtonGroupDocs() {
     <ButtonGroup>
       <Button variant="outline" size="sm" nativeButton={false} render={<a href="#board" />}>
         <SquareKanbanIcon data-icon="inline-start" />
-        Open board
+        Open Board
       </Button>
     </ButtonGroup>
     <ButtonGroup>
@@ -329,7 +329,7 @@ export default function ButtonGroupDocs() {
             <ButtonGroup>
               <Button variant="outline" size="sm" nativeButton={false} render={<a href="#board" />}>
                 <SquareKanbanIcon data-icon="inline-start" />
-                Open board
+                Open Board
               </Button>
             </ButtonGroup>
             <ButtonGroup>

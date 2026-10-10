@@ -84,9 +84,9 @@ function DueDate() {
 
 const presets = [
   { label: "Today", days: 1 },
-  { label: "Last 7 days", days: 7 },
-  { label: "Last 30 days", days: 30 },
-  { label: "Last 90 days", days: 90 },
+  { label: "Last 7 Days", days: 7 },
+  { label: "Last 30 Days", days: 30 },
+  { label: "Last 90 Days", days: 90 },
 ]
 
 function formatRange(range: DateRange | undefined) {

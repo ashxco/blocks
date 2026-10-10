@@ -122,7 +122,7 @@ export default function BreadcrumbDocs() {
   <ChevronRightIcon />
 </BreadcrumbSeparator>`}
       >
-        <Breadcrumb>
+        <Breadcrumb className="w-fit">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="#home" aria-label="Home">
@@ -143,7 +143,7 @@ export default function BreadcrumbDocs() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <Breadcrumb>
+        <Breadcrumb className="w-fit">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="#meeting-notes">
@@ -163,6 +163,27 @@ export default function BreadcrumbDocs() {
         title="In a page header"
         description="The breadcrumb sits above the page title and tells people where they are. The title repeats the last level in full."
         layout="stack"
+        code={`<header className="grid gap-4 border-b pb-6">
+  <Breadcrumb>
+    <BreadcrumbList>
+      <BreadcrumbItem>
+        <BreadcrumbLink render={<Link href="/projects" />}>Projects</BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbLink render={<Link href="/projects/website-relaunch" />}>Website relaunch</BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbPage>Members</BreadcrumbPage>
+      </BreadcrumbItem>
+    </BreadcrumbList>
+  </Breadcrumb>
+  <div className="flex flex-wrap items-end justify-between gap-4">
+    <h1 className="text-h2">Members</h1>
+    <Button>Invite Members</Button>
+  </div>
+</header>`}
       >
         <header className="grid gap-4 border-b pb-6">
           <Breadcrumb>
@@ -189,7 +210,7 @@ export default function BreadcrumbDocs() {
             </div>
             <Button>
               <UserPlusIcon data-icon="inline-start" />
-              Invite members
+              Invite Members
             </Button>
           </div>
         </header>

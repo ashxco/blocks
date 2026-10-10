@@ -426,6 +426,34 @@ export default function DropdownMenuDocs() {
       <Example
         title="Account menu"
         description="A realistic composition: identity at the top, grouped links, an appearance choice and sign out at the end."
+        code={`<DropdownMenu>
+  <DropdownMenuTrigger render={<Button variant="ghost" />}>
+    <Avatar size="sm"><AvatarFallback>MP</AvatarFallback></Avatar>
+    Maya Patel
+    <ChevronDownIcon data-icon="inline-end" />
+  </DropdownMenuTrigger>
+  <DropdownMenuContent align="end" className="min-w-(--menu-min-width-lg)">
+    <div className="grid gap-0.5 px-2.5 pt-2 pb-2.5">
+      <p className="text-sm font-semibold">Maya Patel</p>
+      <p className="text-caption text-muted-foreground">maya@acme.com</p>
+    </div>
+    <DropdownMenuSeparator />
+    <DropdownMenuGroup>
+      <DropdownMenuItem><UserIcon />Profile</DropdownMenuItem>
+      …
+    </DropdownMenuGroup>
+    <DropdownMenuSeparator />
+    <DropdownMenuGroup>
+      <DropdownMenuLabel inset>Appearance</DropdownMenuLabel>
+      <DropdownMenuRadioGroup value={appearance} onValueChange={setAppearance}>
+        <DropdownMenuRadioItem value="light"><SunIcon />Light</DropdownMenuRadioItem>
+        …
+      </DropdownMenuRadioGroup>
+    </DropdownMenuGroup>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem><LogOutIcon />Sign out</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>`}
       >
         <MenuStage className="min-h-128">{(container) => <AccountMenu container={container} />}</MenuStage>
       </Example>

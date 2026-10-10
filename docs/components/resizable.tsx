@@ -5,7 +5,7 @@ import { ChevronRightIcon, FileTextIcon, FolderIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { initialsTone } from "@/components/blocks/members-list/people"
+import { initialsTone } from "@/docs/sample/people"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -115,7 +115,7 @@ function LiveSizes() {
   return (
     // On a phone the group keeps a readable width and scrolls sideways.
     <div className="relative w-full max-w-2xl overflow-x-auto overscroll-x-contain rounded-(--card-radius) border border-border bg-card">
-      <div className="h-64 min-w-md">
+      <div className="h-80 min-w-md">
         <ResizablePanelGroup orientation="horizontal">
           <ResizablePanel defaultSize="35%" minSize="20%" onResize={(size) => setLeft(size.asPercentage)} className="bg-sidebar">
             <div className="flex h-full flex-col">
@@ -157,21 +157,21 @@ export default function ResizableDocs() {
         title="Vertical"
         description={`Stack panels with orientation="vertical". The handle lies flat and the grip turns with it.`}
         code={`<ResizablePanelGroup orientation="vertical">
-  <ResizablePanel defaultSize="55%">Doc</ResizablePanel>
+  <ResizablePanel defaultSize="60%">Doc</ResizablePanel>
   <ResizableHandle withHandle />
-  <ResizablePanel defaultSize="45%">Comments</ResizablePanel>
+  <ResizablePanel defaultSize="40%">Comments</ResizablePanel>
 </ResizablePanelGroup>`}
       >
-        <div className="h-72 w-full max-w-md overflow-hidden rounded-(--card-radius) border border-border bg-card">
+        <div className="h-[28rem] w-full max-w-lg overflow-hidden rounded-(--card-radius) border border-border bg-card">
           <ResizablePanelGroup orientation="vertical">
-            <ResizablePanel defaultSize="55%" minSize="25%">
+            <ResizablePanel defaultSize="60%" minSize="25%">
               <div className="flex h-full flex-col">
                 <PaneHeader title="Website relaunch" />
                 <DocBody />
               </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize="45%" minSize="20%">
+            <ResizablePanel defaultSize="40%" minSize="20%">
               <div className="flex h-full flex-col">
                 <PaneHeader title="Comments" meta={comments.length} />
                 <ol className="min-h-0 flex-1 overflow-auto px-4 py-2 text-sm">
@@ -248,7 +248,7 @@ export default function ResizableDocs() {
       >
         {/* relative makes the scroller the containing block for the sr-only status text, so it can't widen the page. */}
         <div className="relative w-full overflow-x-auto overscroll-x-contain rounded-(--card-radius) border border-border bg-card">
-          <div className="h-[28rem] min-w-(--container-prose)">
+          <div className="h-[36rem] min-w-(--container-prose)">
             <ResizablePanelGroup orientation="horizontal">
               <ResizablePanel defaultSize="26%" minSize="18%" maxSize="40%" className="bg-sidebar">
                 <div className="grid p-1">
@@ -259,9 +259,9 @@ export default function ResizableDocs() {
               <ResizableHandle />
               <ResizablePanel defaultSize="74%" minSize="40%">
                 <ResizablePanelGroup orientation="vertical">
-                  <ResizablePanel defaultSize="55%" minSize="25%">
+                  <ResizablePanel defaultSize="42%" minSize="25%">
                     <div className="flex h-full flex-col">
-                      <div className="flex h-11 items-center gap-1.5 border-b border-border px-4 text-caption text-muted-foreground">
+                      <div className="flex h-11 shrink-0 items-center gap-1.5 border-b border-border px-4 text-caption text-muted-foreground">
                         Website relaunch
                         <ChevronRightIcon aria-hidden="true" className="size-3.5" />
                         <span className="font-semibold text-foreground">Homepage brief</span>
@@ -270,7 +270,7 @@ export default function ResizableDocs() {
                     </div>
                   </ResizablePanel>
                   <ResizableHandle withHandle />
-                  <ResizablePanel defaultSize="45%" minSize="20%">
+                  <ResizablePanel defaultSize="58%" minSize="20%">
                     <div className="flex h-full flex-col">
                       <div className="flex h-11 shrink-0 items-center justify-between border-b border-border px-4">
                         <p className="text-label text-foreground">Linked tasks</p>

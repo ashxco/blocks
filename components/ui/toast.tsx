@@ -35,7 +35,7 @@ const toastStyles = {
     "rounded-(--card-radius) border border-popover-border bg-popover text-popover-foreground",
   content: "flex items-start gap-3 py-3.5 pr-3 pl-4",
   text: "flex min-w-0 flex-1 flex-col gap-0.5 py-px",
-  title: "text-sm leading-snug font-bold tracking-tight text-foreground",
+  title: "font-heading text-sm leading-snug font-bold tracking-(--text-title--letter-spacing) text-pretty text-foreground",
   description: "text-sm text-pretty text-muted-foreground",
   action: "shrink-0 self-center",
   close:

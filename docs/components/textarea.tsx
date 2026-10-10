@@ -66,7 +66,7 @@ function PauseProjectForm() {
               setReason("")
             }}
           >
-            Resume project
+            Resume Project
           </Button>
         </CardFooter>
       </Card>
@@ -126,7 +126,7 @@ function PauseProjectForm() {
           </Button>
           <Button type="submit">
             <PauseIcon data-icon="inline-start" />
-            Pause project
+            Pause Project
           </Button>
         </CardFooter>
       </form>
@@ -281,7 +281,7 @@ function onSubmit(e: React.FormEvent<HTMLFormElement>) {
       <Button type="button" variant="ghost">Cancel</Button>
       <Button type="submit">
         <PauseIcon data-icon="inline-start" />
-        Pause project
+        Pause Project
       </Button>
     </CardFooter>
   </form>
