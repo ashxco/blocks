@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, CpuIcon, GaugeIcon, RocketIcon } from "lucide-react"
+import { CalendarDaysIcon, ChartGanttIcon, CheckIcon, KanbanIcon, ListIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines, tokenPx } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -28,53 +28,63 @@ import {
 } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 
-const regions = [
-  { label: "Frankfurt (fra1)", value: "fra1" },
-  { label: "Virginia (iad1)", value: "iad1" },
-  { label: "San Francisco (sfo1)", value: "sfo1" },
-  { label: "São Paulo (gru1)", value: "gru1" },
-  { label: "Singapore (sin1)", value: "sin1" },
-  { label: "Sydney (syd1)", value: "syd1" },
+const timeZones = [
+  { label: "San Francisco (PT)", value: "san-francisco" },
+  { label: "New York (ET)", value: "new-york" },
+  { label: "London (GMT)", value: "london" },
+  { label: "Lisbon (WET)", value: "lisbon" },
+  { label: "Bengaluru (IST)", value: "bengaluru" },
+  { label: "Tokyo (JST)", value: "tokyo" },
 ]
 
-const environments = [
-  { label: "Production", value: "production" },
-  { label: "Preview", value: "preview" },
-  { label: "Development", value: "development" },
+const priorities = [
+  { label: "Urgent", value: "urgent" },
+  { label: "High", value: "high" },
+  { label: "Medium", value: "medium" },
+  { label: "Low", value: "low" },
 ]
 
-const runtimes = [
+const projects = [
   {
-    label: "Node.js",
+    label: "Active",
     items: [
-      { label: "Node.js 22 LTS", value: "node-22" },
-      { label: "Node.js 20", value: "node-20" },
+      { label: "Website relaunch", value: "website-relaunch" },
+      { label: "Mobile app 2.0", value: "mobile-app" },
+      { label: "Q4 planning", value: "q4-planning" },
+      { label: "Customer portal", value: "customer-portal" },
+      { label: "Brand refresh", value: "brand-refresh" },
+      { label: "Billing migration", value: "billing-migration" },
     ],
   },
   {
-    label: "Other runtimes",
+    label: "Paused and completed",
     items: [
-      { label: "Bun 1.2", value: "bun-1.2" },
-      { label: "Deno 2", value: "deno-2" },
-      { label: "Python 3.13", value: "python-3.13" },
-      { label: "Go 1.24", value: "go-1.24" },
+      { label: "Help center", value: "help-center" },
+      { label: "Onboarding redesign", value: "onboarding-redesign" },
     ],
   },
 ]
 
-const machines = [
-  { label: "Standard", value: "standard", spec: "4 vCPU · 8 GB", icon: CpuIcon },
-  { label: "Enhanced", value: "enhanced", spec: "8 vCPU · 16 GB", icon: GaugeIcon },
-  { label: "Turbo", value: "turbo", spec: "30 vCPU · 60 GB", icon: RocketIcon },
+const views = [
+  { label: "List", value: "list", detail: "By section", icon: ListIcon },
+  { label: "Board", value: "board", detail: "By status", icon: KanbanIcon },
+  { label: "Timeline", value: "timeline", detail: "By week", icon: ChartGanttIcon },
+  { label: "Calendar", value: "calendar", detail: "By due date", icon: CalendarDaysIcon },
 ]
 
-const frameworks = [
-  { label: "Next.js", value: "nextjs" },
-  { label: "Astro", value: "astro" },
-  { label: "SvelteKit", value: "sveltekit" },
-  { label: "Remix", value: "remix" },
-  { label: "Vite", value: "vite" },
-  { label: "Other", value: "other" },
+const templates = [
+  { label: "Product roadmap", value: "roadmap" },
+  { label: "Marketing calendar", value: "marketing" },
+  { label: "Client projects", value: "clients" },
+  { label: "Sprint planning", value: "sprints" },
+  { label: "Blank project", value: "blank" },
+]
+
+const owners = [
+  { label: "Maya Patel", value: "maya" },
+  { label: "Jordan Lee", value: "jordan" },
+  { label: "Sofia Alvarez", value: "sofia" },
+  { label: "Sam Okafor", value: "sam" },
 ]
 
 /* -------------------------------------------------------------------------- */
@@ -108,24 +118,24 @@ function OpenListItem({ selected, children }: { selected?: boolean; children: Re
   )
 }
 
-function RuntimeSelect() {
-  const [value, setValue] = React.useState<string | null>("node-22")
+function ProjectSelect() {
+  const [value, setValue] = React.useState<string | null>("website-relaunch")
   const [open, setOpen] = React.useState(false)
   return (
     <div className="grid w-full max-w-sm gap-1.5">
       <Field>
-        <FieldLabel htmlFor="select-runtime">Runtime</FieldLabel>
+        <FieldLabel htmlFor="select-project">Project</FieldLabel>
         <Select
-          items={runtimes.flatMap((group) => group.items)}
+          items={projects.flatMap((group) => group.items)}
           value={value}
           onValueChange={(next) => setValue(next as string | null)}
           onOpenChange={setOpen}
         >
-          <SelectTrigger id="select-runtime" className="w-full">
+          <SelectTrigger id="select-project" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {runtimes.map((group, index) => (
+            {projects.map((group, index) => (
               <React.Fragment key={group.label}>
                 {index > 0 ? <SelectSeparator /> : null}
                 <SelectGroup>
@@ -142,7 +152,7 @@ function RuntimeSelect() {
         </Select>
       </Field>
       <OpenList hidden={open}>
-        {runtimes.map((group, index) => (
+        {projects.map((group, index) => (
           <React.Fragment key={group.label}>
             {index > 0 ? <div className={selectStyles.separator} /> : null}
             <div className={selectStyles.label}>{group.label}</div>
@@ -158,39 +168,39 @@ function RuntimeSelect() {
   )
 }
 
-function MachineSelect() {
-  const [value, setValue] = React.useState<string | null>("enhanced")
+function ViewSelect() {
+  const [value, setValue] = React.useState<string | null>("board")
   const [open, setOpen] = React.useState(false)
   return (
     <div className="grid w-full max-w-sm gap-1.5">
       <Field>
-        <FieldLabel htmlFor="select-machine">Build machine</FieldLabel>
+        <FieldLabel htmlFor="select-view">Default view</FieldLabel>
         <Select
-          items={machines}
+          items={views}
           value={value}
           onValueChange={(next) => setValue(next as string | null)}
           onOpenChange={setOpen}
         >
-          <SelectTrigger id="select-machine" className="w-full">
+          <SelectTrigger id="select-view" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {machines.map((machine) => (
-              <SelectItem key={machine.value} value={machine.value}>
-                <machine.icon />
-                {machine.label}
-                <span className="ms-auto ps-6 font-normal text-muted-foreground">{machine.spec}</span>
+            {views.map((view) => (
+              <SelectItem key={view.value} value={view.value}>
+                <view.icon />
+                {view.label}
+                <span className="ms-auto ps-6 font-normal text-muted-foreground">{view.detail}</span>
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </Field>
       <OpenList hidden={open}>
-        {machines.map((machine) => (
-          <OpenListItem key={machine.value} selected={machine.value === value}>
-            <machine.icon />
-            {machine.label}
-            <span className="ms-auto ps-6 font-normal text-muted-foreground">{machine.spec}</span>
+        {views.map((view) => (
+          <OpenListItem key={view.value} selected={view.value === value}>
+            <view.icon />
+            {view.label}
+            <span className="ms-auto ps-6 font-normal text-muted-foreground">{view.detail}</span>
           </OpenListItem>
         ))}
       </OpenList>
@@ -211,21 +221,21 @@ export default function SelectDocs() {
         title="Default"
         layout="stack"
         description="Pass the options as items so the trigger shows the label of the chosen value, not the raw value."
-        code={`const regions = [
-  { label: "Frankfurt (fra1)", value: "fra1" },
-  { label: "Virginia (iad1)", value: "iad1" },
+        code={`const timeZones = [
+  { label: "San Francisco (PT)", value: "san-francisco" },
+  { label: "London (GMT)", value: "london" },
 ]
 
 <Field>
-  <FieldLabel htmlFor="region">Region</FieldLabel>
-  <Select items={regions} defaultValue="fra1">
-    <SelectTrigger id="region" className="w-full">
+  <FieldLabel htmlFor="time-zone">Time zone</FieldLabel>
+  <Select items={timeZones} defaultValue="london">
+    <SelectTrigger id="time-zone" className="w-full">
       <SelectValue />
     </SelectTrigger>
     <SelectContent>
-      {regions.map((region) => (
-        <SelectItem key={region.value} value={region.value}>
-          {region.label}
+      {timeZones.map((zone) => (
+        <SelectItem key={zone.value} value={zone.value}>
+          {zone.label}
         </SelectItem>
       ))}
     </SelectContent>
@@ -233,15 +243,15 @@ export default function SelectDocs() {
 </Field>`}
       >
         <Field className="max-w-sm">
-          <FieldLabel htmlFor="select-region">Region</FieldLabel>
-          <Select items={regions} defaultValue="fra1">
-            <SelectTrigger id="select-region" className="w-full">
+          <FieldLabel htmlFor="select-time-zone">Time zone</FieldLabel>
+          <Select items={timeZones} defaultValue="london">
+            <SelectTrigger id="select-time-zone" className="w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {regions.map((region) => (
-                <SelectItem key={region.value} value={region.value}>
-                  {region.label}
+              {timeZones.map((zone) => (
+                <SelectItem key={zone.value} value={zone.value}>
+                  {zone.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -254,15 +264,15 @@ export default function SelectDocs() {
         layout="stack"
         description="Leave the value empty and say what to choose. The placeholder is muted until a value is picked."
         code={`<Field>
-  <FieldLabel htmlFor="environment">Environment</FieldLabel>
-  <Select items={environments}>
-    <SelectTrigger id="environment" className="w-full">
-      <SelectValue placeholder="Choose an environment" />
+  <FieldLabel htmlFor="priority">Priority</FieldLabel>
+  <Select items={priorities}>
+    <SelectTrigger id="priority" className="w-full">
+      <SelectValue placeholder="Choose a priority" />
     </SelectTrigger>
     <SelectContent>
-      {environments.map((env) => (
-        <SelectItem key={env.value} value={env.value}>
-          {env.label}
+      {priorities.map((priority) => (
+        <SelectItem key={priority.value} value={priority.value}>
+          {priority.label}
         </SelectItem>
       ))}
     </SelectContent>
@@ -270,15 +280,15 @@ export default function SelectDocs() {
 </Field>`}
       >
         <Field className="max-w-sm">
-          <FieldLabel htmlFor="select-environment">Environment</FieldLabel>
-          <Select items={environments}>
-            <SelectTrigger id="select-environment" className="w-full">
-              <SelectValue placeholder="Choose an environment" />
+          <FieldLabel htmlFor="select-priority">Priority</FieldLabel>
+          <Select items={priorities}>
+            <SelectTrigger id="select-priority" className="w-full">
+              <SelectValue placeholder="Choose a priority" />
             </SelectTrigger>
             <SelectContent>
-              {environments.map((env) => (
-                <SelectItem key={env.value} value={env.value}>
-                  {env.label}
+              {priorities.map((priority) => (
+                <SelectItem key={priority.value} value={priority.value}>
+                  {priority.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -291,14 +301,14 @@ export default function SelectDocs() {
         layout="stack"
         description="Heights come from the control tokens, so a select lines up with inputs and buttons of the same size. Medium is the default; keep one size per form."
         code={`{(["sm", "default", "lg"] as const).map((size) => (
-  <Select key={size} items={environments} defaultValue="production">
-    <SelectTrigger size={size} className="w-full" aria-label="Environment">
+  <Select key={size} items={priorities} defaultValue="high">
+    <SelectTrigger size={size} className="w-full" aria-label="Priority">
       <SelectValue />
     </SelectTrigger>
     <SelectContent>
-      {environments.map((env) => (
-        <SelectItem key={env.value} value={env.value}>
-          {env.label}
+      {priorities.map((priority) => (
+        <SelectItem key={priority.value} value={priority.value}>
+          {priority.label}
         </SelectItem>
       ))}
     </SelectContent>
@@ -311,14 +321,14 @@ export default function SelectDocs() {
               <FieldLabel htmlFor={`select-size-${size}`}>
                 {label} <span className="font-normal text-muted-foreground">{height}</span>
               </FieldLabel>
-              <Select items={environments} defaultValue="production">
+              <Select items={priorities} defaultValue="high">
                 <SelectTrigger id={`select-size-${size}`} size={size} className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {environments.map((env) => (
-                    <SelectItem key={env.value} value={env.value}>
-                      {env.label}
+                  {priorities.map((priority) => (
+                    <SelectItem key={priority.value} value={priority.value}>
+                      {priority.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -332,39 +342,39 @@ export default function SelectDocs() {
         title="Groups"
         layout="stack"
         description="Group long lists under short labels and split the groups with a separator. The list is drawn open under the trigger."
-        code={`<Select items={runtimes.flatMap((group) => group.items)} defaultValue="node-22">
-  <SelectTrigger id="runtime" className="w-full">
+        code={`<Select items={projects.flatMap((group) => group.items)} defaultValue="website-relaunch">
+  <SelectTrigger id="project" className="w-full">
     <SelectValue />
   </SelectTrigger>
   <SelectContent>
     <SelectGroup>
-      <SelectLabel>Node.js</SelectLabel>
-      <SelectItem value="node-22">Node.js 22 LTS</SelectItem>
-      <SelectItem value="node-20">Node.js 20</SelectItem>
+      <SelectLabel>Active</SelectLabel>
+      <SelectItem value="website-relaunch">Website relaunch</SelectItem>
+      <SelectItem value="mobile-app">Mobile app 2.0</SelectItem>
     </SelectGroup>
     <SelectSeparator />
     <SelectGroup>
-      <SelectLabel>Other runtimes</SelectLabel>
-      <SelectItem value="bun-1.2">Bun 1.2</SelectItem>
-      <SelectItem value="deno-2">Deno 2</SelectItem>
+      <SelectLabel>Paused and completed</SelectLabel>
+      <SelectItem value="help-center">Help center</SelectItem>
+      <SelectItem value="onboarding-redesign">Onboarding redesign</SelectItem>
     </SelectGroup>
   </SelectContent>
 </Select>`}
       >
-        <RuntimeSelect />
+        <ProjectSelect />
       </Example>
 
       <Example
         title="Icons and details"
         layout="stack"
         description="Items can carry an icon and a muted detail. The trigger still shows only the label from items."
-        code={`<SelectItem value="enhanced">
-  <GaugeIcon />
-  Enhanced
-  <span className="ms-auto ps-6 font-normal text-muted-foreground">8 vCPU · 16 GB</span>
+        code={`<SelectItem value="board">
+  <KanbanIcon />
+  Board
+  <span className="ms-auto ps-6 font-normal text-muted-foreground">By status</span>
 </SelectItem>`}
       >
-        <MachineSelect />
+        <ViewSelect />
       </Example>
 
       <Example
@@ -372,65 +382,65 @@ export default function SelectDocs() {
         description="Disabled selects fade and stop responding. Invalid selects turn the border red; say what to fix under them."
         layout="stack"
         code={`<Field>
-  <FieldLabel htmlFor="region">Region</FieldLabel>
-  <Select items={regions} defaultValue="fra1" disabled>
-    <SelectTrigger id="region" className="w-full"><SelectValue /></SelectTrigger>
+  <FieldLabel htmlFor="time-zone">Workspace time zone</FieldLabel>
+  <Select items={timeZones} defaultValue="london" disabled>
+    <SelectTrigger id="time-zone" className="w-full"><SelectValue /></SelectTrigger>
     <SelectContent>
-      {regions.map((region) => (
-        <SelectItem key={region.value} value={region.value}>{region.label}</SelectItem>
+      {timeZones.map((zone) => (
+        <SelectItem key={zone.value} value={zone.value}>{zone.label}</SelectItem>
       ))}
     </SelectContent>
   </Select>
-  <FieldDescription>Set when the project was created.</FieldDescription>
+  <FieldDescription>Only workspace owners can change it.</FieldDescription>
 </Field>
 
 <Field data-invalid>
-  <FieldLabel htmlFor="environment">Environment</FieldLabel>
-  <Select items={environments}>
-    <SelectTrigger id="environment" className="w-full" aria-invalid>
-      <SelectValue placeholder="Choose an environment" />
+  <FieldLabel htmlFor="priority">Priority</FieldLabel>
+  <Select items={priorities}>
+    <SelectTrigger id="priority" className="w-full" aria-invalid>
+      <SelectValue placeholder="Choose a priority" />
     </SelectTrigger>
     <SelectContent>
-      {environments.map((env) => (
-        <SelectItem key={env.value} value={env.value}>{env.label}</SelectItem>
+      {priorities.map((priority) => (
+        <SelectItem key={priority.value} value={priority.value}>{priority.label}</SelectItem>
       ))}
     </SelectContent>
   </Select>
-  <FieldError>Choose where this variable is available.</FieldError>
+  <FieldError>Choose a priority for this task.</FieldError>
 </Field>`}
       >
         <div className="grid w-full max-w-2xl gap-6 @xl:grid-cols-2">
           <Field>
-            <FieldLabel htmlFor="select-disabled">Region</FieldLabel>
-            <Select items={regions} defaultValue="fra1" disabled>
+            <FieldLabel htmlFor="select-disabled">Workspace time zone</FieldLabel>
+            <Select items={timeZones} defaultValue="london" disabled>
               <SelectTrigger id="select-disabled" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {regions.map((region) => (
-                  <SelectItem key={region.value} value={region.value}>
-                    {region.label}
+                {timeZones.map((zone) => (
+                  <SelectItem key={zone.value} value={zone.value}>
+                    {zone.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <FieldDescription>Set when the project was created.</FieldDescription>
+            <FieldDescription>Only workspace owners can change it.</FieldDescription>
           </Field>
           <Field data-invalid="true">
-            <FieldLabel htmlFor="select-invalid">Environment</FieldLabel>
-            <Select items={environments}>
+            <FieldLabel htmlFor="select-invalid">Priority</FieldLabel>
+            <Select items={priorities}>
               <SelectTrigger id="select-invalid" className="w-full" aria-invalid="true">
-                <SelectValue placeholder="Choose an environment" />
+                <SelectValue placeholder="Choose a priority" />
               </SelectTrigger>
               <SelectContent>
-                {environments.map((env) => (
-                  <SelectItem key={env.value} value={env.value}>
-                    {env.label}
+                {priorities.map((priority) => (
+                  <SelectItem key={priority.value} value={priority.value}>
+                    {priority.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <FieldError>Choose where this variable is available.</FieldError>
+            <FieldError>Choose a priority for this task.</FieldError>
           </Field>
         </div>
       </Example>
@@ -441,101 +451,101 @@ export default function SelectDocs() {
         surface="subtle"
         code={`<Card className="@container/card">
   <CardHeader>
-    <CardTitle>Import a repository</CardTitle>
+    <CardTitle>Create project</CardTitle>
     <CardDescription>
-      Lumen builds every push to the production branch and gives each pull request a preview URL.
+      Start from a template, then invite your team. You can change any of this later.
     </CardDescription>
   </CardHeader>
   <CardContent className="grid gap-5">
     <Field>
       <FieldLabel htmlFor="name">Project name</FieldLabel>
-      <Input id="name" defaultValue="acme-web" />
+      <Input id="name" defaultValue="Team offsite" />
     </Field>
     <div className="grid gap-5 @sm/card:grid-cols-2">
       <Field>
-        <FieldLabel htmlFor="framework">Framework preset</FieldLabel>
-        <Select items={frameworks} defaultValue="nextjs">
-          <SelectTrigger id="framework" className="w-full"><SelectValue /></SelectTrigger>
+        <FieldLabel htmlFor="template">Template</FieldLabel>
+        <Select items={templates} defaultValue="roadmap">
+          <SelectTrigger id="template" className="w-full"><SelectValue /></SelectTrigger>
           <SelectContent>
-            {frameworks.map((framework) => (
-              <SelectItem key={framework.value} value={framework.value}>{framework.label}</SelectItem>
+            {templates.map((template) => (
+              <SelectItem key={template.value} value={template.value}>{template.label}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </Field>
       <Field>
-        <FieldLabel htmlFor="region">Region</FieldLabel>
-        <Select items={regions} defaultValue="fra1">
-          <SelectTrigger id="region" className="w-full"><SelectValue /></SelectTrigger>
+        <FieldLabel htmlFor="owner">Owner</FieldLabel>
+        <Select items={owners} defaultValue="maya">
+          <SelectTrigger id="owner" className="w-full"><SelectValue /></SelectTrigger>
           <SelectContent>
-            {regions.map((region) => (
-              <SelectItem key={region.value} value={region.value}>{region.label}</SelectItem>
+            {owners.map((owner) => (
+              <SelectItem key={owner.value} value={owner.value}>{owner.label}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </Field>
     </div>
     <Field>
-      <FieldLabel htmlFor="machine">Build machine</FieldLabel>
-      <Select items={machines} defaultValue="standard">
-        <SelectTrigger id="machine" className="w-full"><SelectValue /></SelectTrigger>
+      <FieldLabel htmlFor="view">Default view</FieldLabel>
+      <Select items={views} defaultValue="board">
+        <SelectTrigger id="view" className="w-full"><SelectValue /></SelectTrigger>
         <SelectContent>
-          {machines.map((machine) => (
-            <SelectItem key={machine.value} value={machine.value}>
-              <machine.icon />
-              {machine.label}
-              <span className="ms-auto ps-6 font-normal text-muted-foreground">{machine.spec}</span>
+          {views.map((view) => (
+            <SelectItem key={view.value} value={view.value}>
+              <view.icon />
+              {view.label}
+              <span className="ms-auto ps-6 font-normal text-muted-foreground">{view.detail}</span>
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
-      <FieldDescription>Bigger machines finish builds faster and bill per build minute.</FieldDescription>
+      <FieldDescription>Members can switch views at any time. This is where the project opens.</FieldDescription>
     </Field>
   </CardContent>
   <CardFooter className="justify-end">
     <Button variant="ghost">Cancel</Button>
-    <Button>Deploy project</Button>
+    <Button>Create project</Button>
   </CardFooter>
 </Card>`}
       >
         <Card className="@container/card w-full max-w-md">
           <CardHeader>
-            <CardTitle>Import a repository</CardTitle>
+            <CardTitle>Create project</CardTitle>
             <CardDescription className="text-pretty">
-              Lumen builds every push to the production branch and gives each pull request a preview URL.
+              Start from a template, then invite your team. You can change any of this later.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-5">
             <Field>
               <FieldLabel htmlFor="form-name">Project name</FieldLabel>
-              <Input id="form-name" defaultValue="acme-web" />
+              <Input id="form-name" defaultValue="Team offsite" />
             </Field>
             <div className="grid gap-5 @sm/card:grid-cols-2">
               <Field>
-                <FieldLabel htmlFor="form-framework">Framework preset</FieldLabel>
-                <Select items={frameworks} defaultValue="nextjs">
-                  <SelectTrigger id="form-framework" className="w-full">
+                <FieldLabel htmlFor="form-template">Template</FieldLabel>
+                <Select items={templates} defaultValue="roadmap">
+                  <SelectTrigger id="form-template" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {frameworks.map((framework) => (
-                      <SelectItem key={framework.value} value={framework.value}>
-                        {framework.label}
+                    {templates.map((template) => (
+                      <SelectItem key={template.value} value={template.value}>
+                        {template.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </Field>
               <Field>
-                <FieldLabel htmlFor="form-region">Region</FieldLabel>
-                <Select items={regions} defaultValue="fra1">
-                  <SelectTrigger id="form-region" className="w-full">
+                <FieldLabel htmlFor="form-owner">Owner</FieldLabel>
+                <Select items={owners} defaultValue="maya">
+                  <SelectTrigger id="form-owner" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {regions.map((region) => (
-                      <SelectItem key={region.value} value={region.value}>
-                        {region.label}
+                    {owners.map((owner) => (
+                      <SelectItem key={owner.value} value={owner.value}>
+                        {owner.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -543,27 +553,27 @@ export default function SelectDocs() {
               </Field>
             </div>
             <Field>
-              <FieldLabel htmlFor="form-machine">Build machine</FieldLabel>
-              <Select items={machines} defaultValue="standard">
-                <SelectTrigger id="form-machine" className="w-full">
+              <FieldLabel htmlFor="form-view">Default view</FieldLabel>
+              <Select items={views} defaultValue="board">
+                <SelectTrigger id="form-view" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {machines.map((machine) => (
-                    <SelectItem key={machine.value} value={machine.value}>
-                      <machine.icon />
-                      {machine.label}
-                      <span className="ms-auto ps-6 font-normal text-muted-foreground">{machine.spec}</span>
+                  {views.map((view) => (
+                    <SelectItem key={view.value} value={view.value}>
+                      <view.icon />
+                      {view.label}
+                      <span className="ms-auto ps-6 font-normal text-muted-foreground">{view.detail}</span>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <FieldDescription>Bigger machines finish builds faster and bill per build minute.</FieldDescription>
+              <FieldDescription>Members can switch views at any time. This is where the project opens.</FieldDescription>
             </Field>
           </CardContent>
           <CardFooter className="justify-end">
             <Button variant="ghost">Cancel</Button>
-            <Button>Deploy project</Button>
+            <Button>Create project</Button>
           </CardFooter>
         </Card>
       </Example>

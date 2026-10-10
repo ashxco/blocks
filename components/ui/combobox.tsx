@@ -15,10 +15,10 @@ import { CheckIcon, ChevronDownIcon, SearchIcon, XIcon } from "lucide-react"
  * overlay radius, a fade with a 4px slide and no shadow. Placed inside the
  * popup, ComboboxInput turns into a borderless search row.
  *
- *   <Combobox items={frameworks}>
- *     <ComboboxInput placeholder="Search frameworks" />
+ *   <Combobox items={members}>
+ *     <ComboboxInput placeholder="Search members" />
  *     <ComboboxContent>
- *       <ComboboxEmpty>No frameworks match. Try Next.js or Astro.</ComboboxEmpty>
+ *       <ComboboxEmpty>No members match. Try a first name, such as Maya.</ComboboxEmpty>
  *       <ComboboxList>
  *         {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
  *       </ComboboxList>
@@ -126,7 +126,7 @@ function ComboboxInput({
       data-variant={inPopup ? "search" : "control"}
       className={cn(
         // 16px on phones (as <Input>, so iOS does not zoom on focus), 14px from md.
-        "group/combobox-input relative flex w-full min-w-0 items-center text-base text-foreground md:text-sm",
+        "group/combobox-input relative flex w-full min-w-0 items-center text-control text-foreground",
         "[&>svg]:pointer-events-none [&>svg]:shrink-0 [&>svg:not([class*='size-'])]:size-4 [&>svg:not([class*='text-'])]:text-muted-foreground",
         "has-disabled:pointer-events-none has-disabled:opacity-50",
         inPopup
@@ -146,7 +146,7 @@ function ComboboxInput({
       <ComboboxPrimitive.Input
         data-slot="combobox-input"
         disabled={disabled}
-        className="h-full min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed md:text-sm"
+        className="h-full min-w-0 flex-1 bg-transparent text-control text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
         {...props}
       />
       {children}
@@ -318,7 +318,7 @@ function ComboboxChips({
     <ComboboxPrimitive.Chips
       data-slot="combobox-chips"
       className={cn(
-        "flex min-h-(--control-height-md) w-full min-w-0 flex-wrap items-center gap-1.5 rounded-(--control-radius) border border-input bg-muted py-2 ps-(--control-padding-x) pe-2 text-base text-foreground md:text-sm",
+        "flex min-h-(--control-height-md) w-full min-w-0 flex-wrap items-center gap-1.5 rounded-(--control-radius) border border-input bg-muted py-2 ps-(--control-padding-x) pe-2 text-control text-foreground",
         "transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
         "hover:border-foreground/25",
         "has-[input:focus-visible]:border-ring has-[input:focus-visible]:focus-ring",
@@ -381,7 +381,7 @@ function ComboboxChipsInput({
     <ComboboxPrimitive.Input
       data-slot="combobox-chip-input"
       className={cn(
-        "h-(--badge-height) min-w-24 flex-1 bg-transparent px-1 text-base text-foreground outline-none placeholder:text-muted-foreground md:text-sm",
+        "h-(--badge-height) min-w-24 flex-1 bg-transparent px-1 text-control text-foreground outline-none placeholder:text-muted-foreground",
         className
       )}
       {...props}

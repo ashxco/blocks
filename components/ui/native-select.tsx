@@ -19,7 +19,7 @@ type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
    not zoom on focus), 14px from md. */
 const selectSize = {
   sm: "h-(--control-height-sm) ps-3 pe-9 text-sm",
-  default: "h-(--control-height-md) ps-(--control-padding-x) pe-10 text-base md:text-sm",
+  default: "h-(--control-height-md) ps-(--control-padding-x) pe-10 text-control",
   lg: "h-(--control-height-lg) ps-4 pe-11 text-base",
 } as const
 

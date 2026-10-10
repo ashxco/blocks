@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import {
+  breakpointValues,
   describeSize,
   familyStack,
   leafName,
@@ -48,6 +49,11 @@ function roleSpecs(): RoleSpec[] {
         lineHeight: v.lineHeight,
         tracking: v.letterSpacing,
         weight: String(v.fontWeight),
+        // Roles with breakpoint values: the size and line height from each breakpoint up.
+        responsive: breakpointValues(t).flatMap((b) => {
+          const bv = typeValue({ ...t, value: b.value })
+          return bv ? [`From ${b.name}: ${describeSize(bv.fontSize)} / ${bv.lineHeight}`] : []
+        }),
       },
     ]
   })
@@ -76,7 +82,7 @@ function ScaleLadder() {
             </Meta>
             {/* Medium, as the scale is used in tables and settings; bold belongs to the roles above. */}
             <span className={`${scaleClass[step] ?? "text-base"} min-w-0 truncate font-medium text-foreground`}>
-              Lumen
+              Acme
             </span>
           </li>
         )
@@ -95,10 +101,10 @@ function withoutName(description: string | undefined, name: string) {
 }
 
 const metrics: [label: string, value: string][] = [
-  ["Build time", "41.2s"],
-  ["Requests today", "1,284,310"],
-  ["Error rate", "0.02%"],
-  ["Region", "iad1"],
+  ["Tasks completed", "1,284"],
+  ["On-time delivery", "92%"],
+  ["Automation runs", "7,240"],
+  ["Storage used", "42 GB"],
 ]
 
 /* Half alphabets per line, so no line wraps and leaves a few letters behind. */
@@ -131,9 +137,9 @@ function Families() {
         </div>
         {/* Heading and body together, as the family is used on every page. */}
         <div className="grid gap-2">
-          <p className="text-h4 text-foreground">Preview every pull request</p>
+          <p className="text-h4 text-foreground">Every project, four views</p>
           <p className="text-body text-copy">
-            Each branch gets its own URL, so reviewers see the change running before it merges.
+            See the same work as a list, a board, a timeline or a calendar, and switch views without losing your place.
           </p>
         </div>
         <ul className="grid border-b">
@@ -168,11 +174,15 @@ function Families() {
           ))}
           <span>{"0123456789 {} [] <> => != #"}</span>
         </div>
+        {/* An SDK call, the one place Acme content shows code. */}
         <pre className="overflow-x-auto rounded-lg border border-panel-border bg-terminal p-5 font-mono text-code text-terminal-foreground">
           <code>
-            <span className="text-panel-muted">$ </span>lumen deploy --prod{"\n"}
-            <span className="text-panel-muted">Building lumen-web at a1f9c2e{"\n"}</span>
-            Ready in 41s
+            <span className="text-panel-muted">{"// Create a task from your own app\n"}</span>
+            {"await acme.tasks.create({\n"}
+            {'  title: "Review homepage copy",\n'}
+            {'  projectId: "website-relaunch",\n'}
+            {'  assignee: "maya@acme.com",\n'}
+            {"})"}
           </code>
         </pre>
         <dl className="grid border-b border-panel-border">

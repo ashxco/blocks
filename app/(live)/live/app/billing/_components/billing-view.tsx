@@ -6,11 +6,13 @@ import { BillingSummary, type PaymentMethod } from "@/components/blocks/billing-
 
 import {
   CURRENT_PLAN_ID,
-  LUMEN_PLANS,
   PAYMENT_METHOD,
   PERIOD_LABEL,
+  PLAN_OPTIONS,
   RENEWS_ON,
+  SEATS,
   USAGE,
+  monthlyTotal,
 } from "./billing-data"
 import { PlanPicker } from "./plan-picker"
 
@@ -31,8 +33,9 @@ export function BillingView() {
   return (
     <div className="grid gap-16">
       <BillingSummary
-        plans={LUMEN_PLANS}
+        plans={PLAN_OPTIONS}
         currentPlanId={planId}
+        seats={SEATS}
         renewsOn={RENEWS_ON}
         periodLabel={PERIOD_LABEL}
         usage={USAGE}
@@ -40,12 +43,12 @@ export function BillingView() {
         changePlanHref="#change-plan"
         // The plan picker below already links to the full comparison.
         pricingHref={null}
-        nextCharge={LUMEN_PLANS.find((p) => p.id === (scheduledId ?? planId))?.price}
+        nextCharge={monthlyTotal(PLAN_OPTIONS.find((p) => p.id === (scheduledId ?? planId)) ?? PLAN_OPTIONS[1])}
         onPaymentMethodChange={(method) => setPayment((current) => ({ ...current, ...method }))}
       />
 
       <PlanPicker
-        plans={LUMEN_PLANS}
+        plans={PLAN_OPTIONS}
         currentPlanId={planId}
         scheduledPlanId={scheduledId}
         paymentLabel={`${payment.brand} ending in ${payment.last4}`}

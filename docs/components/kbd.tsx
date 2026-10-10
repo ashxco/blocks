@@ -6,10 +6,11 @@ import { Kbd, KbdGroup } from "@/components/ui/kbd"
 
 const shortcuts = [
   { action: "Open the command menu", keys: [["⌘", "K"]] },
-  { action: "Go to deployments", keys: [["G"], ["D"]], sequence: true },
-  { action: "Go to logs", keys: [["G"], ["L"]], sequence: true },
-  { action: "Redeploy the selected deployment", keys: [["⌘", "⇧", "R"]] },
-  { action: "Copy the preview URL", keys: [["⌘", "⇧", "C"]] },
+  { action: "Go to my tasks", keys: [["G"], ["T"]], sequence: true },
+  { action: "Go to inbox", keys: [["G"], ["I"]], sequence: true },
+  { action: "Create a task", keys: [["C"]] },
+  { action: "Save the task you’re editing", keys: [["⌘", "↵"]] },
+  { action: "Copy the link to the selected task", keys: [["⌘", "⇧", "C"]] },
   { action: "Show all shortcuts", keys: [["?"]] },
 ]
 
@@ -60,7 +61,7 @@ export default function KbdDocs() {
 <KbdGroup>
   <Kbd>G</Kbd>
   then
-  <Kbd>D</Kbd>
+  <Kbd>T</Kbd>
 </KbdGroup>`}
       >
         <KbdGroup>
@@ -75,7 +76,7 @@ export default function KbdDocs() {
         <KbdGroup>
           <Kbd>G</Kbd>
           then
-          <Kbd>D</Kbd>
+          <Kbd>T</Kbd>
         </KbdGroup>
       </Example>
 
@@ -90,7 +91,7 @@ export default function KbdDocs() {
             <Kbd>⌘</Kbd>
             <Kbd>K</Kbd>
           </KbdGroup>{" "}
-          to search projects, deployments and domains. Press <Kbd>Esc</Kbd> to close
+          to search projects, tasks and docs. Press <Kbd>Esc</Kbd> to close
           the menu.
         </p>
       </Example>
@@ -113,11 +114,15 @@ export default function KbdDocs() {
           </KbdGroup>
         </Button>
         <Button>
-          Deploy
-          <Kbd className="ml-1">
-            <CommandIcon aria-label="Command" />
-            <CornerDownLeftIcon aria-label="Return" />
-          </Kbd>
+          Save task
+          <KbdGroup className="ml-1">
+            <Kbd>
+              <CommandIcon aria-label="Command" />
+            </Kbd>
+            <Kbd>
+              <CornerDownLeftIcon aria-label="Return" />
+            </Kbd>
+          </KbdGroup>
         </Button>
       </Example>
 

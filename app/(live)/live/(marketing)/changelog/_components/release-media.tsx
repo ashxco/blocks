@@ -1,89 +1,79 @@
-import { CodeWindow } from "@/components/blocks/code-window"
+import { LinkIcon, UsersIcon } from "lucide-react"
+
+import { ScreenFrame, TimelineScreen } from "@/components/blocks/product-tour/screens"
 import { cn } from "@/lib/utils"
 
 /**
  * Screenshot-style media for changelog entries. They sit inside the tinted
- * frame that ChangelogEntry draws, so each one pads itself away from the edge.
+ * frame that ChangelogEntry draws, so each one pads itself away from the
+ * frame. Decorative: the entry's title and summary carry the meaning.
  */
 
-const logLines = [
-  "$ lumen logs --follow --status 5xx",
-  "→ Streaming from 3 replicas in fra1, iad1 and gru1",
-  "14:02:11  gru1  GET   /api/checkout   502  1.21s",
-  "14:02:14  fra1  POST  /api/cart       500  84ms",
-  "→ Deploy dpl_8f2k1c is live, following the new version",
-  "✓ No 5xx responses in the last 60 seconds",
-]
-
-/* The same stream for a phone: shorter notes and no region or latency columns, so nothing runs off the edge. */
-const compactLogLines = [
-  "$ lumen logs -f --status 5xx",
-  "→ Following 3 replicas",
-  "14:02:11 GET  /api/checkout 502",
-  "14:02:14 POST /api/cart     500",
-  "→ dpl_8f2k1c is live",
-  "✓ No 5xx in the last 60s",
-]
-
-/**
- * Live log stream, for the `lumen logs` release. Log lines are columns, so
- * they never wrap: in a narrow frame the window shows a shorter stream
- * instead of clipping the long one at the edge.
- */
-export function LogsShot({ className }: { className?: string }) {
+/** The Website relaunch project in the new timeline view, for the timeline release. */
+export function TimelineShot({ className }: { className?: string }) {
   return (
-    <div className={cn("p-3 sm:p-10", className)}>
-      <div className="@container/logs">
-        <CodeWindow title="lumen logs" lines={compactLogLines} className="@min-[30rem]/logs:hidden" />
-        <CodeWindow title="lumen logs" lines={logLines} className="hidden @min-[30rem]/logs:flex" />
-      </div>
+    <div aria-hidden="true" inert className={cn("p-3 sm:p-10", className)}>
+      <ScreenFrame view="Timeline">
+        <TimelineScreen />
+      </ScreenFrame>
     </div>
   )
 }
 
-const alerts = [
-  { label: "50% alert sent to owners", date: "Aug 9", dot: "bg-success" },
-  { label: "80% alert sent to owners", date: "Aug 21", dot: "bg-warning" },
-  { label: "At 100%, pause previews", date: "Production stays up", dot: "bg-foreground/25" },
+const figures = [
+  { label: "On-time delivery", value: "92%", change: "+4 pts" },
+  { label: "Cycle time", value: "3.4 days", change: "−0.6" },
 ]
 
-/** Usage card with a spend cap, for the spend limits release. Decorative. */
-export function SpendLimitShot({ className }: { className?: string }) {
+/** Workload per person, as a share of the busiest. */
+const workload = [
+  { name: "Jordan Lee", share: 100 },
+  { name: "Priya Raman", share: 78 },
+  { name: "Maya Patel", share: 67 },
+  { name: "Sofia Alvarez", share: 50 },
+]
+
+/** A shared dashboard card with who can see it, for the shared dashboards release. */
+export function DashboardShot({ className }: { className?: string }) {
   return (
     <div aria-hidden="true" className={cn("grid place-items-center p-5 sm:p-10", className)}>
-      <div className="@container/usage grid w-full max-w-md gap-6 rounded-(--card-radius) border bg-background p-6">
+      <div className="@container/dash grid w-full max-w-md gap-5 rounded-(--card-radius) border bg-background p-6">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <p className="text-title text-foreground">Usage this month</p>
-          <p className="text-caption text-muted-foreground">Resets Sep 1</p>
-        </div>
-
-        <div className="grid gap-3">
-          <p className="flex items-baseline gap-2">
-            <span className="text-h3 tabular text-foreground">$182</span>
-            <span className="text-label text-muted-foreground">of $250 cap</span>
+          <p className="text-title text-foreground">Delivery report</p>
+          <p className="inline-flex items-center gap-1.5 text-caption text-muted-foreground">
+            <UsersIcon className="size-3.5" />
+            Shared with Acme Inc.
           </p>
-          <div className="h-2 overflow-hidden rounded-full bg-foreground/10">
-            <div className="h-full w-[73%] rounded-full bg-foreground" />
-          </div>
         </div>
 
-        <ul className="grid gap-3 border-t pt-5">
-          {alerts.map((alert) => (
-            <li
-              key={alert.label}
-              className="grid gap-x-4 gap-y-0.5 text-sm @min-[22rem]/usage:grid-cols-[minmax(0,1fr)_auto] @min-[22rem]/usage:items-center"
-            >
-              <span className="flex min-w-0 items-center gap-2.5 text-foreground">
-                <span className={cn("size-2 shrink-0 rounded-full", alert.dot)} />
-                {alert.label}
-              </span>
-              {/* Under the label in a narrow card, aligned with its text. */}
-              <span className="pl-4.5 text-muted-foreground @min-[22rem]/usage:pl-0 @min-[22rem]/usage:text-right">
-                {alert.date}
-              </span>
-            </li>
+        <dl className="grid grid-cols-2 gap-3">
+          {figures.map((figure) => (
+            <div key={figure.label} className="grid gap-1 rounded-md border p-3">
+              <dt className="text-caption text-muted-foreground">{figure.label}</dt>
+              <dd className="text-h4 text-foreground tabular">{figure.value}</dd>
+              <dd className="text-caption font-semibold text-success tabular">{figure.change}</dd>
+            </div>
           ))}
-        </ul>
+        </dl>
+
+        <div className="grid gap-2.5 border-t pt-5">
+          <p className="text-label text-foreground">Workload</p>
+          <ul className="grid gap-2">
+            {workload.map((person) => (
+              <li key={person.name} className="grid grid-cols-[6.5rem_minmax(0,1fr)] items-center gap-3 text-caption">
+                <span className="truncate text-copy">{person.name}</span>
+                <span className="h-1.5 overflow-hidden rounded-full bg-foreground/10">
+                  <span className="block h-full rounded-full bg-foreground" style={{ width: `${person.share}%` }} />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <p className="flex min-w-0 items-center gap-2 rounded-(--control-radius) border bg-subtle px-3 py-2 text-caption text-muted-foreground">
+          <LinkIcon className="size-3.5 shrink-0 text-foreground" />
+          <span className="truncate">app.acme.com/acme/dashboards/delivery-report</span>
+        </p>
       </div>
     </div>
   )

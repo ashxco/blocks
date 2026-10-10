@@ -33,7 +33,7 @@ function SearchWithClear() {
       </InputGroupAddon>
       <InputGroupInput
         id="ig-search"
-        placeholder="Search deployments"
+        placeholder="Search tasks"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
@@ -50,9 +50,9 @@ function SearchWithClear() {
   )
 }
 
-function DeployHook() {
+function InviteLink() {
   const [copied, setCopied] = React.useState(false)
-  const url = "https://hooks.lumen.app/dh_3kR9xW2m"
+  const url = "app.acme.com/acme/join/7hq2xl"
 
   async function copy() {
     try {
@@ -66,20 +66,20 @@ function DeployHook() {
 
   return (
     <Field>
-      <FieldLabel htmlFor="ig-hook">Deploy hook</FieldLabel>
+      <FieldLabel htmlFor="ig-invite">Invite link</FieldLabel>
       <InputGroup>
         <InputGroupAddon>
           <LinkIcon aria-hidden="true" />
         </InputGroupAddon>
-        <InputGroupInput id="ig-hook" readOnly value={url} className="font-mono" />
+        <InputGroupInput id="ig-invite" readOnly value={url} className="font-mono" />
         <InputGroupAddon align="inline-end">
-          <InputGroupButton size="icon-xs" aria-label={copied ? "Copied" : "Copy deploy hook URL"} onClick={copy}>
+          <InputGroupButton size="icon-xs" aria-label={copied ? "Copied" : "Copy invite link"} onClick={copy}>
             {copied ? <CheckIcon /> : <CopyIcon />}
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>
       <FieldDescription>
-        Send a POST request to this URL to redeploy main.
+        Anyone with this link can join Acme Inc. as a member for the next 14 days.
       </FieldDescription>
     </Field>
   )
@@ -89,12 +89,12 @@ function PasswordField() {
   const [visible, setVisible] = React.useState(false)
   return (
     <Field>
-      <FieldLabel htmlFor="ig-password">Database password</FieldLabel>
+      <FieldLabel htmlFor="ig-password">New password</FieldLabel>
       <InputGroup>
         <InputGroupInput
           id="ig-password"
           type={visible ? "text" : "password"}
-          defaultValue="lumen-db-7Qx2"
+          defaultValue="orchard-lamp-7Qx2"
           autoComplete="new-password"
           className="font-mono"
         />
@@ -113,36 +113,36 @@ function PasswordField() {
   )
 }
 
-function DeploymentNote() {
+function StatusUpdate() {
   const max = 200
-  const [note, setNote] = React.useState("Moves image resizing to the edge and drops the old /thumbs route.")
-  const [saved, setSaved] = React.useState(false)
+  const [update, setUpdate] = React.useState("Hero copy is approved. Next up is the pricing page review on Thursday.")
+  const [posted, setPosted] = React.useState(false)
   return (
     <Field>
-      <FieldLabel htmlFor="ig-note">Release note</FieldLabel>
+      <FieldLabel htmlFor="ig-update">Status update</FieldLabel>
       <InputGroup>
         <InputGroupTextarea
-          id="ig-note"
-          value={note}
+          id="ig-update"
+          value={update}
           maxLength={max}
           onChange={(e) => {
-            setNote(e.target.value)
-            setSaved(false)
+            setUpdate(e.target.value)
+            setPosted(false)
           }}
-          placeholder="Moves image resizing to the edge."
+          placeholder="Share progress, blockers or decisions."
         />
         <InputGroupAddon align="block-end">
           <InputGroupText className="text-caption tabular">
-            {note.length}/{max}
+            {update.length}/{max}
           </InputGroupText>
-          <InputGroupButton variant="default" size="sm" className="ml-auto" onClick={() => setSaved(true)}>
-            {saved ? (
+          <InputGroupButton variant="default" size="sm" className="ml-auto" onClick={() => setPosted(true)}>
+            {posted ? (
               <>
                 <CheckIcon data-icon="inline-start" />
-                Saved
+                Posted
               </>
             ) : (
-              "Save note"
+              "Post update"
             )}
           </InputGroupButton>
         </InputGroupAddon>
@@ -174,7 +174,7 @@ export default function InputGroupDocs() {
     </InputGroupAddon>
     <InputGroupInput
       id="search"
-      placeholder="Search deployments"
+      placeholder="Search tasks"
       value={query}
       onChange={(e) => setQuery(e.target.value)}
     />
@@ -199,49 +199,62 @@ export default function InputGroupDocs() {
       <Example
         title="Text"
         layout="stack"
-        description="Fixed text before or after the value, such as a protocol, domain or unit, so people type only the part that changes. A prefix runs straight into the value and a suffix follows it, so the whole line reads as one URL or amount."
+        description="Fixed text before or after the value, such as a domain, address or unit, so people type only the part that changes. A prefix runs straight into the value and a suffix follows it, so the whole line reads as one URL, address or amount."
         code={`<Field>
-  <FieldLabel htmlFor="subdomain">Preview domain</FieldLabel>
+  <FieldLabel htmlFor="workspace-url">Workspace URL</FieldLabel>
   <InputGroup>
     <InputGroupAddon>
-      <InputGroupText>https://</InputGroupText>
+      <InputGroupText>app.acme.com/</InputGroupText>
     </InputGroupAddon>
-    <InputGroupInput id="subdomain" defaultValue="acme-web" placeholder="acme-web" spellCheck={false} />
+    <InputGroupInput id="workspace-url" defaultValue="acme" placeholder="your-team" spellCheck={false} />
+  </InputGroup>
+</Field>
+
+<Field>
+  <FieldLabel htmlFor="task-email">Email tasks to</FieldLabel>
+  <InputGroup>
+    <InputGroupInput id="task-email" defaultValue="website-relaunch" spellCheck={false} />
     <InputGroupAddon align="inline-end">
-      <InputGroupText>.lumen.app</InputGroupText>
+      <InputGroupText>@tasks.acme.com</InputGroupText>
     </InputGroupAddon>
   </InputGroup>
 </Field>
 
 <Field>
-  <FieldLabel htmlFor="timeout">Function timeout</FieldLabel>
+  <FieldLabel htmlFor="estimate">Default estimate</FieldLabel>
   <InputGroup className="max-w-40">
-    <InputGroupInput id="timeout" type="number" defaultValue={30} min={1} max={300} className="tabular" />
+    <InputGroupInput id="estimate" type="number" defaultValue={4} min={1} max={40} className="tabular" />
     <InputGroupAddon align="inline-end">
-      <InputGroupText>seconds</InputGroupText>
+      <InputGroupText>hours</InputGroupText>
     </InputGroupAddon>
   </InputGroup>
 </Field>`}
       >
         <div className="grid w-full max-w-sm gap-6">
           <Field>
-            <FieldLabel htmlFor="ig-subdomain">Preview domain</FieldLabel>
+            <FieldLabel htmlFor="ig-workspace-url">Workspace URL</FieldLabel>
             <InputGroup>
               <InputGroupAddon>
-                <InputGroupText>https://</InputGroupText>
+                <InputGroupText>app.acme.com/</InputGroupText>
               </InputGroupAddon>
-              <InputGroupInput id="ig-subdomain" defaultValue="acme-web" placeholder="acme-web" spellCheck={false} />
+              <InputGroupInput id="ig-workspace-url" defaultValue="acme" placeholder="your-team" spellCheck={false} />
+            </InputGroup>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="ig-task-email">Email tasks to</FieldLabel>
+            <InputGroup>
+              <InputGroupInput id="ig-task-email" defaultValue="website-relaunch" spellCheck={false} />
               <InputGroupAddon align="inline-end">
-                <InputGroupText>.lumen.app</InputGroupText>
+                <InputGroupText>@tasks.acme.com</InputGroupText>
               </InputGroupAddon>
             </InputGroup>
           </Field>
           <Field>
-            <FieldLabel htmlFor="ig-timeout">Function timeout</FieldLabel>
+            <FieldLabel htmlFor="ig-estimate">Default estimate</FieldLabel>
             <InputGroup className="max-w-40">
-              <InputGroupInput id="ig-timeout" type="number" defaultValue={30} min={1} max={300} className="tabular" />
+              <InputGroupInput id="ig-estimate" type="number" defaultValue={4} min={1} max={40} className="tabular" />
               <InputGroupAddon align="inline-end">
-                <InputGroupText>seconds</InputGroupText>
+                <InputGroupText>hours</InputGroupText>
               </InputGroupAddon>
             </InputGroup>
           </Field>
@@ -253,26 +266,26 @@ export default function InputGroupDocs() {
         layout="stack"
         description="Small ghost buttons for actions on the value: copy, reveal, clear. Icon buttons need an aria-label."
         code={`<Field>
-  <FieldLabel htmlFor="hook">Deploy hook</FieldLabel>
+  <FieldLabel htmlFor="invite">Invite link</FieldLabel>
   <InputGroup>
     <InputGroupAddon>
       <LinkIcon aria-hidden="true" />
     </InputGroupAddon>
-    <InputGroupInput id="hook" readOnly value={url} className="font-mono" />
+    <InputGroupInput id="invite" readOnly value={url} className="font-mono" />
     <InputGroupAddon align="inline-end">
-      <InputGroupButton size="icon-xs" aria-label={copied ? "Copied" : "Copy deploy hook URL"} onClick={copy}>
+      <InputGroupButton size="icon-xs" aria-label={copied ? "Copied" : "Copy invite link"} onClick={copy}>
         {copied ? <CheckIcon /> : <CopyIcon />}
       </InputGroupButton>
     </InputGroupAddon>
   </InputGroup>
-  <FieldDescription>Send a POST request to this URL to redeploy main.</FieldDescription>
+  <FieldDescription>Anyone with this link can join Acme Inc. as a member for the next 14 days.</FieldDescription>
 </Field>
 
 <Field>
-  <FieldLabel htmlFor="db-password">Database password</FieldLabel>
+  <FieldLabel htmlFor="new-password">New password</FieldLabel>
   <InputGroup>
     <InputGroupInput
-      id="db-password"
+      id="new-password"
       type={visible ? "text" : "password"}
       autoComplete="new-password"
       className="font-mono"
@@ -291,7 +304,7 @@ export default function InputGroupDocs() {
 </Field>`}
       >
         <div className="grid w-full max-w-sm gap-6">
-          <DeployHook />
+          <InviteLink />
           <PasswordField />
         </div>
       </Example>
@@ -301,26 +314,26 @@ export default function InputGroupDocs() {
         layout="stack"
         description="A block-end addon turns the group into a small composer: a counter on the left, the action on the right."
         code={`<Field>
-  <FieldLabel htmlFor="note">Release note</FieldLabel>
+  <FieldLabel htmlFor="update">Status update</FieldLabel>
   <InputGroup>
     <InputGroupTextarea
-      id="note"
-      value={note}
-      onChange={(e) => setNote(e.target.value)}
+      id="update"
+      value={update}
+      onChange={(e) => setUpdate(e.target.value)}
       maxLength={200}
-      placeholder="Moves image resizing to the edge."
+      placeholder="Share progress, blockers or decisions."
     />
     <InputGroupAddon align="block-end">
-      <InputGroupText className="text-caption tabular">{note.length}/200</InputGroupText>
+      <InputGroupText className="text-caption tabular">{update.length}/200</InputGroupText>
       <InputGroupButton variant="default" size="sm" className="ml-auto">
-        Save note
+        Post update
       </InputGroupButton>
     </InputGroupAddon>
   </InputGroup>
 </Field>`}
       >
         <div className="w-full max-w-sm">
-          <DeploymentNote />
+          <StatusUpdate />
         </div>
       </Example>
 
@@ -330,25 +343,25 @@ export default function InputGroupDocs() {
         description="The group takes the control heights. Use icon-xs buttons in small groups and icon-sm in medium and large ones."
         code={`<InputGroup size="sm">
   <InputGroupAddon><SearchIcon /></InputGroupAddon>
-  <InputGroupInput placeholder="Search logs" />
+  <InputGroupInput placeholder="Search tasks" />
   <InputGroupAddon align="inline-end">
-    <InputGroupButton size="icon-xs" aria-label="Filter by level"><ListFilterIcon /></InputGroupButton>
+    <InputGroupButton size="icon-xs" aria-label="Filter by priority"><ListFilterIcon /></InputGroupButton>
   </InputGroupAddon>
 </InputGroup>
 
 <InputGroup>
   <InputGroupAddon><SearchIcon /></InputGroupAddon>
-  <InputGroupInput placeholder="Search logs" />
+  <InputGroupInput placeholder="Search tasks" />
   <InputGroupAddon align="inline-end">
-    <InputGroupButton size="icon-sm" aria-label="Filter by level"><ListFilterIcon /></InputGroupButton>
+    <InputGroupButton size="icon-sm" aria-label="Filter by priority"><ListFilterIcon /></InputGroupButton>
   </InputGroupAddon>
 </InputGroup>
 
 <InputGroup size="lg">
   <InputGroupAddon><SearchIcon /></InputGroupAddon>
-  <InputGroupInput placeholder="Search logs" />
+  <InputGroupInput placeholder="Search tasks" />
   <InputGroupAddon align="inline-end">
-    <InputGroupButton size="icon-sm" aria-label="Filter by level"><ListFilterIcon /></InputGroupButton>
+    <InputGroupButton size="icon-sm" aria-label="Filter by priority"><ListFilterIcon /></InputGroupButton>
   </InputGroupAddon>
 </InputGroup>`}
       >
@@ -362,9 +375,9 @@ export default function InputGroupDocs() {
                 <InputGroupAddon>
                   <SearchIcon aria-hidden="true" />
                 </InputGroupAddon>
-                <InputGroupInput id={`ig-size-${size}`} placeholder="Search logs" />
+                <InputGroupInput id={`ig-size-${size}`} placeholder="Search tasks" />
                 <InputGroupAddon align="inline-end">
-                  <InputGroupButton size={button} aria-label="Filter by level">
+                  <InputGroupButton size={button} aria-label="Filter by priority">
                     <ListFilterIcon />
                   </InputGroupButton>
                 </InputGroupAddon>
@@ -381,7 +394,7 @@ export default function InputGroupDocs() {
         code={`<Field data-invalid>
   <FieldLabel htmlFor="workspace">Workspace URL</FieldLabel>
   <InputGroup>
-    <InputGroupAddon><InputGroupText>lumen.app/</InputGroupText></InputGroupAddon>
+    <InputGroupAddon><InputGroupText>app.acme.com/</InputGroupText></InputGroupAddon>
     <InputGroupInput id="workspace" defaultValue="Acme" aria-invalid aria-describedby="workspace-error" />
   </InputGroup>
   <FieldError id="workspace-error">Use lowercase letters, numbers and hyphens, like acme.</FieldError>
@@ -390,7 +403,7 @@ export default function InputGroupDocs() {
 <Field data-disabled>
   <FieldLabel htmlFor="workspace-locked">Workspace URL</FieldLabel>
   <InputGroup>
-    <InputGroupAddon><InputGroupText>lumen.app/</InputGroupText></InputGroupAddon>
+    <InputGroupAddon><InputGroupText>app.acme.com/</InputGroupText></InputGroupAddon>
     <InputGroupInput id="workspace-locked" defaultValue="acme" disabled />
   </InputGroup>
   <FieldDescription>Only owners can change the workspace URL.</FieldDescription>
@@ -401,7 +414,7 @@ export default function InputGroupDocs() {
             <FieldLabel htmlFor="ig-invalid">Workspace URL</FieldLabel>
             <InputGroup>
               <InputGroupAddon>
-                <InputGroupText>lumen.app/</InputGroupText>
+                <InputGroupText>app.acme.com/</InputGroupText>
               </InputGroupAddon>
               <InputGroupInput
                 id="ig-invalid"
@@ -416,7 +429,7 @@ export default function InputGroupDocs() {
             <FieldLabel htmlFor="ig-disabled">Workspace URL</FieldLabel>
             <InputGroup>
               <InputGroupAddon>
-                <InputGroupText>lumen.app/</InputGroupText>
+                <InputGroupText>app.acme.com/</InputGroupText>
               </InputGroupAddon>
               <InputGroupInput id="ig-disabled" defaultValue="acme" disabled />
             </InputGroup>
@@ -427,7 +440,7 @@ export default function InputGroupDocs() {
 
       <Guidelines
         do={[
-          "Use addons for text that never changes, like a protocol, domain or unit.",
+          "Use addons for text that never changes, like a domain, address or unit.",
           "Keep addon buttons small and ghost, and label icon-only ones.",
           "Put the action that sends the value outside the group unless it belongs to the value, like copy.",
         ]}

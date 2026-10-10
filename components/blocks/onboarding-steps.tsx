@@ -6,7 +6,7 @@ import {
   ArrowRightIcon,
   Building2Icon,
   CheckIcon,
-  GitBranchIcon,
+  LayoutTemplateIcon,
   UserPlusIcon,
   type LucideIcon,
 } from "lucide-react"
@@ -18,32 +18,34 @@ import { Spinner } from "@/components/ui/spinner"
 import { toast } from "@/components/ui/toast"
 
 import { OnboardingComplete } from "./onboarding-steps/complete"
-import { RepositoryStep, SLUG_PLACEHOLDER, TeamStep, WorkspaceStep, newInvite } from "./onboarding-steps/step-fields"
+import { SLUG_PLACEHOLDER, TeamStep, TemplateStep, WorkspaceStep, newInvite } from "./onboarding-steps/step-fields"
 import {
+  DEFAULT_TEMPLATES,
   EMAIL_PATTERN,
   hasErrors,
   slugify,
   validateStep,
-  type OnboardingRepository,
+  type OnboardingTemplate,
   type OnboardingValues,
   type StepErrors,
 } from "./onboarding-steps/types"
 import { Kern } from "@/components/ui/kern"
 
 export { WorkspaceUrlInput, type WorkspaceUrlInputProps } from "./onboarding-steps/workspace-url-input"
+export { DEFAULT_TEMPLATES } from "./onboarding-steps/types"
 export type {
-  GitProvider,
   InviteRole,
   OnboardingInvite,
-  OnboardingRepository,
+  OnboardingTemplate,
   OnboardingValues,
+  TemplateView,
 } from "./onboarding-steps/types"
 
 export interface OnboardingStepsProps {
-  /** Step to open on: 0 workspace, 1 team, 2 repository. */
+  /** Step to open on: 0 workspace, 1 team, 2 template. */
   defaultStep?: 0 | 1 | 2
   /**
-   * Open on the finished state, with the first deployment building, using
+   * Open on the finished state, with the first project filling in, using
    * defaultValues as the answers. For previews and for people who come back
    * after setting up.
    */
@@ -52,10 +54,8 @@ export interface OnboardingStepsProps {
   defaultValues?: Partial<OnboardingValues>
   /** Host shown before the workspace slug. */
   domain?: string
-  /** Repositories offered in the last step. */
-  repositories?: OnboardingRepository[]
-  /** Git account shown as connected in the last step. */
-  account?: string
+  /** Templates offered in the last step. Defaults to the four Acme templates. */
+  templates?: OnboardingTemplate[]
   /** Where “Open dashboard” leads from the completion state. */
   dashboardHref?: string
   /** Called with the answers when people finish. */
@@ -78,31 +78,23 @@ const STEPS: StepMeta[] = [
     title: "Name your workspace",
     short: "Workspace",
     hint: "Name and URL",
-    description: "Your workspace holds projects, domains and the people who ship them.",
+    description: "Your workspace holds your team’s projects, tasks and docs, and everyone you invite to them.",
     icon: Building2Icon,
   },
   {
     title: "Invite your team",
     short: "Team",
     hint: "Invite by email or link",
-    description: "Teammates can review previews, read logs and promote deployments to production.",
+    description: "Members create projects and tasks. Guests see only the projects you share with them, and they’re free.",
     icon: UserPlusIcon,
   },
   {
-    title: "Connect a repository",
-    short: "Repository",
-    hint: "Pick what Lumen deploys",
-    description: "Pick the code Lumen should deploy. Every push after this builds automatically.",
-    icon: GitBranchIcon,
+    title: "Pick a template",
+    short: "Template",
+    hint: "Start with a ready project",
+    description: "Acme creates your first project from it, with sections and starter tasks you can rename or delete.",
+    icon: LayoutTemplateIcon,
   },
-]
-
-const defaultRepositories: OnboardingRepository[] = [
-  { id: "acme/web", name: "acme/web", framework: "Next.js", updated: "2 hours ago" },
-  { id: "acme/api", name: "acme/api", framework: "Node.js", updated: "yesterday", private: true },
-  { id: "acme/docs", name: "acme/docs", framework: "Astro", updated: "3 days ago" },
-  { id: "acme/dashboard", name: "acme/dashboard", framework: "Next.js", updated: "last week", private: true },
-  { id: "acme/checkout", name: "acme/checkout", framework: "Remix", updated: "2 weeks ago" },
 ]
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -111,9 +103,8 @@ export function OnboardingSteps({
   defaultStep = 0,
   defaultDone = false,
   defaultValues,
-  domain = "lumen.app",
-  repositories = defaultRepositories,
-  account = "maya-chen",
+  domain = "app.acme.com",
+  templates = DEFAULT_TEMPLATES,
   dashboardHref = "/live/app",
   onComplete,
   className,
@@ -140,11 +131,10 @@ export function OnboardingSteps({
       invites: defaultValues?.invites?.length
         ? defaultValues.invites
         : [
-            { id: "invite-first", email: "", role: "developer" },
-            { id: "invite-second", email: "", role: "developer" },
+            { id: "invite-first", email: "", role: "member" },
+            { id: "invite-second", email: "", role: "member" },
           ],
-      provider: defaultValues?.provider ?? "github",
-      repositoryId: defaultValues?.repositoryId ?? null,
+      templateId: defaultValues?.templateId ?? null,
     }
   })
 
@@ -174,8 +164,8 @@ export function OnboardingSteps({
     else if (errs.invites) {
       const first = values.invites.find((i) => errs.invites?.[i.id])
       if (first) target = document.getElementById(`${idPrefix}-invite-${first.id}`)
-    } else if (errs.repositoryId)
-      target = document.getElementById(`${idPrefix}-repos`)?.querySelector<HTMLElement>('[role="radio"]') ?? null
+    } else if (errs.templateId)
+      target = document.getElementById(`${idPrefix}-templates`)?.querySelector<HTMLElement>('[role="radio"]') ?? null
     target?.focus()
   }
 
@@ -231,7 +221,7 @@ export function OnboardingSteps({
         <OnboardingComplete
           values={values}
           invitesSent={invitesSent}
-          repository={repositories.find((r) => r.id === values.repositoryId)}
+          template={templates.find((t) => t.id === values.templateId)}
           domain={domain}
           dashboardHref={dashboardHref}
           autoFocus={finishedHere}
@@ -244,7 +234,7 @@ export function OnboardingSteps({
         <div className="grid gap-8 @narrow:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] @narrow:gap-12 @page:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] @page:gap-20">
           {/* Step list: a dark panel on wide containers. It keeps its own height and stays in view beside long steps. */}
           <aside className="hidden flex-col rounded-(--panel-radius) bg-panel p-(--panel-padding-sm) text-panel-muted @narrow:sticky @narrow:top-6 @narrow:flex @narrow:self-start">
-            <p className="text-title text-panel-foreground">Set up Lumen</p>
+            <p className="text-title text-panel-foreground">Set up Acme</p>
             <p className="mt-2 text-sm">Three short steps. You can change any of this later in settings.</p>
             <ol className="mt-10 grid gap-1">
               {STEPS.map((s, i) => {
@@ -364,15 +354,13 @@ export function OnboardingSteps({
                       }
                     />
                   ) : (
-                    <RepositoryStep
+                    <TemplateStep
                       idPrefix={idPrefix}
                       values={values}
                       errors={errors}
                       domain={domain}
-                      repositories={repositories}
-                      account={account}
-                      onProviderChange={(provider) => setValues((v) => ({ ...v, provider }))}
-                      onRepositoryChange={(repositoryId) => setValues((v) => ({ ...v, repositoryId }))}
+                      templates={templates}
+                      onTemplateChange={(templateId) => setValues((v) => ({ ...v, templateId }))}
                     />
                   )}
                 </div>

@@ -11,17 +11,19 @@ import { UserMenu } from "@/components/blocks/user-menu"
 const readItems: NotificationItem[] = [
   {
     id: "r1",
-    title: "Certificate issued for status.acme.dev",
-    description: "HTTPS is on. The certificate renews automatically.",
-    time: "1 hr ago",
-    kind: "domain",
+    title: "Elena Ruiz joined as a guest",
+    description: "She can open Customer portal. Hana Kim sent the invite.",
+    time: "3 hr ago",
+    kind: "invite",
+    href: "/live/app/team",
   },
   {
     id: "r2",
-    title: "Invoice for October is ready",
-    description: "$39.00 was charged to the Visa ending in 4242.",
-    time: "Oct 1",
-    kind: "billing",
+    title: "Weekly usage: 72% of automation runs used",
+    description:
+      "7,240 of 10,000 runs this cycle. Owners get an email at 80% and 100%. The count resets on Nov 1.",
+    time: "6 hr ago",
+    kind: "usage",
     href: "/live/app/billing",
   },
 ]
@@ -55,17 +57,17 @@ export default function NotificationsDocs() {
   items={[
     {
       id: "n1",
-      title: "web is live in production",
-      description: "a41c9e2 deployed to acme.dev in 28s.",
-      time: "2 min ago",
-      kind: "success",
+      title: "Jordan Lee mentioned you in Mobile app 2.0",
+      description: "“Can you confirm the scope for push notifications by Monday?”",
+      time: "5 min ago",
+      kind: "mention",
       unread: true,
       href: "/live/app/projects",
     },
   ]}
 />`}
       >
-        <OpenStage className="min-h-192 @prose:min-h-180" />
+        <OpenStage className="min-h-200 @prose:min-h-190" />
       </Example>
 
       <Example
@@ -74,7 +76,7 @@ export default function NotificationsDocs() {
         surface="subtle"
         code={`<Notifications items={items.map((item) => ({ ...item, unread: false }))} />`}
       >
-        <OpenStage items={readItems} className="min-h-108 @prose:min-h-96" />
+        <OpenStage items={readItems} className="min-h-112 @prose:min-h-107" />
       </Example>
 
       <Example
@@ -96,9 +98,9 @@ export default function NotificationsDocs() {
 
       <Guidelines
         do={[
-          "Write the title as what happened, with the project name first: “Build failed on api”.",
+          "Write the title as what happened, with the person or project first: “Customer portal is off track”.",
           "Link each notification to the place where people can act on it.",
-          "Use the failed kind only for things that need attention.",
+          "Use the status kind, in red, only for projects that need attention.",
         ]}
         dont={[
           "Don’t notify about actions the person just took themselves.",
@@ -113,7 +115,7 @@ export default function NotificationsDocs() {
             prop: "items",
             type: "NotificationItem[]",
             description:
-              "Notifications, newest first. Defaults to five Lumen notifications, three unread.",
+              "Notifications, newest first. Defaults to five of Maya Patel’s notifications in Acme Inc., three unread.",
           },
           {
             prop: "onMarkRead",
@@ -181,8 +183,8 @@ export default function NotificationsDocs() {
           { prop: "time", type: "string", description: "Relative time label." },
           {
             prop: "kind",
-            type: '"success" | "failed" | "domain" | "invite" | "billing"',
-            default: '"success"',
+            type: '"mention" | "due" | "status" | "invite" | "usage"',
+            default: '"mention"',
             description: "Picks the icon and its tint.",
           },
           {

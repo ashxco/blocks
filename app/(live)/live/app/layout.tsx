@@ -1,11 +1,11 @@
 import { AppShell } from "@/components/blocks/app-shell"
 
 /**
- * Shared frame for every Lumen app template: the collapsible sidebar, the top
+ * Shared frame for every Acme app template: the collapsible sidebar, the top
  * bar with search, notifications and the user menu, and the page. The skip
  * link jumps past the sidebar navigation to the page content.
  */
-export default function LumenAppLayout({ children }: { children: React.ReactNode }) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <a

@@ -34,23 +34,23 @@ export default function NewsletterFormDocs() {
         description="Change the button and confirmation to match what people sign up for."
         code={`<NewsletterForm
   buttonLabel="Notify me"
-  placeholder="you@acme.dev"
-  successMessage={(email) => <>We’ll email {email} when regions in Asia go live.</>}
+  placeholder="you@company.com"
+  successMessage={(email) => <>We’ll email {email} when the Android app is ready.</>}
 />`}
       >
         <NewsletterForm
           buttonLabel="Notify me"
-          placeholder="you@acme.dev"
-          successMessage={(email) => <>We’ll email {email} when regions in Asia go live.</>}
+          placeholder="you@company.com"
+          successMessage={(email) => <>We’ll email {email} when the Android app is ready.</>}
         />
       </Example>
 
       <Example
         title="Invalid address"
         description="Submitting an empty or malformed address keeps the field, turns its border destructive and says what a valid address looks like. Typing clears the message."
-        code={`<NewsletterForm defaultValue="ana@acme" defaultStatus="invalid" />`}
+        code={`<NewsletterForm defaultValue="maya@acme" defaultStatus="invalid" />`}
       >
-        <NewsletterForm defaultValue="ana@acme" defaultStatus="invalid" />
+        <NewsletterForm defaultValue="maya@acme" defaultStatus="invalid" />
       </Example>
 
       <Example
@@ -64,18 +64,18 @@ export default function NewsletterFormDocs() {
 />
 
 // The failed state on its own, as shown here:
-<NewsletterForm defaultValue="ana@acme.dev" defaultStatus="error" />`}
+<NewsletterForm defaultValue="maya@acme.com" defaultStatus="error" />`}
       >
-        <NewsletterForm defaultValue="ana@acme.dev" defaultStatus="error" onSubscribe={failingSubscribe} />
+        <NewsletterForm defaultValue="maya@acme.com" defaultStatus="error" onSubscribe={failingSubscribe} />
       </Example>
 
       <Example
         title="Subscribed"
         surface="subtle"
         description="After a successful request the field gives way to the confirmation, with a way back to enter another address."
-        code={`<NewsletterForm defaultValue="ana@acme.dev" defaultStatus="success" />`}
+        code={`<NewsletterForm defaultValue="maya@acme.com" defaultStatus="success" />`}
       >
-        <NewsletterForm defaultValue="ana@acme.dev" defaultStatus="success" />
+        <NewsletterForm defaultValue="maya@acme.com" defaultStatus="success" />
       </Example>
 
       <Guidelines

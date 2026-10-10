@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { MailIcon, SearchIcon, XIcon } from "lucide-react"
+import { ChevronDownIcon, ChevronUpIcon, MailIcon, SearchIcon, XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -61,7 +61,7 @@ export interface Member {
   email: string
   role: MemberRole
   status?: "active" | "invited"
-  /** Short activity note, e.g. "Active 2 hours ago" or "Invited 2 days ago". */
+  /** Short note, e.g. "Active 2 hours ago", "Invited 2 days ago" or, for a guest, "Customer portal · Active today". */
   meta?: string
   /** Marks the signed-in person. They can’t remove themselves here. */
   you?: boolean
@@ -71,13 +71,15 @@ export interface Member {
 
 export interface MembersListProps {
   members?: Member[]
-  /** Seats included in the plan. */
+  /** Seats paid for on the plan. Members and pending member invites take one; guests don’t. */
   seats?: number
   planName?: string
   workspaceName?: string
   title?: React.ReactNode
-  /** Defaults to seat usage, e.g. "8 of 10 seats used on Pro." Pending invites hold a seat. */
+  /** Defaults to the head count and seat usage, e.g. "18 members and 6 guests. 18 of 18 seats used on Pro." */
   description?: React.ReactNode
+  /** Rows shown before “Show all”. A search always shows every match. */
+  visibleCount?: number
   /** Heading level of the title. */
   as?: "h2" | "h3"
   /** Called after a role change. The list updates optimistically. */
@@ -94,16 +96,36 @@ export interface MembersListProps {
   className?: string
 }
 
-/** Acme Inc. as the Team template shows it: six members and two pending invites, so 8 of 10 seats. */
-const defaultMembers: Member[] = [
-  { id: "m1", name: "Maya Chen", email: "maya@acme.dev", role: "owner", meta: "Active now", you: true },
-  { id: "m2", name: "Daniel Okafor", email: "daniel@acme.dev", role: "admin", meta: "Active 20\u00a0minutes ago" },
-  { id: "m3", name: "Priya Shah", email: "priya@acme.dev", role: "developer", meta: "Active 2\u00a0hours ago" },
-  { id: "m4", name: "Leo Martins", email: "leo@acme.dev", role: "developer", meta: "Active yesterday" },
-  { id: "m5", name: "Sam Rivera", email: "sam@acme.dev", role: "developer", meta: "Joined 2\u00a0hours ago" },
-  { id: "m6", name: "Nina Petrova", email: "nina@acme.dev", role: "viewer", meta: "Active last week" },
-  { id: "m7", email: "tomas@acme.dev", role: "developer", status: "invited", meta: "Invited 2\u00a0days ago" },
-  { id: "m8", email: "ines@acme.dev", role: "viewer", status: "invited", meta: "Invited 6\u00a0days ago" },
+/**
+ * Acme Inc. as the Team template shows it: 18 members on the 18 seats of the
+ * Pro plan, then 6 guests, who are free and see only the projects they are
+ * invited to.
+ */
+export const ACME_MEMBERS: Member[] = [
+  { id: "maya", name: "Maya Patel", email: "maya@acme.com", role: "owner", meta: "Active now", you: true },
+  { id: "hana", name: "Hana Kim", email: "hana@acme.com", role: "admin", meta: "Active 20\u00a0minutes ago" },
+  { id: "daniel", name: "Daniel Brooks", email: "daniel@acme.com", role: "admin", meta: "Active 1\u00a0hour ago" },
+  { id: "lucas", name: "Lucas Moreau", email: "lucas@acme.com", role: "admin", meta: "Active 3\u00a0hours ago" },
+  { id: "jordan", name: "Jordan Lee", email: "jordan@acme.com", role: "member", meta: "Active now" },
+  { id: "sofia", name: "Sofia Alvarez", email: "sofia@acme.com", role: "member", meta: "Active 5\u00a0minutes ago" },
+  { id: "priya", name: "Priya Raman", email: "priya@acme.com", role: "member", meta: "Active 12\u00a0minutes ago" },
+  { id: "sam", name: "Sam Okafor", email: "sam@acme.com", role: "member", meta: "Active 2\u00a0hours ago" },
+  { id: "noah", name: "Noah Fischer", email: "noah@acme.com", role: "member", meta: "Active 4\u00a0hours ago" },
+  { id: "aisha", name: "Aisha Bello", email: "aisha@acme.com", role: "member", meta: "Active 6\u00a0hours ago" },
+  { id: "kenji", name: "Kenji Watanabe", email: "kenji@acme.com", role: "member", meta: "Active 9\u00a0hours ago" },
+  { id: "chloe", name: "Chloe Martin", email: "chloe@acme.com", role: "member", meta: "Active today" },
+  { id: "rui", name: "Rui Costa", email: "rui@acme.com", role: "member", meta: "Active today" },
+  { id: "ava", name: "Ava Thompson", email: "ava@acme.com", role: "member", meta: "Active yesterday" },
+  { id: "leila", name: "Leila Haddad", email: "leila@acme.com", role: "member", meta: "Active yesterday" },
+  { id: "arjun", name: "Arjun Mehta", email: "arjun@acme.com", role: "member", meta: "Active yesterday" },
+  { id: "ben", name: "Ben Carter", email: "ben@acme.com", role: "member", meta: "Active 2\u00a0days ago" },
+  { id: "tom", name: "Tom Walsh", email: "tom@acme.com", role: "member", meta: "Active last week" },
+  { id: "elena", name: "Elena Ruiz", email: "elena@northwind.com", role: "guest", meta: "Customer portal · Joined 3\u00a0hours ago" },
+  { id: "nora", name: "Nora Lindqvist", email: "nora@brightline.com", role: "guest", meta: "Brand refresh · Active today" },
+  { id: "marcus", name: "Marcus Webb", email: "marcus@globex.com", role: "guest", meta: "Customer portal · Active yesterday" },
+  { id: "felix", name: "Felix Wagner", email: "felix@harborandco.com", role: "guest", meta: "Mobile app 2.0 · Active 2\u00a0days ago" },
+  { id: "omar", name: "Omar Farouk", email: "omar@fieldstone.com", role: "guest", meta: "Website relaunch · Active 3\u00a0days ago" },
+  { id: "grace", name: "Grace Liu", email: "grace@copperleaf.com", role: "guest", meta: "Brand refresh · Active last week" },
 ]
 
 function initials(member: Member) {
@@ -115,13 +137,16 @@ function initials(member: Member) {
 const displayName = (member: Member) => member.name ?? member.email
 const withArticle = (label: string) => (/^[AEIOU]/.test(label) ? `an ${label}` : `a ${label}`)
 
+const plural = (count: number, one: string, other: string) => `${count} ${count === 1 ? one : other}`
+
 export function MembersList({
-  members: initialMembers = defaultMembers,
-  seats = 10,
+  members: initialMembers = ACME_MEMBERS,
+  seats = 18,
   planName = "Pro",
   workspaceName = "Acme Inc.",
   title = "Members",
   description,
+  visibleCount = 8,
   as: Heading = "h2",
   onRoleChange,
   onRemove,
@@ -133,13 +158,25 @@ export function MembersList({
   const [query, setQuery] = React.useState("")
   const [target, setTarget] = React.useState<Member | null>(null)
   const [confirmOpen, setConfirmOpen] = React.useState(false)
+  const [expanded, setExpanded] = React.useState(false)
 
   const q = query.trim().toLowerCase()
   const visible = q
     ? members.filter((m) =>
-        [m.name, m.email, ROLE_LABELS[m.role]].some((v) => v?.toLowerCase().includes(q))
+        [m.name, m.email, ROLE_LABELS[m.role], m.meta].some((v) => v?.toLowerCase().includes(q))
       )
     : members
+  const capped = !q && visible.length > visibleCount
+  const shown = capped && !expanded ? visible.slice(0, visibleCount) : visible
+
+  const active = members.filter((m) => m.status !== "invited")
+  const memberCount = active.filter((m) => m.role !== "guest").length
+  const guestCount = active.length - memberCount
+  // Members and pending member invites take a seat; guests don’t.
+  const seatsUsed = members.filter((m) => m.role !== "guest").length
+  const summary = `${plural(memberCount, "member", "members")}${
+    guestCount ? ` and ${plural(guestCount, "guest", "guests")}` : ""
+  }. ${seatsUsed} of ${seats} seats used on ${planName}.`
 
   function changeRole(member: Member, role: AssignableRole) {
     setMembers((list) => list.map((m) => (m.id === member.id ? { ...m, role } : m)))
@@ -182,18 +219,21 @@ export function MembersList({
   }
 
   const invited = target?.status === "invited"
+  const guest = target?.role === "guest"
 
   return (
     <Card data-slot="members-list" className={cn("@container", className)}>
-      <CardHeader className="border-b">
+      {/* In a narrow card the invite action wraps under the title and description, as in PageHeader.
+          Important, to beat the header's has-[card-action] columns. */}
+      <CardHeader className="border-b @max-[24rem]:grid-cols-1!">
         <CardTitle>
           <Heading>{title}</Heading>
         </CardTitle>
         <CardDescription>
-          {description ?? `${members.length} of ${seats} seats used on ${planName}.`}
+          {description ?? summary}
         </CardDescription>
         {inviteAction === null ? null : (
-          <CardAction>
+          <CardAction className="@max-[24rem]:col-start-1 @max-[24rem]:row-span-1 @max-[24rem]:row-start-auto @max-[24rem]:mt-2 @max-[24rem]:justify-self-start">
             {inviteAction ?? (
               <InviteDialog
                 workspaceName={workspaceName}
@@ -221,17 +261,33 @@ export function MembersList({
         </InputGroup>
 
         {visible.length ? (
-          <ul className="mt-2 divide-y">
-            {visible.map((member) => (
-              <MemberRow
-                key={member.id}
-                member={member}
-                onRoleChange={changeRole}
-                onResend={resend}
-                onRemove={askRemove}
-              />
-            ))}
-          </ul>
+          <>
+            <ul className="mt-2 divide-y">
+              {shown.map((member) => (
+                <MemberRow
+                  key={member.id}
+                  member={member}
+                  onRoleChange={changeRole}
+                  onResend={resend}
+                  onRemove={askRemove}
+                />
+              ))}
+            </ul>
+            {capped ? (
+              <div className="border-t pt-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-expanded={expanded}
+                  className="-ml-(--button-padding-x-sm)"
+                  onClick={() => setExpanded((open) => !open)}
+                >
+                  {expanded ? "Show fewer" : `Show all ${visible.length} people`}
+                  {expanded ? <ChevronUpIcon data-icon="inline-end" /> : <ChevronDownIcon data-icon="inline-end" />}
+                </Button>
+              </div>
+            ) : null}
+          </>
         ) : (
           <p className="py-12 text-center text-sm text-muted-foreground" role="status">
             No members match “{query.trim()}”.
@@ -250,7 +306,9 @@ export function MembersList({
             <AlertDialogDescription>
               {invited
                 ? "The link in their email stops working right away. You can invite them again later."
-                : `They lose access to every project, deployment and log in ${workspaceName} right away. Deployments they made stay online.`}
+                : guest
+                  ? `They lose access to the projects they were invited to in ${workspaceName} right away. Their comments stay.`
+                  : `They lose access to every project, task and doc in ${workspaceName} right away. Their open tasks stay, unassigned, and their seat opens up.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

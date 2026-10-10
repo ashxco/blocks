@@ -28,23 +28,23 @@ export default function ContactPanelDocs() {
         description="Change the channels, topics and confirmation to fit the page. Throw from onSubmit to show the error message."
         code={`<ContactPanel
   title="Get unstuck"
-  description="Most questions are answered in the docs within a minute."
+  description="Most questions are answered in the help center within a minute."
   methods={[…]}
-  topics={["Deploys", "Domains", "Databases", "Billing"]}
+  topics={["Projects", "Automations", "Integrations", "Billing"]}
   submitLabel="Open a ticket"
   successMessage="Ticket opened. Check your inbox for a copy."
 />`}
       >
         <ContactPanel
           title="Get unstuck"
-          description="Most questions are answered in the docs within a minute. For everything else, a support engineer picks up your ticket."
+          description="Most questions are answered in the help center within a minute. For everything else, someone on our support team picks up your ticket."
           methods={[
-            { icon: BookOpenIcon, label: "Docs", value: "Guides and API reference" },
-            { icon: MessagesSquareIcon, label: "Community", value: "Forum and office hours every Thursday" },
-            { icon: LifeBuoyIcon, label: "Priority support", value: "support@lumen.dev", href: "mailto:support@lumen.dev" },
+            { icon: BookOpenIcon, label: "Help center", value: "Guides for projects, automations and reports" },
+            { icon: MessagesSquareIcon, label: "Office hours", value: "Live Q&A with Sam Okafor every Thursday" },
+            { icon: LifeBuoyIcon, label: "Priority support", value: "support@acme.com", href: "mailto:support@acme.com" },
           ]}
-          hours="Median first reply this week: 2 hours"
-          topics={["Deploys", "Domains", "Databases", "Billing"]}
+          hours="Replies within one business day"
+          topics={["Projects", "Automations", "Integrations", "Billing"]}
           submitLabel="Open a ticket"
           successMessage="Ticket opened. Check your inbox for a copy."
         />
@@ -67,9 +67,9 @@ export default function ContactPanelDocs() {
         rows={[
           { prop: "title", type: "ReactNode", default: '"Other ways to reach us"', description: "Heading on the dark panel." },
           { prop: "description", type: "ReactNode", description: "Line under the panel heading." },
-          { prop: "methods", type: "ContactMethod[]", default: "Sales, Support, Community, Office", description: "Icon, label, value and optional href for each channel." },
-          { prop: "hours", type: "ReactNode | null", default: '"Support replies Mon–Fri, 9:00–18:00 CET"', description: "Status line at the foot of the panel." },
-          { prop: "topics", type: "string[]", default: '["Sales", "Support", "Partnership", "Press"]', description: "Pill radios. The first is selected." },
+          { prop: "methods", type: "ContactMethod[]", default: "Sales, Support, Help center, Offices", description: "Icon, label, value and optional href for each channel." },
+          { prop: "hours", type: "ReactNode | null", default: '"Support replies Monday to Friday, from San Francisco and London"', description: "Status line at the foot of the panel." },
+          { prop: "topics", type: "string[]", default: '["Sales", "Support", "Billing", "Partnerships"]', description: "Pill radios. The first is selected." },
           { prop: "teamSizes", type: "string[]", description: "Options for the team size select." },
           { prop: "submitLabel", type: "string", default: '"Send message"', description: "Button label." },
           { prop: "successMessage", type: "ReactNode", description: "Shown beside the button after sending." },

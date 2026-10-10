@@ -18,13 +18,13 @@ export default function PostCardDocs() {
         title="Post card"
         description="Flat tinted cover, title and a two-line excerpt, then category, date and reading time in one meta line. The whole card is one link."
         code={`<PostCard
-  category="Product"
-  title="A database branch for every pull request"
-  excerpt="Preview environments now get a copy-on-write branch…"
-  date="Oct 7, 2026"
+  category="Guides"
+  title="How we run weekly planning in 30 minutes"
+  excerpt="One board, one agenda and a rule that the meeting ends when the board is right…"
+  date="Sep 29, 2026"
   readTime="5 min read"
   href="/live/blog/post"
-  cover={{ pattern: "branch", tint: "mint" }}
+  cover={{ pattern: "board", tint: "mint" }}
 />`}
       >
         <div className="grid w-full max-w-narrow gap-8 @xl:grid-cols-2">
@@ -48,19 +48,19 @@ export default function PostCardDocs() {
         title="Featured post on a panel"
         layout="full"
         description="Set tone to panel to give the lead story a dark emphasis surface. Use it once per page."
-        code={`<FeaturedPost tone="panel" cover={{ pattern: "uptime", tint: "sky" }} />`}
+        code={`<FeaturedPost tone="panel" cover={{ pattern: "inbox", tint: "sky" }} />`}
       >
         <div className="p-6 @2xl:p-10">
           <FeaturedPost
             tone="panel"
-            title="Zero-downtime deploys, explained"
-            excerpt="Health checks, connection draining and the order we swap containers in, step by step. Everything that happens between git push and live."
-            category="Engineering"
-            date="Aug 14, 2026"
-            dateTime="2026-08-14"
-            readTime="10 min read"
-            author={{ name: "Tom Lindqvist", role: "Infrastructure" }}
-            cover={{ pattern: "uptime", tint: "sky" }}
+            title="Designing a calmer inbox"
+            excerpt="Fewer pings, smarter grouping and a single place for everything that needs you. How we redesigned the Acme inbox around what people act on."
+            category="Product"
+            date="Sep 22, 2026"
+            dateTime="2026-09-22"
+            readTime="7 min read"
+            author={{ name: "Sofia Alvarez", role: "Design Lead" }}
+            cover={{ pattern: "inbox", tint: "sky" }}
           />
         </div>
       </Example>
@@ -102,8 +102,8 @@ export default function PostCardDocs() {
 <PostCover
   pattern="compare"
   figures={[
-    { label: "Before", value: "61s", share: 1 },
-    { label: "After", value: "18s", share: 0.29 },
+    { label: "Status meetings a week, before", value: "4", share: 1 },
+    { label: "With Acme", value: "2", share: 0.5 },
   ]}
 />`}
       >
@@ -123,7 +123,7 @@ export default function PostCardDocs() {
         title="Cover thumbnails"
         layout="stack"
         description={`For lists of posts, size="sm" draws the whole cover at card size and scales it to a 6rem thumbnail, so each pattern stays recognisable.`}
-        code={`<PostCover size="sm" pattern="terminal" tint="panel" />`}
+        code={`<PostCover size="sm" pattern="checklist" tint="panel" />`}
       >
         <div className="flex flex-wrap gap-4">
           {coverPatterns.map((pattern, i) => (
@@ -137,7 +137,7 @@ export default function PostCardDocs() {
           "Write titles that say what the reader will learn or get.",
           "Keep excerpts to two lines; the card clamps anything longer.",
           "Vary cover tints and patterns so neighbouring cards look different; don’t reuse a pattern within twelve posts.",
-          "Pick a pattern that matches the story: compare for before and after numbers, regions for anything global.",
+          "Pick a pattern that matches the story: compare for before and after numbers, flow for automations, calendar for anything scheduled.",
         ]}
         dont={[
           "Don’t use photos with text on them as covers.",
@@ -157,7 +157,7 @@ export default function PostCardDocs() {
           { prop: "dateTime", type: "string", description: "Machine-readable date for the time element." },
           { prop: "readTime", type: "string", description: "e.g. “4 min read”." },
           { prop: "href", type: "string", default: '"/live/blog/post"', description: "Where the card links." },
-          { prop: "cover", type: "{ pattern?: CoverPattern; tint?: CoverTint; figures?: CoverFigure[] }", default: '{ pattern: "branch", tint: "mint" }', description: "Cover shapes and fill. figures feeds the compare pattern." },
+          { prop: "cover", type: "{ pattern?: CoverPattern; tint?: CoverTint; figures?: CoverFigure[] }", default: '{ pattern: "board", tint: "mint" }', description: "Cover shapes and fill. figures feeds the compare pattern." },
           { prop: "as", type: '"h2" | "h3"', default: '"h3"', description: "Heading level of the title." },
         ]}
       />
@@ -175,7 +175,7 @@ export default function PostCardDocs() {
       <ApiTable
         title="PostGrid"
         rows={[
-          { prop: "posts", type: "Post[]", default: "Six Lumen posts", description: "Posts in display order." },
+          { prop: "posts", type: "Post[]", default: "Six Acme posts", description: "Posts in display order." },
           { prop: "title", type: "ReactNode", description: "Optional heading above the grid." },
           { prop: "viewAll", type: "{ label: string; href: string } | null", description: "Link beside the heading." },
           { prop: "filter", type: "boolean", default: "true", description: "Category pills built from the posts’ categories." },
@@ -187,8 +187,8 @@ export default function PostCardDocs() {
       <ApiTable
         title="PostCover"
         rows={[
-          { prop: "pattern", type: '"window" | "terminal" | "orbit" | "bars" | "grid" | "branch" | "compare" | "regions" | "uptime" | "stack" | "menubar" | "fields" | "address"', default: '"window"', description: "Shape composition." },
-          { prop: "figures", type: "{ label: string; value: string; share: number }[]", default: "Before 61s, after 18s", description: "Bars for the compare pattern, longest first. share runs from 0 to 1; the last bar is drawn in ink." },
+          { prop: "pattern", type: '"window" | "checklist" | "orbit" | "bars" | "grid" | "board" | "compare" | "calendar" | "timeline" | "stack" | "menubar" | "flow" | "inbox"', default: '"window"', description: "Shape composition." },
+          { prop: "figures", type: "{ label: string; value: string; share: number }[]", default: "Before 4, after 2", description: "Bars for the compare pattern, longest first. share runs from 0 to 1; the last bar is drawn in ink." },
           { prop: "tint", type: '"violet" | "mint" | "sand" | "sky" | "rose" | "panel"', default: '"violet"', description: "Fill behind the shapes." },
           { prop: "size", type: '"default" | "sm"', default: '"default"', description: "sm is a 6rem × 4.5rem thumbnail with the whole composition scaled down." },
           { prop: "className", type: "string", description: "Override the 16:10 ratio or radius." },

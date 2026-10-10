@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { KeyRoundIcon, LogOutIcon, RocketIcon, Trash2Icon } from "lucide-react"
+import { KeyRoundIcon, LogOutIcon, Trash2Icon, ZapIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import {
@@ -55,8 +55,7 @@ function PreviewRoot({
 /**
  * The stage the dialog opens into. contain-layout makes it the containing
  * block for the fixed overlay and popup; isolate keeps them under the site header.
- * The overlay keeps its tint but not its blur, which in a stage this small only
- * smears the page into grey.
+ * The overlay tints and blurs the page behind it, as it does over a real page.
  */
 function DialogStage({
   title,
@@ -71,7 +70,7 @@ function DialogStage({
 }) {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout [&_[data-slot=alert-dialog-overlay]]:backdrop-blur-none">
+    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout">
       <div className="grid content-start gap-8 p-6 sm:p-12">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="grid gap-1">
@@ -95,89 +94,88 @@ function DialogStage({
   )
 }
 
-const deploymentRows = [
-  { label: "Deployment", value: "8f2c1a9", mono: true },
-  { label: "Branch", value: "main" },
-  { label: "Author", value: "Priya Raman" },
-  { label: "Built in", value: "38s" },
-  { label: "Regions", value: "Frankfurt, Virginia, Singapore" },
+const ruleRows = [
+  { label: "When", value: "A task moves to Done" },
+  { label: "Then", value: "Notify the task owner" },
+  { label: "Runs this month", value: "7,240 of 10,000" },
+  { label: "Last run", value: "4 minutes ago" },
 ]
 
-const branchRows = [
-  { label: "Preview URL", value: "feat-billing.lumen.app", mono: true },
-  { label: "Deployments", value: "12" },
-  { label: "Last commit", value: "2 hours ago" },
-  { label: "Comments", value: "3 open threads" },
+const taskRows = [
+  { label: "Assignee", value: "Priya Raman" },
+  { label: "Due date", value: "Oct 14, 2026" },
+  { label: "Priority", value: "High" },
+  { label: "Subtasks", value: "2 of 4 done" },
 ]
 
-const accountRows = [
+const sessionRows = [
   { label: "MacBook Pro · Safari", value: "This device" },
-  { label: "iPhone 16 · Lumen app", value: "2 hours ago" },
-  { label: "Linux · Chrome", value: "Yesterday" },
-  { label: "Lumen CLI", value: "3 days ago" },
+  { label: "iPhone 16 · Acme app", value: "2 hours ago" },
+  { label: "Windows · Chrome", value: "Yesterday" },
+  { label: "iPad · Acme app", value: "3 days ago" },
 ]
 
 const keyRows = [
-  { label: "Key", value: "lmn_live_••••••••3f9a", mono: true },
-  { label: "Scopes", value: "Deployments, domains" },
-  { label: "Created", value: "12 March 2025" },
+  { label: "Name", value: "HubSpot sync" },
+  { label: "Key", value: "acme_live_••••••••3f9a", mono: true },
+  { label: "Access", value: "Read and write tasks" },
   { label: "Last used", value: "2 minutes ago" },
 ]
 
 const projectRows = [
-  { label: "Deployments", value: "214" },
-  { label: "Domains", value: "lumen.app, www.lumen.app", mono: true },
-  { label: "Created", value: "March 2025" },
-  { label: "Owner", value: "Lumen Labs" },
+  { label: "Tasks", value: "30" },
+  { label: "Docs", value: "12" },
+  { label: "Automations", value: "3" },
+  { label: "Owner", value: "Sam Okafor" },
 ]
 
-function PromoteDialog({ container }: { container: Stage }) {
+function RunRuleDialog({ container }: { container: Stage }) {
   const [open, setOpen] = React.useState(true)
 
   return (
     <PreviewRoot open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger render={<Button />}>
-        <RocketIcon data-icon="inline-start" />
-        Promote to production
+        <ZapIcon data-icon="inline-start" />
+        Run on existing tasks
       </AlertDialogTrigger>
       <AlertDialogContent container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
-          <AlertDialogTitle>Promote this deployment?</AlertDialogTitle>
+          <AlertDialogTitle>Run this rule on 38 tasks?</AlertDialogTitle>
           <AlertDialogDescription>
-            Deployment 8f2c1a9 replaces the current production deployment on lumen.app. You can roll back at any
-            time.
+            Each of the 38 tasks already in Done notifies its owner. This uses 38 of the 2,760 runs left this
+            month.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => setOpen(false)}>Promote</AlertDialogAction>
+          <AlertDialogAction onClick={() => setOpen(false)}>Run rule</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </PreviewRoot>
   )
 }
 
-function DeleteBranchDialog({ container }: { container: Stage }) {
+function DeleteTaskDialog({ container }: { container: Stage }) {
   const [open, setOpen] = React.useState(true)
 
   return (
     <PreviewRoot open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger render={<Button variant="outline" />}>Delete preview branch</AlertDialogTrigger>
+      <AlertDialogTrigger render={<Button variant="outline" />}>Delete task</AlertDialogTrigger>
       <AlertDialogContent container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
           <AlertDialogMedia variant="destructive">
             <Trash2Icon />
           </AlertDialogMedia>
-          <AlertDialogTitle>Delete the preview branch?</AlertDialogTitle>
+          <AlertDialogTitle>Delete this task?</AlertDialogTitle>
           <AlertDialogDescription>
-            The preview at <strong>feat-billing.lumen.app</strong> stops working and its 12 deployments are removed.
-            The Git branch is not touched.
+            <strong>Write the launch announcement</strong>, its 4 subtasks and 3 comments are removed for everyone.
+            Files linked from Google Drive stay where they are.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction variant="destructive" onClick={() => setOpen(false)}>
-            Delete branch
+            Delete task
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -251,7 +249,7 @@ function PendingDemo() {
           <ToggleGroupItem value="pending">Pending</ToggleGroupItem>
         </ToggleGroup>
       </div>
-      <DialogStage title="API keys" meta="lumen-web · production" rows={keyRows}>
+      <DialogStage title="API keys" meta="Acme Inc. · Settings" rows={keyRows}>
         {(container) => (
           <PreviewRoot open={open} onOpenChange={(next) => !pending && setOpen(next)}>
             <AlertDialogTrigger render={<Button variant="outline" />}>
@@ -260,10 +258,10 @@ function PendingDemo() {
             </AlertDialogTrigger>
             <AlertDialogContent container={container} initialFocus={false} className={inStage}>
               <AlertDialogHeader>
-                <AlertDialogTitle>Rotate the production API key?</AlertDialogTitle>
+                <AlertDialogTitle>Rotate the HubSpot sync key?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  The current key stops working in 10 minutes. Update <strong>LUMEN_API_KEY</strong> in your CI before
-                  then.
+                  The current key stops working in 10 minutes. Paste the new key into the HubSpot integration before
+                  then, or tasks stop syncing.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -282,7 +280,7 @@ function PendingDemo() {
 }
 
 function TypeToConfirmDialog({ container }: { container: Stage }) {
-  const project = "lumen-web"
+  const project = "Help center"
   const [open, setOpen] = React.useState(true)
   const [value, setValue] = React.useState("")
   const matches = value.trim() === project
@@ -303,13 +301,15 @@ function TypeToConfirmDialog({ container }: { container: Stage }) {
           </AlertDialogMedia>
           <AlertDialogTitle>Delete {project}?</AlertDialogTitle>
           <AlertDialogDescription>
-            This removes the project, its 214 deployments and every preview URL. Domains go back to your account.
-            You can’t undo this.
+            This removes the project, its 30 tasks, 12 docs and 3 automations for everyone in Acme Inc. You can’t
+            undo this. Archive the project instead to keep its history.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Field>
           <FieldLabel htmlFor="alert-confirm">
-            Type <span className="font-mono text-foreground">{project}</span> to confirm
+            <span>
+              Type <span className="font-semibold text-foreground">{project}</span> to confirm
+            </span>
           </FieldLabel>
           <Input
             id="alert-confirm"
@@ -340,25 +340,25 @@ export default function AlertDialogDocs() {
         code={`const [open, setOpen] = React.useState(false)
 
 <AlertDialog open={open} onOpenChange={setOpen}>
-  <AlertDialogTrigger render={<Button />}>Promote to production</AlertDialogTrigger>
+  <AlertDialogTrigger render={<Button />}>Run on existing tasks</AlertDialogTrigger>
   <AlertDialogContent>
     <AlertDialogHeader>
-      <AlertDialogTitle>Promote this deployment?</AlertDialogTitle>
+      <AlertDialogTitle>Run this rule on 38 tasks?</AlertDialogTitle>
       <AlertDialogDescription>
-        Deployment 8f2c1a9 replaces the current production deployment on lumen.app.
+        Each of the 38 tasks already in Done notifies its owner.
       </AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter>
       <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction onClick={() => promote().then(() => setOpen(false))}>
-        Promote
+      <AlertDialogAction onClick={() => runRule().then(() => setOpen(false))}>
+        Run rule
       </AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>`}
       >
-        <DialogStage title="lumen-web" meta="Preview · ready 4 minutes ago" rows={deploymentRows}>
-          {(container) => <PromoteDialog container={container} />}
+        <DialogStage title="Notify owner on Done" meta="Automation · Website relaunch" rows={ruleRows}>
+          {(container) => <RunRuleDialog container={container} />}
         </DialogStage>
       </Example>
 
@@ -371,17 +371,17 @@ export default function AlertDialogDocs() {
     <AlertDialogMedia variant="destructive">
       <Trash2Icon />
     </AlertDialogMedia>
-    <AlertDialogTitle>Delete the preview branch?</AlertDialogTitle>
+    <AlertDialogTitle>Delete this task?</AlertDialogTitle>
     <AlertDialogDescription>…</AlertDialogDescription>
   </AlertDialogHeader>
   <AlertDialogFooter>
     <AlertDialogCancel>Cancel</AlertDialogCancel>
-    <AlertDialogAction variant="destructive">Delete branch</AlertDialogAction>
+    <AlertDialogAction variant="destructive">Delete task</AlertDialogAction>
   </AlertDialogFooter>
 </AlertDialogContent>`}
       >
-        <DialogStage title="feat-billing" meta="Preview branch · lumen-web" rows={branchRows}>
-          {(container) => <DeleteBranchDialog container={container} />}
+        <DialogStage title="Write the launch announcement" meta="Task · Website relaunch" rows={taskRows}>
+          {(container) => <DeleteTaskDialog container={container} />}
         </DialogStage>
       </Example>
 
@@ -391,7 +391,7 @@ export default function AlertDialogDocs() {
         description={`size="sm" narrows the dialog to --dialog-width-sm, centres a short question and gives both answers equal width. Good for sign-out and leave prompts.`}
         code={`<AlertDialogContent size="sm">…</AlertDialogContent>`}
       >
-        <DialogStage title="Sessions" meta="4 devices signed in" rows={accountRows}>
+        <DialogStage title="Sessions" meta="4 devices signed in" rows={sessionRows}>
           {(container) => <SignOutDialog container={container} />}
         </DialogStage>
       </Example>
@@ -419,7 +419,7 @@ export default function AlertDialogDocs() {
         layout="full"
         description="For the most destructive actions, ask people to type the name of what they are deleting. The action stays disabled until it matches."
       >
-        <DialogStage title="lumen-web" meta="Settings · Danger zone" rows={projectRows}>
+        <DialogStage title="Help center" meta="Paused · Settings · Danger zone" rows={projectRows}>
           {(container) => <TypeToConfirmDialog container={container} />}
         </DialogStage>
       </Example>
@@ -427,7 +427,7 @@ export default function AlertDialogDocs() {
       <Guidelines
         do={[
           "Use an alert dialog only when the action is destructive, expensive or hard to undo.",
-          "Write the title as a question that names the thing: “Delete lumen-web?”.",
+          "Write the title as a question that names the thing: “Delete Help center?”.",
           "Say exactly what will be lost or changed, with numbers when you have them.",
           "Label the action with the verb from the title, never “OK” or “Yes”.",
         ]}

@@ -5,6 +5,7 @@ import { RotateCcwIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Kern } from "@/components/viewer/kern"
 import { cn } from "@/lib/utils"
 
 export interface RoleSpec {
@@ -16,6 +17,8 @@ export interface RoleSpec {
   lineHeight: string
   tracking: string
   weight: string
+  /** Size and line height from each breakpoint up, for roles that change with the viewport. */
+  responsive?: string[]
 }
 
 /* Literal class names so Tailwind generates every role. */
@@ -30,23 +33,29 @@ const roleClass: Record<string, string> = {
   lead: "text-lead text-copy",
   body: "text-body text-copy",
   label: "text-label text-foreground",
+  control: "text-control text-foreground",
   caption: "text-caption text-muted-foreground",
   code: "font-mono text-code text-foreground",
 }
 
+/* Display-size roles, whose word-ending punctuation needs kerning. */
+const kernedRoles = new Set(["hero", "display", "h1", "h2"])
+
 const defaultSample: Record<string, string> = {
-  hero: "Push to ship",
-  display: "Ship on every push",
-  h1: "Preview every pull request",
-  h2: "Logs that keep up with you",
-  h3: "Roll back in one click",
-  h4: "Production deployment",
-  title: "lumen-web on main",
-  lead: "Lumen builds, deploys and scales your app from a single git push, with a preview URL for every branch.",
-  body: "Each deployment gets its own immutable URL. Promote it to production when the checks pass, or roll back to any earlier build in seconds.",
-  label: "Deploy to production",
-  caption: "Deployed 4 minutes ago by Priya Shah",
-  code: "git push lumen main",
+  hero: "Work, sorted",
+  /* The Home template's hero headline: display is the hero role. */
+  display: "Plan it. Track it. Ship it together.",
+  h1: "Every project, four views",
+  h2: "Automations that clear the busywork",
+  h3: "See who has too much on",
+  h4: "Website relaunch",
+  title: "Review homepage copy",
+  lead: "Acme brings projects, tasks, docs and reports into one workspace, so everyone knows what to work on next.",
+  body: "Give each task an owner, a due date and a priority, and break it into subtasks. Comments keep the discussion next to the work instead of lost in a chat thread.",
+  label: "Create project",
+  control: "maya@acme.com",
+  caption: "Updated 4 minutes ago by Maya Patel",
+  code: "npm install @acme/sdk",
 }
 
 export function TypeSpecimens({ roles }: { roles: RoleSpec[] }) {
@@ -94,10 +103,26 @@ export function TypeSpecimens({ roles }: { roles: RoleSpec[] }) {
               <span className="font-mono text-xs text-muted-foreground tabular" title="Size · line height · tracking · weight">
                 {[role.size.replace(/ fluid$/, ""), role.lineHeight, role.tracking, role.weight].join(" · ")}
               </span>
+              {role.responsive?.map((line) => (
+                <span key={line} className="font-mono text-xs text-muted-foreground tabular">
+                  {line}
+                </span>
+              ))}
               {role.description ? <p className="mt-1 text-caption text-copy">{role.description}</p> : null}
             </div>
-            <p className={cn("min-w-0 break-words", roleClass[role.key] ?? "text-body text-copy")}>
-              {text || defaultSample[role.key] || "Lumen deploys your app on every push"}
+            {/* Display-size samples wrap balanced, so a headline never leaves one word on its last line. */}
+            <p
+              className={cn(
+                "min-w-0 break-words",
+                kernedRoles.has(role.key) && "text-balance",
+                roleClass[role.key] ?? "text-body text-copy"
+              )}
+            >
+              {kernedRoles.has(role.key) ? (
+                <Kern>{text || defaultSample[role.key]}</Kern>
+              ) : (
+                text || defaultSample[role.key] || "Plan, track and ship your team’s work in one place"
+              )}
             </p>
           </li>
         ))}

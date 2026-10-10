@@ -3,11 +3,12 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 export interface CodeWindowProps {
-  /** Label in the title bar, such as "terminal" or a file name. */
+  /** Label in the title bar, such as a file name. */
   title?: string
   /**
-   * Lines of output. Lines starting with "$" are prompts, "✓" are successes
-   * and "→" are progress notes, shown muted.
+   * Lines of code or output. Lines starting with "//" are comments and "→"
+   * are notes, both shown muted; "$" starts a shell prompt and "✓" marks a
+   * success.
    */
   lines?: string[]
   /** Custom content for the body. Replaces lines when set. */
@@ -23,13 +24,18 @@ export interface CodeWindowProps {
 }
 
 const defaultLines = [
-  "$ lumen deploy",
-  "→ Building acme/web from main (a41c9e2)",
-  "→ Restored build cache in 1.2s",
-  "✓ Built image in 14.2s",
-  "→ Starting 2 replicas in fra1",
-  "✓ Health checks passed",
-  "✓ Live at https://web.acme.dev",
+  'import { Acme } from "@acme/sdk"',
+  "",
+  "const acme = new Acme({",
+  "  apiKey: process.env.ACME_API_KEY,",
+  "})",
+  "",
+  "// Add a task to Website relaunch",
+  "const task = await acme.tasks.create({",
+  '  title: "Write launch announcement",',
+  '  projectId: "website-relaunch",',
+  '  assignee: "priya@acme.com",',
+  "})",
 ]
 
 function CodeLine({ text }: { text: string }) {
@@ -51,17 +57,18 @@ function CodeLine({ text }: { text: string }) {
       </span>
     )
   }
-  if (text.startsWith("→")) {
+  if (text.startsWith("→") || text.trimStart().startsWith("//")) {
     return <span className="block text-panel-muted">{text}</span>
   }
   return <span className="block">{text === "" ? " " : text}</span>
 }
 
 /**
- * A dark terminal frame with a title bar. Pass lines for shell output, or
- * children for anything else (an editor view, a log stream).
+ * A dark editor frame with a title bar, for code samples such as an API
+ * example. Pass lines for code or shell output, or children for anything
+ * else, such as a highlighted response.
  */
-export function CodeWindow({ title = "terminal", lines, children, wrap = false, className }: CodeWindowProps) {
+export function CodeWindow({ title = "create-task.ts", lines, children, wrap = false, className }: CodeWindowProps) {
   const content = lines ?? (children ? null : defaultLines)
   return (
     <figure

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { CheckIcon, LockIcon } from "lucide-react"
+import { BellIcon, CheckIcon, FilterIcon, ZapIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -9,18 +9,18 @@ export type CoverTint = "violet" | "mint" | "sand" | "sky" | "rose" | "panel"
 /** Simple shape compositions. No gradients, no images. */
 export type CoverPattern =
   | "window"
-  | "terminal"
+  | "checklist"
   | "orbit"
   | "bars"
   | "grid"
-  | "branch"
+  | "board"
   | "compare"
-  | "regions"
-  | "uptime"
+  | "calendar"
+  | "timeline"
   | "stack"
   | "menubar"
-  | "fields"
-  | "address"
+  | "flow"
+  | "inbox"
 
 /** One bar of the "compare" pattern. */
 export interface CoverFigure {
@@ -35,18 +35,18 @@ export interface CoverFigure {
 export const coverTints: CoverTint[] = ["violet", "mint", "sand", "sky", "rose", "panel"]
 export const coverPatterns: CoverPattern[] = [
   "window",
-  "terminal",
+  "checklist",
   "orbit",
   "bars",
   "grid",
-  "branch",
+  "board",
   "compare",
-  "regions",
-  "uptime",
+  "calendar",
+  "timeline",
   "stack",
   "menubar",
-  "fields",
-  "address",
+  "flow",
+  "inbox",
 ]
 
 /** Background utility for each tint. Full class names so Tailwind can see them. */
@@ -71,6 +71,8 @@ export const tintInkClass: Record<CoverTint, string> = {
 
 interface Tone {
   ink: string
+  /** Text and icons drawn on an ink fill. */
+  onInk: string
   /** Between soft and ink, for a second series. */
   mid: string
   soft: string
@@ -84,6 +86,7 @@ interface Tone {
 
 const lightTone: Tone = {
   ink: "bg-foreground",
+  onInk: "text-background",
   mid: "bg-foreground/35",
   soft: "bg-foreground/12",
   paper: "bg-background",
@@ -96,6 +99,7 @@ const lightTone: Tone = {
 
 const panelTone: Tone = {
   ink: "bg-panel-foreground",
+  onInk: "text-panel",
   mid: "bg-panel-foreground/40",
   soft: "bg-panel-foreground/15",
   paper: "bg-panel-raised",
@@ -107,8 +111,8 @@ const panelTone: Tone = {
 }
 
 const defaultFigures: CoverFigure[] = [
-  { label: "Before", value: "61s", share: 1 },
-  { label: "After", value: "18s", share: 0.29 },
+  { label: "Before", value: "4", share: 1 },
+  { label: "After", value: "2", share: 0.5 },
 ]
 
 export interface PostCoverProps {
@@ -143,18 +147,18 @@ export function PostCover({
   const shape = (
     <>
       {pattern === "window" && <WindowShape tone={tone} />}
-      {pattern === "terminal" && <TerminalShape />}
+      {pattern === "checklist" && <ChecklistShape tone={tone} />}
       {pattern === "orbit" && <OrbitShape tone={tone} />}
       {pattern === "bars" && <BarsShape tone={tone} />}
       {pattern === "grid" && <GridShape tone={tone} />}
-      {pattern === "branch" && <BranchShape tone={tone} />}
+      {pattern === "board" && <BoardShape tone={tone} />}
       {pattern === "compare" && <CompareShape tone={tone} figures={figures} />}
-      {pattern === "regions" && <RegionsShape tone={tone} />}
-      {pattern === "uptime" && <UptimeShape tone={tone} />}
+      {pattern === "calendar" && <CalendarShape tone={tone} />}
+      {pattern === "timeline" && <TimelineShape tone={tone} />}
       {pattern === "stack" && <StackShape tone={tone} />}
       {pattern === "menubar" && <MenubarShape tone={tone} />}
-      {pattern === "fields" && <FieldsShape tone={tone} />}
-      {pattern === "address" && <AddressShape tone={tone} />}
+      {pattern === "flow" && <FlowShape tone={tone} />}
+      {pattern === "inbox" && <InboxShape tone={tone} />}
     </>
   )
 
@@ -214,20 +218,33 @@ function WindowShape({ tone }: { tone: Tone }) {
   )
 }
 
-function TerminalShape() {
+const checklistRows = [
+  { done: true, width: "w-3/5" },
+  { done: true, width: "w-2/5" },
+  { done: false, width: "w-1/2" },
+  { done: false, width: "w-1/3" },
+]
+
+/** A task list on a card: two items ticked off, two to go. */
+function ChecklistShape({ tone }: { tone: Tone }) {
   return (
-    <div className="absolute top-1/5 left-1/8 h-full w-full rounded-lg border border-panel-border bg-terminal p-4 font-mono text-xs text-terminal-foreground">
-      <div className="flex gap-1">
-        <span className="size-1.5 rounded-full bg-terminal-foreground/30" />
-        <span className="size-1.5 rounded-full bg-terminal-foreground/30" />
-        <span className="size-1.5 rounded-full bg-terminal-foreground/30" />
-      </div>
-      <div className="mt-4 grid gap-1.5 whitespace-nowrap">
-        <span>
-          <span className="text-terminal-foreground/50">$ </span>lumen deploy
-        </span>
-        <span className="text-terminal-foreground/50">→ build 12s</span>
-        <span className="text-panel-success">✓ live</span>
+    <div className={cn("absolute top-1/5 left-1/8 h-full w-full rounded-lg border p-4 @3xl/cover:p-7", tone.paper, tone.hair)}>
+      <span className={cn("block h-2.5 w-1/4 rounded-full @3xl/cover:h-4", tone.ink)} />
+      <div className="mt-5 grid gap-3.5 @3xl/cover:mt-8 @3xl/cover:gap-6">
+        {checklistRows.map((row, i) => (
+          <div key={i} className="flex items-center gap-3 @3xl/cover:gap-5">
+            <span
+              className={cn(
+                "grid size-4 shrink-0 place-items-center rounded-xs border-(length:--border-width-strong) @3xl/cover:size-7",
+                tone.line,
+                row.done ? cn(tone.ink, tone.onInk) : tone.paper
+              )}
+            >
+              {row.done ? <CheckIcon className="size-3 @3xl/cover:size-5" strokeWidth={3} /> : null}
+            </span>
+            <span className={cn("h-1.5 rounded-full @3xl/cover:h-2.5", row.width, row.done ? tone.soft : tone.mid)} />
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -283,37 +300,34 @@ function GridShape({ tone }: { tone: Tone }) {
   )
 }
 
-const commitDots = [
-  { pos: "top-3/5 left-1/8", filled: false },
-  { pos: "top-3/5 left-1/4", filled: false },
-  { pos: "top-1/3 left-5/12", filled: false },
-  { pos: "top-1/3 left-7/12", filled: false },
-  { pos: "top-3/5 left-3/4", filled: true },
-  { pos: "top-3/5 left-7/8", filled: false },
+const boardColumns = [
+  { cards: 2, highlight: -1 },
+  { cards: 3, highlight: 1 },
+  { cards: 1, highlight: -1 },
 ]
 
-function BranchShape({ tone }: { tone: Tone }) {
+/** Three board columns of cards, one card picked out in ink. */
+function BoardShape({ tone }: { tone: Tone }) {
   return (
-    <>
-      <span className={cn("absolute inset-x-0 top-3/5 h-0.5 -translate-y-1/2", tone.ink)} />
-      <span
-        className={cn(
-          "absolute top-1/3 right-1/4 bottom-2/5 left-1/4 rounded-t-3xl border-(length:--border-width-strong) border-b-0",
-          tone.line
-        )}
-      />
-      {commitDots.map((dot) => (
-        <span
-          key={dot.pos}
-          className={cn(
-            "absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-(length:--border-width-strong)",
-            dot.pos,
-            tone.line,
-            dot.filled ? tone.ink : tone.paper
-          )}
-        />
+    <div className="absolute inset-x-1/10 top-1/6 -bottom-2 grid grid-cols-3 gap-3 @3xl/cover:gap-5">
+      {boardColumns.map((column, c) => (
+        <div key={c} className={cn("grid content-start gap-2 rounded-t-lg p-2 @3xl/cover:gap-3 @3xl/cover:p-3", tone.paperSoft)}>
+          <span className={cn("mb-1 block h-1.5 w-1/2 rounded-full @3xl/cover:h-2.5", tone.mid)} />
+          {Array.from({ length: column.cards }, (_, i) => (
+            <span
+              key={i}
+              className={cn(
+                "grid h-10 content-start gap-1.5 rounded-md border p-2 @3xl/cover:h-16 @3xl/cover:p-3",
+                i === column.highlight ? cn(tone.ink, "border-transparent") : cn(tone.paper, tone.hair)
+              )}
+            >
+              <span className={cn("h-1.5 w-3/4 rounded-full @3xl/cover:h-2", i === column.highlight ? tone.paper : tone.soft)} />
+              <span className={cn("h-1.5 w-1/2 rounded-full @3xl/cover:h-2", i === column.highlight ? tone.mid : tone.soft)} />
+            </span>
+          ))}
+        </div>
       ))}
-    </>
+    </div>
   )
 }
 
@@ -326,7 +340,7 @@ function CompareShape({ tone, figures }: { tone: Tone; figures: CoverFigure[] })
         const share = Math.min(Math.max(figure.share, 0.04), 1)
         return (
           <div key={figure.label} className="grid gap-2 @3xl/cover:gap-3">
-            <span className={cn("font-mono text-xs font-semibold @lg/cover:text-sm @4xl/cover:text-base", tone.muted)}>
+            <span className={cn("text-caption font-semibold @lg/cover:text-sm @4xl/cover:text-base", tone.muted)}>
               {figure.label}
             </span>
             <div className="flex items-center gap-3 @3xl/cover:gap-5">
@@ -351,60 +365,56 @@ function CompareShape({ tone, figures }: { tone: Tone; figures: CoverFigure[] })
   )
 }
 
-/* A dot map of the world, 24 columns by 10 rows. "x" is land, "o" a region. */
-const worldRows = [
-  ".xxxxxxxx...xxxxxxxxxxx.",
-  "..xxxxxxx..xxoxxxxxxxxxx",
-  "...xxxxo...xxxxxxxxxxox.",
-  "....oxxx...xxxxxxxxxxx..",
-  ".....xx....xxxxx.xoxx...",
-  "......xxx...xxxx..xx.x..",
-  "......xxxx..xxxx....xxx.",
-  ".......xox...xx....xxxx.",
-  ".......xx...........xo..",
-  "........x...............",
-]
-
-function RegionsShape({ tone }: { tone: Tone }) {
+/** A month on a card: the same weekday marked every week, and today filled in. */
+function CalendarShape({ tone }: { tone: Tone }) {
   return (
-    <div className="absolute inset-x-1/10 top-1/2 grid -translate-y-1/2 grid-cols-24 gap-1 @lg/cover:gap-1.5">
-      {worldRows.flatMap((row, r) =>
-        row.split("").map((cell, c) => (
-          <span
-            key={`${r}-${c}`}
-            className={cn(
-              "aspect-square rounded-full",
-              cell === "o" ? tone.ink : cell === "x" ? tone.soft : undefined
-            )}
-          />
-        ))
-      )}
+    <div className={cn("absolute inset-x-1/8 top-1/6 bottom-0 rounded-t-lg border border-b-0 p-3 @3xl/cover:p-6", tone.paper, tone.hair)}>
+      <span className={cn("block h-2 w-1/4 rounded-full @3xl/cover:h-3", tone.ink)} />
+      <div className="mt-3 grid grid-cols-7 gap-1.5 @3xl/cover:mt-6 @3xl/cover:gap-3">
+        {Array.from({ length: 28 }, (_, i) => {
+          const repeat = i % 7 === 1
+          const today = i === 16
+          return (
+            <span
+              key={i}
+              className={cn("grid aspect-square place-items-center rounded-sm", today ? tone.ink : tone.paperSoft, !today && "border", !today && tone.hair)}
+            >
+              {repeat ? <span className={cn("size-1.5 rounded-full @3xl/cover:size-2.5", tone.ink)} /> : null}
+            </span>
+          )
+        })}
+      </div>
     </div>
   )
 }
 
-const uptimeBlocks = 12
+const timelineBars = [
+  { left: "0%", width: "34%", fill: "soft" },
+  { left: "18%", width: "38%", fill: "mid" },
+  { left: "40%", width: "32%", fill: "ink" },
+  { left: "58%", width: "30%", fill: "soft" },
+  { left: "80%", width: "20%", fill: "mid" },
+] as const
 
-/** Two releases side by side: the old one hands over to the new one with an overlap. */
-function UptimeShape({ tone }: { tone: Tone }) {
-  const rows = [
-    { from: 0, to: 8, fill: tone.mid },
-    { from: 5, to: uptimeBlocks, fill: tone.ink },
-  ]
+/** Tasks as bars across weeks, overlapping where work runs side by side. */
+function TimelineShape({ tone }: { tone: Tone }) {
   return (
-    <div className="absolute inset-x-1/8 top-1/2 grid -translate-y-1/2 gap-2.5 @3xl/cover:gap-4">
-      {rows.map((row, r) => (
-        <div key={r} className="flex h-12 gap-2 @3xl/cover:h-20 @3xl/cover:gap-3">
-          {Array.from({ length: uptimeBlocks }, (_, i) => (
-            <span key={i} className={cn("flex-1 rounded-md", i >= row.from && i < row.to ? row.fill : tone.soft)} />
-          ))}
-        </div>
+    <div className="absolute inset-x-1/8 top-1/2 -translate-y-1/2">
+      {[25, 50, 75].map((left) => (
+        <span key={left} className={cn("absolute -inset-y-4 border-l", tone.hair)} style={{ left: `${left}%` }} />
       ))}
+      <div className="relative grid gap-2.5 @3xl/cover:gap-4">
+        {timelineBars.map((bar, i) => (
+          <div key={i} className="relative h-5 @3xl/cover:h-8">
+            <span className={cn("absolute inset-y-0 rounded-full", tone[bar.fill])} style={{ left: bar.left, width: bar.width }} />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
 
-/** Three services stacked like cards: web in front, worker and database behind. */
+/** Three docs stacked like cards: the open one in front, two behind. */
 function StackShape({ tone }: { tone: Tone }) {
   const card = cn("absolute h-1/2 w-1/2 rounded-lg border p-3", tone.paper, tone.hair)
   return (
@@ -428,7 +438,7 @@ function StackShape({ tone }: { tone: Tone }) {
   )
 }
 
-/** A menu bar with the Lumen mark and its open menu, floating inside the cover. */
+/** A menu bar with the app icon and its open menu, floating inside the cover. */
 function MenubarShape({ tone }: { tone: Tone }) {
   return (
     <>
@@ -474,60 +484,67 @@ function MenubarShape({ tone }: { tone: Tone }) {
   )
 }
 
-const logFields = [
-  { key: "level", value: "\"error\"" },
-  { key: "route", value: "\"/api/checkout\"", highlight: true },
-  { key: "status", value: "502" },
-  { key: "duration_ms", value: "1210" },
-  { key: "region", value: "\"gru1\"" },
-]
-
-/** One structured log line, pretty-printed, with a field picked out. */
-function FieldsShape({ tone }: { tone: Tone }) {
+/** An automation rule: the trigger in ink, joined by hairlines to a condition and an action. A wide cover spells the steps out. */
+function FlowShape({ tone }: { tone: Tone }) {
+  const node =
+    "flex h-14 min-w-0 flex-1 items-center gap-2 rounded-lg px-3 @lg/cover:h-18 @lg/cover:gap-3 @lg/cover:px-4 @3xl/cover:h-24 @3xl/cover:px-6"
+  const link = cn("h-0.5 w-4 shrink-0 @lg/cover:w-6 @3xl/cover:w-10", tone.ink)
+  // Skeleton lines in a small cover; from @3xl/cover the rule reads out in words.
+  const lines = (first: string, second: string, label: string, text?: string) => (
+    <>
+      <span className="grid min-w-0 flex-1 gap-1.5 @3xl/cover:hidden">
+        <span className={cn("h-1.5 w-4/5 rounded-full", first)} />
+        <span className={cn("h-1.5 w-1/2 rounded-full", second)} />
+      </span>
+      <span className={cn("hidden min-w-0 flex-1 text-label text-balance @3xl/cover:block @4xl/cover:text-base", text)}>
+        {label}
+      </span>
+    </>
+  )
   return (
-    <div
-      className={cn(
-        "absolute top-1/6 left-1/2 h-full w-3/4 -translate-x-1/2 rounded-lg border px-3 py-4 font-mono text-xs leading-6 whitespace-nowrap @3xl/cover:text-sm @3xl/cover:leading-7",
-        tone.paper,
-        tone.hair,
-        tone.muted
-      )}
-    >
-      <span className="block px-2">{"{"}</span>
-      {logFields.map((field) => (
-        <span key={field.key} className={cn("block rounded-sm px-2 pl-6", field.highlight && tone.soft)}>
-          {`"${field.key}": `}
-          <span className={cn("font-semibold", tone.text)}>{field.value}</span>
-        </span>
-      ))}
-      <span className="block px-2">{"}"}</span>
+    <div className="absolute inset-x-1/12 top-1/2 flex -translate-y-1/2 items-center">
+      <div className={cn(node, tone.ink, tone.onInk)}>
+        <ZapIcon className="size-4 shrink-0 @lg/cover:size-5 @3xl/cover:size-7" strokeWidth={2.5} />
+        {lines(tone.paper, tone.paperSoft, "A task moves to Done")}
+      </div>
+      <span className={link} />
+      <div className={cn(node, "border", tone.paper, tone.hair)}>
+        <FilterIcon className={cn("size-4 shrink-0 @lg/cover:size-5 @3xl/cover:size-7", tone.muted)} strokeWidth={2.5} />
+        {lines(tone.mid, tone.soft, "Priority is High or Urgent", tone.text)}
+      </div>
+      <span className={link} />
+      <div className={cn(node, "border", tone.paper, tone.hair)}>
+        <BellIcon className={cn("size-4 shrink-0 @lg/cover:size-5 @3xl/cover:size-7", tone.muted)} strokeWidth={2.5} />
+        {lines(tone.mid, tone.soft, "Notify the task owner", tone.text)}
+      </div>
     </div>
   )
 }
 
-/** An address bar with the padlock, and the certificate it was issued. */
-function AddressShape({ tone }: { tone: Tone }) {
+const inboxRows = [
+  { unread: true, width: "w-3/5" },
+  { unread: true, width: "w-1/2" },
+  { unread: false, width: "w-2/3" },
+  { unread: false, width: "w-2/5" },
+]
+
+/** An inbox: two unread updates marked with a dot, two read below them. */
+function InboxShape({ tone }: { tone: Tone }) {
   return (
-    <div className="absolute inset-x-1/8 top-1/2 grid -translate-y-1/2 gap-4 @3xl/cover:gap-6">
-      <div
-        className={cn(
-          "flex h-12 min-w-0 items-center gap-3 rounded-full border px-5 @3xl/cover:h-16 @3xl/cover:px-7",
-          tone.paper,
-          tone.hair
-        )}
-      >
-        <LockIcon className={cn("size-4 shrink-0 @3xl/cover:size-5", tone.text)} strokeWidth={2.5} />
-        <span className={cn("truncate font-mono text-sm @3xl/cover:text-lg", tone.muted)}>
-          https://<span className={cn("font-semibold", tone.text)}>shop.acme.dev</span>
-        </span>
-      </div>
-      <div className="flex items-center gap-3 px-5 @3xl/cover:px-7">
-        <span className="grid size-5 shrink-0 place-items-center rounded-full bg-success text-success-foreground">
-          <CheckIcon className="size-3" strokeWidth={3} />
-        </span>
-        <span className={cn("h-1.5 w-1/3 rounded-full", tone.ink)} />
-        <span className={cn("h-1.5 w-1/5 rounded-full", tone.soft)} />
-      </div>
+    <div className={cn("absolute inset-x-1/8 top-1/6 -bottom-2 grid content-start rounded-t-lg border", tone.paper, tone.hair)}>
+      {inboxRows.map((row, i) => (
+        <div
+          key={i}
+          className={cn("flex items-center gap-3 border-b px-4 py-3 @3xl/cover:gap-5 @3xl/cover:px-6 @3xl/cover:py-5", tone.hair, i === 0 && tone.paperSoft)}
+        >
+          <span className={cn("size-2 shrink-0 rounded-full @3xl/cover:size-3", row.unread ? tone.ink : "bg-transparent")} />
+          <span className={cn("size-6 shrink-0 rounded-full @3xl/cover:size-10", tone.soft)} />
+          <span className="grid flex-1 gap-1.5 @3xl/cover:gap-2.5">
+            <span className={cn("h-1.5 rounded-full @3xl/cover:h-2.5", row.width, row.unread ? tone.ink : tone.mid)} />
+            <span className={cn("h-1.5 w-1/3 rounded-full @3xl/cover:h-2", tone.soft)} />
+          </span>
+        </div>
+      ))}
     </div>
   )
 }

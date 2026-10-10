@@ -14,7 +14,7 @@ import { Kern } from "@/components/ui/kern"
  * own switch is hidden.
  */
 export function PricingOverview() {
-  const [billing, setBilling] = React.useState<BillingPeriod>("monthly")
+  const [billing, setBilling] = React.useState<BillingPeriod>("yearly")
 
   return (
     <>
@@ -22,14 +22,14 @@ export function PricingOverview() {
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-end lg:gap-16">
           <h1 className="max-w-narrow text-display text-foreground">
             <Kern>
-              Pay for traffic, not <span className="text-brand">teammates</span>.
+              Start free. Grow at your own <span className="text-brand">pace</span>.
             </Kern>
           </h1>
 
           <div className="grid justify-items-start gap-8 lg:pb-2">
             <p className="max-w-prose text-lead text-copy">
-              Every plan includes unlimited deploys, automatic HTTPS and a preview URL for every branch. Start on Hobby
-              for $5 a month, or try Pro free for 14 days.
+              Acme is free for up to 3 members. Pro adds unlimited projects, guests and integrations for $12 per
+              member a month, billed annually, and you can try it free for 14 days.
             </p>
 
             <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
@@ -47,7 +47,7 @@ export function PricingOverview() {
                 <ToggleGroupItem value="yearly" className="group/yearly gap-2 px-5">
                   Yearly
                   <span className="text-caption font-semibold text-muted-foreground group-data-pressed/yearly:text-primary-foreground/70">
-                    Save 20%
+                    Save up to 20%
                   </span>
                 </ToggleGroupItem>
               </ToggleGroup>
@@ -74,8 +74,8 @@ export function PricingOverview() {
       />
 
       <p className="container-page pt-8 pb-section-sm text-center text-caption text-muted-foreground">
-        Prices in US dollars, before tax. Usage above your plan is billed at the end of the month, and you can set a
-        spending cap in billing settings.
+        Prices in US dollars, before tax. Annual billing saves about 20%. Need custom terms or data residency? Enterprise
+        has both.
       </p>
     </>
   )

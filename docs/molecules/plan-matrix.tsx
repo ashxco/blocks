@@ -24,16 +24,16 @@ export default function PlanMatrixDocs() {
   contained={false}
   title={null}
   columns={[
-    { name: "Cloud", price: "$5 / month", featured: true },
-    { name: "Self-host", price: "Free" },
+    { name: "Pro", price: "From $12 per member / month", featured: true },
+    { name: "Business", price: "From $24 per member / month" },
   ]}
   groups={[
     {
-      title: "Operations",
+      title: "Security",
       rows: [
-        { feature: "Managed upgrades", values: [true, false] },
-        { feature: "Regions", values: ["14", "Any"] },
-        { feature: "Backups", values: ["Hourly", "Manual"] },
+        { feature: "Two-factor authentication", values: [true, true] },
+        { feature: "SSO with SAML", values: [false, true] },
+        { feature: "Audit log", values: [false, true] },
       ],
     },
   ]}
@@ -44,24 +44,25 @@ export default function PlanMatrixDocs() {
             contained={false}
             title={null}
             columns={[
-              { name: "Cloud", price: "$5 / month", featured: true },
-              { name: "Self-host", price: "Free" },
+              { name: "Pro", price: "From $12 per member / month", featured: true },
+              { name: "Business", price: "From $24 per member / month" },
             ]}
             groups={[
               {
-                title: "Operations",
+                title: "Usage",
                 rows: [
-                  { feature: "Managed upgrades", values: [true, false] },
-                  { feature: "Regions", values: ["14", "Any"] },
-                  { feature: "Backups", values: ["Hourly", "Manual"] },
-                  { feature: "Support", values: ["Email", "Community"] },
+                  { feature: "Automation runs a month", values: ["10,000", "50,000"] },
+                  { feature: "Storage", values: ["100 GB", "1 TB"] },
+                  { feature: "Guests", values: ["10", "50"] },
+                  { feature: "Support", values: ["Email", "Priority email"] },
                 ],
               },
               {
                 title: "Security",
                 rows: [
-                  { feature: "SAML SSO", values: [true, true] },
-                  { feature: "SOC 2 report", values: [true, false] },
+                  { feature: "Two-factor authentication", values: [true, true] },
+                  { feature: "SSO with SAML", values: [false, true] },
+                  { feature: "Audit log", values: [false, true] },
                 ],
               },
             ]}
@@ -72,8 +73,8 @@ export default function PlanMatrixDocs() {
       <Guidelines
         do={[
           "Use the same plan names and order as the plan cards above it.",
-          "Group rows by the job they help with: deploy, run, team, support.",
-          "Write limits as plain numbers and units: “10 GB”, “30 days”.",
+          "Group rows by the job they help with: projects, automations, security, support.",
+          "Write limits as plain numbers and units: “100 GB”, “10,000”.",
         ]}
         dont={[
           "Don’t repeat every row of the plan cards; this table is for the detail.",
@@ -84,8 +85,8 @@ export default function PlanMatrixDocs() {
 
       <ApiTable
         rows={[
-          { prop: "columns", type: "PlanMatrixColumn[]", default: "Hobby, Starter, Pro, Scale", description: "Plans as columns: name, price line, featured and an optional cta button." },
-          { prop: "groups", type: "PlanMatrixGroup[]", default: "Deploy, Run, Team and security, Support", description: "Titled groups of rows. Each row has a feature name and one value per column." },
+          { prop: "columns", type: "PlanMatrixColumn[]", default: "Free, Pro, Business, Enterprise", description: "Plans as columns: name, price line, featured and an optional cta button." },
+          { prop: "groups", type: "PlanMatrixGroup[]", default: "Projects and tasks, Automations and reports, Admin and security, Support", description: "Titled groups of rows. Each row has a feature name and one value per column." },
           { prop: "title", type: "ReactNode | null", default: '"Compare every plan."', description: "Section heading. Pass null to render the table alone." },
           { prop: "description", type: "ReactNode", description: "Supporting line beside the heading." },
           { prop: "caption", type: "string", default: '"Features included in each plan"', description: "Accessible name for the table." },

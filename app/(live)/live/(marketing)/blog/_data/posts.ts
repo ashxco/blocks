@@ -1,195 +1,185 @@
 import type { Post } from "@/components/blocks/post-card"
 
 /**
- * Lumen blog content shared by the blog index and the article template.
- * Dates and features line up with the changelog template: database branches
- * shipped in v2.12.0 on Oct 6, live logs in v2.11.0 on Sep 24. No two posts
- * within a dozen of each other share a cover pattern, and the tints rotate so
- * neighbouring cards always differ.
+ * Acme blog content shared by the blog index and the article template.
+ * Dates and features line up with the changelog template: Automations 2.0
+ * shipped on Oct 1, the timeline view on Sep 17, guest access on Sep 3,
+ * shared dashboards on Aug 20 and recurring tasks on Aug 6. No two posts
+ * within a dozen of each other share a cover pattern, and the tints rotate
+ * so neighbouring cards always differ.
  */
 
 export const POST_HREF = "/live/blog/post"
 
 export const featuredPost: Post = {
-  title: "How we cut build times by 70%",
+  title: "Introducing Automations 2.0",
   excerpt:
-    "Layer caching, a smarter dependency graph and one very slow Docker step. A tour of the build changes we shipped in September, with the numbers.",
-  category: "Engineering",
-  date: "Sep 30, 2026",
-  dateTime: "2026-09-30",
-  readTime: "8 min read",
+    "Rules with several steps, conditions and actions in the apps your team already uses. Here is what changed, why we rebuilt it and how to set up your first rule.",
+  category: "Product",
+  date: "Oct 1, 2026",
+  dateTime: "2026-10-01",
+  readTime: "6 min read",
   href: POST_HREF,
-  cover: {
-    pattern: "compare",
-    tint: "violet",
-    figures: [
-      { label: "Median build, June", value: "61s", share: 1 },
-      { label: "Median build, today", value: "18s", share: 0.29 },
-    ],
-  },
-  author: { name: "Priya Natarajan", role: "Staff engineer" },
+  cover: { pattern: "flow", tint: "violet" },
+  author: { name: "Maya Patel", role: "Head of Product" },
 }
 
 /** Every post except the featured one, newest first. */
 export const posts: Post[] = [
   {
-    title: "A database branch for every pull request",
+    title: "How we run weekly planning in 30 minutes",
     excerpt:
-      "Preview environments now get a copy-on-write branch of your Postgres database, ready in under two seconds and deleted when the pull request closes.",
-    category: "Product",
-    date: "Oct 7, 2026",
-    dateTime: "2026-10-07",
+      "One board, one agenda and a rule that the meeting ends when the board is right. The template we use every Monday, step by step.",
+    category: "Guides",
+    date: "Sep 29, 2026",
+    dateTime: "2026-09-29",
     readTime: "5 min read",
     href: POST_HREF,
-    cover: { pattern: "branch", tint: "mint" },
+    cover: { pattern: "board", tint: "mint" },
   },
   {
-    title: "Live logs from every replica at once",
+    title: "Designing a calmer inbox",
     excerpt:
-      "One command now streams every replica and follows your app through a deploy. Here is how to filter it down to the requests that matter.",
+      "Fewer pings, smarter grouping and a single place for everything that needs you. How we redesigned the Acme inbox around what people act on.",
     category: "Product",
-    date: "Sep 24, 2026",
-    dateTime: "2026-09-24",
-    readTime: "4 min read",
+    date: "Sep 22, 2026",
+    dateTime: "2026-09-22",
+    readTime: "7 min read",
     href: POST_HREF,
-    cover: { pattern: "fields", tint: "sand" },
+    cover: { pattern: "inbox", tint: "sand" },
   },
   {
-    title: "Fernhill moved twelve services to Lumen in a week",
+    title: "Plan in weeks with the new timeline view",
     excerpt:
-      "Their platform team replaced a hand-rolled Kubernetes setup and gave every engineer a preview URL. They told us how it went.",
-    category: "Customers",
+      "Drag bars to change dates, link tasks that depend on each other and see clashes before they happen. A tour of timeline view.",
+    category: "Product",
     date: "Sep 17, 2026",
     dateTime: "2026-09-17",
-    readTime: "6 min read",
-    href: POST_HREF,
-    cover: { pattern: "grid", tint: "sky" },
-  },
-  {
-    title: "Deploy a Next.js app in five minutes",
-    excerpt:
-      "Connect a repository, push to main and get a production URL with HTTPS. No config file needed.",
-    category: "Guides",
-    date: "Sep 12, 2026",
-    dateTime: "2026-09-12",
-    readTime: "6 min read",
-    href: POST_HREF,
-    cover: { pattern: "window", tint: "rose" },
-  },
-  {
-    title: "Our seed round, and what comes next",
-    excerpt:
-      "We raised $8M to keep Lumen open source and build the self-hosted edition teams keep asking for.",
-    category: "Company",
-    date: "Aug 28, 2026",
-    dateTime: "2026-08-28",
-    readTime: "3 min read",
-    href: POST_HREF,
-    cover: { pattern: "orbit", tint: "violet" },
-  },
-  {
-    title: "Zero-downtime deploys, explained",
-    excerpt:
-      "Health checks, connection draining and the order we swap containers in, step by step.",
-    category: "Engineering",
-    date: "Aug 14, 2026",
-    dateTime: "2026-08-14",
-    readTime: "10 min read",
-    href: POST_HREF,
-    cover: { pattern: "uptime", tint: "panel" },
-  },
-  {
-    title: "Migrating a Rails app to Lumen",
-    excerpt:
-      "Move your web, worker and Postgres database across in an afternoon, with a rollback plan.",
-    category: "Guides",
-    date: "Aug 2, 2026",
-    dateTime: "2026-08-02",
-    readTime: "7 min read",
-    href: POST_HREF,
-    cover: { pattern: "stack", tint: "mint" },
-  },
-  {
-    title: "The new Lumen desktop app",
-    excerpt:
-      "Watch builds, tail logs and roll back from your menu bar, on macOS and Windows.",
-    category: "Product",
-    date: "Jul 20, 2026",
-    dateTime: "2026-07-20",
-    readTime: "5 min read",
-    href: POST_HREF,
-    cover: { pattern: "menubar", tint: "sand" },
-  },
-  {
-    title: "What we learned running 38 edge regions",
-    excerpt:
-      "Routing, cold starts and the surprising cost of DNS. Notes from two years of running Lumen on six continents.",
-    category: "Engineering",
-    date: "Jun 24, 2026",
-    dateTime: "2026-06-24",
-    readTime: "9 min read",
-    href: POST_HREF,
-    cover: { pattern: "regions", tint: "sky" },
-  },
-  {
-    title: "Structured logs without the setup",
-    excerpt:
-      "Print JSON from any language and Lumen indexes every field. Search, filter and alert on them from the dashboard.",
-    category: "Guides",
-    date: "Jun 10, 2026",
-    dateTime: "2026-06-10",
     readTime: "4 min read",
     href: POST_HREF,
-    cover: { pattern: "terminal", tint: "rose" },
+    cover: { pattern: "timeline", tint: "sky" },
   },
   {
-    title: "Custom domains with automatic HTTPS",
+    title: "How Northwind cut status meetings in half",
     excerpt:
-      "Point a CNAME at Lumen and we issue and renew the certificate. Apex domains and wildcards work too.",
-    category: "Guides",
-    date: "May 27, 2026",
-    dateTime: "2026-05-27",
+      "Northwind’s operations team replaced three tools and their weekly planning meeting with Acme. Their COO told us what changed.",
+    category: "Customers",
+    date: "Sep 10, 2026",
+    dateTime: "2026-09-10",
+    readTime: "6 min read",
+    href: POST_HREF,
+    cover: {
+      pattern: "compare",
+      tint: "rose",
+      figures: [
+        { label: "Status meetings a week, before", value: "4", share: 1 },
+        { label: "With Acme", value: "2", share: 0.5 },
+      ],
+    },
+  },
+  {
+    title: "Guest access for clients and contractors",
+    excerpt:
+      "Invite the people outside your team to the projects they work on. They see only what you share, and they never take a member seat.",
+    category: "Product",
+    date: "Sep 3, 2026",
+    dateTime: "2026-09-03",
     readTime: "3 min read",
     href: POST_HREF,
-    cover: { pattern: "address", tint: "violet" },
+    cover: { pattern: "window", tint: "violet" },
   },
   {
-    title: "How Tandem ships 60 previews a day",
+    title: "Write a project brief people finish reading",
     excerpt:
-      "A twelve-person team, one monorepo and a preview URL on every pull request. Their release checklist is now one line long.",
+      "Five headings, one page and a doc that sits next to the work it describes. Our template for briefs that answer questions before they come up.",
+    category: "Guides",
+    date: "Aug 27, 2026",
+    dateTime: "2026-08-27",
+    readTime: "6 min read",
+    href: POST_HREF,
+    cover: { pattern: "stack", tint: "panel" },
+  },
+  {
+    title: "Shared dashboards for every team",
+    excerpt:
+      "Share a report with your whole workspace or one team, and send a weekly summary to Slack. The numbers update as tasks move.",
+    category: "Product",
+    date: "Aug 20, 2026",
+    dateTime: "2026-08-20",
+    readTime: "4 min read",
+    href: POST_HREF,
+    cover: { pattern: "bars", tint: "mint" },
+  },
+  {
+    title: "Fieldstone runs 40 client projects in one workspace",
+    excerpt:
+      "An agency of 25 people, a guest login for every client and no more status spreadsheets. How Fieldstone set up Acme in a week.",
     category: "Customers",
-    date: "May 14, 2026",
-    dateTime: "2026-05-14",
+    date: "Aug 13, 2026",
+    dateTime: "2026-08-13",
     readTime: "5 min read",
     href: POST_HREF,
-    cover: { pattern: "bars", tint: "panel" },
+    cover: { pattern: "grid", tint: "sand" },
   },
   {
-    title: "Branching strategies for teams past fifty engineers",
+    title: "Recurring tasks for the work that comes back",
     excerpt:
-      "Trunk-based, release branches or something in between: how teams on Lumen map branches to environments, and the one we use.",
+      "Weekly reports, monthly invoices and the last-Friday budget review. Set them once and the next one appears when you finish the last.",
+    category: "Product",
+    date: "Aug 6, 2026",
+    dateTime: "2026-08-06",
+    readTime: "3 min read",
+    href: POST_HREF,
+    cover: { pattern: "calendar", tint: "sky" },
+  },
+  {
+    title: "Acme now has a SOC 2 Type II report",
+    excerpt:
+      "What the audit covered, what we changed to pass it and how to request the report for your own security review.",
+    category: "Company",
+    date: "Jul 23, 2026",
+    dateTime: "2026-07-23",
+    readTime: "4 min read",
+    href: POST_HREF,
+    cover: { pattern: "orbit", tint: "rose" },
+  },
+  {
+    title: "Five automations every team should set up",
+    excerpt:
+      "Notify owners when work is done, chase overdue tasks, hand off to review and two more rules that save our own team hours every week.",
     category: "Guides",
-    date: "Apr 29, 2026",
-    dateTime: "2026-04-29",
+    date: "Jul 9, 2026",
+    dateTime: "2026-07-09",
+    readTime: "6 min read",
+    href: POST_HREF,
+    cover: { pattern: "checklist", tint: "violet" },
+  },
+  {
+    title: "Acme for Mac and Windows",
+    excerpt:
+      "Your tasks and inbox from the menu bar, with notifications you can act on without opening a browser tab.",
+    category: "Product",
+    date: "Jun 25, 2026",
+    dateTime: "2026-06-25",
+    readTime: "3 min read",
+    href: POST_HREF,
+    cover: { pattern: "menubar", tint: "panel" },
+  },
+  {
+    title: "How Meridian Health plans across twelve clinics",
+    excerpt:
+      "One workspace, a project per clinic and automations that route requests to the right team. Their operations lead walked us through it.",
+    category: "Customers",
+    date: "Jun 11, 2026",
+    dateTime: "2026-06-11",
     readTime: "7 min read",
     href: POST_HREF,
-    cover: { pattern: "branch", tint: "sand" },
-  },
-  {
-    title: "Tracing a slow request across five services",
-    excerpt:
-      "Request IDs, structured logs and one dashboard query. How we found a 900 ms stall in our own API.",
-    category: "Engineering",
-    date: "Apr 15, 2026",
-    dateTime: "2026-04-15",
-    readTime: "8 min read",
-    href: POST_HREF,
-    cover: { pattern: "fields", tint: "mint" },
+    cover: { pattern: "flow", tint: "mint" },
   },
 ]
 
 /** Categories in the order the filter shows them. */
-export const categories = ["Product", "Engineering", "Guides", "Customers", "Company"] as const
+export const categories = ["Product", "Guides", "Company", "Customers"] as const
 
 /** How many of the newest posts the "Latest" rail beside the featured post shows. */
 export const LATEST_COUNT = 5
@@ -202,7 +192,7 @@ function byTitle(title: string): Post {
 
 /** Posts shown under the article as further reading. */
 export const relatedPosts: Post[] = [
-  byTitle("Zero-downtime deploys, explained"),
-  byTitle("Structured logs without the setup"),
-  byTitle("A database branch for every pull request"),
+  byTitle("Five automations every team should set up"),
+  byTitle("How we run weekly planning in 30 minutes"),
+  byTitle("How Northwind cut status meetings in half"),
 ]

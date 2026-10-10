@@ -33,7 +33,7 @@ export function SettingsView({ defaultTab = "general" }: { defaultTab?: Settings
     <Tabs value={tab} onValueChange={handleTabChange} className="gap-0">
       <PageHeader
         title="Settings"
-        description="Your profile, the Acme Inc. workspace, the alerts Lumen sends you and how you sign in."
+        description="Your profile, the Acme Inc. workspace, the notifications Acme sends you and how you sign in."
         divider={false}
       >
         <TabsList aria-label="Settings sections">

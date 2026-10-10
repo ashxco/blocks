@@ -2,20 +2,20 @@
 
 import * as React from "react"
 import {
-  CalendarClockIcon,
+  ArchiveIcon,
   ChevronDownIcon,
   CopyIcon,
-  ExternalLinkIcon,
-  EyeIcon,
   HistoryIcon,
+  LayoutTemplateIcon,
   MinusIcon,
   MoreHorizontalIcon,
   PlusIcon,
+  RepeatIcon,
   RotateCcwIcon,
-  ScrollTextIcon,
   SendIcon,
+  SquareKanbanIcon,
   Trash2Icon,
-  UndoIcon,
+  UploadIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
@@ -34,28 +34,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-function ReplicaStepper() {
-  const [replicas, setReplicas] = React.useState(3)
+function SeatStepper() {
+  const [seats, setSeats] = React.useState(18)
   return (
-    <ButtonGroup aria-label="Replicas">
+    <ButtonGroup aria-label="Seats">
       <Button
         variant="outline"
         size="icon"
-        aria-label="Remove a replica"
-        disabled={replicas <= 1}
-        onClick={() => setReplicas((n) => Math.max(1, n - 1))}
+        aria-label="Remove a seat"
+        disabled={seats <= 1}
+        onClick={() => setSeats((n) => Math.max(1, n - 1))}
       >
         <MinusIcon />
       </Button>
       <ButtonGroupText className="min-w-32 justify-center text-foreground tabular">
-        {replicas} {replicas === 1 ? "replica" : "replicas"}
+        {seats} {seats === 1 ? "seat" : "seats"}
       </ButtonGroupText>
       <Button
         variant="outline"
         size="icon"
-        aria-label="Add a replica"
-        disabled={replicas >= 10}
-        onClick={() => setReplicas((n) => Math.min(10, n + 1))}
+        aria-label="Add a seat"
+        disabled={seats >= 50}
+        onClick={() => setSeats((n) => Math.min(50, n + 1))}
       >
         <PlusIcon />
       </Button>
@@ -65,14 +65,14 @@ function ReplicaStepper() {
 
 /**
  * The "…" button at the end of a group: a menu of the less common actions.
- * Leave Roll back out where the group already shows it as a button.
+ * Leave Archive out where the group already shows it as a button.
  */
 function MoreActionsMenu({
   size = "icon",
-  rollBack = true,
+  archive = true,
 }: {
   size?: "icon" | "icon-sm"
-  rollBack?: boolean
+  archive?: boolean
 }) {
   return (
     <DropdownMenu>
@@ -82,18 +82,18 @@ function MoreActionsMenu({
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
           <CopyIcon />
-          Copy deployment URL
+          Copy link
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <ScrollTextIcon />
-          View build logs
+          <HistoryIcon />
+          View activity
         </DropdownMenuItem>
-        {rollBack ? (
+        {archive ? (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <UndoIcon />
-              Roll back
+              <ArchiveIcon />
+              Archive
             </DropdownMenuItem>
           </>
         ) : null}
@@ -108,25 +108,25 @@ export default function ButtonGroupDocs() {
       <Example
         title="Outline group"
         description="Join actions that act on the same object. Neighbours share one hairline, and the hovered button lifts its full border."
-        code={`<ButtonGroup aria-label="Deployment actions">
-  <Button variant="outline">Redeploy</Button>
-  <Button variant="outline">Promote</Button>
+        code={`<ButtonGroup aria-label="Task actions">
+  <Button variant="outline">Assign</Button>
+  <Button variant="outline">Move</Button>
   <DropdownMenu>
     <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="More actions" />}>
       <MoreHorizontalIcon />
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
-      <DropdownMenuItem><CopyIcon />Copy deployment URL</DropdownMenuItem>
-      <DropdownMenuItem><ScrollTextIcon />View build logs</DropdownMenuItem>
+      <DropdownMenuItem><CopyIcon />Copy link</DropdownMenuItem>
+      <DropdownMenuItem><HistoryIcon />View activity</DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem><UndoIcon />Roll back</DropdownMenuItem>
+      <DropdownMenuItem><ArchiveIcon />Archive</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 </ButtonGroup>`}
       >
-        <ButtonGroup aria-label="Deployment actions">
-          <Button variant="outline">Redeploy</Button>
-          <Button variant="outline">Promote</Button>
+        <ButtonGroup aria-label="Task actions">
+          <Button variant="outline">Assign</Button>
+          <Button variant="outline">Move</Button>
           <MoreActionsMenu />
         </ButtonGroup>
       </Example>
@@ -134,17 +134,17 @@ export default function ButtonGroupDocs() {
       <Example
         title="Split button"
         description="A primary action with a menu of related ones. Put a separator between filled buttons so the split stays visible."
-        code={`<ButtonGroup aria-label="Deploy">
-  <Button>Deploy to production</Button>
+        code={`<ButtonGroup aria-label="Create task">
+  <Button>Create task</Button>
   <ButtonGroupSeparator />
   <DropdownMenu>
-    <DropdownMenuTrigger render={<Button size="icon" aria-label="More deploy options" />}>
+    <DropdownMenuTrigger render={<Button size="icon" aria-label="More ways to create a task" />}>
       <ChevronDownIcon />
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
-      <DropdownMenuItem><EyeIcon />Deploy to preview</DropdownMenuItem>
-      <DropdownMenuItem><HistoryIcon />Promote a previous build</DropdownMenuItem>
-      <DropdownMenuItem><CalendarClockIcon />Schedule a deploy</DropdownMenuItem>
+      <DropdownMenuItem><LayoutTemplateIcon />Create from a template</DropdownMenuItem>
+      <DropdownMenuItem><RepeatIcon />Create a recurring task</DropdownMenuItem>
+      <DropdownMenuItem><UploadIcon />Import from CSV</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 </ButtonGroup>
@@ -164,25 +164,25 @@ export default function ButtonGroupDocs() {
   </DropdownMenu>
 </ButtonGroup>`}
       >
-        <ButtonGroup aria-label="Deploy">
-          <Button>Deploy to production</Button>
+        <ButtonGroup aria-label="Create task">
+          <Button>Create task</Button>
           <ButtonGroupSeparator />
           <DropdownMenu>
-            <DropdownMenuTrigger render={<Button size="icon" aria-label="More deploy options" />}>
+            <DropdownMenuTrigger render={<Button size="icon" aria-label="More ways to create a task" />}>
               <ChevronDownIcon />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem>
-                <EyeIcon />
-                Deploy to preview
+                <LayoutTemplateIcon />
+                Create from a template
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <HistoryIcon />
-                Promote a previous build
+                <RepeatIcon />
+                Create a recurring task
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CalendarClockIcon />
-                Schedule a deploy
+                <UploadIcon />
+                Import from CSV
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -214,34 +214,34 @@ export default function ButtonGroupDocs() {
       <Example
         title="Sizes"
         description="Every button in a group shares one size. Small groups suit dense toolbars and table rows."
-        code={`<ButtonGroup aria-label="Domain actions">
+        code={`<ButtonGroup aria-label="Invite actions">
   <Button variant="outline" size="sm">Edit</Button>
-  <Button variant="outline" size="sm">Verify</Button>
-  <Button variant="outline" size="sm">Remove</Button>
+  <Button variant="outline" size="sm">Resend</Button>
+  <Button variant="outline" size="sm">Revoke</Button>
 </ButtonGroup>
 
-<ButtonGroup aria-label="Domain actions">
+<ButtonGroup aria-label="Invite actions">
   <Button variant="outline">Edit</Button>
-  <Button variant="outline">Verify</Button>
-  <Button variant="outline">Remove</Button>
+  <Button variant="outline">Resend</Button>
+  <Button variant="outline">Revoke</Button>
 </ButtonGroup>
 
-<ButtonGroup aria-label="Domain actions">
+<ButtonGroup aria-label="Invite actions">
   <Button variant="outline" size="lg">Edit</Button>
-  <Button variant="outline" size="lg">Verify</Button>
-  <Button variant="outline" size="lg">Remove</Button>
+  <Button variant="outline" size="lg">Resend</Button>
+  <Button variant="outline" size="lg">Revoke</Button>
 </ButtonGroup>`}
       >
         {(["sm", "default", "lg"] as const).map((size) => (
-          <ButtonGroup key={size} aria-label={`Domain actions, ${size === "default" ? "medium" : size === "sm" ? "small" : "large"}`}>
+          <ButtonGroup key={size} aria-label={`Invite actions, ${size === "default" ? "medium" : size === "sm" ? "small" : "large"}`}>
             <Button variant="outline" size={size}>
               Edit
             </Button>
             <Button variant="outline" size={size}>
-              Verify
+              Resend
             </Button>
             <Button variant="outline" size={size}>
-              Remove
+              Revoke
             </Button>
           </ButtonGroup>
         ))}
@@ -249,23 +249,23 @@ export default function ButtonGroupDocs() {
 
       <Example
         title="With text"
-        description="ButtonGroupText attaches a value or unit between controls. Here it makes a stepper for the number of replicas."
-        code={`<ButtonGroup aria-label="Replicas">
-  <Button variant="outline" size="icon" aria-label="Remove a replica">
+        description="ButtonGroupText attaches a value or unit between controls. Here it makes a stepper for the number of seats on a plan."
+        code={`<ButtonGroup aria-label="Seats">
+  <Button variant="outline" size="icon" aria-label="Remove a seat">
     <MinusIcon />
   </Button>
-  <ButtonGroupText>3 replicas</ButtonGroupText>
-  <Button variant="outline" size="icon" aria-label="Add a replica">
+  <ButtonGroupText>18 seats</ButtonGroupText>
+  <Button variant="outline" size="icon" aria-label="Add a seat">
     <PlusIcon />
   </Button>
 </ButtonGroup>`}
       >
-        <ReplicaStepper />
+        <SeatStepper />
       </Example>
 
       <Example
         title="Vertical"
-        description="Stack a group for map or chart controls that sit at the edge of a canvas."
+        description="Stack a group for zoom controls that sit beside a timeline or chart."
         code={`<ButtonGroup orientation="vertical" aria-label="Zoom">
   <Button variant="outline" size="icon-sm" aria-label="Zoom in"><PlusIcon /></Button>
   <Button variant="outline" size="icon-sm" aria-label="Zoom out"><MinusIcon /></Button>
@@ -286,34 +286,34 @@ export default function ButtonGroupDocs() {
       </Example>
 
       <Example
-        title="Deployment toolbar"
+        title="Project toolbar"
         description="Nest groups to keep related actions together while separating them from the rest of the toolbar."
         surface="subtle"
         code={`<Card size="sm" className="flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4">
   <CardHeader className="min-w-48 flex-1 gap-1">
-    <CardTitle>acme-web</CardTitle>
-    <CardDescription>Production · main · deployed 4 minutes ago</CardDescription>
+    <CardTitle>Website relaunch</CardTitle>
+    <CardDescription>On track · 32 open tasks</CardDescription>
   </CardHeader>
-  <ButtonGroup aria-label="Deployment toolbar" className="flex-wrap">
+  <ButtonGroup aria-label="Project toolbar" className="flex-wrap">
     <ButtonGroup>
-      <Button variant="outline" size="sm" nativeButton={false} render={<a href="#visit" />}>
-        <ExternalLinkIcon data-icon="inline-start" />
-        Visit
+      <Button variant="outline" size="sm" nativeButton={false} render={<a href="#board" />}>
+        <SquareKanbanIcon data-icon="inline-start" />
+        Open board
       </Button>
     </ButtonGroup>
     <ButtonGroup>
-      <Button variant="outline" size="sm">Redeploy</Button>
+      <Button variant="outline" size="sm">Share</Button>
       <Button variant="outline" size="sm">
-        <UndoIcon data-icon="inline-start" />
-        Roll back
+        <ArchiveIcon data-icon="inline-start" />
+        Archive
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger render={<Button variant="outline" size="icon-sm" aria-label="More actions" />}>
           <MoreHorizontalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem><CopyIcon />Copy deployment URL</DropdownMenuItem>
-          <DropdownMenuItem><ScrollTextIcon />View build logs</DropdownMenuItem>
+          <DropdownMenuItem><CopyIcon />Copy link</DropdownMenuItem>
+          <DropdownMenuItem><HistoryIcon />View activity</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </ButtonGroup>
@@ -322,25 +322,25 @@ export default function ButtonGroupDocs() {
       >
         <Card size="sm" className="w-full max-w-2xl flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4">
           <CardHeader className="min-w-48 flex-1 gap-1">
-            <CardTitle>acme-web</CardTitle>
-            <CardDescription>Production · main · deployed 4 minutes ago</CardDescription>
+            <CardTitle>Website relaunch</CardTitle>
+            <CardDescription>On track · 32 open tasks</CardDescription>
           </CardHeader>
-          <ButtonGroup aria-label="Deployment toolbar" className="flex-wrap">
+          <ButtonGroup aria-label="Project toolbar" className="flex-wrap">
             <ButtonGroup>
-              <Button variant="outline" size="sm" nativeButton={false} render={<a href="#visit" />}>
-                <ExternalLinkIcon data-icon="inline-start" />
-                Visit
+              <Button variant="outline" size="sm" nativeButton={false} render={<a href="#board" />}>
+                <SquareKanbanIcon data-icon="inline-start" />
+                Open board
               </Button>
             </ButtonGroup>
             <ButtonGroup>
               <Button variant="outline" size="sm">
-                Redeploy
+                Share
               </Button>
               <Button variant="outline" size="sm">
-                <UndoIcon data-icon="inline-start" />
-                Roll back
+                <ArchiveIcon data-icon="inline-start" />
+                Archive
               </Button>
-              <MoreActionsMenu size="icon-sm" rollBack={false} />
+              <MoreActionsMenu size="icon-sm" archive={false} />
             </ButtonGroup>
           </ButtonGroup>
         </Card>
@@ -348,7 +348,7 @@ export default function ButtonGroupDocs() {
 
       <Guidelines
         do={[
-          "Group only actions that apply to the same thing, such as one deployment.",
+          "Group only actions that apply to the same thing, such as one project.",
           "Use the same variant and size for every button in a group.",
           "Give the group an aria-label, and every icon-only button its own label.",
           "Add a ButtonGroupSeparator between filled buttons in a split button.",

@@ -157,7 +157,7 @@ function VerifySignIn() {
             <CheckIcon aria-hidden="true" className="size-5" strokeWidth={2.5} />
           </span>
           <CardTitle>You’re signed in</CardTitle>
-          <CardDescription className="text-pretty">This device stays trusted for 30 days.</CardDescription>
+          <CardDescription className="text-pretty">Welcome back to Acme Inc. This device stays trusted for 30 days.</CardDescription>
         </CardHeader>
         <CardFooter className="justify-center">
           <Button
@@ -185,9 +185,9 @@ function VerifySignIn() {
         className="contents"
       >
         <CardHeader className="justify-items-center text-center">
-          <CardTitle>Check your email</CardTitle>
+          <CardTitle>Confirm it’s you</CardTitle>
           <CardDescription className="text-balance">
-            We sent a code to <span className="font-semibold whitespace-nowrap text-foreground">jamie@acme.dev</span>.
+            We sent a code to <span className="font-semibold whitespace-nowrap text-foreground">maya@acme.com</span>.
             It expires in 10&nbsp;minutes.
           </CardDescription>
         </CardHeader>
@@ -264,13 +264,13 @@ export default function InputOTPDocs() {
       <InputOTPSlot index={5} />
     </InputOTPGroup>
   </InputOTP>
-  <FieldDescription id="code-hint">Enter the code we emailed to jamie@acme.dev.</FieldDescription>
+  <FieldDescription id="code-hint">Enter the code we emailed to maya@acme.com.</FieldDescription>
 </Field>`}
       >
         <Field className="w-fit">
           <FieldLabel htmlFor="otp-six">Verification code</FieldLabel>
           <SixDigits id="otp-six" defaultValue="42" autoComplete="one-time-code" aria-describedby="otp-six-hint" />
-          <FieldDescription id="otp-six-hint">Enter the code we emailed to jamie@acme.dev.</FieldDescription>
+          <FieldDescription id="otp-six-hint">Enter the code we emailed to maya@acme.com.</FieldDescription>
         </Field>
       </Example>
 
@@ -307,7 +307,7 @@ const [code, setCode] = React.useState("")
         <Field className="w-fit">
           <FieldLabel htmlFor="otp-backup">Backup code</FieldLabel>
           <BackupCode id="otp-backup" aria-describedby="otp-backup-hint" />
-          <FieldDescription id="otp-backup-hint">Use one of the codes you saved when you turned on two-step sign-in.</FieldDescription>
+          <FieldDescription id="otp-backup-hint">Use one of the codes you saved when you turned on two-factor authentication.</FieldDescription>
         </Field>
       </Example>
 
@@ -330,7 +330,7 @@ const [code, setCode] = React.useState("")
       <InputOTPSlot index={5} />
     </InputOTPGroup>
   </InputOTP>
-  <FieldError id="code-error">That code is incorrect. Check the latest email from Lumen.</FieldError>
+  <FieldError id="code-error">That code is incorrect. Check the latest email from Acme.</FieldError>
 </Field>
 
 <Field className="w-fit">
@@ -357,14 +357,14 @@ const [code, setCode] = React.useState("")
             <Field>
               <FieldTitle>Verification code</FieldTitle>
               <TypingSnapshot />
-              <FieldDescription>Enter the code we emailed to jamie@acme.dev.</FieldDescription>
+              <FieldDescription>Enter the code we emailed to maya@acme.com.</FieldDescription>
             </Field>
           </StateCell>
           <StateCell state="Invalid">
             <Field data-invalid>
               <FieldLabel htmlFor="otp-invalid">Verification code</FieldLabel>
               <SixDigits id="otp-invalid" defaultValue="481920" aria-invalid aria-describedby="otp-invalid-error" />
-              <FieldError id="otp-invalid-error">That code is incorrect. Check the latest email from Lumen.</FieldError>
+              <FieldError id="otp-invalid-error">That code is incorrect. Check the latest email from Acme.</FieldError>
             </Field>
           </StateCell>
           <StateCell state="Disabled">

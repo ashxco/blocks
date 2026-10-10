@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils"
  * the server and the browser render the same month and the canvases are
  * never empty while the page hydrates.
  */
-const today = new Date(2026, 10, 4)
+const today = new Date(2026, 9, 9)
 
 const frame = "rounded-(--card-radius) border"
 
@@ -26,8 +26,11 @@ function SingleDate() {
   return <Calendar mode="single" today={today} selected={date} onSelect={setDate} className={frame} />
 }
 
-function UsageRange() {
-  const [range, setRange] = React.useState<DateRange | undefined>({ from: subDays(today, 16), to: subDays(today, 2) })
+/** The current two-week sprint, Monday Sep 28 to Sunday Oct 11, which crosses into October. */
+const sprint: DateRange = { from: new Date(2026, 8, 28), to: new Date(2026, 9, 11) }
+
+function SprintRange() {
+  const [range, setRange] = React.useState<DateRange | undefined>(sprint)
   return (
     <Calendar
       mode="range"
@@ -41,7 +44,7 @@ function UsageRange() {
   )
 }
 
-function BillingStart() {
+function ContractStart() {
   const [date, setDate] = React.useState<Date | undefined>(startOfMonth(today))
   return (
     <Calendar
@@ -58,7 +61,7 @@ function BillingStart() {
   )
 }
 
-function MaintenanceWindow() {
+function DueDate() {
   const [date, setDate] = React.useState<Date | undefined>()
   return (
     <div className="grid justify-items-center gap-3">
@@ -72,7 +75,7 @@ function MaintenanceWindow() {
       />
       <p className="text-caption text-muted-foreground" aria-live="polite">
         {date
-          ? `Maintenance starts ${format(date, "EEEE, MMMM d")} at 02:00 UTC.`
+          ? `Due ${format(date, "EEEE, MMMM d")}. Jordan Lee gets a reminder the day before.`
           : "Pick a weekday from tomorrow on."}
       </p>
     </div>
@@ -80,10 +83,10 @@ function MaintenanceWindow() {
 }
 
 const presets = [
-  { label: "Last 24 hours", days: 1 },
+  { label: "Today", days: 1 },
   { label: "Last 7 days", days: 7 },
-  { label: "Last 14 days", days: 14 },
   { label: "Last 30 days", days: 30 },
+  { label: "Last 90 days", days: 90 },
 ]
 
 function formatRange(range: DateRange | undefined) {
@@ -195,12 +198,12 @@ function RangePanel({
 }
 
 /**
- * A log card with a range button. A picture of the open popover sits under
+ * A report card with a range button. A picture of the open popover sits under
  * the button, drawn with the same parts, so readers see the presets and the
  * months without opening it. It is hidden from assistive technology and
  * steps aside while the real popover, which opens in the same place, shows.
  */
-function LogRangePicker() {
+function ReportRangePicker() {
   const rootRef = React.useRef<HTMLDivElement>(null)
   const layout = usePanelLayout(rootRef)
   const cardRef = React.useRef<HTMLDivElement>(null)
@@ -222,8 +225,8 @@ function LogRangePicker() {
     <div ref={rootRef} className="grid w-fit max-w-full gap-2">
       <Card ref={cardRef} size="sm" className="w-full flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4">
         <CardHeader className="min-w-48 flex-1 gap-1">
-          <CardTitle>Function logs</CardTitle>
-          <CardDescription>acme-web · Production</CardDescription>
+          <CardTitle>Tasks completed</CardTitle>
+          <CardDescription>Website relaunch · All assignees</CardDescription>
         </CardHeader>
         <Popover open={open} onOpenChange={handleOpenChange}>
           <PopoverTrigger ref={triggerRef} render={<Button variant="outline" className="ps-4" />}>
@@ -279,7 +282,7 @@ export default function CalendarDocs() {
 
       <Example
         title="Range"
-        description="The two ends fill with ink and the days between sit on an accent band. Show two months for ranges that cross a month."
+        description="The two ends fill with ink and the days between sit on an accent band. Show two months for ranges that cross a month, such as a two-week sprint."
         code={`const [range, setRange] = React.useState<DateRange | undefined>()
 
 <Calendar
@@ -289,7 +292,7 @@ export default function CalendarDocs() {
   onSelect={setRange}
 />`}
       >
-        <UsageRange />
+        <SprintRange />
       </Example>
 
       <Example
@@ -304,12 +307,12 @@ export default function CalendarDocs() {
   onSelect={setDate}
 />`}
       >
-        <BillingStart />
+        <ContractStart />
       </Example>
 
       <Example
         title="Disabled days"
-        description="Disable days that can’t be picked, and say why next to the calendar. Here: weekdays from tomorrow on."
+        description="Disable days that can’t be picked, and say why next to the calendar. Here a task’s due date: weekdays from tomorrow on."
         code={`<Calendar
   mode="single"
   disabled={[{ before: addDays(new Date(), 1) }, { dayOfWeek: [0, 6] }]}
@@ -317,7 +320,7 @@ export default function CalendarDocs() {
   onSelect={setDate}
 />`}
       >
-        <MaintenanceWindow />
+        <DueDate />
       </Example>
 
       <Example
@@ -354,7 +357,7 @@ export default function CalendarDocs() {
   </PopoverContent>
 </Popover>`}
       >
-        <LogRangePicker />
+        <ReportRangePicker />
       </Example>
 
       <Guidelines

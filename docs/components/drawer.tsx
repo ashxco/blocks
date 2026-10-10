@@ -2,16 +2,19 @@
 
 import * as React from "react"
 import {
+  CalendarIcon,
+  CheckIcon,
   CopyIcon,
-  ExternalLinkIcon,
-  QrCodeIcon,
-  RotateCcwIcon,
-  ScrollTextIcon,
-  SendIcon,
-  Undo2Icon,
+  FolderInputIcon,
+  HistoryIcon,
+  Share2Icon,
+  Trash2Icon,
+  UserPlusIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { initialsTone } from "@/components/blocks/members-list/people"
 import { Button } from "@/components/ui/button"
 import {
   Drawer,
@@ -29,24 +32,19 @@ import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 
-const logLines = [
-  { time: "12:05:09", level: "info", text: "GET /api/projects 200 in 41ms" },
-  { time: "12:05:11", level: "info", text: "GET /dashboard 200 in 88ms" },
-  { time: "12:05:14", level: "warn", text: "Slow query on deployments (812ms)" },
-  { time: "12:05:15", level: "info", text: "POST /api/deployments 201 in 230ms" },
-  { time: "12:05:18", level: "error", text: "Webhook to hooks.slack.com timed out after 10s" },
-  { time: "12:05:20", level: "info", text: "GET /api/usage 200 in 37ms" },
-  { time: "12:05:22", level: "info", text: "GET /settings/domains 200 in 64ms" },
-  { time: "12:05:25", level: "info", text: "Cache hit for /pricing in fra1" },
-  { time: "12:05:27", level: "warn", text: "Function memory at 82% of 1024 MB" },
-  { time: "12:05:30", level: "info", text: "GET /api/projects 200 in 39ms" },
+/** Today’s activity in the project, newest first. */
+const activity = [
+  { time: "10:42", initials: "PR", name: "Priya Raman", text: "moved Write the launch announcement to In review" },
+  { time: "10:31", initials: "JL", name: "Jordan Lee", text: "commented on Fix the pricing table on mobile" },
+  { time: "10:05", initials: "SA", name: "Sofia Alvarez", text: "attached Hero image v3 to Final homepage illustrations" },
+  { time: "09:58", initials: "MP", name: "Maya Patel", text: "moved the launch date to Nov 14" },
+  { time: "09:40", initials: "SO", name: "Sam Okafor", text: "commented on Brief the support team" },
+  { time: "09:22", initials: "PR", name: "Priya Raman", text: "added 4 subtasks to Write the launch announcement" },
+  { time: "09:15", initials: "HK", name: "Hana Kim", text: "joined the project" },
+  { time: "09:02", initials: "JL", name: "Jordan Lee", text: "assigned Review page titles and descriptions to Priya Raman" },
+  { time: "08:47", initials: "MP", name: "Maya Patel", text: "created Plan the launch-day schedule" },
+  { time: "08:30", initials: "SA", name: "Sofia Alvarez", text: "completed Pick the homepage typeface" },
 ]
-
-const levelClass: Record<string, string> = {
-  info: "text-muted-foreground",
-  warn: "text-warning",
-  error: "text-destructive",
-}
 
 type Stage = HTMLDivElement | null
 
@@ -55,23 +53,22 @@ type Stage = HTMLDivElement | null
  * itself. contain-layout makes the stage the containing block for the fixed
  * drawer and its overlay, and isolate keeps them under the site header. The
  * drawer is non-modal there, so the docs page still scrolls; showOverlay draws
- * the overlay a modal drawer would have, with its tint but not its blur, which
- * in a stage this small only smears the page into grey.
+ * the overlay a modal drawer would have, tint and blur included.
  */
 function DrawerStage({ children }: { children: (container: Stage) => React.ReactNode }) {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout [&_[data-slot=drawer-overlay]]:backdrop-blur-none">
+    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout">
       <div className="grid content-start gap-8 p-6 sm:p-12">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="grid gap-1">
-            <p className="text-h3 text-foreground">feat-billing</p>
-            <p className="text-caption text-muted-foreground">Preview · lumen-web · ready 4 minutes ago</p>
+            <p className="text-h3 text-foreground">Website relaunch</p>
+            <p className="text-caption text-muted-foreground">Marketing · 14 open tasks · updated 4 minutes ago</p>
           </div>
           {children(container)}
         </div>
         <dl className="grid divide-y border-y">
-          {previewRows.map((row) => (
+          {projectRows.map((row) => (
             <div key={row.label} className="flex items-center justify-between gap-6 py-4">
               <dt className="text-sm text-muted-foreground">{row.label}</dt>
               <dd className="text-sm font-medium text-foreground">{row.value}</dd>
@@ -83,11 +80,11 @@ function DrawerStage({ children }: { children: (container: Stage) => React.React
   )
 }
 
-const previewRows = [
-  { label: "Commit", value: "Add usage-based billing page" },
-  { label: "Author", value: "Priya Raman" },
-  { label: "Built in", value: "38s" },
-  { label: "Comments", value: "3 open threads" },
+const projectRows = [
+  { label: "Owner", value: "Maya Patel" },
+  { label: "Due date", value: "Nov 14, 2026" },
+  { label: "Progress", value: "38 of 52 tasks done" },
+  { label: "Members", value: "7" },
 ]
 
 /** Open in place on the docs page: no focus move, no scroll lock, no dismissal on outside clicks. */
@@ -119,19 +116,24 @@ function SnapPointsDrawer({ container }: { container: Stage }) {
   return (
     <Drawer {...inlineDrawer} snapPoints={snapPoints} snapPoint={snapPoint} onSnapPointChange={setSnapPoint}>
       <DrawerTrigger render={<Button variant="outline" />}>
-        <ScrollTextIcon data-icon="inline-start" />
-        Live logs
+        <HistoryIcon data-icon="inline-start" />
+        Activity
       </DrawerTrigger>
       <DrawerContent container={container} {...inlineContent} className={cn(inlineContent.className, snapInStage)}>
         <DrawerHeader>
-          <DrawerTitle>Live logs</DrawerTitle>
-          <DrawerDescription>lumen-web · production · drag up for more</DrawerDescription>
+          <DrawerTitle>Activity</DrawerTitle>
+          <DrawerDescription>Today · drag up for more</DrawerDescription>
         </DrawerHeader>
-        <ol className="grid gap-2 px-(--dialog-padding) pb-(--dialog-padding) font-mono text-code">
-          {logLines.map((line) => (
-            <li key={line.time} className="flex gap-3">
-              <span className="shrink-0 text-muted-foreground tabular">{line.time}</span>
-              <span className={levelClass[line.level]}>{line.text}</span>
+        <ol className="grid gap-3 px-(--dialog-padding) pb-(--dialog-padding)">
+          {activity.map((entry) => (
+            <li key={entry.time} className="flex items-center gap-3">
+              <Avatar size="sm">
+                <AvatarFallback tone={initialsTone(entry.initials)}>{entry.initials}</AvatarFallback>
+              </Avatar>
+              <p className="min-w-0 flex-1 text-sm text-copy">
+                <span className="font-semibold text-foreground">{entry.name}</span> {entry.text}
+              </p>
+              <span className="shrink-0 text-caption text-muted-foreground tabular">{entry.time}</span>
             </li>
           ))}
         </ol>
@@ -140,11 +142,11 @@ function SnapPointsDrawer({ container }: { container: Stage }) {
   )
 }
 
-const deploymentFilters = [
-  { id: "production", label: "Production", checked: true },
-  { id: "preview", label: "Preview", checked: true },
-  { id: "failed", label: "Failed builds", checked: false },
-  { id: "mine", label: "Created by me", checked: false },
+const taskFilters = [
+  { id: "mine", label: "Assigned to me", checked: true },
+  { id: "week", label: "Due this week", checked: true },
+  { id: "priority", label: "Urgent and high priority", checked: false },
+  { id: "done", label: "Include completed tasks", checked: false },
 ]
 
 type Direction = "left" | "right"
@@ -178,10 +180,10 @@ function SideDrawersDemo() {
             <DrawerContent container={container} {...inlineContent}>
               <DrawerHeader>
                 <DrawerTitle>Filters</DrawerTitle>
-                <DrawerDescription>Narrow the deployments list.</DrawerDescription>
+                <DrawerDescription>Narrow the task list.</DrawerDescription>
               </DrawerHeader>
-              <div role="group" aria-label="Deployment filters" className="grid gap-4 px-(--dialog-padding) pt-2">
-                {deploymentFilters.map((filter) => (
+              <div role="group" aria-label="Task filters" className="grid gap-4 px-(--dialog-padding) pt-2">
+                {taskFilters.map((filter) => (
                   <Field key={filter.id} orientation="horizontal">
                     <Checkbox id={`drawer-filter-${filter.id}`} defaultChecked={filter.checked} />
                     <FieldLabel htmlFor={`drawer-filter-${filter.id}`}>{filter.label}</FieldLabel>
@@ -189,7 +191,7 @@ function SideDrawersDemo() {
                 ))}
               </div>
               <DrawerFooter>
-                <DrawerClose render={<Button />}>Show 48 deployments</DrawerClose>
+                <DrawerClose render={<Button />}>Show 6 tasks</DrawerClose>
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
@@ -207,11 +209,11 @@ export default function DrawerDocs() {
         layout="full"
         description="The default. It slides up from the bottom, shows a handle and closes when people swipe it down, tap the overlay or press Escape."
         code={`<Drawer>
-  <DrawerTrigger render={<Button variant="outline" />}>Share preview</DrawerTrigger>
+  <DrawerTrigger render={<Button variant="outline" />}>Share project</DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
-      <DrawerTitle>Share this preview</DrawerTitle>
-      <DrawerDescription>Anyone with the link can view it.</DrawerDescription>
+      <DrawerTitle>Share Website relaunch</DrawerTitle>
+      <DrawerDescription>Anyone in Acme Inc. with the link can open it.</DrawerDescription>
     </DrawerHeader>
     …
     <DrawerFooter>
@@ -225,18 +227,20 @@ export default function DrawerDocs() {
           {(container) => (
             <Drawer {...inlineDrawer}>
               <DrawerTrigger render={<Button variant="outline" />}>
-                <SendIcon data-icon="inline-start" />
-                Share preview
+                <Share2Icon data-icon="inline-start" />
+                Share project
               </DrawerTrigger>
               <DrawerContent container={container} {...inlineContent}>
                 <DrawerHeader>
-                  <DrawerTitle>Share this preview</DrawerTitle>
-                  <DrawerDescription>Anyone with the link can view feat-billing until the branch is merged.</DrawerDescription>
+                  <DrawerTitle>Share Website relaunch</DrawerTitle>
+                  <DrawerDescription>
+                    Anyone in Acme Inc. with the link can open the board. Guests need an invite first.
+                  </DrawerDescription>
                 </DrawerHeader>
                 <div className="px-(--dialog-padding)">
                   <Field>
-                    <FieldLabel htmlFor="drawer-link">Preview link</FieldLabel>
-                    <Input id="drawer-link" readOnly defaultValue="feat-billing.lumen.app" />
+                    <FieldLabel htmlFor="drawer-link">Project link</FieldLabel>
+                    <Input id="drawer-link" readOnly defaultValue="app.acme.com/acme/projects/website-relaunch" />
                   </Field>
                 </div>
                 <DrawerFooter>
@@ -283,28 +287,32 @@ const [snapPoint, setSnapPoint] = React.useState(snapPoints[0])
         <DrawerStage>
           {(container) => (
             <Drawer {...inlineDrawer}>
-              <DrawerTrigger render={<Button />}>Deployment actions</DrawerTrigger>
+              <DrawerTrigger render={<Button />}>Task actions</DrawerTrigger>
               <DrawerContent container={container} {...inlineContent}>
                 <DrawerHeader>
-                  <DrawerTitle>Deployment 8f2c1a9</DrawerTitle>
-                  <DrawerDescription>main · Ready · 4 minutes ago</DrawerDescription>
+                  <DrawerTitle>Write the launch announcement</DrawerTitle>
+                  <DrawerDescription>Priya Raman · Due Oct 14 · High priority</DrawerDescription>
                 </DrawerHeader>
                 <div className="grid gap-2 px-(--dialog-padding)">
                   <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
-                    <ExternalLinkIcon data-icon="inline-start" />
-                    Visit deployment
+                    <CheckIcon data-icon="inline-start" />
+                    Mark as done
                   </Button>
                   <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
-                    <QrCodeIcon data-icon="inline-start" />
-                    Open on another device
+                    <UserPlusIcon data-icon="inline-start" />
+                    Assign to someone else
                   </Button>
                   <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
-                    <RotateCcwIcon data-icon="inline-start" />
-                    Redeploy
+                    <CalendarIcon data-icon="inline-start" />
+                    Change due date
+                  </Button>
+                  <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
+                    <FolderInputIcon data-icon="inline-start" />
+                    Move to another project
                   </Button>
                   <Button variant="outline" size="lg" className="w-full justify-start bg-transparent text-destructive hover:border-destructive">
-                    <Undo2Icon data-icon="inline-start" />
-                    Roll back production
+                    <Trash2Icon data-icon="inline-start" />
+                    Delete task
                   </Button>
                 </div>
                 <DrawerFooter>

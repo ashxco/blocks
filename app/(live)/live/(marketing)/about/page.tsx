@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { AnchorIcon, ArrowRightIcon, CompassIcon, FlameIcon, MountainIcon } from "lucide-react"
+import { ArrowRightIcon } from "lucide-react"
 
 import { CtaBand } from "@/components/blocks/cta-band"
 import { LogoCloud } from "@/components/blocks/logo-cloud"
@@ -16,27 +16,20 @@ import { Kern } from "@/components/ui/kern"
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Lumen is built by fourteen engineers and designers across six time zones. Meet the team, how we work and who backs us.",
+    "Acme Inc. builds the workspace where 12,000+ teams plan and track their work. Eighteen people, remote-first since 2019, with offices in San Francisco and London.",
 }
 
 const stats = [
-  { value: "2023", label: "Founded in Berlin", detail: "By two engineers tired of deploy day" },
-  { value: "14", label: "People on the team", detail: "Fully remote, six time zones" },
-  { value: "38,000", label: "Teams deploying", detail: "From side projects to public companies" },
-  { value: "$8M", label: "Seed funding", detail: "Led by Fieldstone Capital" },
+  { value: "2019", label: "Founded", detail: "Remote-first from day one" },
+  { value: "18", label: "People on the team", detail: "Across six time zones" },
+  { value: "12,000+", label: "Teams on Acme", detail: "From agencies to hospitals" },
+  { value: "4.8M", label: "Tasks completed", detail: "Every month" },
 ]
 
 const openRoles = [
-  { title: "Senior platform engineer", detail: "Engineering · UTC−5 to UTC+3" },
-  { title: "Product designer", detail: "Design · UTC−3 to UTC+3" },
-  { title: "Support engineer", detail: "Support · UTC+5 to UTC+9" },
-]
-
-const backers = [
-  { name: "Fieldstone", icon: MountainIcon },
-  { name: "Northlight", icon: CompassIcon },
-  { name: "Kiln", icon: FlameIcon },
-  { name: "Harbor", icon: AnchorIcon },
+  { title: "Senior product engineer", detail: "Engineering · San Francisco to London hours" },
+  { title: "Product designer", detail: "Design · New York to Lisbon hours" },
+  { title: "Customer success manager", detail: "Customer success · San Francisco or London" },
 ]
 
 export default function AboutPage() {
@@ -47,13 +40,13 @@ export default function AboutPage() {
           <div className="grid gap-8 lg:col-span-7">
             <h1 id="about-heading" className="text-display text-foreground">
               <Kern>
-                Deploys should be <span className="text-brand">boring</span>.
+                Work should feel <span className="text-brand">calm</span>.
               </Kern>
             </h1>
             <p className="max-w-prose text-lead text-copy">
-              Lumen is a deployment platform built by fourteen engineers and designers who spent a decade on call. We
-              build the tools we wished we had: push to deploy, a preview for every branch, and rollbacks in one
-              click.
+              Acme Inc. builds the workspace where teams plan projects, track tasks and see how the work is going,
+              without a status meeting. We are eighteen people, remote-first since 2019, with offices in San Francisco
+              and London.
             </p>
             <div className="flex flex-wrap gap-3 pt-2">
               <Button size="lg" nativeButton={false} render={<Link href="#careers" />}>
@@ -78,17 +71,17 @@ export default function AboutPage() {
 
       <TeamGrid
         members={defaultTeam}
-        title="The people behind Lumen."
-        description="Fourteen of us across six time zones, building Lumen in the open and shipping a release every two weeks."
+        title="The people behind Acme."
+        description="Eighteen of us across six time zones. We plan every project in Acme, including the next version of Acme."
       />
 
-      <LogoCloud layout="center" title="Backed by investors who have run infrastructure at scale" items={backers} />
+      <LogoCloud layout="center" title="Used by 12,000+ teams, including" />
 
       <div id="careers" className="scroll-mt-(--header-height)">
         <CtaBand
           title="We’re hiring."
-          description="We have six open roles in engineering, design and support. Work from anywhere between UTC−7 and UTC+9, with equity for everyone, five weeks of paid leave and a team week in Lisbon every spring."
-          primaryAction={{ label: "See all six roles", href: "/live/contact" }}
+          description="We have three open roles in engineering, design and customer success. Work from home or from our San Francisco and London offices, with equity for everyone, five weeks of paid leave and a team week in Lisbon every spring."
+          primaryAction={{ label: "See all three roles", href: "/live/contact" }}
           secondaryAction={{ label: "Ask us a question", href: "/live/contact" }}
           aside={
             <>

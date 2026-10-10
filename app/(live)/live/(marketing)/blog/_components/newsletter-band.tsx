@@ -35,7 +35,7 @@ export function NewsletterBand({
 
           <div className="grid gap-4 @narrow:pb-1.5">
             <NewsletterForm tone="panel" label="Email address for new posts" buttonLabel="Subscribe" />
-            <p className="text-caption text-panel-muted">Read by 21,000 developers and platform teams.</p>
+            <p className="text-caption text-panel-muted">One email a week at most, written by the Acme team.</p>
           </div>
         </div>
       </div>

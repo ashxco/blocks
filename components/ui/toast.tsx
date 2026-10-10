@@ -21,9 +21,9 @@ import { Spinner } from "@/components/ui/spinner"
  * The Toaster is mounted once in app/layout.tsx. Trigger toasts anywhere
  * through the shared manager:
  *
- *   toast.add({ title: "Deployment ready", description: "lumen-web is live.", type: "success" })
- *   toast.add({ title: "Domain removed", actionProps: { children: "Undo", onClick: restore } })
- *   toast.promise(deploy(), { loading: "Deploying…", success: "Deployed", error: "Deploy failed" })
+ *   toast.add({ title: "Invite sent", description: "Jordan Lee will get an email from Acme.", type: "success" })
+ *   toast.add({ title: "Project archived", actionProps: { children: "Undo", onClick: restore } })
+ *   toast.promise(exportReport(), { loading: "Exporting report…", success: "Report exported", error: "Export failed" })
  *
  * Types: "success", "info", "warning", "error", "loading".
  */
@@ -234,7 +234,7 @@ type ToastType = "success" | "info" | "warning" | "error" | "loading"
  * empty states. It is static, so it has no live region; add role="status"
  * if you show one as feedback. Pass onClose to show the dismiss button.
  *
- *   <ToastCard type="success" title="Deployment ready" description="lumen-web is live." />
+ *   <ToastCard type="success" title="Invite sent" description="Jordan Lee will get an email from Acme." />
  */
 function ToastCard({
   type,

@@ -12,11 +12,13 @@ import { PendingInvitations } from "./pending-invitations"
 import { RoleGuide } from "./role-guide"
 import { SeatPanel } from "./seat-panel"
 import {
+  GUEST_LIMIT,
   INVITATIONS,
   INVITE_LINK,
   MEMBERS,
   PLAN,
   SEATS,
+  SEAT_PRICE,
   WORKSPACE,
   type Invitation,
 } from "./team-data"
@@ -34,7 +36,10 @@ export function TeamView() {
   const [invitations, setInvitations] = React.useState(INVITATIONS)
   const [linkCopied, setLinkCopied] = React.useState(false)
 
-  const liveInvites = invitations.filter((i) => i.daysLeft > 0).length
+  const memberCount = members.filter((m) => m.role !== "guest").length
+  const guestCount = members.length - memberCount
+  // Live invites for members add a seat when accepted; guest invites don’t.
+  const seatInvites = invitations.filter((i) => i.daysLeft > 0 && i.role !== "guest").length
   const knownEmails = [...members.map((m) => m.email), ...invitations.map((i) => i.email)]
 
   React.useEffect(() => {
@@ -49,7 +54,7 @@ export function TeamView() {
       setLinkCopied(true)
       toast.add({
         title: "Invite link copied",
-        description: "Anyone with an @acme.dev email can use it to join as a viewer.",
+        description: "Anyone with an @acme.com email can use it to join as a member.",
       })
     } catch {
       toast.add({
@@ -66,7 +71,7 @@ export function TeamView() {
       id: `inv-${email}`,
       email,
       role,
-      invitedBy: "Maya Chen",
+      invitedBy: "Maya Patel",
       sent: "just now",
       daysLeft: 7,
     }))
@@ -75,7 +80,7 @@ export function TeamView() {
 
   function resend(invitation: Invitation) {
     setInvitations((list) =>
-      list.map((i) => (i.id === invitation.id ? { ...i, sent: "just now", daysLeft: 7, invitedBy: "Maya Chen" } : i))
+      list.map((i) => (i.id === invitation.id ? { ...i, sent: "just now", daysLeft: 7, invitedBy: "Maya Patel" } : i))
     )
     toast.add({
       title: "Invite sent again",
@@ -106,7 +111,7 @@ export function TeamView() {
     <div className="@container/team grid gap-10">
       <PageHeader
         title="Team"
-        description={`People with access to ${WORKSPACE} and the role each one has. A role applies to every project, deployment and log.`}
+        description={`People with access to ${WORKSPACE} and the role each one has. Members take a seat; guests are free and see only the projects they’re invited to.`}
         actions={
           <>
             <Button variant="outline" onClick={copyInviteLink}>
@@ -125,7 +130,7 @@ export function TeamView() {
             seats={SEATS}
             planName={PLAN}
             workspaceName={WORKSPACE}
-            description={`${members.length} people can open ${WORKSPACE} and its projects. Owners and admins can change roles.`}
+            description={`${memberCount} members and ${guestCount} guests. Owners and admins can change roles.`}
             onRemove={(member) => setMembers((list) => list.filter((m) => m.id !== member.id))}
             onRoleChange={(member, role) =>
               setMembers((list) => list.map((m) => (m.id === member.id ? { ...m, role } : m)))
@@ -139,7 +144,15 @@ export function TeamView() {
           aria-label="Seats and roles"
           className="grid gap-6 @min-[62rem]/team:sticky @min-[62rem]/team:top-[calc(var(--header-height)+--spacing(8))]"
         >
-          <SeatPanel members={members.length} invites={liveInvites} seats={SEATS} planName={PLAN} />
+          <SeatPanel
+            members={memberCount}
+            guests={guestCount}
+            guestLimit={GUEST_LIMIT}
+            invites={seatInvites}
+            seats={SEATS}
+            seatPrice={SEAT_PRICE}
+            planName={PLAN}
+          />
           <RoleGuide />
         </aside>
       </div>

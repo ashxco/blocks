@@ -23,10 +23,10 @@ import { formatMoney } from "./format"
 export interface BillingPlan {
   id: string
   name: string
-  /** Monthly price. */
+  /** Price per member per month, billed annually. 0 for a free plan. */
   price: number
   description: string
-  /** Seats included. Omit for unlimited. */
+  /** Most members the plan allows. Omit for no limit. */
   seats?: number
 }
 
@@ -36,12 +36,15 @@ export function ChangePlanDialog({
   plans,
   currentPlanId,
   renewsOn,
+  members,
   currency = "USD",
   onChange,
 }: {
   plans: BillingPlan[]
   currentPlanId: string
   renewsOn: string
+  /** Members in the workspace now. Plans that allow fewer can’t be chosen. */
+  members: number
   currency?: string
   onChange: (plan: BillingPlan) => void | Promise<void>
 }) {
@@ -99,31 +102,37 @@ export function ChangePlanDialog({
             <span id={`${id}-legend`} className="sr-only">
               Plans
             </span>
-            {plans.map((plan) => (
-              <label
-                key={plan.id}
-                className="flex cursor-pointer items-center gap-4 rounded-(--control-radius) border p-4 transition-colors duration-(--duration-fast) hover:bg-accent has-data-checked:border-foreground"
-              >
-                <RadioGroupItem value={plan.id} />
-                <span className="grid min-w-0 flex-1 gap-0.5">
-                  <span className="flex items-center gap-2">
-                    <span className="text-label text-foreground">{plan.name}</span>
-                    {plan.id === currentPlanId ? <Badge variant="secondary">Current</Badge> : null}
+            {plans.map((plan) => {
+              // A plan with a member limit below today’s head count can’t take the workspace.
+              const tooSmall = plan.seats !== undefined && plan.seats < members
+              return (
+                <label
+                  key={plan.id}
+                  className="flex cursor-pointer items-center gap-4 rounded-(--control-radius) border p-4 transition-colors duration-(--duration-fast) hover:bg-accent has-data-checked:border-foreground has-data-disabled:cursor-not-allowed has-data-disabled:hover:bg-transparent"
+                >
+                  <RadioGroupItem value={plan.id} disabled={tooSmall} />
+                  <span className="grid min-w-0 flex-1 gap-0.5">
+                    <span className="flex items-center gap-2">
+                      <span className="text-label text-foreground">{plan.name}</span>
+                      {plan.id === currentPlanId ? <Badge variant="secondary">Current</Badge> : null}
+                    </span>
+                    <span className="text-caption text-muted-foreground">
+                      {tooSmall
+                        ? `Up to ${plan.seats} members. You have ${members}, so remove some first.`
+                        : `${plan.description} ${plan.seats ? `Up to ${plan.seats} members.` : "Any number of members."}`}
+                    </span>
                   </span>
-                  <span className="text-caption text-muted-foreground">
-                    {plan.description} {plan.seats
-                      ? `${plan.seats} ${plan.seats === 1 ? "seat" : "seats"}.`
-                      : "Unlimited seats."}
+                  <span className="shrink-0 text-right">
+                    <span className="block text-label text-foreground tabular-nums">
+                      {formatMoney(plan.price, currency)}
+                    </span>
+                    <span className="block text-caption text-muted-foreground">
+                      {plan.price > 0 ? "per member / month" : "forever"}
+                    </span>
                   </span>
-                </span>
-                <span className="shrink-0 text-right">
-                  <span className="block text-label text-foreground tabular-nums">
-                    {formatMoney(plan.price, currency)}
-                  </span>
-                  <span className="block text-caption text-muted-foreground">per month</span>
-                </span>
-              </label>
-            ))}
+                </label>
+              )
+            })}
           </RadioGroup>
 
           <DialogFooter>

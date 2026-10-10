@@ -27,22 +27,22 @@ export interface ComparisonProps {
 const defaultUs: ComparisonSide = {
   name: <Wordmark href={null} tone="panel" />,
   items: [
-    "Run on your servers or on our cloud",
-    "Flat plans with no per-seat fees",
-    "Preview URL for every branch",
-    "Logs and metrics included",
-    "Leave any time, your apps keep running",
+    "Projects, tasks and docs in one place",
+    "Status comes from the work itself",
+    "Automations handle the handoffs",
+    "Reports update as tasks move",
+    "Clients join as guests, on your terms",
   ],
 }
 
 const defaultThem: ComparisonSide = {
-  name: "Typical hosted platform",
+  name: "Spreadsheets, chat and email",
   items: [
-    "Their cloud only",
-    "Per-seat pricing plus overages",
-    "Previews on paid plans only",
-    "Separate bills for logs and APM",
-    "Rebuild everything to move",
+    "Work split across three tools",
+    "Status written up by hand each week",
+    "Reminders sent one message at a time",
+    "Reports rebuilt in a spreadsheet",
+    "Clients copied on long email threads",
   ],
 }
 
@@ -97,8 +97,8 @@ function ComparisonCard({ side, variant }: { side: ComparisonSide; variant: "us"
  * up when both sides have the same number of items.
  */
 export function Comparison({
-  title = "Why teams switch to Lumen.",
-  description = "The same push-to-deploy workflow, without the lock-in or the per-seat bill.",
+  title = "Why teams switch to Acme.",
+  description = "One workspace for the plan and the work, instead of a spreadsheet, a chat thread and a weekly meeting to tie them together.",
   us = defaultUs,
   them = defaultThem,
   contained = true,

@@ -2,7 +2,7 @@
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Hero, HeroProductMoment } from "@/components/blocks/hero"
-import { ReleaseShot } from "@/components/blocks/changelog-entry"
+import { CodeWindow } from "@/components/blocks/code-window"
 
 export default function HeroDocs() {
   return (
@@ -28,35 +28,27 @@ export default function HeroDocs() {
       <Example
         title="Custom copy"
         layout="full"
-        description="Change the headline, actions, command and visual for a product or campaign page. Highlight one word, never more."
+        description="Change the headline, actions, command and visual for a product or campaign page. Highlight one word, never more. The command line suits developer pages, such as the API."
         code={`<Hero
-  title={<>Preview every branch. Merge with <span className="text-brand">confidence</span>.</>}
-  description="Every pull request gets its own URL with production-like data, so reviewers see the change before it ships."
-  primaryAction={{ label: "Start free trial", href: "/live/sign-up" }}
-  secondaryAction={{ label: "See all features", href: "/live/features" }}
-  command="lumen preview --branch feat/billing"
-  visual={
-    <div className="@container rounded-(--panel-radius) border bg-subtle">
-      <ReleaseShot />
-    </div>
-  }
+  title={<>Build on the Acme <span className="text-brand">API</span>.</>}
+  description="Create tasks from your own tools, keep projects in sync and react to changes with webhooks."
+  primaryAction={{ label: "Read the API reference", href: "#" }}
+  secondaryAction={{ label: "See integrations", href: "/live/features" }}
+  command="npm install @acme/sdk"
+  visual={<CodeWindow />}
 />`}
       >
         <Hero
           title={
             <>
-              Preview every branch. Merge with <span className="text-brand">confidence</span>.
+              Build on the Acme <span className="text-brand">API</span>.
             </>
           }
-          description="Every pull request gets its own URL with production-like data, so reviewers see the change before it ships."
-          primaryAction={{ label: "Start free trial", href: "/live/sign-up" }}
-          secondaryAction={{ label: "See all features", href: "/live/features" }}
-          command="lumen preview --branch feat/billing"
-          visual={
-            <div className="@container rounded-(--panel-radius) border bg-subtle">
-              <ReleaseShot />
-            </div>
-          }
+          description="Create tasks from your own tools, keep projects in sync and react to changes with webhooks."
+          primaryAction={{ label: "Read the API reference", href: "#" }}
+          secondaryAction={{ label: "See integrations", href: "/live/features" }}
+          command="npm install @acme/sdk"
+          visual={<CodeWindow />}
         />
       </Example>
 
@@ -64,26 +56,24 @@ export default function HeroDocs() {
         title="Copy only"
         layout="full"
         surface="subtle"
-        description="Without a visual or command, for inner marketing pages such as About or Pricing."
+        description="Without a visual, for inner marketing pages such as About or Pricing."
         code={`<Hero
   variant="centered"
   visual={null}
-  command={null}
-  title={<>Pricing that grows with <span className="text-brand">you</span>.</>}
-  description="Plans from $5 a month, with a 14-day Pro trial. Pay for traffic, never per seat."
+  title={<>Pricing that grows with your <span className="text-brand">team</span>.</>}
+  description="Free for up to 3 members. Pro is $12 per member a month, billed annually, with a 14-day trial."
   secondaryAction={null}
 />`}
       >
         <Hero
           variant="centered"
           visual={null}
-          command={null}
           title={
             <>
-              Pricing that grows with <span className="text-brand">you</span>.
+              Pricing that grows with your <span className="text-brand">team</span>.
             </>
           }
-          description="Plans from $5 a month, with a 14-day Pro trial. Pay for traffic, never per seat."
+          description="Free for up to 3 members. Pro is $12 per member a month, billed annually, with a 14-day trial."
           secondaryAction={null}
         />
       </Example>
@@ -91,7 +81,7 @@ export default function HeroDocs() {
       <Example
         title="Product moment"
         layout="stack"
-        description="The visual on its own: deployments, requests and a dark deploy confirmation. It lays itself out from its own width, from three columns down to one. Pass stage={false} to drop the tinted stage."
+        description="The visual on its own: projects with their status, tasks completed each week and a dark card for an automation that just ran. It lays itself out from its own width, from three columns down to one. Pass stage={false} to drop the tinted stage."
         code={`<HeroProductMoment />
 <HeroProductMoment stage={false} />`}
       >
@@ -129,11 +119,11 @@ export default function HeroDocs() {
         title="Hero"
         rows={[
           { prop: "variant", type: '"split" | "centered"', default: '"split"', description: "Copy beside the visual, or centred above it." },
-          { prop: "title", type: "ReactNode", default: '"Ship anything. Own everything."', description: "Display headline. Wrap one word in <span className=\"text-brand\">." },
+          { prop: "title", type: "ReactNode", default: '"Plan it. Track it. Ship it together."', description: "Display headline. Wrap one word in <span className=\"text-brand\">." },
           { prop: "description", type: "ReactNode", description: "Lead paragraph under the headline." },
           { prop: "primaryAction", type: "{ label: string; href: string } | null", default: '"Start free trial" → /live/sign-up', description: "Ink button with an arrow. Pass null to hide it." },
           { prop: "secondaryAction", type: "{ label: string; href: string } | null", default: '"Book a demo" → /live/contact', description: "Outline button. Pass null to hide it." },
-          { prop: "command", type: "string | null", default: '"npm i -g lumen"', description: "Install command with a copy button. Pass null to hide it." },
+          { prop: "command", type: "string | null", default: "null", description: "A one-line command with a copy button, such as an SDK install on a developer page." },
           { prop: "visual", type: "ReactNode | null", default: "<HeroProductMoment />", description: "Replaces the product moment. Pass null for a copy-only hero." },
           { prop: "as", type: '"h1" | "h2"', default: '"h1"', description: "Heading level of the headline." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section spacing. Set to false inside your own layout." },

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, SunIcon } from "lucide-react"
+import { CheckIcon, SparklesIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
@@ -25,17 +25,18 @@ import {
   QuestionnaireTitle,
 } from "@/components/ui/questionnaire"
 
-const frameworks = [
-  { value: "nextjs", label: "Next.js app", hint: "Server rendering, API routes and edge middleware" },
-  { value: "static", label: "Static site", hint: "Astro, Eleventy, Hugo or plain HTML" },
-  { value: "api", label: "API or backend service", hint: "Node, Go, Python or Rust in a container" },
+const templates = [
+  { value: "roadmap", label: "Product roadmap", hint: "Features by quarter, on a timeline" },
+  { value: "marketing", label: "Marketing calendar", hint: "Campaigns, launches and content by date" },
+  { value: "clients", label: "Client projects", hint: "A board per client, with shared tasks and files" },
+  { value: "sprints", label: "Sprint planning", hint: "Two-week sprints with a backlog and a board" },
 ]
 
-const needs = [
-  { value: "postgres", label: "Postgres database" },
-  { value: "domain", label: "Custom domain" },
-  { value: "previews", label: "Preview comments on pull requests" },
-  { value: "logs", label: "Log drains" },
+const integrations = [
+  { value: "slack", label: "Slack" },
+  { value: "drive", label: "Google Drive" },
+  { value: "github", label: "GitHub" },
+  { value: "figma", label: "Figma" },
 ]
 
 /*
@@ -43,13 +44,13 @@ const needs = [
  * question, the progress bar and the buttons instead of an empty form.
  */
 const onboardingItems = [
-  { name: "framework", required: true, choices: frameworks.map(({ value }) => ({ value })) },
-  { name: "needs", choices: needs.map(({ value }) => ({ value })) },
-  { name: "team", required: true },
+  { name: "template", required: true, choices: templates.map(({ value }) => ({ value })) },
+  { name: "integrations", choices: integrations.map(({ value }) => ({ value })) },
+  { name: "workspace", required: true },
 ]
 
-const where = ["Every page", "Pages that load data", "Only the first visit"]
-const when = ["After the last deploy", "Without a deploy"]
+const where = ["Design reviews", "Engineering tasks", "Testing"]
+const when = ["Since the last sprint", "Since the project started"]
 const chatItems = [
   { name: "where", required: true, choices: where.map((value) => ({ value })) },
   { name: "when", required: true, choices: when.map((value) => ({ value })) },
@@ -61,12 +62,14 @@ function Onboarding() {
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
-    const framework = frameworks.find((f) => f.value === data.get("framework"))?.label ?? "Not set"
-    const picked = data.getAll("needs").map((v) => needs.find((n) => n.value === v)?.label ?? String(v))
+    const template = templates.find((t) => t.value === data.get("template"))?.label ?? "Not set"
+    const picked = data
+      .getAll("integrations")
+      .map((v) => integrations.find((i) => i.value === v)?.label ?? String(v))
     setSummary([
-      `Team: ${String(data.get("team") ?? "")}`,
-      `Deploying: ${framework}`,
-      `From day one: ${picked.length ? picked.join(", ") : "Nothing yet"}`,
+      `Workspace: ${String(data.get("workspace") ?? "")}`,
+      `First project: ${template}`,
+      `Connected: ${picked.length ? picked.join(", ") : "Nothing yet"}`,
     ])
   }
 
@@ -103,37 +106,37 @@ function Onboarding() {
     >
       <QuestionnaireProgress />
 
-      <QuestionnaireItem name="framework" required>
-        <QuestionnaireTitle>What are you deploying first?</QuestionnaireTitle>
-        <QuestionnaireDescription>We’ll set up the build settings for you. You can change them later.</QuestionnaireDescription>
+      <QuestionnaireItem name="template" required>
+        <QuestionnaireTitle>What will your team plan first?</QuestionnaireTitle>
+        <QuestionnaireDescription>We’ll start your first project from it.</QuestionnaireDescription>
         <QuestionnaireChoices>
-          {frameworks.map((f) => (
-            <QuestionnaireChoice key={f.value} value={f.value}>
-              {f.label}
-              <QuestionnaireChoiceDescription>{f.hint}</QuestionnaireChoiceDescription>
+          {templates.map((t) => (
+            <QuestionnaireChoice key={t.value} value={t.value}>
+              {t.label}
+              <QuestionnaireChoiceDescription>{t.hint}</QuestionnaireChoiceDescription>
             </QuestionnaireChoice>
           ))}
         </QuestionnaireChoices>
         <QuestionnaireError />
       </QuestionnaireItem>
 
-      <QuestionnaireItem name="needs" multiple>
-        <QuestionnaireTitle>What do you need from day one?</QuestionnaireTitle>
+      <QuestionnaireItem name="integrations" multiple>
+        <QuestionnaireTitle>Which tools should Acme connect to?</QuestionnaireTitle>
         <QuestionnaireDescription>Pick any that apply, or skip and add them later.</QuestionnaireDescription>
         <QuestionnaireChoices>
-          {needs.map((n) => (
-            <QuestionnaireChoice key={n.value} value={n.value}>
-              {n.label}
+          {integrations.map((i) => (
+            <QuestionnaireChoice key={i.value} value={i.value}>
+              {i.label}
             </QuestionnaireChoice>
           ))}
         </QuestionnaireChoices>
       </QuestionnaireItem>
 
-      <QuestionnaireItem name="team" required>
-        <QuestionnaireTitle>What should we call your team?</QuestionnaireTitle>
-        <QuestionnaireDescription>It appears in project URLs, such as acme.lumen.app.</QuestionnaireDescription>
-        <QuestionnaireInput placeholder="Acme" autoComplete="organization" />
-        <QuestionnaireError>Enter a team name to finish.</QuestionnaireError>
+      <QuestionnaireItem name="workspace" required>
+        <QuestionnaireTitle>What should we call your workspace?</QuestionnaireTitle>
+        <QuestionnaireDescription>It appears in your workspace URL, such as app.acme.com/northwind.</QuestionnaireDescription>
+        <QuestionnaireInput placeholder="Northwind" autoComplete="organization" />
+        <QuestionnaireError>Enter a workspace name to finish.</QuestionnaireError>
       </QuestionnaireItem>
 
       <QuestionnaireActions>
@@ -163,17 +166,17 @@ function InChat() {
         <Message align="end">
           <MessageContent>
             <Bubble>
-              <BubbleContent>My site is slow today.</BubbleContent>
+              <BubbleContent>Mobile app 2.0 keeps slipping.</BubbleContent>
             </Bubble>
           </MessageContent>
         </Message>
         <Message>
           <MessageAvatar className="bg-primary text-primary-foreground" aria-hidden="true">
-            <SunIcon />
+            <SparklesIcon />
           </MessageAvatar>
           <MessageContent>
             <MessageHeader>
-              <strong>Lumen</strong>
+              <strong>Acme</strong>
             </MessageHeader>
             <Bubble variant="ghost">
               <BubbleContent>Two quick questions so I can look in the right place.</BubbleContent>
@@ -184,12 +187,12 @@ function InChat() {
                   items={chatItems}
                   shortcuts="numbers"
                   onSubmit={submit}
-                  aria-label="Narrow down the slowdown"
+                  aria-label="Find out what is slipping"
                   className="gap-5"
                 >
                   <QuestionnaireProgress />
                   <QuestionnaireItem name="where" required>
-                    <QuestionnaireTitle size="sm">Where do you see it?</QuestionnaireTitle>
+                    <QuestionnaireTitle size="sm">Which work slips most?</QuestionnaireTitle>
                     <QuestionnaireChoices>
                       {where.map((value) => (
                         <QuestionnaireChoice key={value} value={value}>
@@ -231,21 +234,21 @@ function InChat() {
             </Message>
             <Message>
               <MessageAvatar className="bg-primary text-primary-foreground" aria-hidden="true">
-                <SunIcon />
+                <SparklesIcon />
               </MessageAvatar>
               <MessageContent>
                 <MessageHeader>
-                  <strong>Lumen</strong>
+                  <strong>Acme</strong>
                 </MessageHeader>
                 <Bubble variant="ghost">
                   <BubbleContent>
-                    Thanks. Response times for lumen-web rose from 120ms to 480ms at 09:12, right after deploy dpl_8f2k.
-                    I can compare it with the previous deploy, or roll back now.
+                    Thanks. Since Sep 28, tasks in Mobile app 2.0 have taken 5.1 days on average, up from 3.2. Most
+                    of them wait for a review from Jordan Lee. I can show the slow tasks or suggest a second reviewer.
                   </BubbleContent>
                 </Bubble>
                 <div className="flex flex-wrap gap-2">
                   <Button size="sm" variant="outline">
-                    Compare deploys
+                    Show slow tasks
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setAnswer(null)}>
                     Answer again
@@ -270,25 +273,25 @@ export default function QuestionnaireDocs() {
         description="One question at a time. Press a letter to pick a choice, Enter to continue and the arrow keys to move. Required questions explain what is missing; optional ones can be skipped."
         code={`<Questionnaire shortcuts="letters" onSubmit={submit}>
   <QuestionnaireProgress />
-  <QuestionnaireItem name="framework" required>
-    <QuestionnaireTitle>What are you deploying first?</QuestionnaireTitle>
-    <QuestionnaireDescription>We’ll set up the build settings for you.</QuestionnaireDescription>
+  <QuestionnaireItem name="template" required>
+    <QuestionnaireTitle>What will your team plan first?</QuestionnaireTitle>
+    <QuestionnaireDescription>We’ll start your first project from it.</QuestionnaireDescription>
     <QuestionnaireChoices>
-      <QuestionnaireChoice value="nextjs">
-        Next.js app
-        <QuestionnaireChoiceDescription>Server rendering and API routes</QuestionnaireChoiceDescription>
+      <QuestionnaireChoice value="roadmap">
+        Product roadmap
+        <QuestionnaireChoiceDescription>Features by quarter, on a timeline</QuestionnaireChoiceDescription>
       </QuestionnaireChoice>
       …
     </QuestionnaireChoices>
     <QuestionnaireError />
   </QuestionnaireItem>
 
-  <QuestionnaireItem name="needs" multiple>…</QuestionnaireItem>
+  <QuestionnaireItem name="integrations" multiple>…</QuestionnaireItem>
 
-  <QuestionnaireItem name="team" required>
-    <QuestionnaireTitle>What should we call your team?</QuestionnaireTitle>
-    <QuestionnaireInput placeholder="Acme" />
-    <QuestionnaireError>Enter a team name to finish.</QuestionnaireError>
+  <QuestionnaireItem name="workspace" required>
+    <QuestionnaireTitle>What should we call your workspace?</QuestionnaireTitle>
+    <QuestionnaireInput placeholder="Northwind" />
+    <QuestionnaireError>Enter a workspace name to finish.</QuestionnaireError>
   </QuestionnaireItem>
 
   <QuestionnaireActions>
@@ -308,14 +311,14 @@ export default function QuestionnaireDocs() {
         minHeight="min-h-112"
         description="A short questionnaire inside an assistant reply. Use the title role and small buttons so it sits quietly in the thread; the answers come back as the person’s own message."
         code={`<Message>
-  <MessageAvatar><SunIcon /></MessageAvatar>
+  <MessageAvatar><SparklesIcon /></MessageAvatar>
   <MessageContent>
     <Bubble variant="ghost"><BubbleContent>Two quick questions…</BubbleContent></Bubble>
     <div className="rounded-(--card-radius) border p-5">
       <Questionnaire shortcuts="numbers" onSubmit={submit}>
         <QuestionnaireProgress />
         <QuestionnaireItem name="where" required>
-          <QuestionnaireTitle size="sm">Where do you see it?</QuestionnaireTitle>
+          <QuestionnaireTitle size="sm">Which work slips most?</QuestionnaireTitle>
           …
         </QuestionnaireItem>
         <QuestionnaireActions>
@@ -335,49 +338,49 @@ export default function QuestionnaireDocs() {
         title="Choice states"
         minHeight="min-h-80"
         description="Rows darken on hover and take an ink edge and a filled indicator when picked. Disabled choices fade; an invalid question edges its choices in the destructive colour and explains what is missing."
-        code={`<QuestionnaireChoice value="iad" defaultChecked>Virginia</QuestionnaireChoice>
-<QuestionnaireChoice value="gru" disabled>São Paulo</QuestionnaireChoice>
+        code={`<QuestionnaireChoice value="board" defaultChecked>Board</QuestionnaireChoice>
+<QuestionnaireChoice value="timeline" disabled>Timeline</QuestionnaireChoice>
 
 <QuestionnaireItem name="alerts" multiple required invalid>
   …
-  <QuestionnaireError>Pick at least one channel for deploy alerts.</QuestionnaireError>
+  <QuestionnaireError>Pick at least one place to send task alerts.</QuestionnaireError>
 </QuestionnaireItem>`}
       >
         <div className="grid w-full gap-8 md:grid-cols-2">
           <Questionnaire
-            items={[{ name: "primary-region", choices: [{ value: "iad" }, { value: "fra" }, { value: "gru", disabled: true }] }]}
-            aria-label="Primary region"
+            items={[{ name: "default-view", choices: [{ value: "board" }, { value: "list" }, { value: "timeline", disabled: true }] }]}
+            aria-label="Default view"
           >
-            <QuestionnaireItem name="primary-region">
-              <QuestionnaireTitle size="sm">Primary region</QuestionnaireTitle>
+            <QuestionnaireItem name="default-view">
+              <QuestionnaireTitle size="sm">Default view</QuestionnaireTitle>
               <QuestionnaireChoices>
-                <QuestionnaireChoice value="iad" defaultChecked>
-                  Virginia
-                  <QuestionnaireChoiceDescription>iad1 · closest to most visitors</QuestionnaireChoiceDescription>
+                <QuestionnaireChoice value="board" defaultChecked>
+                  Board
+                  <QuestionnaireChoiceDescription>Columns by status, for day-to-day work</QuestionnaireChoiceDescription>
                 </QuestionnaireChoice>
-                <QuestionnaireChoice value="fra">
-                  Frankfurt
-                  <QuestionnaireChoiceDescription>fra1</QuestionnaireChoiceDescription>
+                <QuestionnaireChoice value="list">
+                  List
+                  <QuestionnaireChoiceDescription>Every task in one table</QuestionnaireChoiceDescription>
                 </QuestionnaireChoice>
-                <QuestionnaireChoice value="gru" disabled>
-                  São Paulo
-                  <QuestionnaireChoiceDescription>gru1 · available on Pro</QuestionnaireChoiceDescription>
+                <QuestionnaireChoice value="timeline" disabled>
+                  Timeline
+                  <QuestionnaireChoiceDescription>Add start dates to tasks to use it</QuestionnaireChoiceDescription>
                 </QuestionnaireChoice>
               </QuestionnaireChoices>
             </QuestionnaireItem>
           </Questionnaire>
           <Questionnaire
-            items={[{ name: "alerts", required: true, choices: [{ value: "email" }, { value: "slack" }, { value: "webhook" }] }]}
-            aria-label="Deploy alerts"
+            items={[{ name: "alerts", required: true, choices: [{ value: "email" }, { value: "slack" }, { value: "mobile" }] }]}
+            aria-label="Task alerts"
           >
             <QuestionnaireItem name="alerts" multiple required invalid>
-              <QuestionnaireTitle size="sm">Send deploy alerts to</QuestionnaireTitle>
+              <QuestionnaireTitle size="sm">Send task alerts to</QuestionnaireTitle>
               <QuestionnaireChoices>
                 <QuestionnaireChoice value="email">Email</QuestionnaireChoice>
                 <QuestionnaireChoice value="slack">Slack</QuestionnaireChoice>
-                <QuestionnaireChoice value="webhook">Webhook</QuestionnaireChoice>
+                <QuestionnaireChoice value="mobile">The Acme mobile app</QuestionnaireChoice>
               </QuestionnaireChoices>
-              <QuestionnaireError>Pick at least one channel for deploy alerts.</QuestionnaireError>
+              <QuestionnaireError>Pick at least one place to send task alerts.</QuestionnaireError>
             </QuestionnaireItem>
           </Questionnaire>
         </div>

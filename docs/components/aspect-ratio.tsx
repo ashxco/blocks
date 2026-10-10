@@ -1,8 +1,9 @@
-import { GitBranchIcon, PlayIcon } from "lucide-react"
+import { PlayIcon, UsersIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 const ratios = [
   { ratio: 16 / 9, label: "16 : 9", use: "Video, hero media" },
@@ -11,74 +12,79 @@ const ratios = [
 ]
 
 const projects = [
-  { name: "lumen-web", url: "lumen-web.lumen.app", branch: "main", updated: "4m ago", tint: "bg-tint-violet", layout: "landing" },
-  { name: "lumen-api", url: "api.lumen.app", branch: "main", updated: "1h ago", tint: "bg-tint-sky", layout: "dashboard" },
-  { name: "docs", url: "docs.lumen.app", branch: "content/regions", updated: "Yesterday", tint: "bg-tint-mint", layout: "docs" },
+  { name: "Website relaunch", view: "Board · 52 tasks", members: 5, updated: "12m ago", tint: "bg-tint-violet", layout: "board" },
+  { name: "Q4 planning", view: "Timeline · 20 tasks", members: 8, updated: "1h ago", tint: "bg-tint-sky", layout: "timeline" },
+  { name: "Brand refresh", view: "Calendar · 40 tasks", members: 4, updated: "3h ago", tint: "bg-tint-mint", layout: "calendar" },
 ] as const
 
-const deployLines = [
-  { text: "$ git push origin main", tone: "text-terminal-foreground" },
-  { text: "Building lumen-web from 8f2c1a9", tone: "text-panel-muted" },
-  { text: "Compiled 184 routes in 17.6s", tone: "text-panel-muted" },
-  { text: "Ready at lumen-web.lumen.app", tone: "text-panel-success" },
+/* The board the tour opens on. */
+const tourBoard = [
+  { column: "To do", tasks: ["Choose the new icon set", "Book the launch review"] },
+  { column: "In progress", tasks: ["Draft the Q4 hiring plan", "Fix sign-in on older Android phones"] },
+  { column: "Done", tasks: ["Write the homepage hero copy"] },
 ]
 
 /**
- * A miniature of the deployed site, drawn with flat ink shapes and hairlines
- * on the project's tint, so it reads the same in both themes: a nav bar, then
- * a landing hero, an app dashboard or a docs page.
+ * A miniature of the project view, drawn with flat ink shapes and hairlines
+ * on the project's tint, so it reads the same in both themes: a header with
+ * view tabs, then a board, a timeline or a calendar.
  */
-function SitePreview({ layout }: { layout: (typeof projects)[number]["layout"] }) {
+function ViewPreview({ layout }: { layout: (typeof projects)[number]["layout"] }) {
   return (
     <div aria-hidden="true" className="absolute inset-0 flex flex-col gap-3 p-3">
       <div className="flex items-center justify-between border-b border-foreground/10 px-1 pb-2">
-        <span className="h-1.5 w-8 rounded-full bg-foreground" />
+        <span className="h-1.5 w-10 rounded-full bg-foreground" />
         <span className="flex gap-1.5">
-          <span className="h-1.5 w-4 rounded-full bg-foreground/25" />
-          <span className="h-1.5 w-4 rounded-full bg-foreground/25" />
-          <span className="h-1.5 w-6 rounded-full bg-foreground" />
+          {(["board", "timeline", "calendar"] as const).map((view) => (
+            <span
+              key={view}
+              className={cn("h-1.5 rounded-full", view === layout ? "w-6 bg-foreground" : "w-4 bg-foreground/25")}
+            />
+          ))}
         </span>
       </div>
-      {layout === "landing" ? (
-        <div className="grid flex-1 grid-cols-[1.2fr_1fr] items-center gap-3 px-1">
-          <div className="grid gap-1.5">
-            <span className="h-2.5 w-full rounded-full bg-foreground" />
-            <span className="h-2.5 w-2/3 rounded-full bg-foreground" />
-            <span className="mt-1 h-1.5 w-5/6 rounded-full bg-foreground/25" />
-            <span className="mt-2 h-3.5 w-12 rounded-full bg-foreground" />
-          </div>
-          <span className="h-full max-h-16 rounded-sm bg-panel" />
-        </div>
-      ) : null}
-      {layout === "dashboard" ? (
-        <div className="grid flex-1 grid-cols-3 grid-rows-[auto_1fr] gap-2 px-1">
-          {[0, 1, 2].map((i) => (
-            <span key={i} className="grid gap-1 rounded-xs border border-foreground/15 p-1.5">
-              <span className="h-1 w-2/3 rounded-full bg-foreground/25" />
-              <span className="h-2 w-1/2 rounded-full bg-foreground" />
+      {layout === "board" ? (
+        <div className="grid flex-1 grid-cols-3 gap-2 px-1">
+          {[3, 2, 1].map((cards, column) => (
+            <span key={column} className="grid content-start gap-1.5">
+              <span className="h-1 w-1/2 rounded-full bg-foreground/40" />
+              {Array.from({ length: cards }, (_, i) => (
+                <span key={i} className="grid gap-1 rounded-xs border border-foreground/15 p-1.5">
+                  <span className="h-1 w-5/6 rounded-full bg-foreground" />
+                  <span className="h-1 w-1/2 rounded-full bg-foreground/25" />
+                </span>
+              ))}
             </span>
           ))}
-          <span className="col-span-3 flex items-end gap-1 rounded-xs border border-foreground/15 p-1.5">
-            {[40, 65, 50, 80, 60, 90, 75].map((height, i) => (
-              <span key={i} className="flex-1 rounded-t-xs bg-foreground/25" style={{ height: `${height}%` }} />
-            ))}
-          </span>
         </div>
       ) : null}
-      {layout === "docs" ? (
-        <div className="grid flex-1 grid-cols-[1fr_3fr] gap-3 px-1">
-          <span className="grid content-start gap-1.5 border-r border-foreground/10 pr-2">
-            <span className="h-1 w-full rounded-full bg-foreground" />
-            <span className="h-1 w-3/4 rounded-full bg-foreground/25" />
-            <span className="h-1 w-5/6 rounded-full bg-foreground/25" />
-            <span className="h-1 w-2/3 rounded-full bg-foreground/25" />
-          </span>
-          <span className="grid content-start gap-1.5">
-            <span className="h-2.5 w-1/2 rounded-full bg-foreground" />
-            <span className="h-1.5 w-full rounded-full bg-foreground/25" />
-            <span className="h-1.5 w-5/6 rounded-full bg-foreground/25" />
-            <span className="mt-1 h-5 w-full rounded-xs bg-terminal" />
-          </span>
+      {layout === "timeline" ? (
+        <div className="grid flex-1 content-start gap-2 px-1">
+          {[
+            { start: 0, width: 45, done: true },
+            { start: 20, width: 40, done: true },
+            { start: 38, width: 34, done: false },
+            { start: 55, width: 30, done: false },
+            { start: 70, width: 26, done: false },
+          ].map((bar, i) => (
+            <span key={i} className="relative h-2.5 border-b border-foreground/10">
+              <span
+                className={cn("absolute inset-y-0 rounded-full", bar.done ? "bg-foreground" : "bg-foreground/25")}
+                style={{ left: `${bar.start}%`, width: `${bar.width}%` }}
+              />
+            </span>
+          ))}
+        </div>
+      ) : null}
+      {layout === "calendar" ? (
+        <div className="grid flex-1 grid-cols-7 gap-px px-1">
+          {Array.from({ length: 21 }, (_, day) => (
+            <span key={day} className="grid content-start gap-0.5 rounded-xs border border-foreground/10 p-0.5">
+              <span className="h-0.5 w-1.5 rounded-full bg-foreground/25" />
+              {[3, 8, 9, 12, 17].includes(day) ? <span className="h-1 rounded-full bg-foreground" /> : null}
+              {[8, 15].includes(day) ? <span className="h-1 rounded-full bg-foreground/25" /> : null}
+            </span>
+          ))}
         </div>
       ) : null}
     </div>
@@ -92,7 +98,7 @@ export default function AspectRatioDocs() {
         title="Ratios"
         description="Pass the ratio as width divided by height. The frame keeps its shape at any width, so the layout never jumps while media loads."
         code={`<AspectRatio ratio={16 / 9} className="rounded-(--card-radius) bg-subtle">
-  <img src="/preview.png" alt="Dashboard of the lumen-web project" />
+  <img src="/board.png" alt="Board view of the Website relaunch project" />
 </AspectRatio>`}
       >
         <div className="grid w-full items-end gap-4 sm:grid-cols-3">
@@ -113,30 +119,38 @@ export default function AspectRatioDocs() {
       <Example
         title="Video"
         layout="stack"
-        description="A 16:9 frame on the terminal surface holds the poster until the video loads. Direct img and video children fill the frame and crop to cover it."
-        code={`<AspectRatio ratio={16 / 9} className="rounded-(--panel-radius) bg-terminal">
-  <video src="/lumen-tour.mp4" poster="/lumen-tour.jpg" controls />
+        description="A 16:9 frame on the panel surface holds the poster until the video loads. Direct img and video children fill the frame and crop to cover it."
+        code={`<AspectRatio ratio={16 / 9} className="rounded-(--panel-radius) bg-panel">
+  <video src="/acme-tour.mp4" poster="/acme-tour.jpg" controls />
 </AspectRatio>`}
       >
-        <AspectRatio ratio={16 / 9} className="rounded-(--panel-radius) border border-border bg-terminal text-terminal-foreground">
-          {/* The poster: the deploy the tour walks through. Hidden on narrow frames, where the button takes the corner. */}
-          <ol aria-hidden="true" className="absolute top-0 left-0 hidden gap-1.5 p-8 font-mono text-code @md:grid">
-            {deployLines.map((line) => (
-              <li key={line.text} className={line.tone}>
-                {line.text}
-              </li>
+        <AspectRatio ratio={16 / 9} className="rounded-(--panel-radius) border border-panel-border bg-panel text-panel-foreground">
+          {/* The poster: the board the tour opens on. Hidden on narrow frames, where the button takes the corner. */}
+          <div aria-hidden="true" className="absolute inset-x-0 top-0 hidden grid-cols-3 gap-3 p-8 @md:grid">
+            {tourBoard.map((column) => (
+              <div key={column.column} className="grid content-start gap-2">
+                <p className="text-caption font-semibold text-panel-muted">{column.column}</p>
+                {column.tasks.map((task) => (
+                  <p
+                    key={task}
+                    className="truncate rounded-sm border border-panel-border bg-panel-raised px-3 py-2 text-xs text-panel-foreground"
+                  >
+                    {task}
+                  </p>
+                ))}
+              </div>
             ))}
-          </ol>
+          </div>
           {/* On a narrow frame the button moves to the top corner, clear of the caption. */}
           <div className="absolute inset-0 grid place-items-start p-6 @md:place-items-center @md:p-0">
-            <Button size="icon-lg" variant="inverse" aria-label="Play the two-minute tour of Lumen">
+            <Button size="icon-lg" variant="inverse" aria-label="Play the two-minute tour of Acme">
               <PlayIcon className="translate-x-px fill-current" />
             </Button>
           </div>
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 sm:p-8">
             <div className="grid gap-1">
-              <p className="text-h4 text-panel-foreground">Lumen in two minutes</p>
-              <p className="text-sm text-panel-muted">From git push to a production URL</p>
+              <p className="text-h4 text-panel-foreground">Acme in two minutes</p>
+              <p className="text-sm text-panel-muted">Plan a project, assign the work and watch it move</p>
             </div>
             <span className="font-mono text-xs text-panel-muted tabular-nums">2:04</span>
           </div>
@@ -157,14 +171,14 @@ export default function AspectRatioDocs() {
               className="grid gap-4 rounded-(--card-radius) border border-border bg-card p-3 outline-none transition-colors duration-(--duration-fast) ease-standard hover:border-border-strong focus-visible:focus-ring"
             >
               <AspectRatio ratio={16 / 10} className={`rounded-md ${p.tint}`}>
-                <SitePreview layout={p.layout} />
+                <ViewPreview layout={p.layout} />
               </AspectRatio>
               <div className="grid gap-1 px-1 pb-1">
                 <p className="text-title text-foreground">{p.name}</p>
-                <p className="truncate text-caption text-muted-foreground">{p.url}</p>
+                <p className="truncate text-caption text-muted-foreground">{p.view}</p>
                 <p className="mt-2 inline-flex items-center gap-1.5 text-caption text-copy">
-                  <GitBranchIcon aria-hidden="true" className="size-3.5 text-muted-foreground" />
-                  {p.branch}
+                  <UsersIcon aria-hidden="true" className="size-3.5 text-muted-foreground" />
+                  {p.members} members
                   <span className="text-muted-foreground">· {p.updated}</span>
                 </p>
               </div>
@@ -176,7 +190,7 @@ export default function AspectRatioDocs() {
       <Guidelines
         do={[
           "Reserve space for every image and video with a ratio, so nothing shifts as it loads.",
-          "Give the frame a flat placeholder fill: bg-subtle, a tint or bg-terminal for video.",
+          "Give the frame a flat placeholder fill: bg-subtle, a tint or bg-panel for video.",
           "Write alt text that says what the image shows, or alt=\"\" when it is decorative.",
         ]}
         dont={[

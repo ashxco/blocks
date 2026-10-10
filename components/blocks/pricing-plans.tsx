@@ -14,8 +14,12 @@ export type BillingPeriod = "monthly" | "yearly"
 export interface PricingPlan {
   name: string
   description: string
-  /** Price per month, before and after the yearly discount. */
+  /** Price per month, billed monthly and billed yearly. */
   price: { monthly: number; yearly: number }
+  /** Printed after the price. Defaults to "/ month"; per-seat plans use "per member / month". */
+  unit?: string
+  /** Replaces the billing line under the price, e.g. "Free forever, no card required". */
+  billingNote?: string
   features: string[]
   cta: { label: string; href: string }
   /** Sets the plan on a raised dark panel. Use for one plan at most. */
@@ -49,46 +53,43 @@ export interface PricingPlansProps {
 
 export const defaultPlans: PricingPlan[] = [
   {
-    name: "Hobby",
-    description: "Side projects, prototypes and things you build at the weekend.",
-    price: { monthly: 5, yearly: 4 },
-    features: ["3 projects", "Preview URL for every push", "100 GB bandwidth", "Community support"],
-    cta: { label: "Choose Hobby", href: "/live/sign-up" },
-  },
-  {
-    name: "Starter",
-    description: "Your first app in production, with a domain and backups.",
-    price: { monthly: 20, yearly: 16 },
-    features: ["Unlimited projects", "5 custom domains", "Daily database backups", "Email support"],
-    cta: { label: "Choose Starter", href: "/live/sign-up" },
+    name: "Free",
+    description: "For small teams getting their first projects in order.",
+    price: { monthly: 0, yearly: 0 },
+    billingNote: "Free forever, no card required",
+    features: ["Up to 3 members", "5 projects", "1,000 automation runs a month", "2 GB storage"],
+    cta: { label: "Start for free", href: "/live/sign-up" },
   },
   {
     name: "Pro",
-    description: "Production apps and small teams that need room to grow.",
-    price: { monthly: 39, yearly: 31 },
+    description: "For growing teams running several projects at once.",
+    price: { monthly: 15, yearly: 12 },
+    unit: "per member / month",
     features: [
-      "Everything in Starter",
-      "Up to 10 members, with roles and audit log",
-      "Hourly backups with point-in-time restore",
-      "Logs kept for 30 days",
-      "Priority support",
+      "Unlimited projects",
+      "10,000 automation runs a month",
+      "100 GB storage",
+      "Guests for clients and contractors",
+      "Integrations with Slack, GitHub and more",
     ],
     cta: { label: "Start free trial", href: "/live/sign-up" },
     featured: true,
     note: "Most popular",
   },
   {
-    name: "Scale",
-    description: "Teams running serious traffic across regions.",
-    price: { monthly: 99, yearly: 79 },
+    name: "Business",
+    description: "For companies that need control, security and scale.",
+    price: { monthly: 29, yearly: 24 },
+    unit: "per member / month",
     features: [
-      "Unlimited team members",
-      "SAML single sign-on",
-      "Dedicated build machines",
-      "99.99% uptime SLA",
-      "Shared Slack channel",
+      "Everything in Pro",
+      "SSO with SAML and advanced permissions",
+      "Audit log",
+      "50,000 automation runs a month",
+      "1 TB storage",
+      "99.9% uptime SLA",
     ],
-    cta: { label: "Choose Scale", href: "/live/sign-up" },
+    cta: { label: "Choose Business", href: "/live/sign-up" },
   },
 ]
 
@@ -114,26 +115,27 @@ const layouts = {
 type Layout = (typeof layouts)[keyof typeof layouts]
 
 const defaultEnterprise = {
-  title: "Enterprise and self-hosted",
+  title: "Enterprise",
   description:
-    "Custom contracts, single-tenant regions, on-premise installs and a named engineer for your migration.",
+    "Everything in Business, with a dedicated success manager, custom contracts and data residency.",
   cta: { label: "Talk to sales", href: "/live/contact" },
 }
 
 /**
  * Plan cards with a monthly or yearly switch. The featured plan sits on a
- * raised dark panel with an inverse button. Four plans sit in four columns
- * on wide screens, two in mid-sized slots and one on phones; three plans
- * sit in three columns from 52rem.
+ * raised dark panel with an inverse button. Three plans sit in three columns
+ * from 52rem; four plans sit in four columns on wide screens, two in
+ * mid-sized slots and one on phones. Custom contracts go in the row under
+ * the cards.
  */
 export function PricingPlans({
   plans = defaultPlans,
-  title = "Simple pricing that scales with you.",
-  description = "Every plan includes unlimited deployments, automatic HTTPS and preview URLs. No per-seat fees, ever.",
+  title = "Start free. Pay as your team grows.",
+  description = "Every plan includes list, board, timeline and calendar views, docs and reports. Pro is free for 14 days.",
   billing,
-  defaultBilling = "monthly",
+  defaultBilling = "yearly",
   onBillingChange,
-  yearlyNote = "Save 20%",
+  yearlyNote = "Save up to 20%",
   hideToggle = false,
   enterprise = defaultEnterprise,
   currency = "$",
@@ -229,8 +231,8 @@ function PlanCard({
 }) {
   const featured = Boolean(plan.featured)
   const amount = plan.price[period]
-  const billedLine =
-    period === "yearly" ? `${currency}${(amount * 12).toLocaleString("en-US")} billed yearly` : "Billed monthly"
+  // Annual plans are charged at the yearly rate on monthly invoices, as on the billing page.
+  const billedLine = plan.billingNote ?? (period === "yearly" ? "Billed annually, invoiced monthly" : "Billed monthly")
 
   return (
     <article
@@ -274,7 +276,9 @@ function PlanCard({
             {currency}
             {amount}
           </span>
-          <span className={cn("text-label", featured ? "text-panel-muted" : "text-muted-foreground")}>/ month</span>
+          <span className={cn("text-label", featured ? "text-panel-muted" : "text-muted-foreground")}>
+            {plan.unit ?? "/ month"}
+          </span>
         </p>
         <p className={cn("text-caption", featured ? "text-panel-muted" : "text-muted-foreground")}>{billedLine}</p>
       </div>

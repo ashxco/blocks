@@ -2,17 +2,18 @@
 
 import {
   ChevronRightIcon,
-  DatabaseIcon,
-  GitBranchIcon,
-  GlobeIcon,
+  FolderIcon,
+  FolderKanbanIcon,
   KeyRoundIcon,
+  ListTodoIcon,
   MoreHorizontalIcon,
   ShieldCheckIcon,
-  WebhookIcon,
+  ZapIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { initialsTone } from "@/components/blocks/members-list/people"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,22 +28,22 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 
-const domains = [
-  { name: "lumen.app", note: "Certificate renews 14 Dec", status: "Valid", variant: "success" },
-  { name: "www.lumen.app", note: "Redirects to lumen.app", status: "Redirect", variant: "secondary" },
-  { name: "status.lumen.app", note: "Add a CNAME to cname.lumen.app", status: "Pending", variant: "warning" },
+const projects = [
+  { slug: "website-relaunch", name: "Website relaunch", note: "Led by Priya Raman · Due Nov 14", status: "On track", variant: "success" },
+  { slug: "mobile-app-2", name: "Mobile app 2.0", note: "Led by Jordan Lee · 2 tasks overdue", status: "At risk", variant: "warning" },
+  { slug: "help-center", name: "Help center", note: "Paused by Sam Okafor on Sep 30", status: "Paused", variant: "secondary" },
 ] as const
 
 const members = [
-  { name: "Priya Raman", email: "priya@lumen.app", role: "Owner", initials: "PR" },
-  { name: "Mateo Ortiz", email: "mateo@lumen.app", role: "Admin", initials: "MO" },
-  { name: "Aiko Kato", email: "aiko@lumen.app", role: "Developer", initials: "AK" },
+  { name: "Maya Patel", email: "maya@acme.com", role: "Owner", initials: "MP" },
+  { name: "Hana Kim", email: "hana@acme.com", role: "Admin", initials: "HK" },
+  { name: "Jordan Lee", email: "jordan@acme.com", role: "Member", initials: "JL" },
 ]
 
 const sizeRows = [
-  { size: "default", branch: "preview-comments", meta: "Last deployed 9 minutes ago" },
-  { size: "sm", branch: "chore/node-22", meta: "Last deployed 3 hours ago" },
-  { size: "xs", branch: "fix/apex-redirect", meta: "Last deployed yesterday" },
+  { size: "default", task: "Launch announcement", meta: "Due Oct 14 · Priya Raman" },
+  { size: "sm", task: "Mobile pricing table", meta: "Due Oct 15 · Jordan Lee" },
+  { size: "xs", task: "Q3 workload report", meta: "Due Oct 20 · Lucas Moreau" },
 ] as const
 
 export default function ItemDocs() {
@@ -54,25 +55,25 @@ export default function ItemDocs() {
         layout="stack"
         code={`<Item variant="outline">
   <ItemMedia variant="icon">
-    <DatabaseIcon />
+    <KeyRoundIcon />
   </ItemMedia>
   <ItemContent>
-    <ItemTitle>Postgres</ItemTitle>
-    <ItemDescription>16 GB · Frankfurt, fra1</ItemDescription>
+    <ItemTitle>API key</ItemTitle>
+    <ItemDescription>Read-only. Created Oct 6.</ItemDescription>
   </ItemContent>
   <ItemActions>
-    <Button size="sm" variant="outline">Connect</Button>
+    <Button size="sm" variant="outline">Rotate</Button>
   </ItemActions>
 </Item>`}
       >
         <div className="grid max-w-prose gap-3">
           <Item>
             <ItemMedia variant="icon">
-              <DatabaseIcon />
+              <FolderIcon />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Postgres</ItemTitle>
-              <ItemDescription>Version 16, backed up daily.</ItemDescription>
+              <ItemTitle>Google Drive</ItemTitle>
+              <ItemDescription>Attach shared files to tasks.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">
@@ -85,8 +86,8 @@ export default function ItemDocs() {
               <KeyRoundIcon />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Deploy key</ItemTitle>
-              <ItemDescription>Read-only. Added 3 days ago.</ItemDescription>
+              <ItemTitle>API key</ItemTitle>
+              <ItemDescription>Read-only. Created Oct 6.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">
@@ -99,7 +100,7 @@ export default function ItemDocs() {
               <ShieldCheckIcon />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Two-factor sign-in</ItemTitle>
+              <ItemTitle>Two-factor authentication</ItemTitle>
               <ItemDescription>Required for every member.</ItemDescription>
             </ItemContent>
             <ItemActions>
@@ -121,10 +122,10 @@ export default function ItemDocs() {
             <div key={row.size} className="grid gap-2">
               <Item size={row.size} variant="outline">
                 <ItemMedia variant="icon">
-                  <GitBranchIcon />
+                  <ListTodoIcon />
                 </ItemMedia>
                 <ItemContent>
-                  <ItemTitle>{row.branch}</ItemTitle>
+                  <ItemTitle>{row.task}</ItemTitle>
                   <ItemDescription>{row.meta}</ItemDescription>
                 </ItemContent>
               </Item>
@@ -148,7 +149,7 @@ export default function ItemDocs() {
             <Item key={m.email} role="listitem" size="sm">
               <ItemMedia>
                 <Avatar>
-                  <AvatarFallback>{m.initials}</AvatarFallback>
+                  <AvatarFallback tone={initialsTone(m.initials)}>{m.initials}</AvatarFallback>
                 </Avatar>
               </ItemMedia>
               <ItemContent>
@@ -172,21 +173,21 @@ export default function ItemDocs() {
         layout="stack"
         surface="subtle"
         code={`<ItemGroup variant="contained">
-  <Item render={<Link href="/domains/lumen.app" />}>
-    <ItemMedia variant="icon"><GlobeIcon /></ItemMedia>
+  <Item render={<Link href="/projects/website-relaunch" />}>
+    <ItemMedia variant="icon"><FolderKanbanIcon /></ItemMedia>
     <ItemContent>
-      <ItemTitle>lumen.app</ItemTitle>
-      <ItemDescription>Production</ItemDescription>
+      <ItemTitle>Website relaunch</ItemTitle>
+      <ItemDescription>Led by Priya Raman · Due Nov 14</ItemDescription>
     </ItemContent>
     <ItemActions><ChevronRightIcon /></ItemActions>
   </Item>
 </ItemGroup>`}
       >
         <ItemGroup variant="contained" className="max-w-prose">
-          {domains.map((d) => (
-            <Item key={d.name} role="listitem" render={<a href={`#${d.name}`} />}>
+          {projects.map((d) => (
+            <Item key={d.slug} role="listitem" render={<a href={`#${d.slug}`} />}>
               <ItemMedia variant="icon">
-                <GlobeIcon />
+                <FolderKanbanIcon />
               </ItemMedia>
               <ItemContent>
                 {/* The status rides on the title line and wraps under the name when the row is narrow. */}
@@ -212,11 +213,11 @@ export default function ItemDocs() {
         <ItemGroup className="max-w-prose">
           <Item role="listitem">
             <ItemMedia variant="icon">
-              <WebhookIcon />
+              <ZapIcon />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Deploy hook</ItemTitle>
-              <ItemDescription>Sent on every deployment.</ItemDescription>
+              <ItemTitle>Notify the owner</ItemTitle>
+              <ItemDescription>When a task moves to Done.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">
@@ -224,17 +225,17 @@ export default function ItemDocs() {
               </Button>
             </ItemActions>
             <ItemFooter className="pl-14">
-              <span>Last delivered 2 minutes ago · 200 OK</span>
+              <span>Last ran 2 minutes ago · 412 runs this month</span>
             </ItemFooter>
           </Item>
           <ItemSeparator />
           <Item role="listitem">
             <ItemMedia variant="icon">
-              <WebhookIcon />
+              <ZapIcon />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Incident hook</ItemTitle>
-              <ItemDescription>Sent when a deployment fails.</ItemDescription>
+              <ItemTitle>Post overdue tasks</ItemTitle>
+              <ItemDescription>When a task becomes overdue.</ItemDescription>
             </ItemContent>
             <ItemActions>
               <Button size="sm" variant="outline">
@@ -242,7 +243,7 @@ export default function ItemDocs() {
               </Button>
             </ItemActions>
             <ItemFooter className="pl-14">
-              <span className="text-destructive">Last delivery failed · 503 Service Unavailable</span>
+              <span className="text-destructive">Last run failed · Slack is disconnected</span>
             </ItemFooter>
           </Item>
         </ItemGroup>

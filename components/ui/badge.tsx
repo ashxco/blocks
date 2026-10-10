@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 /**
- * Blocks badge. Status and counts in app UI only ("Ready", "3 new").
+ * Blocks badge. Status and counts in app UI only ("On track", "3 new").
  * Never a section label or an eyebrow above a heading.
  *
  * Height and radius come from --badge-height and --badge-radius. Status

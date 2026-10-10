@@ -1,31 +1,40 @@
 import * as React from "react"
-import { ActivityIcon, GitBranchIcon, GlobeIcon, KeyRoundIcon, RefreshCwIcon, UsersIcon } from "lucide-react"
+import { ChartColumnIcon, KanbanIcon, ListTodoIcon, PlugIcon, UsersIcon, ZapIcon } from "lucide-react"
 
 import { SectionHeading } from "@/components/blocks/section-heading"
 import {
   AvatarStack,
-  EdgeRegions,
+  BarList,
+  BoardPreview,
+  LinkChips,
   LiveMetrics,
-  MaskedSecrets,
-  PreviewUrls,
-  TrafficShift,
+  RuleCard,
 } from "@/components/blocks/feature-bento/visuals"
 import { cn } from "@/lib/utils"
 
 export {
   AvatarStack,
-  EdgeRegions,
+  BarList,
+  BoardPreview,
+  LinkChips,
   LiveMetrics,
-  MaskedSecrets,
-  PreviewUrls,
+  RuleCard,
+  ShareBars,
   Sparkline,
-  TrafficShift,
+} from "@/components/blocks/feature-bento/visuals"
+export type {
+  BarListItem,
+  BoardPreviewColumn,
+  LinkChip,
+  LiveMetric,
+  ShareBar,
+  StackPerson,
 } from "@/components/blocks/feature-bento/visuals"
 
 export interface BentoFeature {
   title: string
   description: string
-  /** A lucide icon element, e.g. <GitBranchIcon />. */
+  /** A lucide icon element, e.g. <KanbanIcon />. */
   icon?: React.ReactNode
   /** "dark" is a panel tile for emphasis (one per grid). "tint" is a flat tinted tile. */
   tone?: "default" | "dark" | "tint"
@@ -47,42 +56,42 @@ export interface FeatureBentoProps {
 
 export const defaultBentoFeatures: BentoFeature[] = [
   {
-    title: "Push to deploy",
-    description: "Every commit builds and ships. Every branch gets its own preview URL to share with the team.",
-    icon: <GitBranchIcon />,
+    title: "One plan, four views",
+    description: "List, board, timeline and calendar views of the same work. Everyone picks the view that suits them.",
+    icon: <KanbanIcon />,
     wide: true,
-    visual: <PreviewUrls />,
+    visual: <BoardPreview />,
   },
   {
-    title: "Live metrics",
-    description: "CPU, memory and latency, streamed from the first request.",
-    icon: <ActivityIcon />,
+    title: "Reports that keep up",
+    description: "Workload, on-time delivery and cycle time, updated as work moves.",
+    icon: <ChartColumnIcon />,
     tone: "dark",
     visual: <LiveMetrics />,
   },
   {
-    title: "Zero-downtime deploys",
-    description: "New versions start beside old ones and take traffic only when healthy.",
-    icon: <RefreshCwIcon />,
-    visual: <TrafficShift />,
+    title: "Automations",
+    description: "Rules handle the handoffs, reminders and status changes nobody wants to do by hand.",
+    icon: <ZapIcon />,
+    visual: <RuleCard />,
   },
   {
-    title: "Secrets vault",
-    description: "Encrypted at rest and scoped to each environment.",
-    icon: <KeyRoundIcon />,
-    visual: <MaskedSecrets />,
+    title: "Tasks with owners",
+    description: "Assignees, due dates, priorities, subtasks and comments on every task.",
+    icon: <ListTodoIcon />,
+    visual: <BarList />,
   },
   {
-    title: "Global edge",
-    description: "TLS, caching and rate limits run in 38 edge regions, close to your users.",
-    icon: <GlobeIcon />,
+    title: "Works with your tools",
+    description: "Connect Slack, Google Drive, GitHub, Figma, Zoom and HubSpot, so updates land where your team already works.",
+    icon: <PlugIcon />,
     tone: "tint",
     wide: true,
-    visual: <EdgeRegions />,
+    visual: <LinkChips />,
   },
   {
-    title: "Teams and roles",
-    description: "Invite the whole team. Roles and a full audit log from Pro, SAML single sign-on on Scale.",
+    title: "Members and guests",
+    description: "Invite the whole team and bring clients in as guests. SSO and an audit log come with Business.",
     icon: <UsersIcon />,
     visual: <AvatarStack />,
   },
@@ -145,12 +154,12 @@ function BentoTile({ feature }: { feature: BentoFeature }) {
 export function FeatureBento({
   title = (
     <>
-      Everything included.
+      Everything in one place.
       <br />
-      Nothing bolted on.
+      Nothing to stitch together.
     </>
   ),
-  description = "Builds, previews, metrics, secrets and domains come with every plan. No add-on store and no surprise line items on your bill.",
+  description = "Projects, tasks, docs, automations and reports share one workspace, so the plan, the work and the status never drift apart.",
   features = defaultBentoFeatures,
   contained = true,
   className,

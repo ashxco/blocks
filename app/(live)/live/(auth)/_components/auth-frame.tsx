@@ -85,10 +85,10 @@ function SplitFrame({
         </main>
         <AuthFooter />
       </div>
-      {/* Sticky and one viewport tall (or its content's height on short screens), so the headline, the log and
-          the quote stay in view beside long forms instead of stretching with them. */}
+      {/* Sticky and one viewport tall (or its content's height on short screens), so the headline, the project
+          preview and the quote stay in view beside long forms instead of stretching with them. */}
       <aside
-        aria-label="Lumen in production"
+        aria-label="Acme at work"
         className="hidden min-w-0 p-3 lg:sticky lg:top-0 lg:flex lg:min-h-dvh lg:flex-col lg:self-start"
       >
         {aside}
@@ -105,7 +105,7 @@ function WideFrame({ children }: { children: React.ReactNode }) {
         <Wordmark />
         <div className="flex min-w-0 items-center gap-4">
           <span className="hidden truncate text-caption text-muted-foreground sm:inline">
-            Signed in as <span className="font-semibold text-foreground">maya@acme.dev</span>
+            Signed in as <span className="font-semibold text-foreground">maya@acme.com</span>
           </span>
           {/* The negative margin cancels the ghost padding, so the label sits on the gutter. */}
           <Button
@@ -140,7 +140,7 @@ function AuthFooter({ className }: { className?: string }) {
         className
       )}
     >
-      <p>© 2026 Lumen, Inc.</p>
+      <p>© 2026 Acme Inc.</p>
       <nav aria-label="Legal">
         <ul className="flex flex-wrap gap-x-5 gap-y-2">
           {legalLinks.map((link) => (

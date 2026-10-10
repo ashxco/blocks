@@ -1,17 +1,18 @@
 "use client"
 
-import { ArchiveRestoreIcon, CableIcon, DatabaseIcon, GaugeIcon, GitBranchIcon } from "lucide-react"
+import { BellIcon, ChartColumnIcon, GaugeIcon, RepeatIcon, UsersIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import {
   AvatarStack,
-  EdgeRegions,
+  BarList,
+  BoardPreview,
   FeatureBento,
+  LinkChips,
   LiveMetrics,
-  MaskedSecrets,
-  PreviewUrls,
+  RuleCard,
+  ShareBars,
   Sparkline,
-  TrafficShift,
 } from "@/components/blocks/feature-bento"
 
 export default function FeatureBentoDocs() {
@@ -32,71 +33,79 @@ export default function FeatureBentoDocs() {
         surface="subtle"
         description="Pass your own features. Icons are elements, visuals are any small component. Keep one dark tile at most."
         code={`<FeatureBento
-  title="Data that lives next to your code."
-  description="Managed Postgres in the same region as your app, with backups and branching built in."
+  title="Reports that write themselves."
+  description="Dashboards for workload, on-time delivery and cycle time, built from the work your team already tracks."
   features={[
-    { title: "Postgres in one command", description: "lumen db create gives you a database and a DATABASE_URL in every environment.", icon: <DatabaseIcon />, wide: true, visual: <MaskedSecrets names={["DATABASE_URL", "DATABASE_URL_UNPOOLED"]} /> },
-    { title: "Query metrics", description: "Slow queries and connection counts, live.", icon: <GaugeIcon />, tone: "dark", visual: <LiveMetrics metrics={[...]} /> },
-    { title: "Point-in-time restore", description: "Roll back to any second in the last 7 days.", icon: <ArchiveRestoreIcon /> },
-    { title: "Branch databases", description: "Each preview gets a copy of the schema and seed data.", icon: <GitBranchIcon />, tone: "tint", wide: true, visual: <PreviewUrls urls={[...]} /> },
-    { title: "Connection pooling", description: "A pooler sits in front of every database.", icon: <CableIcon />, wide: true, visual: <TrafficShift versions={[...]} /> },
+    { title: "Workload at a glance", description: "See who has too much on before it slips.", icon: <UsersIcon />, wide: true, visual: <BarList /> },
+    { title: "Delivery trends", description: "On-time delivery and cycle time, week by week.", icon: <GaugeIcon />, tone: "dark", visual: <LiveMetrics metrics={[...]} /> },
+    { title: "Weekly summaries", description: "A digest to Slack every Monday morning.", icon: <BellIcon /> },
+    { title: "Every chart, shareable", description: "Share a dashboard with the workspace or one team.", icon: <ChartColumnIcon />, tone: "tint", wide: true, visual: <LinkChips items={[...]} /> },
+    { title: "Recurring reviews", description: "The next review appears when you finish the last.", icon: <RepeatIcon />, wide: true, visual: <RuleCard label="Recurring task" icon={<RepeatIcon />} when="Monthly review is done" then={["Create next month’s review", "Copy the checklist"]} runs="Next review due Nov 2" /> },
   ]}
 />`}
       >
         <FeatureBento
-          title="Data that lives next to your code."
-          description="Managed Postgres in the same region as your app, with backups and branching built in."
+          title="Reports that write themselves."
+          description="Dashboards for workload, on-time delivery and cycle time, built from the work your team already tracks."
           features={[
             {
-              title: "Postgres in one command",
-              description: "lumen db create gives you a database and a DATABASE_URL in every environment.",
-              icon: <DatabaseIcon />,
+              title: "Workload at a glance",
+              description: "See who has too much on their plate before deadlines slip, and move tasks in one drag.",
+              icon: <UsersIcon />,
               wide: true,
-              visual: <MaskedSecrets names={["DATABASE_URL", "DATABASE_URL_UNPOOLED"]} />,
+              visual: <BarList />,
             },
             {
-              title: "Query metrics",
-              description: "Slow queries and connection counts, live.",
+              title: "Delivery trends",
+              description: "On-time delivery and cycle time, week by week.",
               icon: <GaugeIcon />,
               tone: "dark",
               visual: (
                 <LiveMetrics
-                  values={[22, 25, 21, 28, 24, 30, 27, 26, 33, 29, 31, 35]}
+                  values={[71, 74, 72, 78, 80, 79, 84, 86, 85, 88, 90, 92]}
                   metrics={[
-                    { label: "p95", value: "4.1 ms" },
-                    { label: "Conns", value: "38" },
-                    { label: "Slow", value: "2" },
+                    { label: "On time", value: "92%" },
+                    { label: "Cycle", value: "3.4 days" },
+                    { label: "Late", value: "8%" },
                   ]}
                 />
               ),
             },
             {
-              title: "Point-in-time restore",
-              description: "Roll back to any second in the last seven days, without a support ticket.",
-              icon: <ArchiveRestoreIcon />,
+              title: "Weekly summaries",
+              description: "A digest of what finished and what slipped lands in Slack every Monday morning.",
+              icon: <BellIcon />,
             },
             {
-              title: "Branch databases",
-              description: "Each preview URL gets its own copy of the schema and seed data, removed when the branch merges.",
-              icon: <GitBranchIcon />,
+              title: "Every chart, shareable",
+              description: "Share a dashboard with the whole workspace or with one team. It updates as tasks move.",
+              icon: <ChartColumnIcon />,
               tone: "tint",
               wide: true,
               visual: (
-                <PreviewUrls
-                  urls={[
-                    { url: "db-feat-billing.acme.dev" },
-                    { url: "db-fix-auth.acme.dev" },
-                    { url: "db.acme.dev", production: true },
+                <LinkChips
+                  items={[
+                    { label: "Workspace", active: true },
+                    { label: "Design team", active: true },
+                    { label: "Leadership" },
                   ]}
                 />
               ),
             },
             {
-              title: "Connection pooling",
-              description: "A pooler sits in front of every database, so serverless functions and long-running servers share connections safely.",
-              icon: <CableIcon />,
+              title: "Recurring reviews",
+              description: "Set a monthly review task once. The next one appears when you finish the last, with the same checklist.",
+              icon: <RepeatIcon />,
               wide: true,
-              visual: <TrafficShift versions={[{ sha: "pooled", share: 92 }, { sha: "direct", share: 8 }]} />,
+              visual: (
+                <RuleCard
+                  label="Recurring task"
+                  icon={<RepeatIcon />}
+                  when="Monthly review is done"
+                  then={["Create next month’s review", "Copy the checklist"]}
+                  runs="Next review due Nov 2"
+                />
+              ),
             },
           ]}
         />
@@ -106,38 +115,43 @@ export default function FeatureBentoDocs() {
         title="Tile visuals"
         layout="stack"
         description="The small live visuals are exported on their own. They are decorative and hidden from assistive technology, so the tile text must carry the meaning."
-        code={`<PreviewUrls />
-<Sparkline className="text-brand" />
-<TrafficShift />
-<MaskedSecrets />
-<EdgeRegions />
+        code={`<BoardPreview />
+<RuleCard />
+<ShareBars />
+<LinkChips />
+<BarList />
 <AvatarStack />
+<Sparkline className="text-brand" />
 <LiveMetrics /> // on a dark panel`}
       >
         <div className="grid gap-8 @3xl:grid-cols-2">
-          <div className="grid content-start gap-3">
-            <p className="text-label text-foreground">PreviewUrls</p>
-            <PreviewUrls />
+          <div className="grid content-start gap-3 @3xl:col-span-2">
+            <p className="text-label text-foreground">BoardPreview</p>
+            <BoardPreview />
           </div>
           <div className="grid content-start gap-3">
-            <p className="text-label text-foreground">Sparkline</p>
-            <Sparkline className="text-brand" />
+            <p className="text-label text-foreground">RuleCard</p>
+            <RuleCard />
           </div>
           <div className="grid content-start gap-3">
-            <p className="text-label text-foreground">TrafficShift</p>
-            <TrafficShift />
-          </div>
-          <div className="grid content-start gap-3">
-            <p className="text-label text-foreground">MaskedSecrets</p>
-            <MaskedSecrets />
+            <p className="text-label text-foreground">ShareBars</p>
+            <ShareBars />
           </div>
           <div className="grid content-start gap-3 rounded-(--card-radius) bg-tint-sky p-5">
-            <p className="text-label text-foreground">EdgeRegions</p>
-            <EdgeRegions />
+            <p className="text-label text-foreground">LinkChips</p>
+            <LinkChips />
+          </div>
+          <div className="grid content-start gap-3">
+            <p className="text-label text-foreground">BarList</p>
+            <BarList />
           </div>
           <div className="grid content-start gap-3">
             <p className="text-label text-foreground">AvatarStack</p>
             <AvatarStack />
+          </div>
+          <div className="grid content-start gap-3">
+            <p className="text-label text-foreground">Sparkline</p>
+            <Sparkline className="text-brand" />
           </div>
           <div className="grid content-start gap-3 rounded-(--card-radius) bg-panel p-5 @3xl:col-span-2">
             <p className="text-label text-panel-foreground">LiveMetrics</p>
@@ -162,9 +176,9 @@ export default function FeatureBentoDocs() {
       <ApiTable
         title="FeatureBento"
         rows={[
-          { prop: "title", type: "ReactNode | null", default: '"Everything included. Nothing bolted on."', description: "Section heading. Pass null to render the grid alone." },
+          { prop: "title", type: "ReactNode | null", default: '"Everything in one place. Nothing to stitch together."', description: "Section heading. Pass null to render the grid alone." },
           { prop: "description", type: "ReactNode", description: "Supporting text beside the heading." },
-          { prop: "features", type: "BentoFeature[]", default: "Six Lumen features", description: "Tiles, in reading order." },
+          { prop: "features", type: "BentoFeature[]", default: "Six Acme features", description: "Tiles, in reading order." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section spacing." },
           { prop: "className", type: "string", description: "Classes for the section." },
         ]}
@@ -175,7 +189,7 @@ export default function FeatureBentoDocs() {
         rows={[
           { prop: "title", type: "string", description: "Tile title." },
           { prop: "description", type: "string", description: "One sentence." },
-          { prop: "icon", type: "ReactNode", description: "A lucide icon element, such as <GitBranchIcon />." },
+          { prop: "icon", type: "ReactNode", description: "A lucide icon element, such as <KanbanIcon />." },
           { prop: "tone", type: '"default" | "dark" | "tint"', default: '"default"', description: "Card, dark panel or a flat sky tint." },
           { prop: "wide", type: "boolean", default: "false", description: "Span two columns from the two-column layout up." },
           { prop: "visual", type: "ReactNode", description: "Small visual pinned to the bottom of the tile." },

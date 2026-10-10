@@ -27,7 +27,7 @@ export interface WorkspaceUrlInputProps
  * the same wherever people meet it.
  */
 export function WorkspaceUrlInput({
-  domain = "lumen.app",
+  domain = "app.acme.com",
   endAddon,
   groupClassName,
   className,

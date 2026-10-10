@@ -10,13 +10,13 @@ import { ProductStage } from "./_components/product-stage"
 export const metadata: Metadata = {
   title: "Features",
   description:
-    "Push-to-deploy builds, preview URLs, logs, metrics, secrets, domains and managed databases. Every Lumen plan includes every feature.",
+    "Projects in list, board, timeline and calendar views, tasks, docs, automations, reports and integrations, with SSO and an audit log on Business.",
 }
 
 /**
- * Lumen product tour: a centred hero over the dashboard on a dark panel,
- * four alternating feature rows, the full capability list and a closing call
- * to action.
+ * Acme features: a centred hero over the product on a dark panel, four
+ * alternating feature rows, the full capability list and a closing call to
+ * action.
  */
 export default function FeaturesPage() {
   return (
@@ -27,10 +27,10 @@ export default function FeaturesPage() {
           variant="centered"
           title={
             <>
-              Everything you need to ship and <span className="text-brand">run</span> apps.
+              Everything your team needs to <span className="text-brand">finish</span> the work.
             </>
           }
-          description="Builds, previews, logs, metrics, domains and databases in one platform. Run it on our cloud or on servers you own, with the same workflow."
+          description="Projects, tasks, docs, automations and reports in one workspace, with the admin controls your IT team asks for."
           primaryAction={{ label: "Start free trial", href: "/live/sign-up" }}
           secondaryAction={{ label: "See pricing", href: "/live/pricing" }}
           command={null}
@@ -41,8 +41,8 @@ export default function FeaturesPage() {
       <FeatureRows />
       <CapabilityGrid />
       <CtaBand
-        title="See it on your own code."
-        description="Connect a repository and get a preview URL in about a minute. Every plan runs the platform on this page, and Pro is free for 14 days."
+        title="See it with your own projects."
+        description="Import a spreadsheet or start from a template, and invite your team in a few minutes. Pro is free for 14 days."
         aside={null}
       />
     </>

@@ -2,20 +2,22 @@
 
 import * as React from "react"
 import {
+  CircleCheckIcon,
+  CircleIcon,
   CopyIcon,
-  ExternalLinkIcon,
-  FileCodeIcon,
   FilePlusIcon,
   FileTextIcon,
   FolderIcon,
   FolderPlusIcon,
+  LinkIcon,
   PencilIcon,
-  RocketIcon,
-  RotateCcwIcon,
   Trash2Icon,
+  UserIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines, useReturnFocus } from "@/docs/kit"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { initialsTone } from "@/components/blocks/members-list/people"
 import { Badge } from "@/components/ui/badge"
 import {
   ContextMenu,
@@ -36,16 +38,16 @@ import {
 import { DropdownMenu } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
-const files = [
-  { name: "app", kind: "folder" },
-  { name: "components", kind: "folder" },
-  { name: "lib", kind: "folder" },
-  { name: "next.config.ts", kind: "code" },
-  { name: "package.json", kind: "code" },
-  { name: "README.md", kind: "text" },
+const docs = [
+  { name: "Briefs", kind: "folder" },
+  { name: "Meeting notes", kind: "folder" },
+  { name: "Research", kind: "folder" },
+  { name: "Launch plan", kind: "doc" },
+  { name: "Homepage copy", kind: "doc" },
+  { name: "Launch-day FAQ", kind: "doc" },
 ] as const
 
-const fileIcon = { folder: FolderIcon, code: FileCodeIcon, text: FileTextIcon }
+const docIcon = { folder: FolderIcon, doc: FileTextIcon }
 
 type Stage = HTMLDivElement | null
 
@@ -127,18 +129,22 @@ function ShownContextMenu({
   )
 }
 
-function LogViewer({ container }: { container: Stage }) {
-  const shown = useShownContextMenu(container)
-  const [timestamps, setTimestamps] = React.useState(true)
-  const [wrap, setWrap] = React.useState(false)
-  const [level, setLevel] = React.useState("all")
+const tasks = [
+  { title: "Outline the key messages", initials: "PR", due: "Oct 6", done: true, overdue: false },
+  { title: "Approve the hero copy", initials: "HK", due: "Oct 7", done: false, overdue: true },
+  { title: "Set up redirects for old blog URLs", initials: "JL", due: "Oct 8", done: false, overdue: true },
+  { title: "Final homepage illustrations", initials: "SA", due: "Oct 16", done: false, overdue: false },
+]
 
-  const lines = [
-    { time: "12:05:14", level: "warn", text: "Slow query on deployments (812ms)" },
-    { time: "12:05:15", level: "info", text: "POST /api/deployments 201 in 230ms" },
-    { time: "12:05:18", level: "error", text: "Webhook to hooks.slack.com timed out after 10s, retrying with backoff" },
-    { time: "12:05:20", level: "info", text: "GET /api/usage 200 in 37ms" },
-  ].filter((line) => level === "all" || line.level === level || (level === "warn" && line.level === "error"))
+function TaskListView({ container }: { container: Stage }) {
+  const shown = useShownContextMenu(container)
+  const [dueDates, setDueDates] = React.useState(true)
+  const [assignees, setAssignees] = React.useState(true)
+  const [filter, setFilter] = React.useState("all")
+
+  const rows = tasks.filter(
+    (task) => filter === "all" || (filter === "open" && !task.done) || (filter === "overdue" && task.overdue)
+  )
 
   return (
     <ShownContextMenu
@@ -146,43 +152,72 @@ function LogViewer({ container }: { container: Stage }) {
       trigger={
         <ContextMenuTrigger
           {...shown.trigger}
-          className="relative block w-full max-w-120 rounded-(--card-radius) border bg-terminal p-5 font-mono text-code text-terminal-foreground"
+          className="relative grid w-full max-w-120 grid-cols-[minmax(0,1fr)] rounded-(--card-radius) border bg-card p-(--overlay-padding)"
         >
-          {shown.point("top-1/2 left-[30%] @lg:left-[56%]")}
-          <ol className="grid gap-1.5">
-            {lines.map((line) => (
-              <li key={line.time} className={wrap ? "flex gap-3" : "flex gap-3 truncate"}>
-                {timestamps ? <span className="shrink-0 opacity-60 tabular">{line.time}</span> : null}
-                <span className={wrap ? undefined : "truncate"}>{line.text}</span>
+          {/* Below the list on narrow stages and at the right edge when there is room, so the menu never covers the rows whose view options it changes. */}
+          {shown.point("top-full left-[20%] @4xl:top-1/2 @4xl:left-[97%]")}
+          <p className="px-2.5 pt-1.5 pb-2 text-caption font-semibold text-muted-foreground">Website relaunch · Tasks</p>
+          <ul className="grid grid-cols-[minmax(0,1fr)]">
+            {rows.map((task) => (
+              <li
+                key={task.title}
+                className="flex h-(--table-row-height-sm) items-center gap-2.5 rounded-(--overlay-item-radius) px-2.5 text-sm"
+              >
+                {task.done ? (
+                  <CircleCheckIcon aria-hidden="true" className="size-4 shrink-0 text-success" />
+                ) : (
+                  <CircleIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                )}
+                <span
+                  className={
+                    task.done ? "min-w-0 flex-1 truncate text-muted-foreground line-through" : "min-w-0 flex-1 truncate font-medium text-foreground"
+                  }
+                >
+                  {task.title}
+                </span>
+                {dueDates ? (
+                  <span
+                    className={
+                      task.overdue ? "shrink-0 text-caption text-destructive tabular" : "shrink-0 text-caption text-muted-foreground tabular"
+                    }
+                  >
+                    {task.due}
+                  </span>
+                ) : null}
+                {assignees ? (
+                  <Avatar size="sm">
+                    <AvatarFallback tone={initialsTone(task.initials)}>{task.initials}</AvatarFallback>
+                  </Avatar>
+                ) : null}
               </li>
             ))}
-          </ol>
+          </ul>
         </ContextMenuTrigger>
       }
     >
       <ContextMenuGroup>
         <ContextMenuLabel>View</ContextMenuLabel>
-        <ContextMenuCheckboxItem checked={timestamps} onCheckedChange={setTimestamps}>
-          Show timestamps
+        <ContextMenuCheckboxItem checked={dueDates} onCheckedChange={setDueDates}>
+          Show due dates
         </ContextMenuCheckboxItem>
-        <ContextMenuCheckboxItem checked={wrap} onCheckedChange={setWrap}>
-          Wrap long lines
+        <ContextMenuCheckboxItem checked={assignees} onCheckedChange={setAssignees}>
+          Show assignees
         </ContextMenuCheckboxItem>
       </ContextMenuGroup>
       <ContextMenuSeparator />
       <ContextMenuGroup>
-        <ContextMenuLabel>Level</ContextMenuLabel>
-        <ContextMenuRadioGroup value={level} onValueChange={(value) => setLevel(String(value))}>
-          <ContextMenuRadioItem value="all">All lines</ContextMenuRadioItem>
-          <ContextMenuRadioItem value="warn">Warnings and errors</ContextMenuRadioItem>
-          <ContextMenuRadioItem value="error">Errors only</ContextMenuRadioItem>
+        <ContextMenuLabel>Show</ContextMenuLabel>
+        <ContextMenuRadioGroup value={filter} onValueChange={(value) => setFilter(String(value))}>
+          <ContextMenuRadioItem value="all">All tasks</ContextMenuRadioItem>
+          <ContextMenuRadioItem value="open">Open tasks</ContextMenuRadioItem>
+          <ContextMenuRadioItem value="overdue">Overdue only</ContextMenuRadioItem>
         </ContextMenuRadioGroup>
       </ContextMenuGroup>
     </ShownContextMenu>
   )
 }
 
-function DeploymentCard({ container }: { container: Stage }) {
+function TaskCard({ container }: { container: Stage }) {
   const shown = useShownContextMenu(container)
 
   return (
@@ -193,51 +228,53 @@ function DeploymentCard({ container }: { container: Stage }) {
           {...shown.trigger}
           className="relative grid w-full max-w-96 gap-3 rounded-(--card-radius) border bg-card p-(--card-padding) text-left"
         >
-          {shown.point("top-[72%] left-[30%] @lg:left-[52%]")}
+          {shown.point("top-[92%] left-[30%] @lg:left-[70%]")}
           <div className="flex items-center justify-between gap-3">
-            <p className="text-title text-foreground">Deployment 8f2c1a9</p>
-            <Badge variant="success">Ready</Badge>
+            <p className="text-title text-foreground">Write the launch announcement</p>
+            <Badge variant="brand">In review</Badge>
           </div>
-          <p className="text-sm text-copy">main · Priya Raman · 4 minutes ago</p>
+          <p className="text-sm text-copy">Priya Raman · Due Oct 14 · High</p>
         </ContextMenuTrigger>
       }
     >
       <ContextMenuGroup>
         <ContextMenuItem>
-          <ExternalLinkIcon />
-          Visit
+          <CircleCheckIcon />
+          Mark as done
+          <ContextMenuShortcut>⌘↵</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem>
+          <UserIcon />
+          Assign to me
+          <ContextMenuShortcut>I</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem>
+          <LinkIcon />
+          Copy link
+          <ContextMenuShortcut>⌘L</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem>
           <CopyIcon />
-          Copy URL
-          <ContextMenuShortcut>⌘C</ContextMenuShortcut>
-        </ContextMenuItem>
-        <ContextMenuItem>
-          <RotateCcwIcon />
-          Redeploy
-          <ContextMenuShortcut>⇧⌘R</ContextMenuShortcut>
-        </ContextMenuItem>
-        <ContextMenuItem>
-          <RocketIcon />
-          Promote to production
+          Duplicate
+          <ContextMenuShortcut>⌘D</ContextMenuShortcut>
         </ContextMenuItem>
       </ContextMenuGroup>
       <ContextMenuSeparator />
       <ContextMenuItem variant="destructive">
         <Trash2Icon />
-        Delete deployment
+        Delete task
       </ContextMenuItem>
     </ShownContextMenu>
   )
 }
 
 /** The row that was right-clicked on load. */
-const clickedFile = "next.config.ts"
+const clickedDoc = "Launch plan"
 
-function FileTree({ container }: { container: Stage }) {
+function DocTree({ container }: { container: Stage }) {
   const shown = useShownContextMenu(container)
   // The row under the pointer stays highlighted while its menu is open.
-  const [clicked, setClicked] = React.useState<string>(clickedFile)
+  const [clicked, setClicked] = React.useState<string>(clickedDoc)
 
   return (
     <ShownContextMenu
@@ -247,21 +284,21 @@ function FileTree({ container }: { container: Stage }) {
           {...shown.trigger}
           className="group/tree relative grid w-full max-w-80 rounded-(--card-radius) border bg-card p-(--overlay-padding)"
         >
-          <p className="px-2.5 pt-1.5 pb-2 text-caption font-semibold text-muted-foreground">lumen-web</p>
+          <p className="px-2.5 pt-1.5 pb-2 text-caption font-semibold text-muted-foreground">Website relaunch · Docs</p>
           <ul className="grid">
-            {files.map((file) => {
-              const Icon = fileIcon[file.kind]
-              const isClicked = file.name === clicked
+            {docs.map((doc) => {
+              const Icon = docIcon[doc.kind]
+              const isClicked = doc.name === clicked
               return (
                 <li
-                  key={file.name}
+                  key={doc.name}
                   data-clicked={isClicked || undefined}
-                  onContextMenu={() => setClicked(file.name)}
+                  onContextMenu={() => setClicked(doc.name)}
                   className="relative flex h-(--overlay-item-height) items-center gap-2.5 rounded-(--overlay-item-radius) px-2.5 text-sm font-medium text-foreground hover:bg-accent group-data-popup-open/tree:data-clicked:bg-accent group-data-shown/tree:data-clicked:bg-accent"
                 >
-                  {file.name === clickedFile ? shown.point("top-1/2 left-[40%] @lg:left-[70%]") : null}
-                  <Icon aria-hidden="true" className="size-4 text-muted-foreground" />
-                  {file.name}
+                  {doc.name === clickedDoc ? shown.point("top-1/2 left-[40%] @lg:left-[70%]") : null}
+                  <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                  <span className="truncate">{doc.name}</span>
                 </li>
               )
             })}
@@ -272,7 +309,7 @@ function FileTree({ container }: { container: Stage }) {
       <ContextMenuGroup>
         <ContextMenuItem>
           <FilePlusIcon />
-          New file
+          New doc
           <ContextMenuShortcut>N</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem>
@@ -294,9 +331,9 @@ function FileTree({ container }: { container: Stage }) {
             Copy
           </ContextMenuSubTrigger>
           <ContextMenuSubContent>
-            <ContextMenuItem>Path</ContextMenuItem>
-            <ContextMenuItem>Relative path</ContextMenuItem>
-            <ContextMenuItem>Link on GitHub</ContextMenuItem>
+            <ContextMenuItem>Link</ContextMenuItem>
+            <ContextMenuItem>Title</ContextMenuItem>
+            <ContextMenuItem>Contents as Markdown</ContextMenuItem>
           </ContextMenuSubContent>
         </ContextMenuSub>
       </ContextMenuGroup>
@@ -317,16 +354,16 @@ export default function ContextMenuDocs() {
         title="Basic"
         description="Right-click, or long-press on touch, to open actions for the thing under the pointer. The menu opens at the pointer."
         code={`<ContextMenu>
-  <ContextMenuTrigger className="…">Deployment 8f2c1a9</ContextMenuTrigger>
+  <ContextMenuTrigger className="…">Write the launch announcement</ContextMenuTrigger>
   <ContextMenuContent>
     <ContextMenuItem>
-      <ExternalLinkIcon />
-      Visit
+      <CircleCheckIcon />
+      Mark as done
     </ContextMenuItem>
     <ContextMenuItem>
-      <CopyIcon />
-      Copy URL
-      <ContextMenuShortcut>⌘C</ContextMenuShortcut>
+      <LinkIcon />
+      Copy link
+      <ContextMenuShortcut>⌘L</ContextMenuShortcut>
     </ContextMenuItem>
     <ContextMenuSeparator />
     <ContextMenuItem variant="destructive">
@@ -336,35 +373,35 @@ export default function ContextMenuDocs() {
   </ContextMenuContent>
 </ContextMenu>`}
       >
-        <MenuStage className="min-h-80">{(container) => <DeploymentCard container={container} />}</MenuStage>
+        <MenuStage className="min-h-80">{(container) => <TaskCard container={container} />}</MenuStage>
       </Example>
 
       <Example
-        title="File tree"
+        title="Doc tree"
         description="A realistic composition. One menu covers the whole list, and the row under the pointer stays highlighted while it is open. The actions match the toolbar, so nothing lives only behind a right-click."
       >
-        <MenuStage className="min-h-96">{(container) => <FileTree container={container} />}</MenuStage>
+        <MenuStage className="min-h-96">{(container) => <DocTree container={container} />}</MenuStage>
       </Example>
 
       <Example
         title="Checkbox and radio items"
-        description="View options fit a context menu well: they change how something looks, not what it contains. Right-click the log to try it."
-        code={`<ContextMenuCheckboxItem checked={wrap} onCheckedChange={setWrap}>
-  Wrap long lines
+        description="View options fit a context menu well: they change how something looks, not what it contains. Right-click the task list to try it."
+        code={`<ContextMenuCheckboxItem checked={dueDates} onCheckedChange={setDueDates}>
+  Show due dates
 </ContextMenuCheckboxItem>
 
-<ContextMenuRadioGroup value={level} onValueChange={setLevel}>
-  <ContextMenuRadioItem value="all">All lines</ContextMenuRadioItem>
-  <ContextMenuRadioItem value="error">Errors only</ContextMenuRadioItem>
+<ContextMenuRadioGroup value={filter} onValueChange={setFilter}>
+  <ContextMenuRadioItem value="all">All tasks</ContextMenuRadioItem>
+  <ContextMenuRadioItem value="overdue">Overdue only</ContextMenuRadioItem>
 </ContextMenuRadioGroup>`}
       >
-        <MenuStage className="min-h-88">{(container) => <LogViewer container={container} />}</MenuStage>
+        <MenuStage className="min-h-128 @4xl:min-h-88">{(container) => <TaskListView container={container} />}</MenuStage>
       </Example>
 
       <Guidelines
         do={[
           "Use a context menu as a shortcut for actions people can also reach from a visible button.",
-          "Scope it to the thing under the pointer: a row, a file, a card.",
+          "Scope it to the thing under the pointer: a row, a doc, a card.",
           "Keep the order the same as the matching dropdown menu, so people learn one layout.",
         ]}
         dont={[

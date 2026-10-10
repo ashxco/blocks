@@ -1,10 +1,10 @@
 import * as React from "react"
 import {
-  BookOpenIcon,
-  GitCommitHorizontalIcon,
-  MoonIcon,
+  CoffeeIcon,
+  HeartHandshakeIcon,
+  MessageSquareIcon,
   NotebookPenIcon,
-  ShieldCheckIcon,
+  RepeatIcon,
   TargetIcon,
   type LucideIcon,
 } from "lucide-react"
@@ -20,40 +20,40 @@ export interface Value {
 
 const defaultValues: Value[] = [
   {
-    icon: GitCommitHorizontalIcon,
-    title: "Ship small, ship often",
-    description:
-      "We merge to main many times a day and put new work behind flags. Small changes are easier to review, test and undo.",
-  },
-  {
-    icon: ShieldCheckIcon,
-    title: "Boring is a feature",
-    description:
-      "Your deploy should be the least exciting part of your week. We pick proven tools and add new ones only when they earn it.",
-  },
-  {
     icon: NotebookPenIcon,
     title: "Write it down",
     description:
-      "Decisions, incidents and plans live in documents anyone can read. It keeps a remote team in sync without more meetings.",
+      "Plans, decisions and meeting notes live in docs anyone can read. It keeps a remote team in sync without more meetings.",
   },
   {
-    icon: BookOpenIcon,
-    title: "Open by default",
+    icon: MessageSquareIcon,
+    title: "Default to async",
     description:
-      "The Lumen runtime is open source under Apache 2.0. Our roadmap, pricing and status history are public too.",
+      "We ask in a comment before we book a call. Across six time zones, the work should never wait for someone to wake up.",
+  },
+  {
+    icon: RepeatIcon,
+    title: "Small changes, often",
+    description:
+      "Small changes are easier to review, explain and undo. Something new reaches customers every two weeks, and the changelog says what.",
+  },
+  {
+    icon: CoffeeIcon,
+    title: "Calm over urgent",
+    description:
+      "Very little is truly urgent. We plan ahead so that Urgent still means something when we use it, in Acme and in our week.",
   },
   {
     icon: TargetIcon,
     title: "Own the outcome",
     description:
-      "Whoever ships a change watches it land. Engineers answer support tickets, talk to customers and join incident reviews.",
+      "Whoever builds a feature follows it after launch. Engineers answer support questions, talk to customers and read every reply.",
   },
   {
-    icon: MoonIcon,
-    title: "Nobody gets paged at night",
+    icon: HeartHandshakeIcon,
+    title: "Customers in the room",
     description:
-      "On-call follows the sun across our time zones, so every alert lands with someone in the middle of their working day.",
+      "Every planning meeting starts with what customers told us that week. Sam reads the best and worst of it out loud.",
   },
 ]
 
@@ -72,7 +72,7 @@ export function ValuesGrid({ values = defaultValues, className }: ValuesGridProp
       <div className="container-page grid gap-14">
         <SectionHeading
           title={<span id="values-heading">How we work.</span>}
-          description="The habits that shape how we build Lumen, and how we treat each other while we do it."
+          description="The habits that shape how we build Acme, and how we treat each other while we do it."
         />
 
         <ul className="grid gap-px overflow-hidden rounded-(--card-radius) border bg-border md:grid-cols-2 lg:grid-cols-3">

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { EllipsisIcon, RocketIcon } from "lucide-react"
+import { EllipsisIcon, PlusIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -51,10 +51,10 @@ const radiusDemo: Record<string, { label: string; demo: React.ReactNode; stage?:
     demo: (
       <span className="grid w-full max-w-(--menu-min-width) rounded-md border border-popover-border bg-popover p-(--overlay-padding)">
         <span className="flex h-(--overlay-item-height) items-center rounded-sm bg-accent px-3 text-label text-accent-foreground">
-          Redeploy
+          Edit task
         </span>
         <span className="flex h-(--overlay-item-height) items-center rounded-sm px-3 text-label text-popover-foreground">
-          View logs
+          Copy link
         </span>
       </span>
     ),
@@ -64,7 +64,7 @@ const radiusDemo: Record<string, { label: string; demo: React.ReactNode; stage?:
     stage: "bg-card",
     demo: (
       <span className="flex h-(--control-height-md) w-full max-w-56 items-center rounded-md border border-input bg-muted px-(--control-padding-x) text-body text-muted-foreground">
-        lumen-web
+        Q4 planning
       </span>
     ),
   },
@@ -73,8 +73,8 @@ const radiusDemo: Record<string, { label: string; demo: React.ReactNode; stage?:
     stage: "bg-muted",
     demo: (
       <span className="grid w-full max-w-60 gap-0.5 rounded-lg border bg-card p-4">
-        <span className="text-title text-foreground">lumen-web</span>
-        <span className="text-caption text-muted-foreground">Ready · 2m ago</span>
+        <span className="text-title text-foreground">Q4 planning</span>
+        <span className="text-caption text-muted-foreground">12 open tasks</span>
       </span>
     ),
   },
@@ -83,7 +83,7 @@ const radiusDemo: Record<string, { label: string; demo: React.ReactNode; stage?:
     demo: (
       <span className={`${cropped} grid content-start gap-1 rounded-xl border bg-popover p-4 @prose:p-5`}>
         <span className="text-label text-popover-foreground @prose:text-title">Delete project?</span>
-        <span className="text-caption text-muted-foreground">This removes 14 deployments.</span>
+        <span className="text-caption text-muted-foreground">This removes 32 tasks.</span>
       </span>
     ),
   },
@@ -91,7 +91,7 @@ const radiusDemo: Record<string, { label: string; demo: React.ReactNode; stage?:
     label: "Panels",
     demo: (
       <span className={`${cropped} grid content-start rounded-2xl bg-panel p-4 @prose:p-6`}>
-        <span className="text-label text-panel-foreground @prose:text-h4">Ship on every push</span>
+        <span className="text-label text-panel-foreground @prose:text-h4">Work in one place</span>
       </span>
     ),
   },
@@ -102,11 +102,11 @@ const radiusDemo: Record<string, { label: string; demo: React.ReactNode; stage?:
     demo: (
       <span className="flex items-center gap-3">
         <Button type="button" tabIndex={-1}>
-          <RocketIcon data-icon="inline-start" />
-          Deploy
+          <PlusIcon data-icon="inline-start" />
+          New task
         </Button>
         <span className="grid size-(--avatar-size-md) place-items-center rounded-full bg-tint-mint text-caption font-semibold text-foreground">
-          PS
+          MP
         </span>
       </span>
     ),
@@ -220,7 +220,7 @@ const lineDemos: { cssVar: string; demo: React.ReactNode; stage?: string; span?:
     stage: "bg-card",
     demo: (
       <span className="flex h-(--control-height-sm) w-full items-center rounded-(--control-radius) border border-input bg-muted px-(--control-padding-x) text-body text-muted-foreground">
-        lumen-web
+        Q4 planning
       </span>
     ),
   },
@@ -231,10 +231,10 @@ const lineDemos: { cssVar: string; demo: React.ReactNode; stage?: string; span?:
     demo: (
       <span className="grid w-full max-w-(--menu-min-width) rounded-(--overlay-radius) border border-popover-border bg-popover p-(--overlay-padding)">
         <span className="flex h-(--overlay-item-height) items-center rounded-(--overlay-item-radius) bg-accent px-3 text-label text-accent-foreground">
-          Redeploy
+          Edit task
         </span>
         <span className="flex h-(--overlay-item-height) items-center rounded-(--overlay-item-radius) px-3 text-label text-popover-foreground">
-          View logs
+          Copy link
         </span>
       </span>
     ),
@@ -295,23 +295,23 @@ function Focus() {
       <div className="grid content-center justify-items-start gap-8 rounded-(--panel-radius) border bg-subtle p-(--panel-padding-sm)">
         <div className="flex flex-wrap items-center gap-6">
           <span className="focus-ring inline-flex h-(--button-height-md) items-center rounded-(--button-radius) bg-primary px-(--button-padding-x-md) text-label text-primary-foreground">
-            Deploy
+            Create project
           </span>
           <span className="focus-ring flex h-(--control-height-md) w-56 max-w-full items-center rounded-(--control-radius) border border-ring bg-muted px-(--control-padding-x) text-body text-foreground">
-            lumen-web
+            Website relaunch
           </span>
         </div>
         <div className="grid gap-3">
           <p className="text-caption text-muted-foreground">Try it: press Tab to move through these buttons.</p>
           <div className="flex flex-wrap gap-3">
             <Button type="button" variant="secondary" size="sm">
-              Redeploy
+              Assign
             </Button>
             <Button type="button" variant="secondary" size="sm">
-              View logs
+              Set due date
             </Button>
             <Button type="button" variant="secondary" size="sm">
-              Open preview
+              Add subtask
             </Button>
           </div>
         </div>
@@ -366,16 +366,16 @@ const layers: { name: string; body: string; tokens: string[] }[] = [
   },
   {
     name: "Overlays",
-    body: "Menus and popovers sit on bg-popover with the popover edge; dialogs keep the plain hairline. Backdrops dim with the overlay colour.",
-    tokens: ["bg-popover", "border-popover-border", "bg-overlay"],
+    body: "Menus and popovers sit on bg-popover with the popover edge; dialogs keep the plain hairline. Backdrops dim with the overlay colour and blur the page behind.",
+    tokens: ["bg-popover", "border-popover-border", "bg-overlay", "backdrop-blur-glass"],
   },
 ]
 
-const deploys: { env: string; branch: string; status: string }[] = [
-  { env: "Production", branch: "main", status: "Ready" },
-  { env: "Preview", branch: "fix-cache", status: "Ready" },
-  { env: "Preview", branch: "docs-nav", status: "Building" },
-  { env: "Preview", branch: "edge-config", status: "Ready" },
+const tasks: { title: string; owner: string; status: string }[] = [
+  { title: "Review homepage copy", owner: "Maya Patel", status: "In review" },
+  { title: "Final hero images", owner: "Sofia Alvarez", status: "In progress" },
+  { title: "Redirect old blog links", owner: "Jordan Lee", status: "To do" },
+  { title: "Write launch email", owner: "Priya Raman", status: "To do" },
 ]
 
 /*
@@ -383,15 +383,15 @@ const deploys: { env: string; branch: string; status: string }[] = [
  * row; from @prose the full menu covers two.
  */
 const menuItems: { label: string; wide?: boolean }[] = [
-  { label: "Redeploy" },
-  { label: "Promote to production", wide: true },
-  { label: "Roll back" },
+  { label: "Edit task" },
+  { label: "Move to another project", wide: true },
+  { label: "Archive" },
 ]
 
 /* Status labels the open menu sits over: hidden, so they do not peek past its corner. */
 const coveredStatus = ["invisible", "@prose:invisible"]
 
-/* Builds per day, Monday to Sunday. Today is highlighted. */
+/* Tasks completed per day, Monday to Sunday. Today is highlighted. */
 const week = [62, 78, 54, 91, 70, 38, 84]
 
 function DepthScene() {
@@ -402,21 +402,21 @@ function DepthScene() {
       <div className="relative grid content-start gap-4 rounded-(--card-radius) border bg-card p-(--card-padding)">
         <div className="flex items-start justify-between gap-4">
           <div className="grid gap-1">
-            <p className="text-title text-foreground">lumen-web</p>
-            <p className="text-caption text-muted-foreground">4 deployments today</p>
+            <p className="text-title text-foreground">Website relaunch</p>
+            <p className="text-caption text-muted-foreground">4 tasks due this week</p>
           </div>
           <span className="grid size-(--button-height-sm) shrink-0 place-items-center rounded-(--button-radius) bg-accent text-foreground">
             <EllipsisIcon className="size-4" />
           </span>
         </div>
         <ul className="grid border-t">
-          {deploys.map((d, i) => (
-            <li key={d.branch} className="flex items-center justify-between gap-4 border-b py-3 last:border-b-0 last:pb-0">
+          {tasks.map((task, i) => (
+            <li key={task.title} className="flex items-center justify-between gap-4 border-b py-3 last:border-b-0 last:pb-0">
               <span className="grid min-w-0">
-                <span className="truncate text-label text-foreground">{d.branch}</span>
-                <span className="text-caption text-muted-foreground">{d.env}</span>
+                <span className="truncate text-label text-foreground">{task.title}</span>
+                <span className="text-caption text-muted-foreground">{task.owner}</span>
               </span>
-              <span className={`text-caption text-muted-foreground ${coveredStatus[i] ?? ""}`}>{d.status}</span>
+              <span className={`shrink-0 text-caption text-muted-foreground ${coveredStatus[i] ?? ""}`}>{task.status}</span>
             </li>
           ))}
         </ul>
@@ -440,8 +440,8 @@ function DepthScene() {
       {/* Dark panel with raised tiles */}
       <div className="grid content-start gap-6 rounded-(--card-radius) bg-panel p-(--card-padding) text-panel-foreground">
         <div className="grid gap-1">
-          <p className="text-title text-panel-foreground">Deploys this week</p>
-          <p className="text-caption text-panel-muted">Across 12 projects</p>
+          <p className="text-title text-panel-foreground">Tasks completed this week</p>
+          <p className="text-caption text-panel-muted">Across 24 active projects</p>
         </div>
         <div className="grid h-24 grid-cols-7 items-end gap-2">
           {week.map((value, i) => (
@@ -454,12 +454,12 @@ function DepthScene() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="grid gap-1 rounded-lg border border-panel-border bg-panel-raised p-4">
-            <span className="text-h3 text-panel-foreground tabular">477</span>
-            <span className="text-caption text-panel-muted">Builds</span>
+            <span className="text-h3 text-panel-foreground tabular">286</span>
+            <span className="text-caption text-panel-muted">Completed</span>
           </div>
           <div className="grid gap-1 rounded-lg border border-panel-border bg-panel-raised p-4">
-            <span className="text-h3 text-panel-foreground tabular">41s</span>
-            <span className="text-caption text-panel-muted">Median build</span>
+            <span className="text-h3 text-panel-foreground tabular">92%</span>
+            <span className="text-caption text-panel-muted">On time</span>
           </div>
         </div>
       </div>

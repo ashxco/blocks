@@ -21,16 +21,16 @@ export default function TestimonialDocs() {
         description="For the one quote you want people to remember. Keep it away from other dark panels on the page."
         code={`<Testimonial
   tone="panel"
-  quote="Our on-call rotation used to dread Fridays. Now a bad deploy is a two-second rollback, and we ship on Fridays like any other day."
-  author={{ name: "Marcus Lee", role: "Head of Platform, Tidewater", initials: "ML", tint: "sky" }}
-  metric={{ value: "2.3s", label: "median rollback" }}
+  quote="Our Monday status call was an hour of reading out spreadsheets. Now everyone opens the same dashboard, and the call takes fifteen minutes."
+  author={{ name: "Owen Hart", role: "Operations Director, Globex", initials: "OH", tint: "sky" }}
+  metric={{ value: "15 min", label: "weekly status call" }}
 />`}
       >
         <Testimonial
           tone="panel"
-          quote="Our on-call rotation used to dread Fridays. Now a bad deploy is a two-second rollback, and we ship on Fridays like any other day."
-          author={{ name: "Marcus Lee", role: "Head of Platform, Tidewater", initials: "ML", tint: "sky" }}
-          metric={{ value: "2.3s", label: "median rollback" }}
+          quote="Our Monday status call was an hour of reading out spreadsheets. Now everyone opens the same dashboard, and the call takes fifteen minutes."
+          author={{ name: "Owen Hart", role: "Operations Director, Globex", initials: "OH", tint: "sky" }}
+          metric={{ value: "15 min", label: "weekly status call" }}
         />
       </Example>
 
@@ -41,15 +41,15 @@ export default function TestimonialDocs() {
         code={`<Testimonial
   tone="plain"
   metric={null}
-  quote="The preview URLs changed how we review. Designers comment on the real thing instead of screenshots."
-  author={{ name: "Sofia Alvarez", role: "Design Lead, Northwind", initials: "SA", tint: "sand" }}
+  quote="Our clients comment on the tasks themselves now. Nobody forwards an email thread to find out what was agreed."
+  author={{ name: "Daniela Ortiz", role: "Head of Client Services, Fieldstone", initials: "DO", tint: "sand" }}
 />`}
       >
         <Testimonial
           tone="plain"
           metric={null}
-          quote="The preview URLs changed how we review. Designers comment on the real thing instead of screenshots."
-          author={{ name: "Sofia Alvarez", role: "Design Lead, Northwind", initials: "SA", tint: "sand" }}
+          quote="Our clients comment on the tasks themselves now. Nobody forwards an email thread to find out what was agreed."
+          author={{ name: "Daniela Ortiz", role: "Head of Client Services, Fieldstone", initials: "DO", tint: "sand" }}
         />
       </Example>
 
@@ -68,10 +68,10 @@ export default function TestimonialDocs() {
 
       <ApiTable
         rows={[
-          { prop: "quote", type: "ReactNode", default: "Hannah Okoye’s quote", description: "The quote, without quotation marks." },
-          { prop: "author", type: "{ name: string; role: string; initials: string; avatarSrc?: string; tint?: \"violet\" | \"mint\" | \"sand\" | \"sky\" | \"rose\" }", default: "Hannah Okoye, CTO", description: "The person. Initials show on a flat tint when there is no photo." },
-          { prop: "metric", type: "{ value: string; label: string } | null", default: '{ value: "40s", label: "from merge to live" }', description: "Headline result. Pass null to hide it." },
-          { prop: "tone", type: '"subtle" | "panel" | "plain"', default: '"subtle"', description: "Tinted band with a hairline edge, dark panel, or between hairlines." },
+          { prop: "quote", type: "ReactNode", default: "Elena Ruiz’s quote", description: "The quote, without quotation marks." },
+          { prop: "author", type: "{ name: string; role: string; initials: string; avatarSrc?: string; tint?: \"violet\" | \"mint\" | \"sand\" | \"sky\" | \"rose\" }", default: "Elena Ruiz, COO, Northwind", description: "The person. Initials show on a flat tint when there is no photo." },
+          { prop: "metric", type: "{ value: string; label: string } | null", default: '{ value: "50%", label: "fewer status meetings" }', description: "Headline result. Pass null to hide it." },
+          { prop: "tone", type: '"subtle" | "panel" | "plain"', default: '"subtle"', description: "Tinted band with a hairline border, dark panel, or between hairlines." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section spacing." },
           { prop: "className", type: "string", description: "Classes for the section." },
         ]}

@@ -26,12 +26,11 @@ function PageBody({ compact = false }: { compact?: boolean }) {
       <div className="grid max-w-narrow gap-6">
         <p className={compact ? "text-h2 text-balance text-foreground" : "text-display text-balance text-foreground"}>
           <Kern>
-            Push code. Get a <span className="text-brand">live URL</span>.
+            Every project. One <span className="text-brand">place</span>.
           </Kern>
         </p>
         <p className="max-w-prose text-lead text-copy">
-          Lumen builds every commit, gives every branch a preview and ships main to production, on our cloud or on
-          servers you own.
+          Acme brings your team’s projects, tasks, docs and reports into one workspace, so everyone knows what’s next.
         </p>
       </div>
       <HeroProductMoment />
@@ -46,7 +45,7 @@ export default function SiteHeaderDocs() {
       <Example
         title="Default"
         layout="full"
-        description="Transparent at the top so the page runs edge to edge. After a few pixels of scroll it becomes frosted glass with a hairline. Scroll inside the preview."
+        description="Transparent at the top so the page runs to the very top. After a few pixels of scroll it becomes frosted glass with a hairline. Scroll inside the preview."
         code={`// app/(marketing)/layout.tsx
 <SiteHeader />
 <main>{children}</main>
@@ -101,7 +100,7 @@ export default function SiteHeaderDocs() {
   links={[
     { label: "Product", href: "/live/features" },
     { label: "Pricing", href: "/live/pricing" },
-    { label: "Customers", href: "/live/blog" },
+    { label: "Blog", href: "/live/blog" },
   ]}
 />`}
       >
@@ -110,7 +109,7 @@ export default function SiteHeaderDocs() {
             links={[
               { label: "Product", href: "/live/features" },
               { label: "Pricing", href: "/live/pricing" },
-              { label: "Customers", href: "/live/blog" },
+              { label: "Blog", href: "/live/blog" },
             ]}
           />
           <PageBody compact />

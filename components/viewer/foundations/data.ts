@@ -2,7 +2,7 @@
  * Read-only helpers over the generated token list. Every Foundations page
  * gets its data from here, so the pages always match the token build.
  */
-import { tokens, type DesignToken, type TokenTier } from "@/design-system/generated/tokens"
+import { breakpoints, tokens, type DesignToken, type TokenTier } from "@/design-system/generated/tokens"
 
 import { parseOklch, type Oklch } from "./color"
 
@@ -212,7 +212,7 @@ export function familyStack(value: unknown) {
 
 export function formatValue(t: DesignToken, value: unknown): string {
   if (t.type === "typography") {
-    const v = typeValue(t)
+    const v = typeValue({ ...t, value })
     if (!v) return JSON.stringify(value)
     return `${v.fontSize} / ${v.lineHeight} · ${v.letterSpacing} · ${v.fontWeight}`
   }
@@ -223,4 +223,27 @@ export function formatValue(t: DesignToken, value: unknown): string {
 
 export function isColor(t: DesignToken) {
   return t.type === "color"
+}
+
+/* ------------------------------------------------------------------------ */
+/* Breakpoint values                                                         */
+/* ------------------------------------------------------------------------ */
+
+export interface BreakpointValue {
+  /** Breakpoint name, e.g. "md". */
+  name: string
+  /** Viewport width it starts at, e.g. "48rem". */
+  min: string
+  /** The token's full value from that width up. */
+  value: unknown
+}
+
+/**
+ * A token's values from each breakpoint up, smallest first. Empty for tokens
+ * that are the same at every width; token.value is the base (phones).
+ */
+export function breakpointValues(t: DesignToken): BreakpointValue[] {
+  const values = t.breakpoints
+  if (!values) return []
+  return breakpoints.flatMap((b) => (b.name in values ? [{ name: b.name, min: b.min, value: values[b.name] }] : []))
 }

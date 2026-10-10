@@ -10,7 +10,7 @@ export default function AuthFormDocs() {
     <Examples>
       <Example
         title="Sign in"
-        description="Providers first, then email. Submit it empty to see inline validation; any valid email signs in."
+        description="Google and single sign-on first, then email. Submit it empty to see inline validation; any valid email signs in."
         layout="full"
         minHeight="min-h-176"
         code={`<AuthForm mode="sign-in" />`}
@@ -35,7 +35,7 @@ export default function AuthFormDocs() {
 
       <Example
         title="Split with a panel"
-        description="How the auth templates use it: the wordmark and the form on the canvas, the Lumen showcase on a dark panel beside them, with a deploy streaming in and a customer quote. In narrow containers the panel gives way to the quote on its own, under the form."
+        description="How the auth templates use it: the wordmark and the form on the canvas, the Acme showcase on a dark panel beside them, with a project’s tasks getting done and a customer quote. On the sign-up screen the preview shows a project made from a template filling in and a teammate joining instead. In narrow containers the panel gives way to the quote on its own, under the form."
         layout="full"
         code={`import { AuthShowcase, AuthShowcaseCompact } from "@/components/blocks/auth-form/showcase"
 
@@ -72,7 +72,7 @@ export default function AuthFormDocs() {
 
       <Guidelines
         do={[
-          "Offer the providers your customers already use, then email.",
+          "Offer the sign-in your customers already use, such as Google or their company’s single sign-on, then email.",
           "Show errors after the first submit, next to the field, and say how to fix them.",
           "Link to the other mode under the form, so people on the wrong page can switch.",
           "Pass as=\"h2\" when the page already has an h1.",

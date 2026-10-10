@@ -2,13 +2,13 @@ import * as React from "react"
 import Link from "next/link"
 import {
   ArrowRightIcon,
-  ArrowUpRightIcon,
   BellIcon,
-  GitBranchIcon,
-  GlobeIcon,
-  RocketIcon,
-  ServerIcon,
-  TerminalIcon,
+  CalendarIcon,
+  ChartColumnIcon,
+  FolderKanbanIcon,
+  ListChecksIcon,
+  PlusIcon,
+  ZapIcon,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -80,8 +80,8 @@ function TierChain() {
         <div className={step}>
           <span className="flex h-14 items-center">
             <Button type="button" variant="brand" tabIndex={-1} aria-hidden>
-              <RocketIcon data-icon="inline-start" />
-              Deploy
+              <PlusIcon data-icon="inline-start" />
+              Create project
             </Button>
           </span>
           <div className="grid gap-1">
@@ -218,7 +218,7 @@ function MotionSample() {
 }
 
 function IconSample() {
-  const icons = [RocketIcon, GitBranchIcon, TerminalIcon, GlobeIcon, ServerIcon, BellIcon]
+  const icons = [FolderKanbanIcon, ListChecksIcon, CalendarIcon, ChartColumnIcon, ZapIcon, BellIcon]
   return (
     <div aria-hidden className="grid size-full grid-cols-3 place-items-center p-6 text-foreground">
       {icons.map((Icon, i) => (
@@ -320,9 +320,9 @@ export function FoundationsOverview() {
                   <div className="grid content-start gap-1.5 p-(--card-padding)">
                     <div className="flex items-center justify-between gap-3">
                       <h2 className="text-h4 text-foreground">{entry.title}</h2>
-                      <ArrowUpRightIcon
+                      <ArrowRightIcon
                         aria-hidden
-                        className="size-5 shrink-0 text-muted-foreground transition-[color,translate] duration-(--duration-fast) ease-standard group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+                        className="size-5 shrink-0 text-muted-foreground transition-[color,translate] duration-(--duration-fast) ease-standard group-hover:translate-x-0.5 group-hover:text-foreground"
                       />
                     </div>
                     <p className="text-caption text-copy">{entry.description}</p>

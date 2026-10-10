@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
   ComponentsMiniature,
-  DeployCard,
   EntryTile,
   FoundationsMiniature,
   MoleculesMiniature,
+  ProjectCard,
   TemplatesMiniature,
 } from "@/components/viewer/overview"
 import { Kern, Punct } from "@/components/viewer/kern"
@@ -180,8 +180,8 @@ export default function Overview() {
           ).map(({ scope, label }) => (
             <figure key={scope} className="grid gap-3">
               <div className={scope}>
-                <div className="grid min-h-96 place-items-center rounded-(--panel-radius) border bg-subtle p-5 text-copy sm:p-10">
-                  <DeployCard />
+                <div className="grid min-h-96 place-items-center rounded-(--panel-radius) border bg-subtle p-4 text-copy sm:p-10">
+                  <ProjectCard />
                 </div>
               </div>
               <figcaption className="text-caption text-muted-foreground">

@@ -1,45 +1,83 @@
 import * as React from "react"
-import { GitBranchIcon, GlobeIcon, LockIcon } from "lucide-react"
+import { ZapIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
+import { personTone } from "@/components/blocks/members-list/people"
 
 /* Small live visuals for feature tiles. Each one is decorative: the tile's
    title and description carry the meaning, so visuals are hidden from
    assistive technology. */
 
 /* -------------------------------------------------------------------------- */
-/* Preview URL chips                                                          */
+/* Board preview                                                              */
 /* -------------------------------------------------------------------------- */
 
-export interface PreviewUrl {
-  url: string
-  production?: boolean
+export interface BoardPreviewColumn {
+  title: string
+  /** Card titles, with the person who owns each one. */
+  cards: { title: string; owner: string }[]
 }
 
-const defaultUrls: PreviewUrl[] = [
-  { url: "feat-billing.acme.dev" },
-  { url: "fix-auth.acme.dev" },
-  { url: "web.acme.dev", production: true },
+const defaultBoard: BoardPreviewColumn[] = [
+  {
+    title: "To do",
+    cards: [
+      { title: "Pricing page copy", owner: "Priya Raman" },
+      { title: "Footer links", owner: "Jordan Lee" },
+    ],
+  },
+  {
+    title: "In progress",
+    cards: [
+      { title: "Homepage copy", owner: "Priya Raman" },
+      { title: "Visual design", owner: "Sofia Alvarez" },
+    ],
+  },
+  {
+    title: "Done",
+    cards: [
+      { title: "Sitemap", owner: "Maya Patel" },
+      { title: "Interviews", owner: "Sam Okafor" },
+    ],
+  },
 ]
 
-export function PreviewUrls({ urls = defaultUrls, className }: { urls?: PreviewUrl[]; className?: string }) {
+const ownerTints = ["bg-tint-violet", "bg-tint-mint", "bg-tint-sand", "bg-tint-sky", "bg-tint-rose"]
+
+function ownerTint(name: string) {
+  let sum = 0
+  for (const char of name) sum += char.charCodeAt(0)
+  return ownerTints[sum % ownerTints.length]
+}
+
+/**
+ * A miniature board: three columns of task cards, each with its owner as a
+ * tinted dot. In a narrow slot the dots step aside and titles wrap.
+ */
+export function BoardPreview({ columns = defaultBoard, className }: { columns?: BoardPreviewColumn[]; className?: string }) {
   return (
-    <ul aria-hidden="true" className={cn("flex flex-wrap gap-2", className)}>
-      {urls.map((u) => (
-        <li
-          key={u.url}
-          className="inline-flex h-8 items-center gap-2 rounded-full border bg-background px-3 font-mono text-caption text-foreground"
-        >
-          {u.production ? (
-            <GlobeIcon className="size-3.5 text-success" />
-          ) : (
-            <GitBranchIcon className="size-3.5 text-muted-foreground" />
-          )}
-          {u.url}
-        </li>
-      ))}
-    </ul>
+    <div aria-hidden="true" className={cn("@container/board", className)}>
+      <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.max(columns.length, 1)}, minmax(0, 1fr))` }}>
+        {columns.map((column) => (
+          <div key={column.title} className="grid content-start gap-1.5 rounded-md bg-subtle p-1.5">
+            <p className="truncate px-1.5 pt-0.5 pb-1 text-caption font-semibold text-muted-foreground">{column.title}</p>
+            {column.cards.map((card) => (
+              <div
+                key={card.title}
+                className="flex min-w-0 items-center justify-between gap-2 rounded-sm border bg-background py-2 pr-2 pl-2.5"
+              >
+                <span className="min-w-0 text-caption font-semibold text-foreground @min-[32rem]/board:truncate">
+                  {card.title}
+                </span>
+                {/* The owner as a small tinted dot: the same person keeps the same tint. */}
+                <span className={cn("hidden size-4 shrink-0 rounded-full @min-[32rem]/board:block", ownerTint(card.owner))} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -109,9 +147,9 @@ export interface LiveMetric {
 }
 
 const defaultMetrics: LiveMetric[] = [
-  { label: "p95", value: "112 ms" },
-  { label: "CPU", value: "38%" },
-  { label: "Memory", value: "612 MB" },
+  { label: "On time", value: "92%" },
+  { label: "Cycle time", value: "3.4 days" },
+  { label: "Done", value: "1,284" },
 ]
 
 /** Sparkline with three readouts. Designed for a dark panel tile. */
@@ -129,9 +167,9 @@ export function LiveMetrics({
       <Sparkline values={values} className="text-panel-foreground" />
       <dl className="grid grid-cols-3 gap-3 border-t border-panel-border pt-3">
         {metrics.map((m) => (
-          <div key={m.label} className="grid gap-0.5">
-            <dt className="text-caption text-panel-muted">{m.label}</dt>
-            <dd className="font-mono text-caption font-medium text-panel-foreground tabular">{m.value}</dd>
+          <div key={m.label} className="grid min-w-0 gap-0.5">
+            <dt className="truncate text-caption text-panel-muted">{m.label}</dt>
+            <dd className="text-caption font-semibold text-panel-foreground tabular">{m.value}</dd>
           </div>
         ))}
       </dl>
@@ -140,32 +178,85 @@ export function LiveMetrics({
 }
 
 /* -------------------------------------------------------------------------- */
-/* Traffic shift                                                              */
+/* Rule card                                                                  */
 /* -------------------------------------------------------------------------- */
 
-export interface TrafficVersion {
-  sha: string
+/** One automation rule: what starts it, what it does and how often it ran. */
+export function RuleCard({
+  label = "Automation",
+  icon = <ZapIcon />,
+  when = "A task moves to Done",
+  then = ["Notify the owner", "Post in #website-relaunch"],
+  runs = "12 runs in Website relaunch",
+  className,
+}: {
+  /** Name in the header, such as "Automation" or "Recurring task". */
+  label?: string
+  /** A lucide icon element beside the label. */
+  icon?: React.ReactNode
+  /** The trigger. */
+  when?: string
+  /** The actions, in order. */
+  then?: string[]
+  /** Footer line. Pass an empty string to hide it. */
+  runs?: string
+  className?: string
+}) {
+  return (
+    <div aria-hidden="true" className={cn("rounded-md border bg-subtle", className)}>
+      <div className="flex items-center justify-between gap-2 border-b px-3 py-2 text-caption text-muted-foreground">
+        <span className="inline-flex items-center gap-1.5 font-semibold text-foreground [&_svg]:size-3.5">
+          {icon}
+          {label}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="size-1.5 rounded-full bg-success" />
+          On
+        </span>
+      </div>
+      <dl className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 px-3 py-2.5 text-caption">
+        <dt className="text-muted-foreground">When</dt>
+        <dd className="font-semibold text-foreground">{when}</dd>
+        {then.map((action, i) => (
+          <React.Fragment key={action}>
+            <dt className="text-muted-foreground">{i === 0 ? "Then" : "And"}</dt>
+            <dd className="font-semibold text-foreground">{action}</dd>
+          </React.Fragment>
+        ))}
+      </dl>
+      {runs ? <p className="border-t px-3 py-2 text-caption text-muted-foreground tabular">{runs}</p> : null}
+    </div>
+  )
+}
+
+/* -------------------------------------------------------------------------- */
+/* Share bars                                                                 */
+/* -------------------------------------------------------------------------- */
+
+export interface ShareBar {
+  label: string
+  /** Share from 0 to 100. */
   share: number
 }
 
-const defaultVersions: TrafficVersion[] = [
-  { sha: "a41c9e2", share: 100 },
-  { sha: "7f02b1d", share: 0 },
+const defaultShares: ShareBar[] = [
+  { label: "Urgent", share: 6 },
+  { label: "High", share: 21 },
+  { label: "Medium", share: 48 },
+  { label: "Low", share: 25 },
 ]
 
-/** Two versions side by side and the share of traffic each one takes. */
-export function TrafficShift({ versions = defaultVersions, className }: { versions?: TrafficVersion[]; className?: string }) {
+/** Labelled bars with the share each one takes, such as open tasks by priority. */
+export function ShareBars({ items = defaultShares, className }: { items?: ShareBar[]; className?: string }) {
   return (
     <ul aria-hidden="true" className={cn("grid gap-2.5", className)}>
-      {versions.map((v, i) => (
-        <li key={v.sha} className="grid grid-cols-[4.5rem_1fr_2.75rem] items-center gap-3 font-mono text-caption">
-          <span className={i === 0 ? "text-foreground" : "text-muted-foreground"}>{v.sha}</span>
+      {items.map((item) => (
+        <li key={item.label} className="grid grid-cols-[4rem_1fr_2.75rem] items-center gap-3 text-caption">
+          <span className="truncate font-semibold text-foreground">{item.label}</span>
           <span className="h-1.5 overflow-hidden rounded-full bg-secondary">
-            <span className="block h-full rounded-full bg-foreground" style={{ width: `${v.share}%` }} />
+            <span className="block h-full rounded-full bg-foreground" style={{ width: `${item.share}%` }} />
           </span>
-          <span className={i === 0 ? "text-right text-foreground tabular" : "text-right text-muted-foreground tabular"}>
-            {v.share}%
-          </span>
+          <span className="text-right text-muted-foreground tabular">{item.share}%</span>
         </li>
       ))}
     </ul>
@@ -173,34 +264,48 @@ export function TrafficShift({ versions = defaultVersions, className }: { versio
 }
 
 /* -------------------------------------------------------------------------- */
-/* Masked secrets                                                             */
+/* Bar list                                                                   */
 /* -------------------------------------------------------------------------- */
 
-const defaultSecrets = ["DATABASE_URL", "STRIPE_SECRET_KEY", "RESEND_API_KEY"]
+export interface BarListItem {
+  label: string
+  /** Second column, shown when the list is wide enough, such as a team. */
+  detail?: string
+  value: number
+  /** Printed after the value, e.g. "tasks". */
+  unit?: string
+}
 
-export function MaskedSecrets({
-  names = defaultSecrets,
-  environment = "production",
-  className,
-}: {
-  names?: string[]
-  environment?: string
-  className?: string
-}) {
+const defaultWorkload: BarListItem[] = [
+  { label: "Jordan Lee", detail: "Engineering", value: 18, unit: "tasks" },
+  { label: "Priya Raman", detail: "Marketing", value: 14, unit: "tasks" },
+  { label: "Maya Patel", detail: "Product", value: 12, unit: "tasks" },
+  { label: "Sofia Alvarez", detail: "Design", value: 9, unit: "tasks" },
+]
+
+/**
+ * A short ranked list, each value as a thin ink bar, such as open tasks per
+ * person. Same rhythm as ShareBars.
+ */
+export function BarList({ items = defaultWorkload, className }: { items?: BarListItem[]; className?: string }) {
+  const largest = Math.max(1, ...items.map((item) => item.value))
   return (
-    <div aria-hidden="true" className={cn("rounded-md border bg-subtle", className)}>
-      <div className="flex items-center justify-between gap-2 border-b px-3 py-2 text-caption text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5">
-          <LockIcon className="size-3.5" />
-          Encrypted
-        </span>
-        <span className="font-mono">{environment}</span>
-      </div>
-      <ul className="grid grid-cols-1 gap-1.5 px-3 py-2.5 font-mono text-caption">
-        {names.map((n) => (
-          <li key={n} className="flex items-center justify-between gap-3">
-            <span className="truncate text-foreground">{n}</span>
-            <span className="shrink-0 text-muted-foreground">••••••</span>
+    <div aria-hidden="true" className={cn("@container/bars", className)}>
+      <ul className="grid gap-2.5">
+        {items.map((item) => (
+          <li
+            key={item.label}
+            className="grid grid-cols-[6.5rem_1fr_3.75rem] items-center gap-3 text-caption @min-[26rem]/bars:grid-cols-[7rem_5.5rem_1fr_3.75rem]"
+          >
+            <span className="truncate font-semibold text-foreground">{item.label}</span>
+            <span className="hidden truncate text-muted-foreground @min-[26rem]/bars:block">{item.detail}</span>
+            <span className="h-1.5 overflow-hidden rounded-full bg-foreground/10">
+              <span className="block h-full rounded-full bg-foreground" style={{ width: `${(item.value / largest) * 100}%` }} />
+            </span>
+            <span className="text-right text-muted-foreground tabular">
+              {item.value}
+              {item.unit ? ` ${item.unit}` : null}
+            </span>
           </li>
         ))}
       </ul>
@@ -209,49 +314,43 @@ export function MaskedSecrets({
 }
 
 /* -------------------------------------------------------------------------- */
-/* Edge regions                                                               */
+/* Link chips                                                                 */
 /* -------------------------------------------------------------------------- */
 
-export interface EdgeRegion {
-  /** Region code, e.g. "fra1". */
-  code: string
-  /** City the region serves, shown when the tile is wide enough. */
-  city: string
-  /** Median latency to nearby users, in milliseconds. */
-  latency: number
+export interface LinkChip {
+  label: string
+  /** Marks the chip as switched on, with a green dot. */
+  active?: boolean
 }
 
-const defaultRegions: EdgeRegion[] = [
-  { code: "fra1", city: "Frankfurt", latency: 9 },
-  { code: "iad1", city: "Virginia", latency: 14 },
-  { code: "sin1", city: "Singapore", latency: 21 },
-  { code: "gru1", city: "São Paulo", latency: 27 },
+const defaultChips: LinkChip[] = [
+  { label: "Slack", active: true },
+  { label: "Google Drive", active: true },
+  { label: "GitHub", active: true },
+  { label: "Figma" },
+  { label: "Zoom" },
+  { label: "HubSpot" },
 ]
 
-/**
- * A short list of edge regions with the median latency to nearby users, each
- * as a thin ink bar. Same rhythm as TrafficShift.
- */
-export function EdgeRegions({ regions = defaultRegions, className }: { regions?: EdgeRegion[]; className?: string }) {
-  const slowest = Math.max(1, ...regions.map((r) => r.latency))
+/** A wrapping row of pill chips, such as connected apps. Active chips get a green dot. */
+export function LinkChips({ items = defaultChips, className }: { items?: LinkChip[]; className?: string }) {
   return (
-    <div aria-hidden="true" className={cn("@container/regions", className)}>
-      <ul className="grid gap-2.5">
-        {regions.map((r) => (
-          <li
-            key={r.code}
-            className="grid grid-cols-[3.5rem_1fr_3rem] items-center gap-3 font-mono text-caption @min-[24rem]/regions:grid-cols-[3.5rem_5.5rem_1fr_3rem]"
-          >
-            <span className="text-foreground">{r.code}</span>
-            <span className="hidden truncate font-sans text-muted-foreground @min-[24rem]/regions:block">{r.city}</span>
-            <span className="h-1.5 overflow-hidden rounded-full bg-foreground/10">
-              <span className="block h-full rounded-full bg-foreground" style={{ width: `${(r.latency / slowest) * 100}%` }} />
-            </span>
-            <span className="text-right text-muted-foreground tabular">{r.latency} ms</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul aria-hidden="true" className={cn("flex flex-wrap gap-2", className)}>
+      {items.map((item) => (
+        <li
+          key={item.label}
+          className="inline-flex h-8 items-center gap-2 rounded-full border bg-background px-3 text-caption font-semibold text-foreground"
+        >
+          <span
+            className={cn(
+              "size-2 rounded-full",
+              item.active ? "bg-success" : "border border-muted-foreground/50"
+            )}
+          />
+          {item.label}
+        </li>
+      ))}
+    </ul>
   )
 }
 
@@ -273,16 +372,17 @@ const tintClass: Record<NonNullable<StackPerson["tint"]>, string> = {
   rose: "bg-tint-rose",
 }
 
+/** Each teammate keeps the tint the app templates give them. */
 const defaultPeople: StackPerson[] = [
-  { initials: "AR", name: "Ana Ruiz", tint: "violet" },
-  { initials: "SK", name: "Sam Kim", tint: "mint" },
-  { initials: "JO", name: "Jo Okafor", tint: "sand" },
-  { initials: "ML", name: "Mia Laine", tint: "sky" },
+  { initials: "HK", name: "Hana Kim", tint: personTone("Hana Kim") },
+  { initials: "DB", name: "Daniel Brooks", tint: personTone("Daniel Brooks") },
+  { initials: "MP", name: "Maya Patel", tint: personTone("Maya Patel") },
+  { initials: "JL", name: "Jordan Lee", tint: personTone("Jordan Lee") },
 ]
 
 export function AvatarStack({
   people = defaultPeople,
-  more = 4,
+  more = 14,
   className,
 }: {
   people?: StackPerson[]

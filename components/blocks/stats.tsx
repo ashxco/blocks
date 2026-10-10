@@ -4,7 +4,7 @@ import { SectionHeading } from "@/components/blocks/section-heading"
 import { cn } from "@/lib/utils"
 
 export interface Stat {
-  /** The number, already formatted: "4.2M", "31s", "99.99%". */
+  /** The number, already formatted: "4.8M", "12,000+", "99.9%". */
   value: string
   /** What it counts, in a few words. */
   label: string
@@ -25,10 +25,10 @@ export interface StatsProps {
 }
 
 const defaultStats: Stat[] = [
-  { value: "4.2M", label: "Deploys a month", detail: "Across 38,000 teams" },
-  { value: "31s", label: "Median push to live", detail: "Next.js app with a warm cache" },
-  { value: "99.99%", label: "API uptime", detail: "Rolling 12 months" },
-  { value: "38", label: "Edge regions", detail: "On six continents" },
+  { value: "12,000+", label: "Teams on Acme", detail: "From agencies to hospitals" },
+  { value: "4.8M", label: "Tasks completed", detail: "Every month" },
+  { value: "99.9%", label: "Uptime SLA", detail: "On Business and Enterprise" },
+  { value: "SOC 2", label: "Type II report", detail: "GDPR compliant" },
 ]
 
 const tones = {

@@ -137,7 +137,7 @@ export function PaymentMethodDialog({
               <Input
                 {...fieldProps("name")}
                 autoComplete="cc-name"
-                placeholder="Maya Chen"
+                placeholder="Lucas Moreau"
                 value={values.name}
                 onChange={(e) => set("name", e.target.value)}
               />

@@ -1,56 +1,68 @@
 "use client"
 
 import * as React from "react"
-import { ChevronDownIcon, ChevronsUpDownIcon, EyeIcon } from "lucide-react"
+import { ChevronDownIcon, ChevronsUpDownIcon, CircleCheckIcon, CircleIcon, UsersIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { cn } from "@/lib/utils"
 
-const buildLog = [
-  "12:04:12  Cloning lumen-labs/lumen-web at a41c9e2",
-  "12:04:14  Restored build cache (412 MB)",
-  "12:04:15  Running npm ci",
-  "12:04:21  Running npm run build",
-  "12:04:39  Compiled 184 routes in 17.6s",
-  "12:04:41  Uploading output to 2 regions",
-  "12:04:44  Deployment ready at lumen-web-a41c9e2.lumen.app",
+const subtasks = [
+  { title: "Draft the hero headline", owner: "Priya Raman", done: true },
+  { title: "Choose the hero image", owner: "Sofia Alvarez", done: true },
+  { title: "Get Hana’s sign-off on the copy", owner: "Priya Raman", done: false },
+  { title: "Add the page to the launch checklist", owner: "Maya Patel", done: false },
 ]
 
-const variables = [
-  { key: "DATABASE_URL", env: "Production" },
-  { key: "NEXT_PUBLIC_SITE_URL", env: "All" },
-  { key: "STRIPE_SECRET_KEY", env: "Production" },
-  { key: "SENTRY_DSN", env: "All" },
-  { key: "REDIS_URL", env: "Production, Preview" },
-  { key: "RESEND_API_KEY", env: "Production" },
+const fields = [
+  { name: "Priority", type: "Select" },
+  { name: "Estimate", type: "Number" },
+  { name: "Reviewer", type: "Person" },
+  { name: "Launch date", type: "Date" },
+  { name: "Sprint", type: "Select" },
+  { name: "Budget code", type: "Text" },
 ]
 
-function VariableRow({ name, env }: { name: string; env: string }) {
+function FieldRow({ name, type }: { name: string; type: string }) {
   return (
     <li className="flex items-center justify-between gap-4 py-3">
-      <code className="truncate font-mono text-code text-foreground">{name}</code>
-      <span className="shrink-0 text-caption text-muted-foreground">{env}</span>
+      <span className="truncate text-label text-foreground">{name}</span>
+      <span className="shrink-0 text-caption text-muted-foreground">{type}</span>
     </li>
   )
 }
 
 /** Starts open so the preview shows the panel; the label says what the trigger will do next. */
-function BuildOutput() {
+function Subtasks() {
   const [open, setOpen] = React.useState(true)
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="grid w-full max-w-xl justify-items-start">
       <CollapsibleTrigger render={<Button variant="outline" size="sm" />}>
-        {open ? "Hide build output" : "Show build output"}
+        {open ? "Hide subtasks" : `Show ${subtasks.length} subtasks`}
         <ChevronDownIcon
           data-icon="inline-end"
           className="transition-transform duration-(--duration-base) ease-out group-data-panel-open/collapsible-trigger:rotate-180"
         />
       </CollapsibleTrigger>
       <CollapsibleContent className="w-full">
-        <pre className="mt-4 overflow-x-auto rounded-(--control-radius) border bg-terminal p-4 font-mono text-code text-terminal-foreground">
-          {buildLog.join("\n")}
-        </pre>
+        <ul className="mt-4 divide-y rounded-(--control-radius) border bg-card">
+          {subtasks.map((task) => {
+            const Icon = task.done ? CircleCheckIcon : CircleIcon
+            return (
+              <li key={task.title} className="flex items-center gap-3 px-4 py-3">
+                <Icon
+                  aria-label={task.done ? "Done" : "Open"}
+                  className={cn("size-4 shrink-0", task.done ? "text-foreground" : "text-muted-foreground")}
+                />
+                <span className={cn("min-w-0 flex-1 truncate text-sm", task.done ? "text-muted-foreground" : "text-foreground")}>
+                  {task.title}
+                </span>
+                <span className="hidden shrink-0 text-caption text-muted-foreground sm:block">{task.owner}</span>
+              </li>
+            )
+          })}
+        </ul>
       </CollapsibleContent>
     </Collapsible>
   )
@@ -67,18 +79,18 @@ export default function CollapsibleDocs() {
         layout="stack"
         code={`<Collapsible>
   <CollapsibleTrigger render={<Button variant="outline" size="sm" />}>
-    Show build output
+    Show 4 subtasks
     <ChevronDownIcon
       data-icon="inline-end"
       className="transition-transform group-data-panel-open/collapsible-trigger:rotate-180"
     />
   </CollapsibleTrigger>
   <CollapsibleContent>
-    <pre className="mt-4 …">…</pre>
+    <ul className="mt-4 …">…</ul>
   </CollapsibleContent>
 </Collapsible>`}
       >
-        <BuildOutput />
+        <Subtasks />
       </Example>
 
       <Example
@@ -97,24 +109,24 @@ export default function CollapsibleDocs() {
       >
         <section className="grid max-w-prose gap-4 rounded-(--card-radius) border bg-card p-(--card-padding)">
           <div className="grid gap-1">
-            <h3 className="text-h4">Environment variables</h3>
-            <p className="text-sm text-muted-foreground">Encrypted at rest. Changes apply to the next deployment.</p>
+            <h3 className="text-h4">Custom fields</h3>
+            <p className="text-sm text-muted-foreground">Every task in Website relaunch has these fields.</p>
           </div>
           <Collapsible open={open} onOpenChange={setOpen}>
             <ul className="divide-y border-y">
-              {variables.slice(0, 3).map((v) => (
-                <VariableRow key={v.key} name={v.key} env={v.env} />
+              {fields.slice(0, 3).map((f) => (
+                <FieldRow key={f.name} name={f.name} type={f.type} />
               ))}
             </ul>
             <CollapsibleContent>
               <ul className="divide-y border-b">
-                {variables.slice(3).map((v) => (
-                  <VariableRow key={v.key} name={v.key} env={v.env} />
+                {fields.slice(3).map((f) => (
+                  <FieldRow key={f.name} name={f.name} type={f.type} />
                 ))}
               </ul>
             </CollapsibleContent>
             <CollapsibleTrigger render={<Button variant="link" className="mt-3" />}>
-              {open ? "Show fewer" : `Show ${variables.length - 3} more`}
+              {open ? "Show fewer" : `Show ${fields.length - 3} more`}
             </CollapsibleTrigger>
           </Collapsible>
         </section>
@@ -129,8 +141,8 @@ export default function CollapsibleDocs() {
         <Collapsible defaultOpen className="max-w-prose rounded-(--card-radius) border bg-card">
           <div className="flex items-center justify-between gap-4 px-5 py-4">
             <div className="flex min-w-0 items-center gap-3">
-              <EyeIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-              <p className="truncate text-title text-foreground">Preview protection</p>
+              <UsersIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+              <p className="truncate text-title text-foreground">Guest access</p>
             </div>
             <CollapsibleTrigger render={<Button variant="ghost" size="icon-sm" aria-label="Toggle details" />}>
               <ChevronsUpDownIcon />
@@ -138,7 +150,8 @@ export default function CollapsibleDocs() {
           </div>
           <CollapsibleContent>
             <p className="border-t px-5 py-4 text-sm text-copy">
-              Preview URLs ask for a Lumen login. Share a link that skips the login for 7 days from the deployment page.
+              Guests see only the projects you share with them. To show a project without an invite, share a view-only
+              link from its Share menu. The link stops working after 7 days.
             </p>
           </CollapsibleContent>
         </Collapsible>
@@ -146,7 +159,7 @@ export default function CollapsibleDocs() {
 
       <Guidelines
         do={[
-          "Label the trigger with what it reveals, such as “Show build output”.",
+          "Label the trigger with what it reveals, such as “Show 4 subtasks”.",
           "Put padding on an element inside CollapsibleContent so the panel closes to zero height.",
           "Use an accordion instead when there are several sections that open the same way.",
         ]}

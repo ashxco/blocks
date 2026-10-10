@@ -11,7 +11,7 @@ export function RoleGuide({ className }: { className?: string }) {
         <CardTitle>
           <h2>Roles</h2>
         </CardTitle>
-        <CardDescription>A role applies to every project in the workspace.</CardDescription>
+        <CardDescription>What each role can do in Acme Inc.</CardDescription>
       </CardHeader>
       <CardContent>
         <dl className="-my-3 divide-y">

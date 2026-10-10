@@ -8,7 +8,7 @@ import {
   LifeBuoyIcon,
   MapPinIcon,
   MessagesSquareIcon,
-  UsersIcon,
+  BookOpenIcon,
   type LucideIcon,
 } from "lucide-react"
 
@@ -25,7 +25,7 @@ export interface ContactMethod {
   icon: LucideIcon
   label: string
   value: string
-  /** Makes the value a link, e.g. "mailto:sales@lumen.dev". */
+  /** Makes the value a link, e.g. "mailto:sales@acme.com". */
   href?: string
 }
 
@@ -59,13 +59,13 @@ export interface ContactPanelProps {
 }
 
 export const defaultContactMethods: ContactMethod[] = [
-  { icon: MessagesSquareIcon, label: "Sales", value: "sales@lumen.dev", href: "mailto:sales@lumen.dev" },
-  { icon: LifeBuoyIcon, label: "Support", value: "support@lumen.dev", href: "mailto:support@lumen.dev" },
-  { icon: UsersIcon, label: "Community", value: "Forum and office hours at community.lumen.dev" },
-  { icon: MapPinIcon, label: "Office", value: "Torstraße 109, 10119 Berlin" },
+  { icon: MessagesSquareIcon, label: "Sales", value: "sales@acme.com", href: "mailto:sales@acme.com" },
+  { icon: LifeBuoyIcon, label: "Support", value: "support@acme.com", href: "mailto:support@acme.com" },
+  { icon: BookOpenIcon, label: "Help center", value: "Guides and answers at acme.com/help" },
+  { icon: MapPinIcon, label: "Offices", value: "San Francisco and London, with a remote team in six time zones" },
 ]
 
-const defaultTopics = ["Sales", "Support", "Partnership", "Press"]
+const defaultTopics = ["Sales", "Support", "Billing", "Partnerships"]
 const defaultTeamSizes = ["Just me", "2–10", "11–50", "51–200", "201 or more"]
 
 type Status = "idle" | "sending" | "sent" | "error"
@@ -79,7 +79,7 @@ export function ContactPanel({
   title = "Other ways to reach us",
   description = "A real person reads every message. Pick whichever channel suits you.",
   methods = defaultContactMethods,
-  hours = "Support replies Mon–Fri, 9:00–18:00 CET",
+  hours = "Support replies Monday to Friday, from San Francisco and London",
   topics = defaultTopics,
   teamSizes = defaultTeamSizes,
   submitLabel = "Send message",
@@ -191,7 +191,7 @@ export function ContactPanel({
                 </Field>
                 <Field>
                   <FieldLabel htmlFor={`${id}-company`}>Company</FieldLabel>
-                  <Input id={`${id}-company`} name="company" autoComplete="organization" placeholder="Acme Inc." />
+                  <Input id={`${id}-company`} name="company" autoComplete="organization" placeholder="Northwind" />
                 </Field>
                 <Field>
                   <FieldLabel htmlFor={`${id}-size`}>Team size</FieldLabel>
@@ -236,7 +236,7 @@ export function ContactPanel({
                   name="message"
                   rows={5}
                   required
-                  placeholder="Tell us what you are building and how we can help."
+                  placeholder="Tell us about your team and how we can help."
                   className="min-h-32 resize-y"
                 />
               </Field>

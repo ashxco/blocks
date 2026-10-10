@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { GitCommitHorizontalIcon, RotateCcwIcon } from "lucide-react"
+import { FolderIcon, PauseIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -16,22 +16,24 @@ import {
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
 import { Textarea } from "@/components/ui/textarea"
 
-function ReleaseNotes() {
+function WeeklyUpdate() {
   const max = 280
-  const [text, setText] = React.useState("Faster cold starts for functions in fra1 and a fix for preview URLs on branches with slashes.")
+  const [text, setText] = React.useState(
+    "Hero copy is approved and the pricing page is in review. Launch is still on track for November 3."
+  )
   const remaining = max - text.length
   return (
     <Field>
-      <FieldLabel htmlFor="ta-notes">Release notes</FieldLabel>
+      <FieldLabel htmlFor="ta-update">Weekly update</FieldLabel>
       <Textarea
-        id="ta-notes"
+        id="ta-update"
         value={text}
         maxLength={max}
         onChange={(e) => setText(e.target.value)}
-        aria-describedby="ta-notes-count"
+        aria-describedby="ta-update-count"
       />
-      <FieldDescription id="ta-notes-count" className="flex justify-between gap-4">
-        <span>Shown on the deployment page.</span>
+      <FieldDescription id="ta-update-count" className="flex justify-between gap-4">
+        <span>Sent to everyone following the project.</span>
         <span className={remaining < 20 ? "shrink-0 font-semibold text-foreground tabular" : "shrink-0 tabular"}>
           {remaining} left
         </span>
@@ -40,7 +42,7 @@ function ReleaseNotes() {
   )
 }
 
-function RollbackForm() {
+function PauseProjectForm() {
   const id = React.useId()
   const [reason, setReason] = React.useState("")
   const [error, setError] = React.useState<string | null>(null)
@@ -51,9 +53,9 @@ function RollbackForm() {
     return (
       <Card role="status" className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Rolled back to 4e1a9c2</CardTitle>
+          <CardTitle>Help center is paused</CardTitle>
           <CardDescription className="text-pretty">
-            Production now serves the previous build. Your reason is in the deployment log for the team.
+            Automations have stopped. Your reason is in the project activity for the team.
           </CardDescription>
         </CardHeader>
         <CardFooter>
@@ -64,7 +66,7 @@ function RollbackForm() {
               setReason("")
             }}
           >
-            Undo rollback
+            Resume project
           </Button>
         </CardFooter>
       </Card>
@@ -78,7 +80,7 @@ function RollbackForm() {
         onSubmit={(e) => {
           e.preventDefault()
           if (reason.trim().length < 10) {
-            setError("Add a short reason, at least 10 characters, so the team knows what went wrong.")
+            setError("Add a short reason, at least 10 characters, so the team knows why.")
             reasonRef.current?.focus()
             return
           }
@@ -88,17 +90,17 @@ function RollbackForm() {
         className="contents"
       >
         <CardHeader>
-          <CardTitle>Roll back production</CardTitle>
-          <CardDescription className="text-pretty">Lumen switches traffic to the previous build in a few seconds.</CardDescription>
+          <CardTitle>Pause project</CardTitle>
+          <CardDescription className="text-pretty">
+            Open tasks stay where they are, but automations stop and due date reminders go quiet.
+          </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="flex items-center gap-3 rounded-(--control-radius) bg-muted px-4 py-3">
-            <GitCommitHorizontalIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+            <FolderIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
             <div className="grid min-w-0 gap-0.5">
-              <p className="truncate text-label text-foreground">Fix checkout redirect loop</p>
-              <p className="text-caption text-muted-foreground">
-                <span className="font-mono">4e1a9c2</span> on main, deployed 2 hours ago
-              </p>
+              <p className="truncate text-label text-foreground">Help center</p>
+              <p className="text-caption text-muted-foreground">14 open tasks, owned by Sam Okafor</p>
             </div>
           </div>
           <Field data-invalid={Boolean(error)}>
@@ -111,7 +113,7 @@ function RollbackForm() {
                 setReason(e.target.value)
                 if (error) setError(null)
               }}
-              placeholder="Checkout returns 500 for logged-out visitors since the last deploy."
+              placeholder="Waiting on the new support tool contract before we write more articles."
               aria-invalid={Boolean(error)}
               aria-describedby={error ? `${id}-error` : undefined}
             />
@@ -123,8 +125,8 @@ function RollbackForm() {
             Cancel
           </Button>
           <Button type="submit">
-            <RotateCcwIcon data-icon="inline-start" />
-            Roll back
+            <PauseIcon data-icon="inline-start" />
+            Pause project
           </Button>
         </CardFooter>
       </form>
@@ -141,14 +143,14 @@ export default function TextareaDocs() {
         description="The same filled surface as Input. It starts with room for about four lines and grows with its content, so most answers need no resizing; the quiet corner grip still resizes it vertically."
         code={`<Field>
   <FieldLabel htmlFor="description">Description</FieldLabel>
-  <Textarea id="description" placeholder="Storefront for Acme’s spring collection, built with Next.js." />
+  <Textarea id="description" placeholder="New homepage, pricing page and help center links, live before the November launch." />
   <FieldDescription>Shown on the project card. Markdown is not rendered.</FieldDescription>
 </Field>`}
       >
         <div className="w-full max-w-sm">
           <Field>
             <FieldLabel htmlFor="ta-default">Description</FieldLabel>
-            <Textarea id="ta-default" placeholder="Storefront for Acme’s spring collection, built with Next.js." />
+            <Textarea id="ta-default" placeholder="New homepage, pricing page and help center links, live before the November launch." />
             <FieldDescription>Shown on the project card. Markdown is not rendered.</FieldDescription>
           </Field>
         </div>
@@ -162,22 +164,22 @@ export default function TextareaDocs() {
 const [text, setText] = React.useState("")
 
 <Field>
-  <FieldLabel htmlFor="notes">Release notes</FieldLabel>
+  <FieldLabel htmlFor="update">Weekly update</FieldLabel>
   <Textarea
-    id="notes"
+    id="update"
     value={text}
     maxLength={max}
     onChange={(e) => setText(e.target.value)}
-    aria-describedby="notes-count"
+    aria-describedby="update-count"
   />
-  <FieldDescription id="notes-count" className="flex justify-between gap-4">
-    <span>Shown on the deployment page.</span>
+  <FieldDescription id="update-count" className="flex justify-between gap-4">
+    <span>Sent to everyone following the project.</span>
     <span className="shrink-0 tabular">{max - text.length} left</span>
   </FieldDescription>
 </Field>`}
       >
         <div className="w-full max-w-sm">
-          <ReleaseNotes />
+          <WeeklyUpdate />
         </div>
       </Example>
 
@@ -186,75 +188,79 @@ const [text, setText] = React.useState("")
         layout="stack"
         description="Read-only drops the fill and the resize handle. Invalid takes a destructive border and an error below."
         code={`<Field>
-  <FieldLabel htmlFor="output">Build command output</FieldLabel>
-  <Textarea id="output" readOnly className="font-mono" defaultValue={"> next build\\n✓ Compiled in 18.4s\\n✓ 42 pages generated"} />
+  <FieldLabel htmlFor="rule">Automation rule</FieldLabel>
+  <Textarea id="rule" readOnly defaultValue={"When a task moves to Done\\nNotify the task owner\\nPost in #website-relaunch"} />
 </Field>
 
 <Field data-disabled>
-  <FieldLabel htmlFor="install">Install command</FieldLabel>
-  <Textarea id="install" disabled defaultValue="npm ci" className="font-mono" />
-  <FieldDescription>Set by the framework preset.</FieldDescription>
+  <FieldLabel htmlFor="template">Task description</FieldLabel>
+  <Textarea id="template" disabled defaultValue={"Goal:\\nAcceptance criteria:\\nLinks:"} />
+  <FieldDescription>Set by the Sprint planning template.</FieldDescription>
 </Field>
 
 <Field data-invalid>
-  <FieldLabel htmlFor="origins">Allowed origins</FieldLabel>
-  <Textarea id="origins" aria-invalid aria-describedby="origins-error" defaultValue={"acme.dev\\nhttp//staging"} />
-  <FieldError id="origins-error">Line 2 is missing a colon after http.</FieldError>
+  <FieldLabel htmlFor="guests">Guest emails</FieldLabel>
+  <Textarea id="guests" aria-invalid aria-describedby="guests-error" defaultValue={"elena@northwind.com\\nmarcus@globex"} />
+  <FieldError id="guests-error">Line 2 is missing the end of the address, like marcus@globex.com.</FieldError>
 </Field>`}
       >
         <div className="grid w-full max-w-2xl gap-6 @xl:grid-cols-2">
           <Field>
-            <FieldLabel htmlFor="ta-readonly">Build command output</FieldLabel>
+            <FieldLabel htmlFor="ta-readonly">Automation rule</FieldLabel>
             <Textarea
               id="ta-readonly"
               readOnly
-              className="font-mono"
-              defaultValue={"> next build\n✓ Compiled in 18.4s\n✓ 42 pages generated"}
+              defaultValue={"When a task moves to Done\nNotify the task owner\nPost in #website-relaunch"}
             />
           </Field>
           <Field data-disabled="true">
-            <FieldLabel htmlFor="ta-disabled">Install command</FieldLabel>
-            <Textarea id="ta-disabled" disabled defaultValue="npm ci" className="font-mono" />
-            <FieldDescription>Set by the framework preset.</FieldDescription>
+            <FieldLabel htmlFor="ta-disabled">Task description</FieldLabel>
+            <Textarea id="ta-disabled" disabled defaultValue={"Goal:\nAcceptance criteria:\nLinks:"} />
+            <FieldDescription>Set by the Sprint planning template.</FieldDescription>
           </Field>
           <Field data-invalid className="@xl:col-span-2">
-            <FieldLabel htmlFor="ta-invalid">Allowed origins</FieldLabel>
-            <Textarea id="ta-invalid" aria-invalid aria-describedby="ta-invalid-error" defaultValue={"acme.dev\nhttp//staging"} />
-            <FieldError id="ta-invalid-error">Line 2 is missing a colon after http.</FieldError>
+            <FieldLabel htmlFor="ta-invalid">Guest emails</FieldLabel>
+            <Textarea
+              id="ta-invalid"
+              aria-invalid
+              aria-describedby="ta-invalid-error"
+              defaultValue={"elena@northwind.com\nmarcus@globex"}
+            />
+            <FieldError id="ta-invalid-error">Line 2 is missing the end of the address, like marcus@globex.com.</FieldError>
           </Field>
         </div>
       </Example>
 
       <Example
-        title="Roll back production"
-        description="A required reason before a risky action. Submit an empty reason to see the error."
+        title="Pause a project"
+        description="A required reason before an action that affects the whole team. Submit an empty reason to see the error."
         surface="subtle"
         code={`const reasonRef = React.useRef<HTMLTextAreaElement>(null)
 
 function onSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault()
   if (reason.trim().length < 10) {
-    setError("Add a short reason, at least 10 characters, so the team knows what went wrong.")
+    setError("Add a short reason, at least 10 characters, so the team knows why.")
     reasonRef.current?.focus()
     return
   }
-  rollBack(reason)
+  pauseProject(reason)
 }
 
 <Card className="w-full max-w-md">
   <form noValidate onSubmit={onSubmit} className="contents">
     <CardHeader>
-      <CardTitle>Roll back production</CardTitle>
-      <CardDescription>Lumen switches traffic to the previous build in a few seconds.</CardDescription>
+      <CardTitle>Pause project</CardTitle>
+      <CardDescription>
+        Open tasks stay where they are, but automations stop and due date reminders go quiet.
+      </CardDescription>
     </CardHeader>
     <CardContent className="grid gap-6">
       <div className="flex items-center gap-3 rounded-(--control-radius) bg-muted px-4 py-3">
-        <GitCommitHorizontalIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+        <FolderIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
         <div className="grid min-w-0 gap-0.5">
-          <p className="truncate text-label text-foreground">Fix checkout redirect loop</p>
-          <p className="text-caption text-muted-foreground">
-            <span className="font-mono">4e1a9c2</span> on main, deployed 2 hours ago
-          </p>
+          <p className="truncate text-label text-foreground">Help center</p>
+          <p className="text-caption text-muted-foreground">14 open tasks, owned by Sam Okafor</p>
         </div>
       </div>
       <Field data-invalid={!!error}>
@@ -264,7 +270,7 @@ function onSubmit(e: React.FormEvent<HTMLFormElement>) {
           id="reason"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
-          placeholder="Checkout returns 500 for logged-out visitors since the last deploy."
+          placeholder="Waiting on the new support tool contract before we write more articles."
           aria-invalid={!!error}
           aria-describedby={error ? "reason-error" : undefined}
         />
@@ -274,14 +280,14 @@ function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     <CardFooter className="justify-end">
       <Button type="button" variant="ghost">Cancel</Button>
       <Button type="submit">
-        <RotateCcwIcon data-icon="inline-start" />
-        Roll back
+        <PauseIcon data-icon="inline-start" />
+        Pause project
       </Button>
     </CardFooter>
   </form>
 </Card>`}
       >
-        <RollbackForm />
+        <PauseProjectForm />
       </Example>
 
       <Guidelines

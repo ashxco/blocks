@@ -20,13 +20,13 @@ const links: HelpLink[] = [
   {
     icon: BookOpenIcon,
     title: "Read the guides",
-    description: "Step-by-step posts on domains, databases, previews and migrations.",
+    description: "Step-by-step posts on planning, automations, reports and guests.",
     href: "/live/blog",
   },
   {
     icon: SparklesIcon,
     title: "See what shipped",
-    description: "Every release, fix and improvement, newest first.",
+    description: "Every new feature and improvement, newest first.",
     href: "/live/changelog",
   },
 ]

@@ -4,18 +4,18 @@ import * as React from "react"
 import {
   ArrowDownUpIcon,
   ChevronDownIcon,
+  CircleCheckIcon,
   Columns3Icon,
   CopyIcon,
   CreditCardIcon,
-  ExternalLinkIcon,
   FolderInputIcon,
   LifeBuoyIcon,
+  LinkIcon,
   LogOutIcon,
   MonitorIcon,
   MoonIcon,
   MoreHorizontalIcon,
   PencilIcon,
-  RotateCcwIcon,
   SettingsIcon,
   SunIcon,
   Trash2Icon,
@@ -88,20 +88,20 @@ function pinnedTo(container: Stage) {
 
 const columns = [
   { id: "status", label: "Status" },
-  { id: "branch", label: "Branch" },
-  { id: "commit", label: "Commit" },
-  { id: "duration", label: "Build time" },
-  { id: "author", label: "Author" },
+  { id: "assignee", label: "Assignee" },
+  { id: "due", label: "Due date" },
+  { id: "priority", label: "Priority" },
+  { id: "project", label: "Project" },
 ]
 
 function ColumnsMenu({ container }: { container: Stage }) {
   const shown = useShownMenu(container)
   const [visible, setVisible] = React.useState<Record<string, boolean>>({
     status: true,
-    branch: true,
-    commit: true,
-    duration: false,
-    author: true,
+    assignee: true,
+    due: true,
+    priority: false,
+    project: true,
   })
 
   return (
@@ -129,15 +129,15 @@ function ColumnsMenu({ container }: { container: Stage }) {
 }
 
 const sortOptions = [
-  { value: "newest", label: "Newest first" },
-  { value: "oldest", label: "Oldest first" },
-  { value: "duration", label: "Slowest build" },
-  { value: "name", label: "Branch name" },
+  { value: "due", label: "Due soonest" },
+  { value: "priority", label: "Highest priority" },
+  { value: "updated", label: "Recently updated" },
+  { value: "name", label: "Task name" },
 ]
 
 function SortMenu({ container }: { container: Stage }) {
   const shown = useShownMenu(container)
-  const [sort, setSort] = React.useState("newest")
+  const [sort, setSort] = React.useState("due")
   const current = sortOptions.find((option) => option.value === sort)
 
   return (
@@ -149,7 +149,7 @@ function SortMenu({ container }: { container: Stage }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent container={container} {...pinnedTo(container)}>
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Sort deployments</DropdownMenuLabel>
+          <DropdownMenuLabel>Sort tasks</DropdownMenuLabel>
           <DropdownMenuRadioGroup value={sort} onValueChange={(value) => setSort(String(value))}>
             {sortOptions.map((option) => (
               <DropdownMenuRadioItem key={option.value} value={option.value}>
@@ -173,9 +173,9 @@ function AccountMenu({ container }: { container: Stage }) {
         render={<Button variant="ghost" className="h-auto gap-3 rounded-full py-1.5 pr-3 pl-1.5" />}
       >
         <Avatar size="sm">
-          <AvatarFallback>PR</AvatarFallback>
+          <AvatarFallback tone="violet">MP</AvatarFallback>
         </Avatar>
-        Priya Raman
+        Maya Patel
         <ChevronDownIcon data-icon="inline-end" className="text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -185,8 +185,8 @@ function AccountMenu({ container }: { container: Stage }) {
         className={cn(pinnedTo(container).className, "min-w-(--menu-min-width-lg)")}
       >
         <div className="grid gap-0.5 px-2.5 pt-2 pb-2.5">
-          <p className="text-sm font-semibold text-foreground">Priya Raman</p>
-          <p className="truncate text-caption text-muted-foreground">priya@lumen.app</p>
+          <p className="text-sm font-semibold text-foreground">Maya Patel</p>
+          <p className="truncate text-caption text-muted-foreground">maya@acme.com</p>
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
@@ -196,8 +196,7 @@ function AccountMenu({ container }: { container: Stage }) {
           </DropdownMenuItem>
           <DropdownMenuItem>
             <UsersIcon />
-            Team
-            <DropdownMenuShortcut>⌘T</DropdownMenuShortcut>
+            Members
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CreditCardIcon />
@@ -246,34 +245,36 @@ function ActionsMenu({ container }: { container: Stage }) {
 
   return (
     <DropdownMenu {...shown}>
-      <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="Deployment options" />}>
+      <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="Task options" />}>
         <MoreHorizontalIcon />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" container={container} {...pinnedTo(container)}>
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <ExternalLinkIcon />
-            Visit
+            <CircleCheckIcon />
+            Mark as done
+            <DropdownMenuShortcut>⌘↵</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <UserIcon />
+            Assign to me
+            <DropdownMenuShortcut>I</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <LinkIcon />
+            Copy link
+            <DropdownMenuShortcut>⌘L</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CopyIcon />
-            Copy URL
-            <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <RotateCcwIcon />
-            Redeploy
-            <DropdownMenuShortcut>⇧⌘R</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <PencilIcon />
-            Edit build settings
+            Duplicate
+            <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive">
           <Trash2Icon />
-          Delete deployment
+          Delete task
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -327,9 +328,9 @@ function ProjectMenu({ container }: { container: Stage }) {
           </DropdownMenuSubTrigger>
           {/* Lined up with its item while the page scrolls, like the pinned menu. */}
           <DropdownMenuSubContent collisionAvoidance={{ align: "none" }}>
-            <DropdownMenuItem>Lumen Labs</DropdownMenuItem>
-            <DropdownMenuItem>Marketing site</DropdownMenuItem>
-            <DropdownMenuItem>Internal tools</DropdownMenuItem>
+            <DropdownMenuItem>Marketing</DropdownMenuItem>
+            <DropdownMenuItem>Product</DropdownMenuItem>
+            <DropdownMenuItem>Customer Success</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Create a team</DropdownMenuItem>
           </DropdownMenuSubContent>
@@ -355,25 +356,26 @@ export default function DropdownMenuDocs() {
         title="Actions"
         description="Group related actions, put shortcuts on the right and keep the destructive action last, after a separator."
         code={`<DropdownMenu>
-  <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="Deployment options" />}>
+  <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="Task options" />}>
     <MoreHorizontalIcon />
   </DropdownMenuTrigger>
   <DropdownMenuContent align="end">
     <DropdownMenuGroup>
       <DropdownMenuItem>
-        <ExternalLinkIcon />
-        Visit
+        <CircleCheckIcon />
+        Mark as done
+        <DropdownMenuShortcut>⌘↵</DropdownMenuShortcut>
       </DropdownMenuItem>
       <DropdownMenuItem>
-        <CopyIcon />
-        Copy URL
-        <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
+        <LinkIcon />
+        Copy link
+        <DropdownMenuShortcut>⌘L</DropdownMenuShortcut>
       </DropdownMenuItem>
     </DropdownMenuGroup>
     <DropdownMenuSeparator />
     <DropdownMenuItem variant="destructive">
       <Trash2Icon />
-      Delete deployment
+      Delete task
     </DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>`}
@@ -385,10 +387,10 @@ export default function DropdownMenuDocs() {
         title="Checkbox items"
         description="Toggle several options. Checkbox items keep the menu open, so people can change more than one in a row."
         code={`<DropdownMenuCheckboxItem
-  checked={visible.branch}
-  onCheckedChange={(checked) => setVisible({ ...visible, branch: checked })}
+  checked={visible.assignee}
+  onCheckedChange={(checked) => setVisible({ ...visible, assignee: checked })}
 >
-  Branch
+  Assignee
 </DropdownMenuCheckboxItem>`}
       >
         <MenuStage className="min-h-72">{(container) => <ColumnsMenu container={container} />}</MenuStage>
@@ -398,8 +400,8 @@ export default function DropdownMenuDocs() {
         title="Radio items"
         description="Pick one option from a set. Show the current choice in the trigger so people can see it without opening the menu."
         code={`<DropdownMenuRadioGroup value={sort} onValueChange={setSort}>
-  <DropdownMenuRadioItem value="newest">Newest first</DropdownMenuRadioItem>
-  <DropdownMenuRadioItem value="oldest">Oldest first</DropdownMenuRadioItem>
+  <DropdownMenuRadioItem value="due">Due soonest</DropdownMenuRadioItem>
+  <DropdownMenuRadioItem value="priority">Highest priority</DropdownMenuRadioItem>
 </DropdownMenuRadioGroup>`}
       >
         <MenuStage className="min-h-64">{(container) => <SortMenu container={container} />}</MenuStage>
@@ -411,8 +413,8 @@ export default function DropdownMenuDocs() {
         code={`<DropdownMenuSub>
   <DropdownMenuSubTrigger>Move to team</DropdownMenuSubTrigger>
   <DropdownMenuSubContent>
-    <DropdownMenuItem>Lumen Labs</DropdownMenuItem>
-    <DropdownMenuItem>Marketing site</DropdownMenuItem>
+    <DropdownMenuItem>Marketing</DropdownMenuItem>
+    <DropdownMenuItem>Product</DropdownMenuItem>
   </DropdownMenuSubContent>
 </DropdownMenuSub>`}
       >
@@ -431,7 +433,7 @@ export default function DropdownMenuDocs() {
       <Guidelines
         do={[
           "Use a dropdown menu for actions or options behind one button.",
-          "Start item labels with a verb when they run an action: “Copy URL”, “Redeploy”.",
+          "Start item labels with a verb when they run an action: “Copy link”, “Mark as done”.",
           "Put the destructive item last, after a separator, and confirm it with an alert dialog.",
           "Give an icon-only trigger an aria-label.",
         ]}

@@ -102,6 +102,23 @@
       },
       "$description": "Form labels, buttons and navigation."
     },
+    "control": {
+      "$value": {
+        "fontFamily": "{font.family.sans}",
+        "fontSize": "1rem",
+        "fontWeight": "{font.weight.regular}",
+        "letterSpacing": "0em",
+        "lineHeight": "1.6"
+      },
+      "$extensions": {
+        "blocks": {
+          "breakpoints": {
+            "md": { "fontSize": "0.875rem", "lineHeight": "1.45" }
+          }
+        }
+      },
+      "$description": "Text typed into inputs, selects, comboboxes and textareas. 16px on phones, so iOS does not zoom into a focused field, and 14px from md up."
+    },
     "caption": {
       "$value": {
         "fontFamily": "{font.family.sans}",

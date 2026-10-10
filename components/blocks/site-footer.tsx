@@ -30,18 +30,18 @@ export const siteFooterColumns: SiteFooterColumn[] = [
     title: "Product",
     links: [
       { label: "Integrations", href: "#" },
-      { label: "Self-hosting", href: "#" },
+      { label: "Templates", href: "#" },
       { label: "Security", href: "#" },
-      { label: "Dashboard", href: "/live/app" },
+      { label: "Open the app", href: "/live/app" },
     ],
   },
   {
-    title: "Developers",
+    title: "Resources",
     links: [
-      { label: "Documentation", href: "#" },
-      { label: "CLI reference", href: "#" },
-      { label: "API", href: "#" },
-      { label: "Examples", href: "#" },
+      { label: "Help center", href: "#" },
+      { label: "API reference", href: "#" },
+      { label: "Guides", href: "/live/blog" },
+      { label: "Status", href: "#" },
     ],
   },
   {
@@ -78,13 +78,11 @@ export function SiteFooter({ className, columns = siteFooterColumns, newsletter 
           <Wordmark />
           {newsletter ? (
             <>
-              <p className="max-w-80 text-copy">Release notes, once a month. Unsubscribe any time.</p>
-              <NewsletterForm label="Email address for release notes" className="mt-1" />
+              <p className="max-w-80 text-copy">Product updates and new guides, once a month. Unsubscribe any time.</p>
+              <NewsletterForm label="Email address for product updates" className="mt-1" />
             </>
           ) : (
-            <p className="max-w-80 text-copy">
-              Build, ship and run your apps on our cloud or on servers you own.
-            </p>
+            <p className="max-w-80 text-copy">Plan, track and ship your team’s work in one place.</p>
           )}
         </div>
 
@@ -115,7 +113,7 @@ export function SiteFooter({ className, columns = siteFooterColumns, newsletter 
 
       <div className="border-t">
         <div className="container-page flex flex-col gap-4 py-6 text-caption text-muted-foreground @narrow:flex-row @narrow:items-center @narrow:justify-between">
-          <p>© 2026 Lumen, Inc.</p>
+          <p>© 2026 Acme Inc.</p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             {legal.map((link) => (
               <li key={link.label}>

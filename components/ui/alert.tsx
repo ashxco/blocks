@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
  *
  *   <Alert variant="warning">
  *     <TriangleAlertIcon />
- *     <AlertTitle>Build minutes are running low</AlertTitle>
+ *     <AlertTitle>Automation runs are running low</AlertTitle>
  *     <AlertDescription>…</AlertDescription>
  *     <AlertAction><Button size="sm" variant="outline">Upgrade</Button></AlertAction>
  *   </Alert>

@@ -40,7 +40,7 @@ export interface UsageMeter {
   label: string
   used: number
   limit: number
-  /** Unit after the numbers, e.g. "GB" or "min". */
+  /** Unit after the numbers, e.g. "GB" or "runs". */
   unit?: string
 }
 
@@ -61,6 +61,8 @@ export interface BillingSummaryProps {
   plans?: BillingPlan[]
   /** The active plan. When it changes, the summary follows it. */
   currentPlanId?: string
+  /** Seats paid for: one per member. The monthly charge is the plan price times the seats. */
+  seats?: number
   /** Display date of the next renewal. */
   renewsOn?: string
   /** Billing period shown above the usage meters. */
@@ -78,7 +80,7 @@ export interface BillingSummaryProps {
    * such as "#change-plan". Without it the button opens the change-plan dialog.
    */
   changePlanHref?: string
-  /** Amount of the next charge on renewsOn. Defaults to the current plan’s price; pass a scheduled plan’s price instead. */
+  /** Amount of the next charge on renewsOn. Defaults to the current plan’s price times the seats; pass a scheduled plan’s total instead. */
   nextCharge?: number
   /**
    * Called when a new plan is confirmed. Throw to keep the dialog open.
@@ -91,40 +93,45 @@ export interface BillingSummaryProps {
   className?: string
 }
 
+/** The self-serve Acme plans, as on the pricing page. Enterprise is sold through sales. */
 const defaultPlans: BillingPlan[] = [
-  { id: "hobby", name: "Hobby", price: 5, description: "Side projects and experiments.", seats: 1 },
-  { id: "starter", name: "Starter", price: 20, description: "Your first app in production.", seats: 3 },
-  { id: "pro", name: "Pro", price: 39, description: "Production apps that need room to grow.", seats: 10 },
-  { id: "scale", name: "Scale", price: 99, description: "Teams running serious traffic." },
+  { id: "free", name: "Free", price: 0, description: "5 projects and 1,000 automation runs a month.", seats: 3 },
+  { id: "pro", name: "Pro", price: 12, description: "Unlimited projects, guests and integrations." },
+  { id: "business", name: "Business", price: 24, description: "SSO, audit log and 50,000 automation runs." },
 ]
 
-/** Pro plan limits from the Lumen pricing page. */
+/** Pro plan limits; automation runs match the usage panel in the app sidebar. */
 const defaultUsage: UsageMeter[] = [
-  { id: "build-minutes", label: "Build minutes", used: 7240, limit: 10_000, unit: "min" },
-  { id: "bandwidth", label: "Bandwidth", used: 412, limit: 1000, unit: "GB" },
-  { id: "invocations", label: "Function invocations", used: 3_180_000, limit: 5_000_000 },
-  { id: "storage", label: "Database storage", used: 18.6, limit: 50, unit: "GB" },
+  { id: "automation-runs", label: "Automation runs", used: 7240, limit: 10_000, unit: "runs" },
+  { id: "storage", label: "Storage", used: 42, limit: 100, unit: "GB" },
+  { id: "guests", label: "Guests", used: 6, limit: 10 },
 ]
 
+const paymentRow =
+  "flex flex-col gap-0.5 @min-[18rem]/payment:flex-row @min-[18rem]/payment:items-baseline @min-[18rem]/payment:justify-between @min-[18rem]/payment:gap-4"
+const paymentValue = "min-w-0 wrap-anywhere text-foreground @min-[18rem]/payment:truncate"
+
+/** Invoiced on the 1st of each month at the annual rate, $12 a seat. */
 const defaultInvoices: Invoice[] = [
-  { id: "INV-2026-010", date: "Oct 1, 2026", description: "Pro plan, October", amount: 39, status: "paid" },
-  { id: "INV-2026-009", date: "Sep 1, 2026", description: "Pro plan, September", amount: 39, status: "paid" },
-  { id: "INV-2026-008", date: "Aug 1, 2026", description: "Pro plan, August, plus 120 GB bandwidth", amount: 45, status: "paid" },
-  { id: "INV-2026-007", date: "Jul 14, 2026", description: "Upgrade from Starter to Pro, prorated", amount: 11.03, status: "paid" },
-  { id: "INV-2026-006", date: "Jul 1, 2026", description: "Starter plan, July", amount: 20, status: "paid" },
+  { id: "INV-2026-010", date: "Oct 1, 2026", description: "Pro, 18 seats, October", amount: 216, status: "paid" },
+  { id: "INV-2026-009", date: "Sep 1, 2026", description: "Pro, 18 seats, September", amount: 216, status: "paid" },
+  { id: "INV-2026-008", date: "Aug 1, 2026", description: "Pro, 17 seats, August", amount: 204, status: "paid" },
+  { id: "INV-2026-007", date: "Jul 1, 2026", description: "Pro, 16 seats, July", amount: 192, status: "paid" },
+  { id: "INV-2026-006", date: "Jun 1, 2026", description: "Pro, 16 seats, June", amount: 192, status: "paid" },
 ]
 
 const defaultPaymentMethod: PaymentMethod = {
   brand: "Visa",
   last4: "4242",
   expires: "08/2028",
-  email: "billing@acme.dev",
+  email: "lucas@acme.com",
   billedTo: "Acme Inc.",
 }
 
 export function BillingSummary({
   plans = defaultPlans,
   currentPlanId = "pro",
+  seats = 18,
   renewsOn = "November 1, 2026",
   periodLabel = "October 1 to 31, 2026. Resets in 23 days.",
   usage = defaultUsage,
@@ -164,6 +171,7 @@ export function BillingSummary({
   }
 
   const plan = plans.find((p) => p.id === planId) ?? plans[0]
+  const monthly = plan.price * seats
 
   // A failed charge is the one thing that needs action on this page: it leads
   // the summary, turns the plan badge to Past due and offers to pay now.
@@ -234,23 +242,33 @@ export function BillingSummary({
             </Badge>
           </div>
 
-          <p className="mt-10 flex items-baseline gap-2">
-            <span className="text-h1 text-panel-foreground tabular-nums">{formatMoney(plan.price, currency)}</span>
-            <span className="text-sm">per month</span>
-          </p>
+          <div className="mt-10 grid gap-1">
+            <p className="flex items-baseline gap-2">
+              <span className="text-h1 text-panel-foreground tabular-nums">{formatMoney(monthly, currency)}</span>
+              <span className="text-sm">per month</span>
+            </p>
+            {plan.price > 0 ? (
+              <p className="text-sm tabular-nums">
+                {seats} {seats === 1 ? "seat" : "seats"} at {formatMoney(plan.price, currency)} per member, billed
+                annually
+              </p>
+            ) : null}
+          </div>
 
           <dl className="mt-8 grid gap-x-8 gap-y-4 border-t border-panel-border pt-6 @min-[28rem]/plan:grid-cols-3">
             <div className="grid gap-1">
-              <dt className="text-caption">Renews on</dt>
+              <dt className="text-caption">Next invoice</dt>
               <dd className="text-label text-panel-foreground">{renewsOn}</dd>
             </div>
             <div className="grid gap-1">
-              <dt className="text-caption">Billed</dt>
-              <dd className="text-label text-panel-foreground">Monthly, in {currency}</dd>
+              <dt className="text-caption">Billing</dt>
+              <dd className="text-label text-panel-foreground">Annual, in {currency}</dd>
             </div>
             <div className="grid gap-1">
-              <dt className="text-caption">Team seats</dt>
-              <dd className="text-label text-panel-foreground">{plan.seats ? `${plan.seats} included` : "Unlimited"}</dd>
+              <dt className="text-caption">Seats</dt>
+              <dd className="text-label text-panel-foreground">
+                {plan.seats ? `${seats} of ${plan.seats}` : `${seats} members`}
+              </dd>
             </div>
           </dl>
 
@@ -264,6 +282,7 @@ export function BillingSummary({
                 plans={plans}
                 currentPlanId={planId}
                 renewsOn={renewsOn}
+                members={seats}
                 currency={currency}
                 onChange={async (next) => {
                   await onPlanChange?.(next)
@@ -312,15 +331,16 @@ export function BillingSummary({
                 <p className="text-caption text-muted-foreground tabular-nums">Expires {payment.expires}</p>
               </div>
             </div>
-            <dl className="grid gap-3 text-sm">
-              <div className="flex items-baseline justify-between gap-4">
+            {/* Below 18rem each value goes under its term and wraps, so a long email never loses its domain. */}
+            <dl className="@container/payment grid gap-3 text-sm">
+              <div className={paymentRow}>
                 <dt className="text-muted-foreground">Receipts to</dt>
-                <dd className="min-w-0 truncate text-foreground">{payment.email}</dd>
+                <dd className={paymentValue}>{payment.email}</dd>
               </div>
               {payment.billedTo ? (
-                <div className="flex items-baseline justify-between gap-4">
+                <div className={paymentRow}>
                   <dt className="text-muted-foreground">Billed to</dt>
-                  <dd className="min-w-0 truncate text-foreground">{payment.billedTo}</dd>
+                  <dd className={paymentValue}>{payment.billedTo}</dd>
                 </div>
               ) : null}
             </dl>
@@ -328,7 +348,7 @@ export function BillingSummary({
             <div className="mt-auto grid gap-1 border-t pt-5">
               <p className="text-caption text-muted-foreground">Next charge</p>
               <p className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <span className="text-h4 text-foreground tabular-nums">{formatAmount(nextCharge ?? plan.price, currency)}</span>
+                <span className="text-h4 text-foreground tabular-nums">{formatAmount(nextCharge ?? monthly, currency)}</span>
                 <span className="text-sm text-copy">on {renewsOn}</span>
               </p>
             </div>
@@ -360,8 +380,8 @@ export function BillingSummary({
         </CardContent>
         <CardFooter>
           <p className="text-sm text-muted-foreground">
-            Usage over a limit is billed at the end of the period. Owners get an email at 50%, 80% and 100% of each
-            limit.
+            Automations pause when runs reach the limit, until the period resets. Owners get an email at 80% and 100%
+            of each limit.
           </p>
         </CardFooter>
       </Card>

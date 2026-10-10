@@ -59,7 +59,7 @@ export default function SkeletonDocs() {
         description="For lists, show the number of rows you expect, up to one screen."
         layout="stack"
       >
-        <div className="divide-y overflow-hidden rounded-(--card-radius) border bg-card" aria-busy="true" aria-label="Loading deployments">
+        <div className="divide-y overflow-hidden rounded-(--card-radius) border bg-card" aria-busy="true" aria-label="Loading tasks">
           {[48, 36, 56, 40].map((w) => (
             <div key={w} className="flex h-(--table-row-height) items-center gap-4 px-5">
               <Skeleton className="size-(--avatar-size-sm) rounded-full" />
@@ -72,9 +72,9 @@ export default function SkeletonDocs() {
 
       <Guidelines
         do={[
-          "Use skeletons for the first load of a page or a region.",
+          "Use skeletons for the first load of a page or a section.",
           "Mirror the real layout: same sizes, radii and spacing.",
-          "Mark the loading region with aria-busy and a label.",
+          "Mark the loading area with aria-busy and a label.",
         ]}
         dont={[
           "Don’t use skeletons for actions such as saving. Use a spinner in the button.",

@@ -32,11 +32,11 @@ export default function SettingsSectionDocs() {
         layout="full"
         code={`<div className="divide-y">
   <SettingsSection
-    title="Build and deploy"
+    title="Task defaults"
     description="…"
-    saveLabel="Save build settings"
-    successTitle="Build settings saved"
-    successDescription="They apply from the next push to main."
+    saveLabel="Save task defaults"
+    successTitle="Task defaults saved"
+    successDescription="New tasks in Website relaunch use them from now on."
   >
     <FieldGroup>…</FieldGroup>
   </SettingsSection>
@@ -47,56 +47,57 @@ export default function SettingsSectionDocs() {
       >
         <div className="divide-y px-(--card-padding) @prose:px-10">
           <SettingsSection
-            title="Build and deploy"
-            description="How Lumen builds web. Changes apply from the next push."
-            saveLabel="Save build settings"
-            successTitle="Build settings saved"
-            successDescription="They apply from the next push to main."
-            footerNote="Redeploy to apply these to the current production build."
+            title="Task defaults"
+            description="How new tasks start in Website relaunch. Existing tasks keep their settings."
+            saveLabel="Save task defaults"
+            successTitle="Task defaults saved"
+            successDescription="New tasks in Website relaunch use them from now on."
+            footerNote="Applies to tasks created from now on."
           >
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="docs-branch">Production branch</FieldLabel>
-                <Input id="docs-branch" defaultValue="main" className="font-mono" spellCheck={false} />
-                <FieldDescription>Pushes to this branch deploy to production. Other branches get previews.</FieldDescription>
+                <FieldLabel htmlFor="docs-assignee">Default assignee</FieldLabel>
+                <Input id="docs-assignee" defaultValue="Priya Raman" />
+                <FieldDescription>New tasks go to this person until someone reassigns them.</FieldDescription>
               </Field>
               <Field>
-                <FieldLabel htmlFor="docs-build">Build command</FieldLabel>
-                <Input id="docs-build" defaultValue="npm run build" className="font-mono" spellCheck={false} />
+                <FieldLabel htmlFor="docs-due">Days until due</FieldLabel>
+                <Input id="docs-due" type="number" inputMode="numeric" min={1} defaultValue={5} />
               </Field>
               <Field>
-                <FieldLabel htmlFor="docs-output">Output directory</FieldLabel>
-                <Input id="docs-output" defaultValue=".next" className="font-mono" spellCheck={false} />
+                <FieldLabel htmlFor="docs-key">Task key prefix</FieldLabel>
+                <Input id="docs-key" defaultValue="WEB" className="font-mono" spellCheck={false} />
+                <FieldDescription>Tasks are numbered after it, such as WEB-142.</FieldDescription>
               </Field>
             </FieldGroup>
           </SettingsSection>
 
           <SettingsSection
             title="Notifications"
-            description="Emails go to maya@acme.dev. Each switch saves as soon as you flip it."
+            description="Emails go to maya@acme.com. Each switch saves as soon as you flip it."
             hideFooter
           >
             <FieldGroup>
               <Field orientation="horizontal">
                 <FieldContent>
-                  <FieldLabel htmlFor="docs-failed">Failed deployments</FieldLabel>
-                  <FieldDescription>Email me when a production build fails.</FieldDescription>
+                  <FieldLabel htmlFor="docs-mentions">Mentions</FieldLabel>
+                  <FieldDescription>Email me when someone mentions me in a task, comment or doc.</FieldDescription>
                 </FieldContent>
-                <Switch id="docs-failed" defaultChecked />
+                <Switch id="docs-mentions" defaultChecked />
               </Field>
               <Field orientation="horizontal" className="border-t pt-5">
                 <FieldContent>
-                  <FieldLabel htmlFor="docs-comments">Preview comments</FieldLabel>
-                  <FieldDescription>Email me when someone comments on a preview I deployed.</FieldDescription>
+                  <FieldLabel htmlFor="docs-assigned">Tasks assigned to me</FieldLabel>
+                  <FieldDescription>Email me when someone gives me a task or changes its due date.</FieldDescription>
                 </FieldContent>
-                <Switch id="docs-comments" defaultChecked />
+                <Switch id="docs-assigned" defaultChecked />
               </Field>
               <Field orientation="horizontal" className="border-t pt-5">
                 <FieldContent>
-                  <FieldLabel htmlFor="docs-usage">Weekly usage report</FieldLabel>
-                  <FieldDescription>Build minutes, bandwidth and invocations, every Monday.</FieldDescription>
+                  <FieldLabel htmlFor="docs-summary">Weekly summary</FieldLabel>
+                  <FieldDescription>Tasks completed, overdue work and project status, every Monday.</FieldDescription>
                 </FieldContent>
-                <Switch id="docs-usage" />
+                <Switch id="docs-summary" />
               </Field>
             </FieldGroup>
           </SettingsSection>
@@ -107,7 +108,7 @@ export default function SettingsSectionDocs() {
         do={[
           "Say what the settings change and who they affect in the description.",
           "Group five or fewer related controls per section.",
-          "Write the save label as the outcome: “Save build settings”, and the success toast as what changed: “Build settings saved”.",
+          "Write the save label as the outcome: “Save task defaults”, and the success toast as what changed: “Task defaults saved”.",
           "Use hideFooter for switches that apply immediately, and confirm with a toast.",
         ]}
         dont={[

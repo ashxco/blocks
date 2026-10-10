@@ -5,41 +5,36 @@ import * as React from "react"
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { PricingPlans, type BillingPeriod, type PricingPlan } from "@/components/blocks/pricing-plans"
 
-const threePlans: PricingPlan[] = [
-  {
-    name: "Hobby",
-    description: "Side projects and prototypes.",
-    price: { monthly: 5, yearly: 4 },
-    features: ["3 projects", "Preview URL for every push", "Community support"],
-    cta: { label: "Choose Hobby", href: "/live/sign-up" },
-  },
+const upgradePlans: PricingPlan[] = [
   {
     name: "Pro",
-    description: "Production apps and small teams.",
-    price: { monthly: 39, yearly: 31 },
-    features: ["Unlimited projects", "Up to 10 team members", "Hourly backups", "Priority support"],
-    cta: { label: "Start free trial", href: "/live/sign-up" },
+    description: "Unlimited projects, guests and integrations.",
+    price: { monthly: 15, yearly: 12 },
+    unit: "per member / month",
+    features: ["Unlimited projects", "10,000 automation runs a month", "100 GB storage", "Guests and integrations"],
+    cta: { label: "Upgrade to Pro", href: "/live/app/billing" },
     featured: true,
-    note: "Most popular",
+    note: "Your trial",
   },
   {
-    name: "Scale",
-    description: "Teams running serious traffic.",
-    price: { monthly: 99, yearly: 79 },
-    features: ["Unlimited team members", "SAML single sign-on", "99.99% uptime SLA", "Shared Slack channel"],
-    cta: { label: "Choose Scale", href: "/live/sign-up" },
+    name: "Business",
+    description: "Control and security for the whole company.",
+    price: { monthly: 29, yearly: 24 },
+    unit: "per member / month",
+    features: ["SSO with SAML", "Advanced permissions and audit log", "50,000 automation runs a month", "99.9% uptime SLA"],
+    cta: { label: "Upgrade to Business", href: "/live/app/billing" },
   },
 ]
 
 function ControlledExample() {
   const [billing, setBilling] = React.useState<BillingPeriod>("yearly")
-  // Extra room under the plans: the featured card is raised past their bottom edge.
+  // Extra room under the plans: the featured card is raised past their bottom.
   return (
     <div className="grid gap-12 p-6 @2xl:p-10">
       <PricingPlans
         contained={false}
         title={null}
-        plans={threePlans}
+        plans={upgradePlans}
         enterprise={null}
         billing={billing}
         onBillingChange={setBilling}
@@ -47,8 +42,8 @@ function ControlledExample() {
       {/* Copy elsewhere on the page follows the same state. */}
       <p className="text-center text-caption text-muted-foreground">
         {billing === "yearly"
-          ? "Yearly prices include the 20% discount and are billed once a year, before tax."
-          : "Monthly prices, billed each month before tax. Switch to yearly to save 20%."}
+          ? "Prices per member a month on annual billing, invoiced on the 1st of each month, before tax."
+          : "Prices per member, billed each month before tax. Switch to yearly to save up to 20%."}
       </p>
     </div>
   )
@@ -60,7 +55,7 @@ export default function PricingPlansDocs() {
       <Example
         title="Default"
         layout="full"
-        description="Four plans with a monthly or yearly switch. The recommended plan sits on a raised dark panel with an inverse button, and an enterprise row closes the section."
+        description="Three plans with a monthly or yearly switch, starting on yearly. The recommended plan sits on a raised dark panel with an inverse button, and an enterprise row closes the section. Per-seat plans set unit to “per member / month”."
         code={`<PricingPlans />`}
       >
         <PricingPlans />
@@ -71,15 +66,15 @@ export default function PricingPlansDocs() {
         layout="full"
         surface="subtle"
         description="Pass title={null} when the page already has a hero. The switch stays, centred above the plans."
-        code={`<PricingPlans title={null} defaultBilling="yearly" enterprise={null} />`}
+        code={`<PricingPlans title={null} defaultBilling="monthly" enterprise={null} />`}
       >
-        <PricingPlans title={null} defaultBilling="yearly" enterprise={null} />
+        <PricingPlans title={null} defaultBilling="monthly" enterprise={null} />
       </Example>
 
       <Example
-        title="Three plans, controlled"
+        title="Two plans, controlled"
         layout="full"
-        description="Control the billing period from the parent to keep other prices on the page in sync. Three plans sit in three columns on wide screens."
+        description="Control the billing period from the parent to keep other prices on the page in sync, such as an upgrade screen at the end of a trial. Two plans sit side by side from 42rem."
         code={`const [billing, setBilling] = useState<BillingPeriod>("yearly")
 
 <PricingPlans
@@ -90,7 +85,7 @@ export default function PricingPlansDocs() {
   billing={billing}
   onBillingChange={setBilling}
 />
-<p>{billing === "yearly" ? "Yearly prices include the 20% discount…" : "Monthly prices…"}</p>`}
+<p>{billing === "yearly" ? "Prices per member a month on annual billing, invoiced monthly…" : "Prices per member, billed each month…"}</p>`}
       >
         <ControlledExample />
       </Example>
@@ -110,15 +105,15 @@ export default function PricingPlansDocs() {
 
       <ApiTable
         rows={[
-          { prop: "plans", type: "PricingPlan[]", default: "Hobby, Starter, Pro, Scale", description: "Plans in display order. One column each on wide screens, up to four." },
-          { prop: "title", type: "ReactNode | null", default: '"Simple pricing that scales with you."', description: "Section heading. Pass null to hide the heading and keep the switch." },
+          { prop: "plans", type: "PricingPlan[]", default: "Free, Pro, Business", description: "Plans in display order. One column each on wide screens, up to four." },
+          { prop: "title", type: "ReactNode | null", default: '"Start free. Pay as your team grows."', description: "Section heading. Pass null to hide the heading and keep the switch." },
           { prop: "description", type: "ReactNode", description: "Supporting line under the heading." },
           { prop: "billing", type: '"monthly" | "yearly"', description: "Controlled billing period." },
-          { prop: "defaultBilling", type: '"monthly" | "yearly"', default: '"monthly"', description: "Initial period when uncontrolled." },
+          { prop: "defaultBilling", type: '"monthly" | "yearly"', default: '"yearly"', description: "Initial period when uncontrolled." },
           { prop: "onBillingChange", type: "(billing) => void", description: "Called when the switch changes." },
-          { prop: "yearlyNote", type: "string", default: '"Save 20%"', description: "Text beside Yearly in the switch." },
+          { prop: "yearlyNote", type: "string", default: '"Save up to 20%"', description: "Text beside Yearly in the switch." },
           { prop: "hideToggle", type: "boolean", default: "false", description: "Hide the monthly / yearly switch." },
-          { prop: "enterprise", type: "{ title; description; cta } | null", default: "Enterprise and self-hosted", description: "Row under the plans for custom contracts. Pass null to hide it." },
+          { prop: "enterprise", type: "{ title; description; cta } | null", default: "Enterprise", description: "Row under the plans for custom contracts. Pass null to hide it." },
           { prop: "currency", type: "string", default: '"$"', description: "Symbol printed before prices." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section padding." },
           { prop: "className", type: "string", description: "Classes for the section." },
@@ -131,6 +126,8 @@ export default function PricingPlansDocs() {
           { prop: "name", type: "string", description: "Plan name, shown as the card title." },
           { prop: "description", type: "string", description: "Who the plan is for, in one line." },
           { prop: "price", type: "{ monthly: number; yearly: number }", description: "Price per month for each billing period." },
+          { prop: "unit", type: "string", default: '"/ month"', description: "Printed after the price. Per-seat plans use “per member / month”, and the yearly line then reads per member." },
+          { prop: "billingNote", type: "string", description: "Replaces the billing line under the price, e.g. “Free forever, no card required”." },
           { prop: "features", type: "string[]", description: "Checked list under the button." },
           { prop: "cta", type: "{ label: string; href: string }", description: "The plan’s button." },
           { prop: "featured", type: "boolean", default: "false", description: "Raised dark panel with an inverse button." },

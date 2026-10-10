@@ -89,12 +89,25 @@ function StatefulPagination({
   )
 }
 
-const deployments = [
-  { sha: "a41c9e2", message: "Cache build output between deploys", status: "Ready" },
-  { sha: "7f03b1d", message: "Add preview comments to pull requests", status: "Ready" },
-  { sha: "c88e410", message: "Move image resizing to the edge", status: "Failed" },
-  { sha: "1b2d7a9", message: "Upgrade to Node.js 22", status: "Ready" },
+/** Page 6 of the workspace’s tasks, 10 to a page: rows 51–60 of 312. */
+const tasks = [
+  { title: "Draft the Q4 hiring plan", meta: "Q4 planning · Lucas Moreau", status: "In progress" },
+  { title: "Review the onboarding survey results", meta: "Onboarding redesign · Sofia Alvarez", status: "Done" },
+  { title: "Fix crash when uploading photos", meta: "Mobile app 2.0 · Jordan Lee", status: "Overdue" },
+  { title: "Update the refund policy article", meta: "Help center · Sam Okafor", status: "Done" },
+  { title: "Move saved cards to the new payment provider", meta: "Billing migration · Daniel Brooks", status: "In progress" },
+  { title: "Export the new logo files", meta: "Brand refresh · Sofia Alvarez", status: "Done" },
+  { title: "Add search to the invoices page", meta: "Customer portal · Jordan Lee", status: "Overdue" },
+  { title: "Book the venue for the Q4 offsite", meta: "Q4 planning · Lucas Moreau", status: "Done" },
+  { title: "Interview five customers about reports", meta: "Q4 planning · Maya Patel", status: "To do" },
+  { title: "Write the plan comparison page", meta: "Website relaunch · Priya Raman", status: "To do" },
 ] as const
+
+const statusVariant = { Done: "success", "In progress": "info", Overdue: "destructive", "To do": "secondary" } as const
+
+/** The footer’s page links: first and last page, the current page and its neighbours. */
+const footerPage = 6
+const footerPages = pageWindow(footerPage, 32)
 
 export default function PaginationDocs() {
   return (
@@ -176,42 +189,48 @@ export default function PaginationDocs() {
       >
         <section className="overflow-hidden rounded-(--card-radius) border bg-card">
           <ul className="divide-y">
-            {deployments.map((d) => (
-              <li key={d.sha} className="flex items-center justify-between gap-4 px-5 py-3.5">
+            {tasks.map((task) => (
+              <li key={task.title} className="flex items-center justify-between gap-4 px-5 py-3.5">
                 <div className="grid min-w-0 gap-0.5">
-                  <p className="truncate text-label text-foreground">{d.message}</p>
-                  <p className="font-mono text-caption text-muted-foreground">{d.sha}</p>
+                  <p className="truncate text-label text-foreground">{task.title}</p>
+                  <p className="truncate text-caption text-muted-foreground">{task.meta}</p>
                 </div>
-                <Badge variant={d.status === "Ready" ? "success" : "destructive"}>{d.status}</Badge>
+                <Badge variant={statusVariant[task.status]}>{task.status}</Badge>
               </li>
             ))}
           </ul>
           <div className="flex flex-col items-center gap-3 border-t bg-subtle px-5 py-3 sm:flex-row sm:justify-between">
-            <p className="text-caption text-muted-foreground tabular">Showing 21–24 of 312 deployments</p>
+            <p className="text-caption text-muted-foreground tabular">Showing 51–60 of 312 tasks</p>
             <Pagination className="mx-0 w-auto">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationLink href="#previous" size="icon-sm" aria-label="Go to previous page">
+                  <PaginationLink href="#page-5" size="icon-sm" aria-label="Go to previous page">
                     <ChevronLeftIcon />
                   </PaginationLink>
                 </PaginationItem>
+                {footerPages.map((p, i, items) =>
+                  p === "ellipsis" ? (
+                    <PaginationItem key={`ellipsis-${i}`}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : (
+                    // On phones the neighbours next to an ellipsis hide, as in the examples above.
+                    <PaginationItem
+                      key={p}
+                      className={
+                        (p < footerPage && items[i - 1] === "ellipsis") || (p > footerPage && items[i + 1] === "ellipsis")
+                          ? "max-sm:hidden"
+                          : undefined
+                      }
+                    >
+                      <PaginationLink href={`#page-${p}`} size="icon-sm" isActive={p === footerPage}>
+                        {p}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
                 <PaginationItem>
-                  <PaginationLink href="#page-5" size="icon-sm">
-                    5
-                  </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#page-6" size="icon-sm" isActive>
-                    6
-                  </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#page-7" size="icon-sm">
-                    7
-                  </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#next" size="icon-sm" aria-label="Go to next page">
+                  <PaginationLink href="#page-7" size="icon-sm" aria-label="Go to next page">
                     <ChevronRightIcon />
                   </PaginationLink>
                 </PaginationItem>

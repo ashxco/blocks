@@ -29,7 +29,7 @@ const inputVariants = cva(
       size: {
         sm: "h-(--control-height-sm) px-3 text-sm [&[type=file]]:py-0.75",
         default:
-          "h-(--control-height-md) px-(--control-padding-x) text-base md:text-sm [&[type=file]]:py-1.75",
+          "h-(--control-height-md) px-(--control-padding-x) text-control [&[type=file]]:py-1.75",
         lg: "h-(--control-height-lg) px-4 text-base [&[type=file]]:py-2.25",
       },
     },

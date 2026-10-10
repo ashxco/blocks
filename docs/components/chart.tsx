@@ -26,56 +26,64 @@ import {
 
 /* Deterministic sample data, so server and client render the same numbers. */
 
-const days = ["Sep 25", "Sep 26", "Sep 27", "Sep 28", "Sep 29", "Sep 30", "Oct 1", "Oct 2", "Oct 3", "Oct 4", "Oct 5", "Oct 6", "Oct 7", "Oct 8"]
+/*
+ * The last 14 days of the dashboard's chart, to Oct 9: 596 tasks, 12% more
+ * than the same days of the period before (531). The 30 days to Oct 9 add up
+ * to 1,284, the dashboard's "Tasks completed". Weekends are quiet.
+ */
+const days = ["Sep 26", "Sep 27", "Sep 28", "Sep 29", "Sep 30", "Oct 1", "Oct 2", "Oct 3", "Oct 4", "Oct 5", "Oct 6", "Oct 7", "Oct 8", "Oct 9"]
 
-const requests = [182, 196, 171, 148, 204, 219, 226, 241, 233, 198, 176, 248, 262, 271].map((value, i) => ({
+const completed = [27, 29, 45, 49, 44, 52, 51, 31, 27, 44, 51, 49, 49, 48].map((value, i) => ({
   day: days[i],
-  requests: value * 1000,
+  completed: value,
 }))
 
-const deploys = [
-  { day: "Mon", production: 14, preview: 38 },
-  { day: "Tue", production: 18, preview: 44 },
-  { day: "Wed", production: 11, preview: 51 },
-  { day: "Thu", production: 22, preview: 47 },
-  { day: "Fri", production: 9, preview: 29 },
-  { day: "Sat", production: 3, preview: 8 },
-  { day: "Sun", production: 2, preview: 6 },
+const completedTotal = completed.reduce((sum, d) => sum + d.completed, 0)
+
+/* Last week, Sep 28 to Oct 4: the same daily totals as above, 92% of them on time. */
+const delivery = [
+  { day: "Mon", onTime: 41, late: 4 },
+  { day: "Tue", onTime: 45, late: 4 },
+  { day: "Wed", onTime: 40, late: 4 },
+  { day: "Thu", onTime: 49, late: 3 },
+  { day: "Fri", onTime: 47, late: 4 },
+  { day: "Sat", onTime: 29, late: 2 },
+  { day: "Sun", onTime: 25, late: 2 },
 ]
 
-const latency = [
-  { time: "00:00", iad: 112, fra: 128, sin: 164 },
-  { time: "03:00", iad: 104, fra: 121, sin: 171 },
-  { time: "06:00", iad: 118, fra: 139, sin: 158 },
-  { time: "09:00", iad: 142, fra: 152, sin: 149 },
-  { time: "12:00", iad: 156, fra: 147, sin: 143 },
-  { time: "15:00", iad: 149, fra: 133, sin: 152 },
-  { time: "18:00", iad: 138, fra: 126, sin: 167 },
-  { time: "21:00", iad: 121, fra: 119, sin: 174 },
+const workload = [
+  { week: "Aug 17", jordan: 14, sofia: 11, sam: 9 },
+  { week: "Aug 24", jordan: 16, sofia: 12, sam: 8 },
+  { week: "Aug 31", jordan: 19, sofia: 10, sam: 11 },
+  { week: "Sep 7", jordan: 22, sofia: 13, sam: 10 },
+  { week: "Sep 14", jordan: 24, sofia: 15, sam: 9 },
+  { week: "Sep 21", jordan: 21, sofia: 17, sam: 12 },
+  { week: "Sep 28", jordan: 18, sofia: 12, sam: 14 },
+  { week: "Oct 5", jordan: 17, sofia: 9, sam: 13 },
 ]
 
-const buildMinutes = [42, 38, 51, 47, 55, 49, 61, 58, 64, 60, 71, 68].map((minutes, i) => ({ week: i, minutes }))
+const cycleTime = [4.6, 4.5, 4.7, 4.3, 4.2, 4, 4.1, 3.9, 3.8, 3.7, 3.5, 3.4].map((days, i) => ({ week: i, days }))
 
-const requestsConfig = {
-  requests: { label: "Requests", color: "var(--chart-1)" },
+const completedConfig = {
+  completed: { label: "Completed", color: "var(--chart-1)" },
 } satisfies ChartConfig
 
-const deploysConfig = {
-  production: { label: "Production", color: "var(--chart-1)" },
-  preview: { label: "Preview", color: "var(--chart-5)" },
+const deliveryConfig = {
+  onTime: { label: "On time", color: "var(--chart-1)" },
+  late: { label: "Late", color: "var(--chart-5)" },
 } satisfies ChartConfig
 
-const latencyConfig = {
-  fra: { label: "Frankfurt", color: "var(--chart-1)" },
-  iad: { label: "Virginia", color: "var(--chart-2)" },
-  sin: { label: "Singapore", color: "var(--chart-3)" },
+const workloadConfig = {
+  jordan: { label: "Jordan Lee", color: "var(--chart-1)" },
+  sofia: { label: "Sofia Alvarez", color: "var(--chart-2)" },
+  sam: { label: "Sam Okafor", color: "var(--chart-3)" },
 } satisfies ChartConfig
 
-const minutesConfig = {
-  minutes: { label: "Build minutes", color: "var(--chart-1)" },
+const cycleConfig = {
+  days: { label: "Days", color: "var(--chart-1)" },
 } satisfies ChartConfig
 
-const compact = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 })
+const count = new Intl.NumberFormat("en-US")
 
 const frame = "w-full rounded-(--card-radius) border border-border bg-card p-(--card-padding)"
 
@@ -87,22 +95,22 @@ export default function ChartDocs() {
         layout="stack"
         description="One series over time. A 2px line over a flat fill at 12% opacity, with horizontal grid lines only."
         code={`const config = {
-  requests: { label: "Requests", color: "var(--chart-1)" },
+  completed: { label: "Completed", color: "var(--chart-1)" },
 } satisfies ChartConfig
 
 <ChartContainer config={config} className="aspect-auto h-64 w-full">
   <AreaChart data={data} margin={{ left: 0, right: 8, top: 8 }}>
     <CartesianGrid vertical={false} />
     <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} minTickGap={24} interval="equidistantPreserveStart" />
-    <YAxis tickLine={false} axisLine={false} width={44} tickFormatter={compact.format} />
+    <YAxis tickLine={false} axisLine={false} width={32} allowDecimals={false} />
     <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
     <Area
       {...chartMotion}
-      dataKey="requests"
+      dataKey="completed"
       type="monotone"
-      stroke="var(--color-requests)"
+      stroke="var(--color-completed)"
       strokeWidth={2}
-      fill="var(--color-requests)"
+      fill="var(--color-completed)"
       fillOpacity={0.12}
       activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--card)" }}
     />
@@ -112,32 +120,27 @@ export default function ChartDocs() {
         <div className={frame}>
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div className="grid gap-1">
-              <p className="text-label text-muted-foreground">Edge requests, last 14 days</p>
-              <p className="text-h3 text-foreground tabular-nums">2.98M</p>
+              <p className="text-label text-muted-foreground">Tasks completed, last 14 days</p>
+              <p className="text-h3 text-foreground tabular-nums">{count.format(completedTotal)}</p>
             </div>
             <p className="inline-flex items-center gap-1 text-label text-success tabular-nums">
               <ArrowUpRightIcon aria-hidden="true" className="size-4" />
-              12.4% on the previous 14 days
+              12% on the previous 14 days
             </p>
           </div>
-          <ChartContainer config={requestsConfig} className="aspect-auto h-64 w-full">
-            <AreaChart data={requests} margin={{ left: 0, right: 8, top: 8 }}>
+          <ChartContainer config={completedConfig} className="aspect-auto h-64 w-full">
+            <AreaChart data={completed} margin={{ left: 0, right: 8, top: 8 }}>
               <CartesianGrid vertical={false} />
               <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} minTickGap={24} interval="equidistantPreserveStart" />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                width={44}
-                tickFormatter={(value: number) => compact.format(value)}
-              />
+              <YAxis tickLine={false} axisLine={false} width={32} allowDecimals={false} />
               <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
               <Area
                 {...chartMotion}
-                dataKey="requests"
+                dataKey="completed"
                 type="monotone"
-                stroke="var(--color-requests)"
+                stroke="var(--color-completed)"
                 strokeWidth={2}
-                fill="var(--color-requests)"
+                fill="var(--color-completed)"
                 fillOpacity={0.12}
                 activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--card)" }}
               />
@@ -151,8 +154,8 @@ export default function ChartDocs() {
         layout="stack"
         description="Counts per day. Parts of a whole stack with a 2px gap in the card colour; only the top segment gets rounded ends. Two or more series always get a legend."
         code={`const config = {
-  production: { label: "Production", color: "var(--chart-1)" },
-  preview: { label: "Preview", color: "var(--chart-5)" },
+  onTime: { label: "On time", color: "var(--chart-1)" },
+  late: { label: "Late", color: "var(--chart-5)" },
 } satisfies ChartConfig
 
 <ChartContainer config={config} className="aspect-auto h-64 w-full">
@@ -160,34 +163,38 @@ export default function ChartDocs() {
     <CartesianGrid vertical={false} />
     <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} />
     <ChartTooltip content={<ChartTooltipContent />} />
-    <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
-    <Bar dataKey="production" stackId="a" fill="var(--color-production)" stroke="var(--card)" strokeWidth={2} />
-    <Bar dataKey="preview" stackId="a" fill="var(--color-preview)" stroke="var(--card)" strokeWidth={2} radius={[4, 4, 0, 0]} />
+    <ChartLegend verticalAlign="top" itemSorter={null} content={<ChartLegendContent />} />
+    <Bar dataKey="onTime" stackId="a" fill="var(--color-onTime)" stroke="var(--card)" strokeWidth={2} />
+    <Bar dataKey="late" stackId="a" fill="var(--color-late)" stroke="var(--card)" strokeWidth={2} radius={[4, 4, 0, 0]} />
   </BarChart>
 </ChartContainer>`}
       >
         <div className={frame}>
-          <ChartContainer config={deploysConfig} className="aspect-auto h-64 w-full">
-            <BarChart data={deploys} margin={{ left: 0, right: 0, top: 0 }} barCategoryGap="28%">
+          <div className="mb-2 grid gap-1">
+            <p className="text-title text-foreground">On-time delivery</p>
+            <p className="text-caption text-muted-foreground">Tasks completed last week, by due date</p>
+          </div>
+          <ChartContainer config={deliveryConfig} className="aspect-auto h-64 w-full">
+            <BarChart data={delivery} margin={{ left: 0, right: 0, top: 0 }} barCategoryGap="28%">
               <CartesianGrid vertical={false} />
               <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} />
               <YAxis tickLine={false} axisLine={false} width={32} allowDecimals={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <ChartLegend verticalAlign="top" align="right" content={<ChartLegendContent className="justify-end" />} />
+              <ChartLegend verticalAlign="top" align="right" itemSorter={null} content={<ChartLegendContent className="justify-end" />} />
               <Bar
                 {...chartMotion}
-                dataKey="production"
-                stackId="deploys"
-                fill="var(--color-production)"
+                dataKey="onTime"
+                stackId="delivery"
+                fill="var(--color-onTime)"
                 stroke="var(--card)"
                 strokeWidth={2}
                 maxBarSize={40}
               />
               <Bar
                 {...chartMotion}
-                dataKey="preview"
-                stackId="deploys"
-                fill="var(--color-preview)"
+                dataKey="late"
+                stackId="delivery"
+                fill="var(--color-late)"
                 stroke="var(--card)"
                 strokeWidth={2}
                 radius={[4, 4, 0, 0]}
@@ -203,34 +210,34 @@ export default function ChartDocs() {
         layout="stack"
         description="Compare a few series on one scale. Series take chart colours in order, 1 to 5, and keep them when filters change."
         code={`const config = {
-  fra: { label: "Frankfurt", color: "var(--chart-1)" },
-  iad: { label: "Virginia", color: "var(--chart-2)" },
-  sin: { label: "Singapore", color: "var(--chart-3)" },
+  jordan: { label: "Jordan Lee", color: "var(--chart-1)" },
+  sofia: { label: "Sofia Alvarez", color: "var(--chart-2)" },
+  sam: { label: "Sam Okafor", color: "var(--chart-3)" },
 } satisfies ChartConfig
 
 <LineChart data={data}>
   <CartesianGrid vertical={false} />
-  <XAxis dataKey="time" tickLine={false} axisLine={false} />
-  <YAxis tickLine={false} axisLine={false} unit=" ms" />
+  <XAxis dataKey="week" tickLine={false} axisLine={false} />
+  <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
   <ChartTooltip content={<ChartTooltipContent />} />
-  <ChartLegend content={<ChartLegendContent />} />
-  <Line dataKey="fra" stroke="var(--color-fra)" strokeWidth={2} dot={false} />
+  <ChartLegend itemSorter={null} content={<ChartLegendContent />} />
+  <Line dataKey="jordan" stroke="var(--color-jordan)" strokeWidth={2} dot={false} />
   …
 </LineChart>`}
       >
         <div className={frame}>
           <div className="mb-6 grid gap-1">
-            <p className="text-title text-foreground">p95 response time by region</p>
-            <p className="text-caption text-muted-foreground">Today, in milliseconds, for lumen-api</p>
+            <p className="text-title text-foreground">Workload by member</p>
+            <p className="text-caption text-muted-foreground">Open tasks at the start of each week, across all projects</p>
           </div>
-          <ChartContainer config={latencyConfig} className="aspect-auto h-64 w-full">
-            <LineChart data={latency} margin={{ left: 0, right: 8, top: 8 }}>
+          <ChartContainer config={workloadConfig} className="aspect-auto h-64 w-full">
+            <LineChart data={workload} margin={{ left: 0, right: 8, top: 8 }}>
               <CartesianGrid vertical={false} />
-              <XAxis dataKey="time" tickLine={false} axisLine={false} tickMargin={10} />
-              <YAxis tickLine={false} axisLine={false} width={44} domain={[80, 200]} />
+              <XAxis dataKey="week" tickLine={false} axisLine={false} tickMargin={10} minTickGap={16} />
+              <YAxis tickLine={false} axisLine={false} width={32} allowDecimals={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <ChartLegend content={<ChartLegendContent />} />
-              {(["fra", "iad", "sin"] as const).map((key) => (
+              <ChartLegend itemSorter={null} content={<ChartLegendContent />} />
+              {(["jordan", "sofia", "sam"] as const).map((key) => (
                 <Line
                   {...chartMotion}
                   key={key}
@@ -259,8 +266,8 @@ export default function ChartDocs() {
             <div key={indicator} className="grid gap-3 rounded-(--card-radius) border border-border bg-card p-4">
               <p className="font-mono text-xs text-muted-foreground">indicator=&quot;{indicator}&quot;</p>
               {/* The tooltip is pinned in a band above the bars, so it never covers them. */}
-              <ChartContainer config={deploysConfig} className="aspect-auto h-60 w-full">
-                <BarChart data={deploys} margin={{ left: 0, right: 0, top: 84 }}>
+              <ChartContainer config={deliveryConfig} className="aspect-auto h-60 w-full">
+                <BarChart data={delivery} margin={{ left: 0, right: 0, top: 84 }}>
                   <XAxis dataKey="day" hide />
                   <ChartTooltip
                     defaultIndex={4}
@@ -268,12 +275,12 @@ export default function ChartDocs() {
                     cursor={false}
                     content={<ChartTooltipContent indicator={indicator} />}
                   />
-                  <Bar {...chartMotion} dataKey="production" stackId="d" fill="var(--color-production)" stroke="var(--card)" strokeWidth={2} />
+                  <Bar {...chartMotion} dataKey="onTime" stackId="d" fill="var(--color-onTime)" stroke="var(--card)" strokeWidth={2} />
                   <Bar
                     {...chartMotion}
-                    dataKey="preview"
+                    dataKey="late"
                     stackId="d"
-                    fill="var(--color-preview)"
+                    fill="var(--color-late)"
                     stroke="var(--card)"
                     strokeWidth={2}
                     radius={[4, 4, 0, 0]}
@@ -292,28 +299,31 @@ export default function ChartDocs() {
         <div className="grid w-full max-w-sm gap-5 rounded-(--card-radius) border border-border bg-card p-(--card-padding)">
           <div className="flex items-start justify-between gap-4">
             <div className="grid gap-1">
-              <p className="text-label text-muted-foreground">Build minutes per week</p>
-              <p className="text-h3 text-foreground tabular-nums">68 min</p>
+              <p className="text-label text-muted-foreground">Average cycle time</p>
+              <p className="text-h3 text-foreground tabular-nums">3.4 days</p>
             </div>
             <p className="text-caption font-semibold text-muted-foreground tabular-nums">12 weeks</p>
           </div>
-          <ChartContainer config={minutesConfig} className="aspect-auto h-20 w-full">
-            <AreaChart data={buildMinutes} margin={{ left: 2, right: 2, top: 6, bottom: 2 }}>
+          <ChartContainer config={cycleConfig} className="aspect-auto h-20 w-full">
+            <AreaChart data={cycleTime} margin={{ left: 2, right: 2, top: 6, bottom: 2 }}>
+              {/* A domain fitted to the values, so the drop from 4.6 to 3.4 days fills the height. */}
+              <YAxis hide domain={["dataMin - 0.3", "dataMax + 0.1"]} />
               <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel indicator="line" />} />
               <Area
                 {...chartMotion}
-                dataKey="minutes"
+                dataKey="days"
                 type="monotone"
-                stroke="var(--color-minutes)"
+                baseValue="dataMin"
+                stroke="var(--color-days)"
                 strokeWidth={2}
-                fill="var(--color-minutes)"
+                fill="var(--color-days)"
                 fillOpacity={0.12}
                 activeDot={{ r: 3.5, strokeWidth: 2, stroke: "var(--card)" }}
               />
             </AreaChart>
           </ChartContainer>
           <p className="text-caption text-copy">
-            Up from 42 minutes in July. Caching build output saved about 9 minutes a week.
+            Down from 4.6 days in July, after teams started splitting large tasks into subtasks.
           </p>
         </div>
       </Example>
@@ -324,6 +334,7 @@ export default function ChartDocs() {
           "Use flat area fills at 10 to 15% opacity and 2px lines.",
           "Keep grids horizontal and quiet; hide axis lines and tick marks.",
           "Add a legend whenever there are two or more series, and keep a table of the numbers nearby for exact reading.",
+          "Pass itemSorter={null} to ChartLegend so the legend lists series in config order; Recharts sorts it alphabetically by default.",
         ]}
         dont={[
           "Don’t use gradient defs, glows or drop shadows on marks.",

@@ -1,11 +1,10 @@
 "use client"
 
-import { ArrowRightIcon, GitBranchIcon, GlobeIcon, MoreHorizontalIcon } from "lucide-react"
+import { ArrowRightIcon, ListChecksIcon, MoreHorizontalIcon, PlugIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Spinner } from "@/components/ui/spinner"
 import {
   Card,
   CardAction,
@@ -18,22 +17,24 @@ import {
 import { cn } from "@/lib/utils"
 
 const projects = [
-  { name: "lumen-web", domain: "lumen.app", branch: "main", status: "Ready", updated: "2m ago" },
-  { name: "lumen-api", domain: "api.lumen.app", branch: "main", status: "Building", updated: "9m ago" },
-  { name: "docs", domain: "docs.lumen.app", branch: "content/regions", status: "Failed", updated: "1h ago" },
+  { name: "Website relaunch", lead: "Priya Raman", due: "Due Nov 14", tasks: "38 of 52 tasks done", status: "On track", updated: "12m ago" },
+  { name: "Mobile app 2.0", lead: "Jordan Lee", due: "Due Nov 20", tasks: "61 of 118 tasks done", status: "At risk", updated: "34m ago" },
+  { name: "Customer portal", lead: "Sam Okafor", due: "Due Oct 23", tasks: "22 of 64 tasks done", status: "Off track", updated: "2h ago" },
 ] as const
 
-/* The same status reads the same everywhere: in progress is info, with a spinner. */
-const statusVariant = { Ready: "success", Building: "info", Failed: "destructive" } as const
+/* The same status reads the same everywhere in Acme. Completed and Paused are neutral. */
+const statusVariant = {
+  "On track": "success",
+  "At risk": "warning",
+  "Off track": "destructive",
+  Completed: "secondary",
+  Paused: "secondary",
+} as const
 
 function StatusBadge({ status }: { status: keyof typeof statusVariant }) {
   return (
     <Badge variant={statusVariant[status]}>
-      {status === "Building" ? (
-        <Spinner className="size-3" />
-      ) : (
-        <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
-      )}
+      <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
       {status}
     </Badge>
   )
@@ -42,24 +43,24 @@ function StatusBadge({ status }: { status: keyof typeof statusVariant }) {
 const variantCards = [
   {
     variant: "default",
-    title: "Requests",
-    description: "All projects, last 24 hours.",
-    value: "2.4M",
-    meta: "Up 12% on yesterday",
+    title: "Tasks completed",
+    description: "All projects, this month.",
+    value: "1,284",
+    meta: "Up 12% on last month",
   },
   {
     variant: "subtle",
-    title: "P95 latency",
-    description: "lumen-web, last 24 hours.",
-    value: "84 ms",
-    meta: "Inside the 200 ms target",
+    title: "Average cycle time",
+    description: "All projects, this month.",
+    value: "3.4 days",
+    meta: "0.6 days faster than last month",
   },
   {
     variant: "panel",
-    title: "Uptime",
-    description: "Every region, this quarter.",
-    value: "99.99%",
-    meta: "4 minutes of downtime",
+    title: "On-time delivery",
+    description: "All projects, this month.",
+    value: "92%",
+    meta: "Up 4 points on last month",
   },
 ] as const
 
@@ -73,29 +74,30 @@ export default function CardDocs() {
         surface="subtle"
         code={`<Card>
   <CardHeader>
-    <CardTitle>Build cache</CardTitle>
-    <CardDescription>Reused between deployments of the same branch.</CardDescription>
+    <CardTitle>Weekly summary</CardTitle>
+    <CardDescription>Website relaunch, Sep 28 to Oct 4.</CardDescription>
   </CardHeader>
   <CardContent>…</CardContent>
   <CardFooter>
-    <Button size="sm" variant="outline">Clear cache</Button>
+    <Button size="sm" variant="outline">Share summary</Button>
   </CardFooter>
 </Card>`}
       >
         <Card className="max-w-112">
           <CardHeader>
-            <CardTitle>Build cache</CardTitle>
-            <CardDescription>Reused between deployments of the same branch.</CardDescription>
+            <CardTitle>Weekly summary</CardTitle>
+            <CardDescription>Website relaunch, Sep 28 to Oct 4.</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm">
-              412 MB cached for lumen-web. The last build restored 1,284 packages and finished in 17.6 seconds.
+              The team completed 18 tasks and opened 6. Two tasks are overdue, both waiting on the homepage design
+              review.
             </p>
           </CardContent>
-          <CardFooter className="justify-between">
+          <CardFooter className="flex-wrap justify-between gap-y-3">
             <p className="text-caption text-muted-foreground">Updated 2 minutes ago</p>
             <Button size="sm" variant="outline">
-              Clear cache
+              Share summary
             </Button>
           </CardFooter>
         </Card>
@@ -108,10 +110,10 @@ export default function CardDocs() {
         surface="subtle"
         code={`<Card>
   <CardHeader className="border-b">
-    <CardTitle>Domains</CardTitle>
-    <CardDescription>3 domains point at production.</CardDescription>
+    <CardTitle>Integrations</CardTitle>
+    <CardDescription>3 apps connected.</CardDescription>
     <CardAction>
-      <Button size="sm">Add domain</Button>
+      <Button size="sm">Add app</Button>
     </CardAction>
   </CardHeader>
   <CardContent>…</CardContent>
@@ -119,23 +121,23 @@ export default function CardDocs() {
       >
         <Card className="max-w-prose">
           <CardHeader className="border-b">
-            <CardTitle>Domains</CardTitle>
-            <CardDescription>3 domains point at production.</CardDescription>
+            <CardTitle>Integrations</CardTitle>
+            <CardDescription>3 apps connected.</CardDescription>
             <CardAction>
-              <Button size="sm">Add domain</Button>
+              <Button size="sm">Add app</Button>
             </CardAction>
           </CardHeader>
           <CardContent>
             <ul className="@container -my-3 divide-y">
               {[
-                ["lumen.app", "Valid configuration"],
-                ["www.lumen.app", "Redirects to lumen.app"],
-                ["status.lumen.app", "Waiting for DNS"],
-              ].map(([domain, note]) => (
-                <li key={domain} className="grid gap-0.5 py-3 @sm:flex @sm:items-center @sm:justify-between @sm:gap-4">
+                ["Slack", "Posts updates to #website-relaunch"],
+                ["Google Drive", "Syncing 2 folders"],
+                ["Figma", "Syncing 4 files"],
+              ].map(([app, note]) => (
+                <li key={app} className="grid gap-0.5 py-3 @sm:flex @sm:items-center @sm:justify-between @sm:gap-4">
                   <span className="flex min-w-0 items-center gap-3">
-                    <GlobeIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-                    <span className="truncate text-label text-foreground">{domain}</span>
+                    <PlugIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                    <span className="truncate text-label text-foreground">{app}</span>
                   </span>
                   <span className="pl-7 text-caption text-muted-foreground @sm:shrink-0 @sm:pl-0">{note}</span>
                 </li>
@@ -193,7 +195,7 @@ export default function CardDocs() {
             <Card key={p.name} size="sm">
               <CardHeader>
                 <CardTitle>{p.name}</CardTitle>
-                <CardDescription>{p.domain}</CardDescription>
+                <CardDescription>{p.due}</CardDescription>
                 <CardAction>
                   <StatusBadge status={p.status} />
                 </CardAction>
@@ -217,13 +219,13 @@ export default function CardDocs() {
               <CardHeader>
                 <CardTitle>
                   <a
-                    href={`#${p.name}`}
+                    href={`#${p.name.toLowerCase().replaceAll(" ", "-")}`}
                     className="outline-none after:absolute after:inset-0 after:rounded-(--card-radius)"
                   >
                     {p.name}
                   </a>
                 </CardTitle>
-                <CardDescription>{p.domain}</CardDescription>
+                <CardDescription>Led by {p.lead}</CardDescription>
                 <CardAction>
                   <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${p.name}`} className="relative z-1">
                     <MoreHorizontalIcon />
@@ -231,8 +233,8 @@ export default function CardDocs() {
                 </CardAction>
               </CardHeader>
               <CardContent className="flex items-center gap-2 text-caption text-muted-foreground">
-                <GitBranchIcon aria-hidden="true" className="size-3.5 shrink-0" />
-                <span className="truncate">{p.branch}</span>
+                <ListChecksIcon aria-hidden="true" className="size-3.5 shrink-0" />
+                <span className="truncate">{p.tasks}</span>
               </CardContent>
               <CardFooter className="justify-between py-3">
                 <StatusBadge status={p.status} />
@@ -250,13 +252,15 @@ export default function CardDocs() {
       >
         <Card variant="panel" className="max-w-prose">
           <CardHeader>
-            <CardTitle>You have used 80% of your build minutes</CardTitle>
-            <CardDescription>2,400 of 3,000 minutes this cycle. Builds queue when you reach the limit.</CardDescription>
+            <CardTitle>You have used 72% of your automation runs</CardTitle>
+            <CardDescription>
+              7,240 of 10,000 runs this cycle. Automations pause when you reach the limit.
+            </CardDescription>
           </CardHeader>
-          <CardFooter className="justify-between">
-            <p className="text-caption text-panel-muted">Resets on 1 November</p>
+          <CardFooter className="flex-wrap justify-between gap-y-3">
+            <p className="text-caption text-panel-muted">Resets on Nov 1</p>
             <Button size="sm" variant="inverse">
-              Upgrade to Pro
+              Upgrade to Business
               <ArrowRightIcon data-icon="inline-end" />
             </Button>
           </CardFooter>

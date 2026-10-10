@@ -54,7 +54,7 @@ export interface DangerZoneProps {
    */
   title?: React.ReactNode
   description?: React.ReactNode
-  /** Actions, most disruptive last. Defaults to pause, purge previews and delete. */
+  /** Actions, most disruptive last. Defaults to archive, remove guests and delete. */
   actions?: DangerAction[]
   /** Called after an action is confirmed. Without it, the zone simulates a short request. */
   onConfirm?: (actionId: string) => void | Promise<void>
@@ -66,36 +66,36 @@ export interface DangerZoneProps {
 export function defaultDangerActions(projectName: string): DangerAction[] {
   return [
     {
-      id: "pause",
-      title: "Pause deployments",
-      description: `Stop building new commits for ${projectName}. The current production deployment keeps serving traffic.`,
-      actionLabel: "Pause",
-      confirmTitle: `Pause deployments for ${projectName}?`,
+      id: "archive",
+      title: "Archive project",
+      description: `Hide ${projectName} from the sidebar and stop its automations. Tasks, docs and comments are kept, and you can restore it at any time.`,
+      actionLabel: "Archive",
+      confirmTitle: `Archive ${projectName}?`,
       confirmDescription:
-        "New pushes and pull requests won’t build until you resume. Production stays online at its current version.",
-      confirmLabel: "Pause deployments",
+        "Its automations stop running and it leaves everyone’s sidebar. Anyone with access can still find it in the archive and restore it.",
+      confirmLabel: "Archive project",
       tone: "default",
-      successMessage: `Deployments paused for ${projectName}.`,
+      successMessage: `${projectName} was archived.`,
     },
     {
-      id: "purge-previews",
-      title: "Delete preview deployments",
-      description: "Remove every preview deployment and its URL. Production and branch history are not affected.",
-      actionLabel: "Delete previews",
-      confirmTitle: "Delete all preview deployments?",
+      id: "remove-guests",
+      title: "Remove all guests",
+      description: `Take away access from every guest on ${projectName}. Members keep their access.`,
+      actionLabel: "Remove guests",
+      confirmTitle: `Remove every guest from ${projectName}?`,
       confirmDescription:
-        "Preview links shared in pull requests will stop working. New pushes create fresh previews as usual.",
+        "They lose access right away and stop getting notifications. Their comments stay. You can invite them again later.",
       tone: "destructive",
-      successMessage: "Preview deployments deleted.",
+      successMessage: `Guests removed from ${projectName}.`,
     },
     {
       id: "delete",
       title: "Delete project",
-      description: `Permanently delete ${projectName} with its deployments, domains, environment variables and logs.`,
+      description: `Permanently delete ${projectName} with its tasks, docs, files and automations.`,
       actionLabel: "Delete project",
       confirmTitle: `Delete ${projectName}?`,
       confirmDescription:
-        "This removes the project and everything in it, and releases its domains. You can’t undo this.",
+        "This removes the project and everything in it for every member and guest. You can’t undo this.",
       requireTyping: true,
       tone: "destructive",
       successMessage: `${projectName} was deleted.`,
@@ -104,9 +104,9 @@ export function defaultDangerActions(projectName: string): DangerAction[] {
 }
 
 export function DangerZone({
-  projectName = "web",
+  projectName = "Website relaunch",
   title = "Danger zone",
-  description = "These actions affect production. Some of them can’t be undone.",
+  description = "These actions affect everyone on the project. Some of them can’t be undone.",
   actions,
   onConfirm,
   as: Heading = "h2",
@@ -222,7 +222,7 @@ function DangerConfirm({
           {action.requireTyping ? (
             <Field>
               <FieldLabel htmlFor={`${id}-confirm`} className="block leading-normal">
-                Type <span className="font-mono font-semibold text-foreground">{projectName}</span> to confirm.
+                Type <span className="font-semibold text-foreground">{projectName}</span> to confirm.
               </FieldLabel>
               <Input
                 id={`${id}-confirm`}
@@ -232,7 +232,6 @@ function DangerConfirm({
                 placeholder={projectName}
                 value={typed}
                 onChange={(e) => setTyped(e.target.value)}
-                className="font-mono"
               />
             </Field>
           ) : null}

@@ -1,9 +1,9 @@
 import { AppMockup } from "@/components/blocks/app-mockup"
 
 const facts = [
-  { value: "31s", label: "Median push to live" },
-  { value: "38", label: "Edge regions worldwide" },
-  { value: "99.99%", label: "API uptime, last 12 months" },
+  { value: "12,000+", label: "Teams plan their work in Acme" },
+  { value: "4.8M", label: "Tasks completed every month" },
+  { value: "99.9%", label: "Uptime SLA on Business and Enterprise" },
 ]
 
 /**

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">
+  <!-- The Acme mark (BrandMark in components/blocks/wordmark.tsx), in the token colours. -->
+  <style>
+    .tile { fill: oklch(0.135 0.008 286); }
+    .stroke { stroke: oklch(1 0 0); }
+    .dot { fill: oklch(0.54 0.215 283); }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: oklch(1 0 0); }
+      .stroke { stroke: oklch(0.135 0.008 286); }
+      .dot { fill: oklch(0.54 0.215 283); }
+    }
+  </style>
+  <rect class="tile" width="28" height="28" rx="8" />
+  <path class="stroke" d="M7.75 20.75 14 7.25l6.25 13.5" fill="none" stroke-width="3.25" stroke-linecap="round" stroke-linejoin="round" />
+  <circle class="dot" cx="14" cy="17.75" r="2.1" />
+</svg>

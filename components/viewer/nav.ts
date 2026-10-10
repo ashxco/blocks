@@ -56,7 +56,7 @@ export const sectionDescription: Record<SectionId, string> = {
   foundations: "Colour, type, space, shape and motion: the tokens everything else is made of.",
   components: "Accessible primitives on Base UI, restyled from the ground up with Blocks tokens.",
   molecules: "Sections and app patterns composed only from components and tokens.",
-  templates: "Full pages for Lumen, a deployment platform, built from molecules.",
+  templates: "Full pages for Acme Inc., a sample work-management SaaS, built from molecules.",
 }
 
 /** One sentence per group, shown on the index pages. */
@@ -73,7 +73,13 @@ export const groupDescriptions: Record<string, string> = {
   "Commerce & content": "Pricing, changelogs, posts, people and contact.",
   App: "Product UI patterns for dashboards and tools.",
   Account: "Sign-in, onboarding, settings and billing.",
-  Marketing: "Public pages: landing, pricing, changelog, blog and more.",
+}
+
+/** One sentence per template group, shown on the Templates index. */
+export const templateGroupDescriptions: Record<TemplateEntry["kind"], string> = {
+  marketing: "Public pages for acme.com: landing, features, pricing, changelog, blog, about and contact.",
+  auth: "Sign in, sign up, password reset and setting up a new workspace.",
+  app: "The signed-in Acme workspace: dashboard, projects, settings, billing and team.",
 }
 
 export const templateKinds: { kind: TemplateEntry["kind"]; title: string }[] = [
@@ -165,10 +171,6 @@ export function sectionForPath(pathname: string): SectionId | undefined {
   return (Object.keys(sectionHref) as SectionId[]).find(
     (id) => pathname === sectionHref[id] || pathname.startsWith(`${sectionHref[id]}/`)
   )
-}
-
-export function isActivePath(pathname: string, href: string) {
-  return pathname === href
 }
 
 export interface PagerLink {

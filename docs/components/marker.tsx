@@ -1,4 +1,4 @@
-import { BookOpenIcon, CheckIcon, FileSearchIcon, GlobeIcon, SunIcon, UserPlusIcon } from "lucide-react"
+import { BookOpenIcon, CalendarIcon, ChartColumnIcon, CheckIcon, SparklesIcon, UserPlusIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
@@ -15,7 +15,7 @@ export default function MarkerDocs() {
         description="A single quiet line for what is happening: work in progress, a result, a source that was used. Keep it to three in a row."
         code={`<Marker>
   <MarkerIcon><Spinner /></MarkerIcon>
-  <MarkerContent>Reading the build log for dpl_7d1q</MarkerContent>
+  <MarkerContent>Reading the tasks in Website relaunch</MarkerContent>
 </Marker>`}
       >
         <div className="mx-auto grid w-full max-w-xl gap-3">
@@ -23,14 +23,14 @@ export default function MarkerDocs() {
             <MarkerIcon>
               <Spinner className="size-3.5" />
             </MarkerIcon>
-            <MarkerContent>Reading the build log for dpl_7d1q</MarkerContent>
+            <MarkerContent>Reading the tasks in Website relaunch</MarkerContent>
           </Marker>
           <Marker>
             <MarkerIcon>
               <span className="size-1.5 rounded-full bg-success" />
             </MarkerIcon>
             <MarkerContent>
-              Deployment <strong>dpl_8f2k</strong> is ready
+              Created <strong>18 tasks</strong> in Website relaunch
             </MarkerContent>
           </Marker>
           <Marker>
@@ -38,7 +38,7 @@ export default function MarkerDocs() {
               <BookOpenIcon />
             </MarkerIcon>
             <MarkerContent>
-              Based on <a href="#preview-deployments">Preview deployments</a> in the docs
+              Based on <a href="#homepage-brief">Homepage brief</a> in Docs
             </MarkerContent>
           </Marker>
         </div>
@@ -61,7 +61,7 @@ export default function MarkerDocs() {
               <UserPlusIcon />
             </MarkerIcon>
             <MarkerContent>
-              <strong>Mateo Ortiz</strong> joined the conversation
+              <strong>Sofia Alvarez</strong> joined the conversation
             </MarkerContent>
           </Marker>
         </div>
@@ -80,7 +80,7 @@ export default function MarkerDocs() {
             <MarkerIcon>
               <CheckIcon />
             </MarkerIcon>
-            <MarkerContent>Conversation resolved by Priya Raman on October 6</MarkerContent>
+            <MarkerContent>Conversation resolved by Priya Raman on Oct 6</MarkerContent>
           </Marker>
         </div>
       </Example>
@@ -98,36 +98,36 @@ export default function MarkerDocs() {
             <Message align="end">
               <MessageContent>
                 <Bubble>
-                  <BubbleContent>Why does www.lumen.app show a certificate warning?</BubbleContent>
+                  <BubbleContent>Why is Mobile app 2.0 at risk?</BubbleContent>
                 </Bubble>
               </MessageContent>
             </Message>
             <div className="grid gap-2 pl-10">
               <Marker>
                 <MarkerIcon>
-                  <GlobeIcon />
+                  <CalendarIcon />
                 </MarkerIcon>
-                <MarkerContent>Checked DNS records for www.lumen.app</MarkerContent>
+                <MarkerContent>Checked due dates for 118 tasks in Mobile app 2.0</MarkerContent>
               </Marker>
               <Marker>
                 <MarkerIcon>
-                  <FileSearchIcon />
+                  <ChartColumnIcon />
                 </MarkerIcon>
-                <MarkerContent>Read certificate events from the last 24 hours</MarkerContent>
+                <MarkerContent>Read the workload report for the last 4 weeks</MarkerContent>
               </Marker>
             </div>
             <Message>
               <MessageAvatar className="bg-primary text-primary-foreground" aria-hidden="true">
-                <SunIcon />
+                <SparklesIcon />
               </MessageAvatar>
               <MessageContent>
                 <MessageHeader>
-                  <strong>Lumen</strong>
+                  <strong>Acme</strong>
                 </MessageHeader>
                 <Bubble variant="ghost">
                   <BubbleContent>
-                    The CNAME for www still points to your old host, so Lumen can’t issue a certificate for it. Change
-                    the record to cname.lumen.app. The certificate is issued within a few minutes of the change.
+                    Six tasks are overdue, and five of them wait on Jordan Lee, who has 17 open tasks this week. Move
+                    two of the sign-in fixes to another engineer and the project is back on track for Nov 20.
                   </BubbleContent>
                 </Bubble>
               </MessageContent>
@@ -138,7 +138,7 @@ export default function MarkerDocs() {
 
       <Guidelines
         do={[
-          "Write markers as plain status in the present or past tense: “Checked DNS for lumen.app”.",
+          "Write markers as plain status in the present or past tense: “Checked due dates for 72 tasks”.",
           "Use a spinner while work is in progress and swap it for a check when it finishes.",
           "Use the separator variant for dates and for people joining or leaving.",
         ]}

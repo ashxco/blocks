@@ -1,5 +1,5 @@
 import * as React from "react"
-import { CircleCheckIcon, ClockIcon, GitBranchIcon, PlusIcon, RefreshCwIcon, RocketIcon } from "lucide-react"
+import { CircleCheckIcon, ClockIcon, FolderKanbanIcon, InboxIcon, ListChecksIcon, PlusIcon, ZapIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -16,7 +16,7 @@ const sizes: { step: number; className: string; use: string; sample: React.React
     sample: (
       <span className="inline-flex items-center gap-1.5 text-caption text-muted-foreground">
         <ClockIcon className="size-3.5" />
-        Deployed 4m ago
+        Updated 4m ago
       </span>
     ),
   },
@@ -26,8 +26,8 @@ const sizes: { step: number; className: string; use: string; sample: React.React
     use: "The default: buttons, menus, inputs and navigation, with text-label.",
     sample: (
       <span className="inline-flex items-center gap-2 text-label text-foreground">
-        <GitBranchIcon className="size-4" />
-        Branches
+        <ListChecksIcon className="size-4" />
+        My tasks
       </span>
     ),
   },
@@ -37,8 +37,8 @@ const sizes: { step: number; className: string; use: string; sample: React.React
     use: "Large buttons, toolbar actions and app navigation.",
     sample: (
       <span className="inline-flex items-center gap-2.5 text-title text-foreground">
-        <RefreshCwIcon className="size-5" />
-        Redeploy
+        <ZapIcon className="size-5" />
+        Automations
       </span>
     ),
   },
@@ -48,8 +48,8 @@ const sizes: { step: number; className: string; use: string; sample: React.React
     use: "Feature tiles, empty states and headings, with text-h4.",
     sample: (
       <span className="inline-flex items-center gap-3 text-h4 text-foreground">
-        <RocketIcon className="size-6" />
-        Deploys
+        <FolderKanbanIcon className="size-6" />
+        Projects
       </span>
     ),
   },
@@ -97,8 +97,8 @@ function Strokes() {
           }
         >
           <div className="flex items-center gap-4">
-            <RocketIcon className="size-8" strokeWidth={s.width} />
-            <GitBranchIcon className="size-8" strokeWidth={s.width} />
+            <FolderKanbanIcon className="size-8" strokeWidth={s.width} />
+            <ListChecksIcon className="size-8" strokeWidth={s.width} />
             <ClockIcon className="size-8" strokeWidth={s.width} />
           </div>
           <div className="grid gap-1">
@@ -141,8 +141,8 @@ const pairings: { name: string; spec: string; sample: React.ReactNode }[] = [
     spec: "size-4 · text-label · gap-2",
     sample: (
       <span className="inline-flex items-center gap-2 text-label text-foreground">
-        <GitBranchIcon className="size-4" />
-        Branches
+        <InboxIcon className="size-4" />
+        Inbox
       </span>
     ),
   },
@@ -152,7 +152,7 @@ const pairings: { name: string; spec: string; sample: React.ReactNode }[] = [
     sample: (
       <span className="inline-flex items-center gap-1.5 text-caption text-muted-foreground">
         <ClockIcon className="size-3.5" />
-        Deployed 4 minutes ago
+        Updated 4 minutes ago
       </span>
     ),
   },
@@ -162,7 +162,7 @@ const pairings: { name: string; spec: string; sample: React.ReactNode }[] = [
     sample: (
       <span className="inline-flex items-center gap-1.5 text-label text-success">
         <CircleCheckIcon className="size-4" />
-        Ready
+        On track
       </span>
     ),
   },
@@ -171,8 +171,8 @@ const pairings: { name: string; spec: string; sample: React.ReactNode }[] = [
     spec: "size-6 · text-h4 · gap-3",
     sample: (
       <span className="inline-flex items-center gap-3 text-h4 text-foreground">
-        <RocketIcon className="size-6" />
-        Deployments
+        <FolderKanbanIcon className="size-6" />
+        Projects
       </span>
     ),
   },

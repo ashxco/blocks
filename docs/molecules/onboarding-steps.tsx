@@ -8,7 +8,7 @@ export default function OnboardingStepsDocs() {
     <Examples>
       <Example
         title="Setup flow"
-        description="Name the workspace, invite the team, connect a repository. The URL fills in from the name, and the bar fills as steps are done. Finishing shows the first deployment building (see Finished below)."
+        description="Name the workspace, invite the team, pick a template. The URL fills in from the name, and the bar fills as steps are done. Finishing shows the first project filling in (see Finished below)."
         layout="full"
         minHeight="min-h-200"
         code={`<OnboardingSteps dashboardHref="/live/app" />`}
@@ -26,28 +26,28 @@ export default function OnboardingStepsDocs() {
         minHeight="min-h-200"
         code={`<OnboardingSteps
   defaultStep={2}
-  defaultValues={{ workspaceName: "Acme Inc.", workspaceSlug: "acme", repositoryId: "acme/web" }}
+  defaultValues={{ workspaceName: "Acme Inc.", workspaceSlug: "acme", templateId: "sprint-planning" }}
 />`}
       >
         <div className="p-(--card-padding) @prose:p-10">
           <OnboardingSteps
             defaultStep={2}
-            defaultValues={{ workspaceName: "Acme Inc.", workspaceSlug: "acme", repositoryId: "acme/web" }}
+            defaultValues={{ workspaceName: "Acme Inc.", workspaceSlug: "acme", templateId: "sprint-planning" }}
           />
         </div>
       </Example>
 
       <Example
         title="Finished"
-        description="The end of the flow: the workspace summary on a dark panel and the first deployment streaming in beside it. Open on it with defaultDone, for example when someone comes back after setting up."
+        description="The end of the flow: the workspace summary on a dark panel and the first project beside it, its starter tasks landing in their sections. Open on it with defaultDone, for example when someone comes back after setting up."
         layout="full"
         code={`<OnboardingSteps
   defaultDone
   defaultValues={{
     workspaceName: "Acme Inc.",
     workspaceSlug: "acme",
-    invites: [{ id: "sam", email: "sam@acme.dev", role: "developer" }],
-    repositoryId: "acme/web",
+    invites: [{ id: "jordan", email: "jordan@acme.com", role: "member" }],
+    templateId: "product-roadmap",
   }}
 />`}
       >
@@ -58,10 +58,10 @@ export default function OnboardingStepsDocs() {
               workspaceName: "Acme Inc.",
               workspaceSlug: "acme",
               invites: [
-                { id: "sam", email: "sam@acme.dev", role: "developer" },
-                { id: "ana", email: "ana@acme.dev", role: "viewer" },
+                { id: "jordan", email: "jordan@acme.com", role: "member" },
+                { id: "elena", email: "elena@northwind.com", role: "guest" },
               ],
-              repositoryId: "acme/web",
+              templateId: "product-roadmap",
             }}
           />
         </div>
@@ -84,10 +84,10 @@ export default function OnboardingStepsDocs() {
 
       <Guidelines
         do={[
-          "Keep it to three steps that unlock the product: a place, people and code.",
+          "Keep it to three steps that unlock the product: a place, people and a first project.",
           "Make inviting optional with “Skip for now”. People often set up alone first.",
           "Validate on Continue and move focus to the first field that needs attention.",
-          "End on something real, like the first deployment, not a generic success message.",
+          "End on something real, like the first project with its tasks, not a generic success message.",
         ]}
         dont={[
           "Don’t show “Step 1 of 3” counters or numbered badges. The bar and the step titles are enough.",
@@ -98,12 +98,11 @@ export default function OnboardingStepsDocs() {
 
       <ApiTable
         rows={[
-          { prop: "defaultStep", type: "0 | 1 | 2", default: "0", description: "Step to open on: workspace, team or repository." },
+          { prop: "defaultStep", type: "0 | 1 | 2", default: "0", description: "Step to open on: workspace, team or template." },
           { prop: "defaultDone", type: "boolean", default: "false", description: "Open on the finished state with defaultValues as the answers. Focus stays where it is." },
-          { prop: "defaultValues", type: "Partial<OnboardingValues>", description: "Prefilled answers: workspaceName, workspaceSlug, invites, provider, repositoryId." },
-          { prop: "domain", type: "string", default: '"lumen.app"', description: "Host shown before the workspace URL." },
-          { prop: "repositories", type: "OnboardingRepository[]", default: "Five Acme repos", description: "Repositories offered in the last step: id, name, framework, updated, private." },
-          { prop: "account", type: "string", default: '"maya-chen"', description: "Git account shown as connected." },
+          { prop: "defaultValues", type: "Partial<OnboardingValues>", description: "Prefilled answers: workspaceName, workspaceSlug, invites and templateId." },
+          { prop: "domain", type: "string", default: '"app.acme.com"', description: "Host shown before the workspace URL." },
+          { prop: "templates", type: "OnboardingTemplate[]", default: "The four Acme templates", description: "Templates offered in the last step: id, name, description, view (list, board, timeline or calendar), tasks (the starter task count) and sections, each with its own count and a few named starter tasks. Defaults to Product roadmap, Marketing calendar, Client projects and Sprint planning." },
           { prop: "dashboardHref", type: "string", default: '"/live/app"', description: "Where “Open dashboard” leads after finishing." },
           { prop: "onComplete", type: "(values) => void | Promise<void>", description: "Called with the answers on Finish. Without it, the flow simulates a request." },
           { prop: "className", type: "string", description: "Classes for the root container." },

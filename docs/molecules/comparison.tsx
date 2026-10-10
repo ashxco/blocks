@@ -2,6 +2,7 @@
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Comparison } from "@/components/blocks/comparison"
+import { Wordmark } from "@/components/blocks/wordmark"
 
 export default function ComparisonDocs() {
   return (
@@ -16,41 +17,41 @@ export default function ComparisonDocs() {
       </Example>
 
       <Example
-        title="Against doing it yourself"
+        title="Against a spreadsheet"
         layout="full"
         description="Compare with the alternative people actually consider. Keep the same number of rows on both sides so they line up."
         code={`<Comparison
-  title="Less YAML, same control."
-  description="Everything a Kubernetes cluster gives you for a web app, without running the cluster."
+  title="Outgrown the spreadsheet?"
+  description="Everything a shared spreadsheet gives your team, without the version history archaeology."
   them={{
-    name: "Running your own cluster",
-    items: ["Write and maintain manifests", "Patch nodes and the control plane", "Wire up ingress, TLS and DNS", "Pay for idle capacity"],
+    name: "A shared spreadsheet",
+    items: ["One tab per project, copied by hand", "Status updated when someone remembers", "Reminders sent in chat", "No idea who changed what"],
   }}
   us={{
-    name: "Lumen",
-    items: ["Detects your stack from the repo", "Managed, patched runtime", "Domains and TLS in one click", "Scale to zero on previews"],
+    name: <Wordmark href={null} tone="panel" />,
+    items: ["Every project in one workspace", "Status comes from the work itself", "Automations send the reminders", "An audit log of every change"],
   }}
 />`}
       >
         <Comparison
-          title="Less YAML, same control."
-          description="Everything a Kubernetes cluster gives you for a web app, without running the cluster."
+          title="Outgrown the spreadsheet?"
+          description="Everything a shared spreadsheet gives your team, without the version history archaeology."
           them={{
-            name: "Running your own cluster",
+            name: "A shared spreadsheet",
             items: [
-              "Write and maintain manifests",
-              "Patch nodes and the control plane",
-              "Wire up ingress, TLS and DNS",
-              "Pay for idle capacity",
+              "One tab per project, copied by hand",
+              "Status updated when someone remembers",
+              "Reminders sent in chat",
+              "No idea who changed what",
             ],
           }}
           us={{
-            name: "Lumen",
+            name: <Wordmark href={null} tone="panel" />,
             items: [
-              "Detects your stack from the repo",
-              "Managed, patched runtime",
-              "Domains and TLS in one click",
-              "Scale to zero on previews",
+              "Every project in one workspace",
+              "Status comes from the work itself",
+              "Automations send the reminders",
+              "An audit log of every change",
             ],
           }}
         />
@@ -60,7 +61,7 @@ export default function ComparisonDocs() {
         do={[
           "Write both columns as plain facts a customer can verify.",
           "Match rows one to one, in the same order.",
-          "Name the alternative generically (“Typical hosted platform”), not a competitor.",
+          "Name the alternative generically (“Spreadsheets, chat and email”), not a competitor.",
         ]}
         dont={[
           "Don’t mix checks and crosses on the same side.",
@@ -71,10 +72,10 @@ export default function ComparisonDocs() {
 
       <ApiTable
         rows={[
-          { prop: "title", type: "ReactNode | null", default: '"Why teams switch to Lumen."', description: "Centred section heading. Pass null to render the cards alone." },
+          { prop: "title", type: "ReactNode | null", default: '"Why teams switch to Acme."', description: "Centred section heading. Pass null to render the cards alone." },
           { prop: "description", type: "ReactNode", description: "Supporting text under the heading." },
-          { prop: "us", type: "{ name: ReactNode; items: string[] }", default: "Lumen, five rows", description: "Your side: a dark emphasis panel with green checks. For a wordmark name, use its panel tone." },
-          { prop: "them", type: "{ name: ReactNode; items: string[] }", default: '"Typical hosted platform", five rows', description: "The alternative: canvas-coloured card and muted crosses." },
+          { prop: "us", type: "{ name: ReactNode; items: string[] }", default: "The Acme wordmark, five rows", description: "Your side: a dark emphasis panel with green checks. For a wordmark name, use its panel tone." },
+          { prop: "them", type: "{ name: ReactNode; items: string[] }", default: '"Spreadsheets, chat and email", five rows', description: "The alternative: canvas-coloured card and muted crosses." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section spacing." },
           { prop: "className", type: "string", description: "Classes for the section." },
         ]}

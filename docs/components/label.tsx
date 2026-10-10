@@ -22,12 +22,12 @@ export default function LabelDocs() {
         description={`The label type role (${labelRole}) in full ink. Point htmlFor at the control’s id so clicking the label focuses it.`}
         code={`<div className="grid gap-2">
   <Label htmlFor="team">Team name</Label>
-  <Input id="team" placeholder="Acme" />
+  <Input id="team" placeholder="Product design" />
 </div>`}
       >
         <div className="grid w-full max-w-sm gap-2">
           <Label htmlFor="label-team">Team name</Label>
-          <Input id="label-team" placeholder="Acme" />
+          <Input id="label-team" placeholder="Product design" />
         </div>
       </Example>
 
@@ -37,26 +37,26 @@ export default function LabelDocs() {
         description="Put the label after a checkbox and before a switch. Use htmlFor, or wrap the control so the whole row is clickable."
         code={`<Label className="font-medium">
   <Checkbox defaultChecked />
-  Email me when a production build fails
+  Email me when a task is assigned to me
 </Label>
 
 <div className="flex items-center justify-between gap-4">
-  <Label htmlFor="auto-deploy" className="font-medium">
-    Deploy on push
+  <Label htmlFor="weekly-summary" className="font-medium">
+    Send me a weekly summary
   </Label>
-  <Switch id="auto-deploy" defaultChecked />
+  <Switch id="weekly-summary" defaultChecked />
 </div>`}
       >
         <div className="grid w-full max-w-sm gap-5">
           <Label className="font-medium">
             <Checkbox defaultChecked />
-            Email me when a production build fails
+            Email me when a task is assigned to me
           </Label>
           <div className="flex items-center justify-between gap-4">
-            <Label htmlFor="label-auto-deploy" className="font-medium">
-              Deploy on push
+            <Label htmlFor="label-weekly-summary" className="font-medium">
+              Send me a weekly summary
             </Label>
-            <Switch id="label-auto-deploy" defaultChecked />
+            <Switch id="label-weekly-summary" defaultChecked />
           </div>
         </div>
       </Example>
@@ -73,11 +73,11 @@ export default function LabelDocs() {
 </div>
 
 <div className="grid gap-2">
-  <Label htmlFor="token">
+  <Label htmlFor="api-key">
     <KeyRoundIcon />
-    Access token
+    API key
   </Label>
-  <Input id="token" type="password" className="font-mono" />
+  <Input id="api-key" type="password" className="font-mono" />
 </div>`}
       >
         <div className="grid w-full max-w-sm gap-6">
@@ -88,11 +88,11 @@ export default function LabelDocs() {
             <Input id="label-company" autoComplete="organization" placeholder="Acme Inc." />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="label-token">
+            <Label htmlFor="label-api-key">
               <KeyRoundIcon />
-              Access token
+              API key
             </Label>
-            <Input id="label-token" type="password" defaultValue="lmn_8Kx2f9QpT4" className="font-mono" />
+            <Input id="label-api-key" type="password" defaultValue="acme_8Kx2f9QpT4" className="font-mono" />
           </div>
         </div>
       </Example>
@@ -102,29 +102,29 @@ export default function LabelDocs() {
         layout="stack"
         description="A label dims with its control. When the control comes first and carries the peer class, as a checkbox does, that happens on its own. When the label comes first, as before a switch, set data-disabled on the surrounding Field."
         code={`<div className="flex items-center gap-3">
-  <Checkbox id="legacy" disabled />
-  <Label htmlFor="legacy" className="font-medium">
-    Use the legacy build image
+  <Checkbox id="guest-invites" disabled />
+  <Label htmlFor="guest-invites" className="font-medium">
+    Let guests invite other guests
   </Label>
 </div>
 
 <Field orientation="horizontal" data-disabled className="justify-between gap-4">
-  <Label htmlFor="protect" className="font-medium">
-    Protect preview deployments
+  <Label htmlFor="require-2fa" className="font-medium">
+    Require two-factor authentication
   </Label>
-  <Switch id="protect" disabled defaultChecked />
+  <Switch id="require-2fa" disabled defaultChecked />
 </Field>`}
       >
         <div className="grid w-full max-w-sm gap-5">
           <div className="flex items-center gap-3">
             <Checkbox id="label-disabled-check" disabled />
             <Label htmlFor="label-disabled-check" className="font-medium">
-              Use the legacy build image
+              Let guests invite other guests
             </Label>
           </div>
           <Field orientation="horizontal" data-disabled="true" className="justify-between gap-4">
             <Label htmlFor="label-disabled-switch" className="font-medium">
-              Protect preview deployments
+              Require two-factor authentication
             </Label>
             <Switch id="label-disabled-switch" disabled defaultChecked />
           </Field>

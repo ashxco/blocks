@@ -19,49 +19,50 @@ const switchSizes = {
   default: `${tokenPx("--switch-width")} × ${tokenPx("--switch-height")}px`,
 }
 
-const gitSettings = [
+const automationRules = [
   {
-    id: "push",
-    label: "Deploy on push",
-    description: "Every push to main builds and promotes to production.",
+    id: "notify-owner",
+    label: "Notify the owner when a task is done",
+    description: "When a task moves to Done, the project owner gets a message.",
     on: true,
   },
   {
-    id: "previews",
-    label: "Preview deployments",
-    description: "Pull requests get their own URL, updated on every commit.",
+    id: "assign-bugs",
+    label: "Assign new bugs to Jordan",
+    description: "When a task is tagged Bug, assign it to Jordan Lee with High priority.",
     on: true,
   },
   {
-    id: "comments",
-    label: "Comment on pull requests",
-    description: "Post the preview link and build status as a comment.",
+    id: "overdue",
+    label: "Flag overdue tasks",
+    description: "When a due date passes, raise the priority to Urgent and comment on the task.",
     on: false,
   },
   {
-    id: "cancel",
-    label: "Cancel superseded builds",
-    description: "Stop a queued build when a newer commit lands on the same branch.",
+    id: "slack",
+    label: "Post finished tasks to Slack",
+    description: "Share each completed task in #website-relaunch.",
     on: true,
   },
 ]
 
-function GitSettings() {
+function AutomationSettings() {
   const [state, setState] = React.useState<Record<string, boolean>>(
-    Object.fromEntries(gitSettings.map((s) => [s.id, s.on]))
+    Object.fromEntries(automationRules.map((s) => [s.id, s.on]))
   )
   const [lastChange, setLastChange] = React.useState<string | null>(null)
 
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>Git</CardTitle>
+        <CardTitle>Automations</CardTitle>
         <CardDescription className="text-pretty">
-          Changes apply immediately to <span className="whitespace-nowrap">acme-web</span>.
+          Rules run as soon as they are on, for every task in{" "}
+          <span className="whitespace-nowrap">Website relaunch</span>.
         </CardDescription>
       </CardHeader>
       <CardContent className="-my-5 divide-y">
-        {gitSettings.map((s) => (
+        {automationRules.map((s) => (
           <Field key={s.id} orientation="horizontal" className="py-5">
             <FieldContent>
               <FieldLabel htmlFor={`sw-${s.id}`}>{s.label}</FieldLabel>
@@ -73,7 +74,7 @@ function GitSettings() {
               checked={state[s.id]}
               onCheckedChange={(checked) => {
                 setState((current) => ({ ...current, [s.id]: checked }))
-                setLastChange(`${s.label} ${checked ? "on" : "off"}.`)
+                setLastChange(`${s.label}: ${checked ? "on" : "off"}.`)
               }}
             />
           </Field>
@@ -81,7 +82,7 @@ function GitSettings() {
       </CardContent>
       <CardFooter>
         <p className="text-caption text-muted-foreground" aria-live="polite">
-          {lastChange ? `Saved. ${lastChange}` : "All changes save automatically."}
+          {lastChange ? `Saved. ${lastChange}` : "All changes save automatically. Your workspace has used 7,240 of 10,000 runs this month."}
         </p>
       </CardFooter>
     </Card>
@@ -89,8 +90,8 @@ function GitSettings() {
 }
 
 const panelSettings = [
-  { id: "sw-panel-protect", label: "Password protection", description: "Visitors enter a shared password first.", on: true },
-  { id: "sw-panel-index", label: "Search indexing", description: "Let search engines list this preview.", on: false },
+  { id: "sw-panel-public", label: "Public link", description: "Anyone with the link can view this dashboard.", on: true },
+  { id: "sw-panel-names", label: "Show member names", description: "Viewers see who owns each task.", on: false },
 ]
 
 export default function SwitchDocs() {
@@ -101,12 +102,12 @@ export default function SwitchDocs() {
         layout="stack"
         description="Sized by --switch-width and --switch-height. The label comes first and the switch trails it; the track is ink when on and the thumb slides and stretches while pressed."
         code={`<Field orientation="horizontal" className="justify-between">
-  <FieldLabel htmlFor="deploy-on-push">Deploy on push</FieldLabel>
-  <Switch id="deploy-on-push" defaultChecked />
+  <FieldLabel htmlFor="daily-summary">Daily summary</FieldLabel>
+  <Switch id="daily-summary" defaultChecked />
 </Field>`}
       >
         <Field orientation="horizontal" className="max-w-sm justify-between">
-          <FieldLabel htmlFor="sw-default">Deploy on push</FieldLabel>
+          <FieldLabel htmlFor="sw-default">Daily summary</FieldLabel>
           <Switch id="sw-default" defaultChecked />
         </Field>
       </Example>
@@ -169,17 +170,17 @@ export default function SwitchDocs() {
         description="Put the switch after the text, aligned to the label’s first line, so the setting reads before the control."
         code={`<Field orientation="horizontal">
   <FieldContent>
-    <FieldLabel htmlFor="previews">Preview deployments</FieldLabel>
-    <FieldDescription>Pull requests get their own URL, updated on every commit.</FieldDescription>
+    <FieldLabel htmlFor="guest-access">Guest access</FieldLabel>
+    <FieldDescription>Invite people outside Acme Inc. to comment on the tasks you share.</FieldDescription>
   </FieldContent>
-  <Switch id="previews" defaultChecked />
+  <Switch id="guest-access" defaultChecked />
 </Field>`}
       >
         <div className="w-full max-w-sm">
           <Field orientation="horizontal">
             <FieldContent>
-              <FieldLabel htmlFor="sw-desc">Preview deployments</FieldLabel>
-              <FieldDescription>Pull requests get their own URL, updated on every commit.</FieldDescription>
+              <FieldLabel htmlFor="sw-desc">Guest access</FieldLabel>
+              <FieldDescription>Invite people outside Acme Inc. to comment on the tasks you share.</FieldDescription>
             </FieldContent>
             <Switch id="sw-desc" defaultChecked />
           </Field>
@@ -192,13 +193,13 @@ export default function SwitchDocs() {
         surface="subtle"
         code={`<Field orientation="horizontal">
   <FieldContent>
-    <FieldLabel htmlFor="push">Deploy on push</FieldLabel>
-    <FieldDescription id="push-desc">Every push to main builds and promotes to production.</FieldDescription>
+    <FieldLabel htmlFor="notify-owner">Notify the owner when a task is done</FieldLabel>
+    <FieldDescription id="notify-owner-desc">When a task moves to Done, the project owner gets a message.</FieldDescription>
   </FieldContent>
-  <Switch id="push" aria-describedby="push-desc" checked={on} onCheckedChange={save} />
+  <Switch id="notify-owner" aria-describedby="notify-owner-desc" checked={on} onCheckedChange={save} />
 </Field>`}
       >
-        <GitSettings />
+        <AutomationSettings />
       </Example>
 
       <Example
@@ -208,10 +209,10 @@ export default function SwitchDocs() {
         description="On dark panels, use the inverse variant: the track turns light when on and the thumb takes the panel colour, in both themes."
         code={`<Field orientation="horizontal">
   <FieldContent>
-    <FieldLabel htmlFor="protect" className="text-panel-foreground">Password protection</FieldLabel>
-    <FieldDescription className="text-panel-muted">Visitors enter a shared password first.</FieldDescription>
+    <FieldLabel htmlFor="public-link" className="text-panel-foreground">Public link</FieldLabel>
+    <FieldDescription className="text-panel-muted">Anyone with the link can view this dashboard.</FieldDescription>
   </FieldContent>
-  <Switch id="protect" variant="inverse" defaultChecked />
+  <Switch id="public-link" variant="inverse" defaultChecked />
 </Field>`}
       >
         <div className="grid w-full max-w-sm gap-6">
@@ -232,7 +233,7 @@ export default function SwitchDocs() {
       <Guidelines
         do={[
           "Use a switch for a setting that takes effect immediately.",
-          "Label the setting, not the state: “Preview deployments”, not “Enable preview deployments”.",
+          "Label the setting, not the state: “Guest access”, not “Enable guest access”.",
           "Confirm saved changes nearby, in a live region.",
         ]}
         dont={[

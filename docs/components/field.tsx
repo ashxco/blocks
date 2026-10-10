@@ -36,67 +36,67 @@ import { Switch } from "@/components/ui/switch"
 /* Create project: a complete form                                            */
 /* -------------------------------------------------------------------------- */
 
-const frameworks = [
-  { value: "nextjs", title: "Next.js", description: "Runs next build and serves pages, routes and middleware." },
-  { value: "astro", title: "Astro", description: "Builds static pages and server islands from src/pages." },
-  { value: "sveltekit", title: "SvelteKit", description: "Uses the Lumen adapter for server routes and actions." },
-  { value: "static", title: "Static site", description: "Serves a folder of HTML, CSS and assets with no build step." },
+const templates = [
+  { value: "roadmap", title: "Product roadmap", description: "Plan themes and launches on a timeline, quarter by quarter." },
+  { value: "marketing", title: "Marketing calendar", description: "Schedule campaigns, posts and emails on a shared calendar." },
+  { value: "clients", title: "Client projects", description: "Track deliverables, approvals and guests for each client." },
+  { value: "sprints", title: "Sprint planning", description: "Run two-week sprints on a board with estimates and owners." },
 ] as const
 
-const regions = [
-  { value: "fra1", label: "Frankfurt (fra1)" },
-  { value: "lhr1", label: "London (lhr1)" },
-  { value: "iad1", label: "Virginia (iad1)" },
-  { value: "sfo1", label: "San Francisco (sfo1)" },
-  { value: "hnd1", label: "Tokyo (hnd1)" },
-  { value: "syd1", label: "Sydney (syd1)" },
+const owners = [
+  { value: "maya", label: "Maya Patel" },
+  { value: "jordan", label: "Jordan Lee" },
+  { value: "sofia", label: "Sofia Alvarez" },
+  { value: "sam", label: "Sam Okafor" },
+  { value: "priya", label: "Priya Raman" },
+  { value: "lucas", label: "Lucas Moreau" },
 ]
 
-interface EnvVar {
+interface Milestone {
   id: number
-  key: string
-  value: string
+  name: string
+  due: string
 }
 
-type Errors = Partial<Record<"name" | "repository" | "env", string>>
+type Errors = Partial<Record<"name" | "slug" | "milestones", string>>
 
-function validate(name: string, repository: string, env: EnvVar[]): Errors {
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+function validate(name: string, slug: string, milestones: Milestone[]): Errors {
   const errors: Errors = {}
   if (!name.trim()) errors.name = "Enter a project name."
-  else if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name))
-    errors.name = "Use lowercase letters, numbers and single hyphens, like acme-web."
-  if (!repository.trim()) errors.repository = "Enter the repository as owner/name."
-  else if (!/^[\w.-]+\/[\w.-]+$/.test(repository))
-    errors.repository = "Use the owner/name format, like acme/web."
-  const keyed = env.filter((v) => v.key.trim() || v.value.trim())
-  if (keyed.some((v) => !/^[A-Z_][A-Z0-9_]*$/.test(v.key)))
-    errors.env = "Keys use capital letters, numbers and underscores, like DATABASE_URL."
+  else if (name.trim().length > 60) errors.name = "Use 60 characters or fewer."
+  if (!slug.trim()) errors.slug = "Enter a URL for the project."
+  else if (!slugPattern.test(slug))
+    errors.slug = "Use lowercase letters, numbers and single hyphens, like team-offsite."
+  if (milestones.some((m) => m.due && !m.name.trim()))
+    errors.milestones = "Give every dated milestone a name, like Beta launch."
   return errors
 }
 
 function CreateProjectForm() {
   const id = React.useId()
   const formRef = React.useRef<HTMLFormElement>(null)
-  const nextEnvId = React.useRef(3)
+  const nextMilestoneId = React.useRef(3)
   const [name, setName] = React.useState("")
-  const [repository, setRepository] = React.useState("")
-  const [framework, setFramework] = React.useState<string>("nextjs")
-  const [region, setRegion] = React.useState<string | null>("fra1")
-  const [previews, setPreviews] = React.useState(true)
-  const [env, setEnv] = React.useState<EnvVar[]>([
-    { id: 1, key: "DATABASE_URL", value: "postgres://db:5432/app" },
-    { id: 2, key: "", value: "" },
+  const [slug, setSlug] = React.useState("")
+  const [template, setTemplate] = React.useState<string>("roadmap")
+  const [owner, setOwner] = React.useState<string | null>("maya")
+  const [isPrivate, setIsPrivate] = React.useState(false)
+  const [milestones, setMilestones] = React.useState<Milestone[]>([
+    { id: 1, name: "Design review", due: "2026-10-15" },
+    { id: 2, name: "", due: "" },
   ])
   const [errors, setErrors] = React.useState<Errors>({})
   const [submitted, setSubmitted] = React.useState(false)
 
-  function updateEnv(envId: number, patch: Partial<EnvVar>) {
-    setEnv((rows) => rows.map((row) => (row.id === envId ? { ...row, ...patch } : row)))
+  function updateMilestone(milestoneId: number, patch: Partial<Milestone>) {
+    setMilestones((rows) => rows.map((row) => (row.id === milestoneId ? { ...row, ...patch } : row)))
   }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const next = validate(name, repository, env)
+    const next = validate(name, slug, milestones)
     setErrors(next)
     if (Object.keys(next).length > 0) {
       requestAnimationFrame(() => {
@@ -109,13 +109,15 @@ function CreateProjectForm() {
 
   function reset() {
     setName("")
-    setRepository("")
+    setSlug("")
     setErrors({})
     setSubmitted(false)
   }
 
   if (submitted) {
-    const regionLabel = regions.find((r) => r.value === region)?.label ?? region
+    const ownerLabel = owners.find((o) => o.value === owner)?.label ?? "you"
+    const templateLabel = templates.find((t) => t.value === template)?.title ?? "blank"
+    const named = milestones.filter((m) => m.name.trim()).length
     return (
       <FormFrame>
         <Card role="status" className="mx-auto w-full max-w-2xl">
@@ -123,11 +125,12 @@ function CreateProjectForm() {
             <span className="mb-3 grid size-10 place-items-center rounded-full bg-success-subtle text-success">
               <CheckIcon aria-hidden="true" className="size-5" strokeWidth={2.5} />
             </span>
-            <CardTitle>{name} is building</CardTitle>
+            <CardTitle>{name.trim()} is ready</CardTitle>
             <CardDescription className="text-pretty">
-              Lumen cloned <span className="font-mono whitespace-nowrap text-foreground">{repository}</span> and started the first
-              production build in {regionLabel}.{" "}
-              {previews ? "Pull requests will get their own preview URL." : "Preview deployments are off."}
+              Created from the {templateLabel} template with {named} {named === 1 ? "milestone" : "milestones"}, owned
+              by {ownerLabel}. It lives at{" "}
+              <span className="font-mono break-all text-foreground">app.acme.com/acme/projects/{slug}</span>.{" "}
+              {isPrivate ? "Only invited members can see it." : "Everyone in Acme Inc. can see it."}
             </CardDescription>
           </CardHeader>
           <CardFooter>
@@ -147,7 +150,7 @@ function CreateProjectForm() {
           <CardHeader>
             <CardTitle>Create project</CardTitle>
             <CardDescription className="text-pretty">
-              Import a Git repository. Lumen builds and deploys it on every push.
+              Give the work a home in Acme Inc. You can invite people and add tasks next.
             </CardDescription>
           </CardHeader>
 
@@ -160,67 +163,64 @@ function CreateProjectForm() {
                   name="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="acme-web"
+                  placeholder="Team offsite"
                   autoComplete="off"
-                  spellCheck={false}
                   aria-invalid={Boolean(errors.name)}
                   aria-describedby={`${id}-name-${errors.name ? "error" : "hint"}`}
                 />
                 {errors.name ? (
                   <FieldError id={`${id}-name-error`}>{errors.name}</FieldError>
                 ) : (
-                  <FieldDescription id={`${id}-name-hint`}>
-                    Previews use it in their URL:{" "}
-                    <span className="inline-block max-w-full truncate align-bottom font-mono text-foreground">
-                      {name || "acme-web"}-git-main.lumen.app
-                    </span>
-                  </FieldDescription>
+                  <FieldDescription id={`${id}-name-hint`}>Shown in the sidebar and on every task in the project.</FieldDescription>
                 )}
               </Field>
 
-              <Field data-invalid={Boolean(errors.repository)}>
-                <FieldLabel htmlFor={`${id}-repo`}>Repository</FieldLabel>
+              <Field data-invalid={Boolean(errors.slug)}>
+                <FieldLabel htmlFor={`${id}-slug`}>Project URL</FieldLabel>
                 <InputGroup>
                   <InputGroupAddon>
-                    <InputGroupText>github.com/</InputGroupText>
+                    {/* The full prefix needs room; on a phone the input keeps its width for the slug. */}
+                    <InputGroupText>
+                      <span className="hidden @xl/form:inline">app.acme.com/acme</span>/projects/
+                    </InputGroupText>
                   </InputGroupAddon>
                   <InputGroupInput
-                    id={`${id}-repo`}
-                    name="repository"
-                    value={repository}
-                    onChange={(e) => setRepository(e.target.value)}
-                    placeholder="acme/web"
+                    id={`${id}-slug`}
+                    name="slug"
+                    value={slug}
+                    onChange={(e) => setSlug(e.target.value)}
+                    placeholder="team-offsite"
                     autoComplete="off"
                     spellCheck={false}
-                    aria-invalid={Boolean(errors.repository)}
-                    aria-describedby={`${id}-repo-${errors.repository ? "error" : "hint"}`}
+                    aria-invalid={Boolean(errors.slug)}
+                    aria-describedby={`${id}-slug-${errors.slug ? "error" : "hint"}`}
                   />
                 </InputGroup>
-                {errors.repository ? (
-                  <FieldError id={`${id}-repo-error`}>{errors.repository}</FieldError>
+                {errors.slug ? (
+                  <FieldError id={`${id}-slug-error`}>{errors.slug}</FieldError>
                 ) : (
-                  <FieldDescription id={`${id}-repo-hint`}>
-                    Lumen needs read access. Pushes to main deploy to production.
+                  <FieldDescription id={`${id}-slug-hint`}>
+                    Members open the project at this link. You can change it later.
                   </FieldDescription>
                 )}
               </Field>
 
               <FieldSet>
-                <FieldLegend variant="label">Framework</FieldLegend>
+                <FieldLegend variant="label">Template</FieldLegend>
                 <RadioGroup
-                  name="framework"
-                  value={framework}
-                  onValueChange={(value) => setFramework(value as string)}
+                  name="template"
+                  value={template}
+                  onValueChange={(value) => setTemplate(value as string)}
                   className="grid gap-3 @xl/form:grid-cols-2"
                 >
-                  {frameworks.map((f) => (
-                    <FieldLabel key={f.value}>
+                  {templates.map((t) => (
+                    <FieldLabel key={t.value}>
                       <Field orientation="horizontal">
                         <FieldContent>
-                          <FieldTitle>{f.title}</FieldTitle>
-                          <FieldDescription>{f.description}</FieldDescription>
+                          <FieldTitle>{t.title}</FieldTitle>
+                          <FieldDescription>{t.description}</FieldDescription>
                         </FieldContent>
-                        <RadioGroupItem value={f.value} />
+                        <RadioGroupItem value={t.value} />
                       </Field>
                     </FieldLabel>
                   ))}
@@ -228,63 +228,58 @@ function CreateProjectForm() {
               </FieldSet>
 
               <Field>
-                <FieldLabel htmlFor={`${id}-region`}>Region</FieldLabel>
+                <FieldLabel htmlFor={`${id}-owner`}>Owner</FieldLabel>
                 <Select
-                  items={regions}
-                  name="region"
-                  value={region}
-                  onValueChange={(value) => setRegion(value as string | null)}
+                  items={owners}
+                  name="owner"
+                  value={owner}
+                  onValueChange={(value) => setOwner(value as string | null)}
                 >
-                  <SelectTrigger id={`${id}-region`} className="w-full">
+                  <SelectTrigger id={`${id}-owner`} className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {regions.map((r) => (
-                      <SelectItem key={r.value} value={r.value}>
-                        {r.label}
+                    {owners.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <FieldDescription>Functions run here. Pick the region closest to your database.</FieldDescription>
+                <FieldDescription>The owner gets the weekly status reminder and approves changes to the plan.</FieldDescription>
               </Field>
 
               <FieldSet>
-                <FieldLegend variant="label">Environment variables</FieldLegend>
-                <FieldDescription>Encrypted at rest. Available during builds and at runtime.</FieldDescription>
+                <FieldLegend variant="label">Milestones</FieldLegend>
+                <FieldDescription>Each milestone shows on the timeline and in the weekly report.</FieldDescription>
                 <div className="grid gap-4 @xl/form:gap-2">
-                  {env.map((row, index) => (
+                  {milestones.map((row, index) => (
                     <div
                       key={row.id}
-                      className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 @xl/form:grid-cols-[minmax(0,2fr)_minmax(0,3fr)_auto]"
+                      className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 @xl/form:grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto]"
                     >
                       <Input
-                        aria-label={`Key ${index + 1}`}
-                        value={row.key}
-                        onChange={(e) => updateEnv(row.id, { key: e.target.value.toUpperCase() })}
-                        placeholder="API_URL"
-                        spellCheck={false}
+                        aria-label={`Milestone ${index + 1} name`}
+                        value={row.name}
+                        onChange={(e) => updateMilestone(row.id, { name: e.target.value })}
+                        placeholder="Beta launch"
                         autoComplete="off"
-                        className="col-start-1 row-start-1 font-mono text-ellipsis"
-                        aria-invalid={
-                          Boolean(errors.env) && !/^[A-Z_][A-Z0-9_]*$/.test(row.key) && Boolean(row.key || row.value)
-                        }
+                        className="col-start-1 row-start-1 text-ellipsis"
+                        aria-invalid={Boolean(errors.milestones) && Boolean(row.due) && !row.name.trim()}
                       />
                       <Input
-                        aria-label={`Value ${index + 1}`}
-                        value={row.value}
-                        onChange={(e) => updateEnv(row.id, { value: e.target.value })}
-                        placeholder="https://api.acme.dev"
-                        spellCheck={false}
-                        autoComplete="off"
-                        className="col-start-1 row-start-2 font-mono text-ellipsis @xl/form:col-start-2 @xl/form:row-start-1"
+                        type="date"
+                        aria-label={`Milestone ${index + 1} due date`}
+                        value={row.due}
+                        onChange={(e) => updateMilestone(row.id, { due: e.target.value })}
+                        className="col-start-1 row-start-2 tabular @xl/form:col-start-2 @xl/form:row-start-1"
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        aria-label={`Remove ${row.key || `variable ${index + 1}`}`}
-                        onClick={() => setEnv((rows) => rows.filter((r) => r.id !== row.id))}
+                        aria-label={`Remove ${row.name || `milestone ${index + 1}`}`}
+                        onClick={() => setMilestones((rows) => rows.filter((r) => r.id !== row.id))}
                         className="col-start-2 row-span-2 row-start-1 self-center text-muted-foreground hover:text-foreground @xl/form:col-start-3 @xl/form:row-span-1"
                       >
                         <Trash2Icon />
@@ -292,30 +287,32 @@ function CreateProjectForm() {
                     </div>
                   ))}
                 </div>
-                {errors.env ? <FieldError>{errors.env}</FieldError> : null}
+                {errors.milestones ? <FieldError>{errors.milestones}</FieldError> : null}
                 <div>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setEnv((rows) => [...rows, { id: nextEnvId.current++, key: "", value: "" }])}
+                    onClick={() =>
+                      setMilestones((rows) => [...rows, { id: nextMilestoneId.current++, name: "", due: "" }])
+                    }
                   >
                     <PlusIcon data-icon="inline-start" />
-                    Add variable
+                    Add milestone
                   </Button>
                 </div>
               </FieldSet>
 
               <Field orientation="horizontal" className="border-t pt-6">
                 <Checkbox
-                  id={`${id}-previews`}
-                  name="previews"
-                  checked={previews}
-                  onCheckedChange={(checked) => setPreviews(checked)}
+                  id={`${id}-private`}
+                  name="private"
+                  checked={isPrivate}
+                  onCheckedChange={(checked) => setIsPrivate(checked)}
                 />
                 <FieldContent>
-                  <FieldLabel htmlFor={`${id}-previews`}>Preview deployments</FieldLabel>
-                  <FieldDescription>Deploy every pull request to its own URL and comment the link on it.</FieldDescription>
+                  <FieldLabel htmlFor={`${id}-private`}>Private project</FieldLabel>
+                  <FieldDescription>Only people you invite can see the project and its tasks.</FieldDescription>
                 </FieldContent>
               </Field>
             </FieldGroup>
@@ -347,9 +344,9 @@ function FormFrame({ children }: { children: React.ReactNode }) {
 /* -------------------------------------------------------------------------- */
 
 const plans = [
-  { value: "hobby", title: "Hobby", description: "Personal projects. 100\u00a0GB bandwidth." },
-  { value: "pro", title: "Pro", description: "Teams shipping to production. 1\u00a0TB bandwidth." },
-  { value: "enterprise", title: "Enterprise", description: "SSO, audit logs and a 99.99% SLA." },
+  { value: "free", title: "Free", description: "Up to 3 members and 5\u00a0projects." },
+  { value: "pro", title: "Pro", description: "$12 per member a month, billed annually. Unlimited projects." },
+  { value: "business", title: "Business", description: "$24 per member a month, billed annually. SSO and audit log." },
 ]
 
 export default function FieldDocs() {
@@ -361,15 +358,15 @@ export default function FieldDocs() {
         description="A label, the control and a description in one tight stack (gap-2). The label names the value; the description says how it is used."
         code={`<Field>
   <FieldLabel htmlFor="project">Project name</FieldLabel>
-  <Input id="project" placeholder="acme-web" />
-  <FieldDescription>Lowercase letters, numbers and hyphens.</FieldDescription>
+  <Input id="project" placeholder="Website relaunch" />
+  <FieldDescription>Shown in the sidebar and on every task in the project.</FieldDescription>
 </Field>`}
       >
         <div className="w-full max-w-sm">
           <Field>
             <FieldLabel htmlFor="field-anatomy">Project name</FieldLabel>
-            <Input id="field-anatomy" placeholder="acme-web" />
-            <FieldDescription>Lowercase letters, numbers and hyphens.</FieldDescription>
+            <Input id="field-anatomy" placeholder="Website relaunch" />
+            <FieldDescription>Shown in the sidebar and on every task in the project.</FieldDescription>
           </Field>
         </div>
       </Example>
@@ -379,16 +376,16 @@ export default function FieldDocs() {
         layout="stack"
         description="Put the description under the label when people need it before they type. It tucks in closer to the label than to the control."
         code={`<Field>
-  <FieldLabel htmlFor="build">Build command</FieldLabel>
-  <FieldDescription>Runs in the project root after dependencies install.</FieldDescription>
-  <Input id="build" defaultValue="npm run build" className="font-mono" spellCheck={false} />
+  <FieldLabel htmlFor="key">Project key</FieldLabel>
+  <FieldDescription>Two to five capital letters. Task IDs start with it, like WEB-142.</FieldDescription>
+  <Input id="key" defaultValue="WEB" className="font-mono" spellCheck={false} />
 </Field>`}
       >
         <div className="w-full max-w-sm">
           <Field>
-            <FieldLabel htmlFor="field-build">Build command</FieldLabel>
-            <FieldDescription>Runs in the project root after dependencies install.</FieldDescription>
-            <Input id="field-build" defaultValue="npm run build" className="font-mono" spellCheck={false} />
+            <FieldLabel htmlFor="field-key">Project key</FieldLabel>
+            <FieldDescription>Two to five capital letters. Task IDs start with it, like WEB-142.</FieldDescription>
+            <Input id="field-key" defaultValue="WEB" className="font-mono" spellCheck={false} />
           </Field>
         </div>
       </Example>
@@ -398,16 +395,16 @@ export default function FieldDocs() {
         layout="stack"
         description="Set data-invalid on the field and aria-invalid on the control. The error replaces the description and says how to fix the value."
         code={`<Field data-invalid>
-  <FieldLabel htmlFor="domain">Domain</FieldLabel>
-  <Input id="domain" defaultValue="https://acme.dev" aria-invalid aria-describedby="domain-error" />
-  <FieldError id="domain-error">Enter the domain without https://, like acme.dev.</FieldError>
+  <FieldLabel htmlFor="email">Work email</FieldLabel>
+  <Input id="email" type="email" defaultValue="maya@acme" aria-invalid aria-describedby="email-error" />
+  <FieldError id="email-error">Finish the address, like maya@acme.com.</FieldError>
 </Field>`}
       >
         <div className="w-full max-w-sm">
           <Field data-invalid>
-            <FieldLabel htmlFor="field-domain">Domain</FieldLabel>
-            <Input id="field-domain" defaultValue="https://acme.dev" aria-invalid aria-describedby="field-domain-error" />
-            <FieldError id="field-domain-error">Enter the domain without https://, like acme.dev.</FieldError>
+            <FieldLabel htmlFor="field-email">Work email</FieldLabel>
+            <Input id="field-email" type="email" defaultValue="maya@acme" aria-invalid aria-describedby="field-email-error" />
+            <FieldError id="field-email-error">Finish the address, like maya@acme.com.</FieldError>
           </Field>
         </div>
       </Example>
@@ -418,28 +415,28 @@ export default function FieldDocs() {
         description="Selection controls sit beside their label. With a description, wrap the text in FieldContent and the control aligns to the first line."
         code={`<Field orientation="horizontal">
   <FieldContent>
-    <FieldLabel htmlFor="previews">Preview deployments</FieldLabel>
-    <FieldDescription>Deploy every pull request to its own URL.</FieldDescription>
+    <FieldLabel htmlFor="summary">Weekly summary</FieldLabel>
+    <FieldDescription>Tasks completed, overdue work and project status, every Monday at 9:00.</FieldDescription>
   </FieldContent>
-  <Switch id="previews" defaultChecked />
+  <Switch id="summary" defaultChecked />
 </Field>
 
 <Field orientation="horizontal">
-  <Checkbox id="failures" defaultChecked />
-  <FieldLabel htmlFor="failures">Email me when a production build fails</FieldLabel>
+  <Checkbox id="assigned" defaultChecked />
+  <FieldLabel htmlFor="assigned">Email me when a task is assigned to me</FieldLabel>
 </Field>`}
       >
         <div className="grid w-full max-w-sm gap-6">
           <Field orientation="horizontal">
             <FieldContent>
-              <FieldLabel htmlFor="field-previews">Preview deployments</FieldLabel>
-              <FieldDescription>Deploy every pull request to its own URL.</FieldDescription>
+              <FieldLabel htmlFor="field-summary">Weekly summary</FieldLabel>
+              <FieldDescription>Tasks completed, overdue work and project status, every Monday at 9:00.</FieldDescription>
             </FieldContent>
-            <Switch id="field-previews" defaultChecked />
+            <Switch id="field-summary" defaultChecked />
           </Field>
           <Field orientation="horizontal">
-            <Checkbox id="field-failures" defaultChecked />
-            <FieldLabel htmlFor="field-failures">Email me when a production build fails</FieldLabel>
+            <Checkbox id="field-assigned" defaultChecked />
+            <FieldLabel htmlFor="field-assigned">Email me when a task is assigned to me</FieldLabel>
           </Field>
         </div>
       </Example>
@@ -450,23 +447,23 @@ export default function FieldDocs() {
         description="Group related controls under a legend. Use the label variant inside forms and the legend variant for a titled section."
         code={`<FieldSet>
   <FieldLegend>Notifications</FieldLegend>
-  <FieldDescription>Choose what Lumen emails you about. Alerts for failed builds always send.</FieldDescription>
+  <FieldDescription>Choose what Acme emails you about. Security alerts always send.</FieldDescription>
   <FieldGroup data-slot="checkbox-group">
     <Field orientation="horizontal">
-      <Checkbox id="n-deploys" defaultChecked />
-      <FieldLabel htmlFor="n-deploys">Production deployments</FieldLabel>
+      <Checkbox id="n-assigned" defaultChecked />
+      <FieldLabel htmlFor="n-assigned">Tasks assigned to me</FieldLabel>
     </Field>
     <Field orientation="horizontal">
-      <Checkbox id="n-comments" defaultChecked />
-      <FieldLabel htmlFor="n-comments">Comments on previews</FieldLabel>
+      <Checkbox id="n-mentions" defaultChecked />
+      <FieldLabel htmlFor="n-mentions">Comments and mentions</FieldLabel>
     </Field>
     <Field orientation="horizontal">
-      <Checkbox id="n-domains" />
-      <FieldLabel htmlFor="n-domains">Domain renewals</FieldLabel>
+      <Checkbox id="n-digest" />
+      <FieldLabel htmlFor="n-digest">Weekly project digest</FieldLabel>
     </Field>
     <Field orientation="horizontal" data-disabled>
-      <Checkbox id="n-failed" defaultChecked disabled />
-      <FieldLabel htmlFor="n-failed">Failed builds</FieldLabel>
+      <Checkbox id="n-security" defaultChecked disabled />
+      <FieldLabel htmlFor="n-security">Security alerts</FieldLabel>
     </Field>
   </FieldGroup>
 </FieldSet>`}
@@ -474,23 +471,23 @@ export default function FieldDocs() {
         <div className="w-full max-w-md">
           <FieldSet>
             <FieldLegend>Notifications</FieldLegend>
-            <FieldDescription>Choose what Lumen emails you about. Alerts for failed builds always send.</FieldDescription>
+            <FieldDescription>Choose what Acme emails you about. Security alerts always send.</FieldDescription>
             <FieldGroup data-slot="checkbox-group">
               <Field orientation="horizontal">
-                <Checkbox id="field-n-deploys" defaultChecked />
-                <FieldLabel htmlFor="field-n-deploys">Production deployments</FieldLabel>
+                <Checkbox id="field-n-assigned" defaultChecked />
+                <FieldLabel htmlFor="field-n-assigned">Tasks assigned to me</FieldLabel>
               </Field>
               <Field orientation="horizontal">
-                <Checkbox id="field-n-comments" defaultChecked />
-                <FieldLabel htmlFor="field-n-comments">Comments on previews</FieldLabel>
+                <Checkbox id="field-n-mentions" defaultChecked />
+                <FieldLabel htmlFor="field-n-mentions">Comments and mentions</FieldLabel>
               </Field>
               <Field orientation="horizontal">
-                <Checkbox id="field-n-domains" />
-                <FieldLabel htmlFor="field-n-domains">Domain renewals</FieldLabel>
+                <Checkbox id="field-n-digest" />
+                <FieldLabel htmlFor="field-n-digest">Weekly project digest</FieldLabel>
               </Field>
               <Field orientation="horizontal" data-disabled="true">
-                <Checkbox id="field-n-failed" defaultChecked disabled />
-                <FieldLabel htmlFor="field-n-failed">Failed builds</FieldLabel>
+                <Checkbox id="field-n-security" defaultChecked disabled />
+                <FieldLabel htmlFor="field-n-security">Security alerts</FieldLabel>
               </Field>
             </FieldGroup>
           </FieldSet>
@@ -502,9 +499,9 @@ export default function FieldDocs() {
         layout="stack"
         description="Wrap a horizontal field in FieldLabel to make the whole card clickable. Every choice card in Blocks has one anatomy: the text leads and the radio, checkbox or switch sits at the top right. The selected card takes an ink border."
         code={`const plans = [
-  { value: "hobby", title: "Hobby", description: "Personal projects. 100 GB bandwidth." },
-  { value: "pro", title: "Pro", description: "Teams shipping to production. 1 TB bandwidth." },
-  { value: "enterprise", title: "Enterprise", description: "SSO, audit logs and a 99.99% SLA." },
+  { value: "free", title: "Free", description: "Up to 3 members and 5 projects." },
+  { value: "pro", title: "Pro", description: "$12 per member a month, billed annually. Unlimited projects." },
+  { value: "business", title: "Business", description: "$24 per member a month, billed annually. SSO and audit log." },
 ]
 
 <FieldSet>
@@ -551,34 +548,34 @@ export default function FieldDocs() {
         code={`<FieldGroup>
   <Field orientation="responsive">
     <FieldContent>
-      <FieldLabel htmlFor="branch">Production branch</FieldLabel>
-      <FieldDescription>Pushes to this branch deploy to production.</FieldDescription>
+      <FieldLabel htmlFor="workspace-name">Workspace name</FieldLabel>
+      <FieldDescription>Shown in the sidebar and in email invites.</FieldDescription>
     </FieldContent>
-    <Input id="branch" defaultValue="main" className="font-mono @md/field-group:basis-72" spellCheck={false} />
+    <Input id="workspace-name" defaultValue="Acme Inc." className="@md/field-group:basis-72" />
   </Field>
   <Field orientation="responsive">
     <FieldContent>
-      <FieldLabel htmlFor="output">Output directory</FieldLabel>
-      <FieldDescription>Lumen serves files from this folder after the build.</FieldDescription>
+      <FieldLabel htmlFor="workspace-url">Workspace URL</FieldLabel>
+      <FieldDescription>Members sign in at app.acme.com followed by this name.</FieldDescription>
     </FieldContent>
-    <Input id="output" defaultValue=".next" className="font-mono @md/field-group:basis-72" spellCheck={false} />
+    <Input id="workspace-url" defaultValue="acme" className="font-mono @md/field-group:basis-72" spellCheck={false} />
   </Field>
 </FieldGroup>`}
       >
         <FieldGroup className="max-w-3xl">
           <Field orientation="responsive">
             <FieldContent>
-              <FieldLabel htmlFor="field-branch">Production branch</FieldLabel>
-              <FieldDescription>Pushes to this branch deploy to production.</FieldDescription>
+              <FieldLabel htmlFor="field-workspace-name">Workspace name</FieldLabel>
+              <FieldDescription>Shown in the sidebar and in email invites.</FieldDescription>
             </FieldContent>
-            <Input id="field-branch" defaultValue="main" className="font-mono @md/field-group:basis-72" spellCheck={false} />
+            <Input id="field-workspace-name" defaultValue="Acme Inc." className="@md/field-group:basis-72" />
           </Field>
           <Field orientation="responsive">
             <FieldContent>
-              <FieldLabel htmlFor="field-output">Output directory</FieldLabel>
-              <FieldDescription>Lumen serves files from this folder after the build.</FieldDescription>
+              <FieldLabel htmlFor="field-workspace-url">Workspace URL</FieldLabel>
+              <FieldDescription>Members sign in at app.acme.com followed by this name.</FieldDescription>
             </FieldContent>
-            <Input id="field-output" defaultValue=".next" className="font-mono @md/field-group:basis-72" spellCheck={false} />
+            <Input id="field-workspace-url" defaultValue="acme" className="font-mono @md/field-group:basis-72" spellCheck={false} />
           </Field>
         </FieldGroup>
       </Example>
@@ -586,22 +583,22 @@ export default function FieldDocs() {
       <Example
         title="Separator"
         layout="stack"
-        description="Split alternatives, such as two ways to connect a repository."
-        code={`<Button variant="outline" className="w-full">Connect GitHub</Button>
+        description="Split alternatives, such as two ways to invite your team."
+        code={`<Button variant="outline" className="w-full">Copy invite link</Button>
 <FieldSeparator>or</FieldSeparator>
 <Field>
-  <FieldLabel htmlFor="clone">Public repository URL</FieldLabel>
-  <Input id="clone" placeholder="https://gitlab.com/acme/web" spellCheck={false} />
+  <FieldLabel htmlFor="invite-emails">Invite by email</FieldLabel>
+  <Input id="invite-emails" placeholder="theo@acme.com, ines@acme.com" spellCheck={false} />
 </Field>`}
       >
         <div className="grid w-full max-w-sm gap-6">
           <Button variant="outline" className="w-full">
-            Connect GitHub
+            Copy invite link
           </Button>
           <FieldSeparator>or</FieldSeparator>
           <Field>
-            <FieldLabel htmlFor="field-clone">Public repository URL</FieldLabel>
-            <Input id="field-clone" placeholder="https://gitlab.com/acme/web" spellCheck={false} />
+            <FieldLabel htmlFor="field-invite-emails">Invite by email</FieldLabel>
+            <Input id="field-invite-emails" placeholder="theo@acme.com, ines@acme.com" spellCheck={false} />
           </Field>
         </div>
       </Example>
@@ -610,12 +607,12 @@ export default function FieldDocs() {
         title="Complete form"
         layout="full"
         surface="subtle"
-        description="A new-project form in a card: a validated name, a repository with a fixed prefix, framework cards, a region select, environment variables and a preview checkbox. It is saved with a button, so the on/off setting is a checkbox, not a switch. Submit it empty to see the errors."
+        description="A new-project form in a card: a validated name, a URL with a fixed prefix, template cards, an owner select, milestones and a privacy checkbox. It is saved with a button, so the on/off setting is a checkbox, not a switch. Submit it empty to see the errors."
         code={`<Card className="@container/form">
   <form onSubmit={onSubmit} noValidate className="contents">
     <CardHeader>
       <CardTitle>Create project</CardTitle>
-      <CardDescription>Import a Git repository. Lumen builds and deploys it on every push.</CardDescription>
+      <CardDescription>Give the work a home in Acme Inc. You can invite people and add tasks next.</CardDescription>
     </CardHeader>
     <CardContent>
       <FieldGroup>
@@ -625,33 +622,33 @@ export default function FieldDocs() {
           <FieldError id="name-error">{errors.name}</FieldError>
         </Field>
         <Field>
-          <FieldLabel htmlFor="repo">Repository</FieldLabel>
+          <FieldLabel htmlFor="slug">Project URL</FieldLabel>
           <InputGroup>
-            <InputGroupAddon><InputGroupText>github.com/</InputGroupText></InputGroupAddon>
-            <InputGroupInput id="repo" placeholder="acme/web" />
+            <InputGroupAddon><InputGroupText>app.acme.com/acme/projects/</InputGroupText></InputGroupAddon>
+            <InputGroupInput id="slug" placeholder="team-offsite" />
           </InputGroup>
         </Field>
         <FieldSet>
-          <FieldLegend variant="label">Framework</FieldLegend>
-          <RadioGroup name="framework" defaultValue="nextjs" className="grid gap-3 @xl/form:grid-cols-2">
-            {frameworks.map((f) => (
-              <FieldLabel key={f.value}>
+          <FieldLegend variant="label">Template</FieldLegend>
+          <RadioGroup name="template" defaultValue="roadmap" className="grid gap-3 @xl/form:grid-cols-2">
+            {templates.map((t) => (
+              <FieldLabel key={t.value}>
                 <Field orientation="horizontal">
                   <FieldContent>
-                    <FieldTitle>{f.title}</FieldTitle>
-                    <FieldDescription>{f.description}</FieldDescription>
+                    <FieldTitle>{t.title}</FieldTitle>
+                    <FieldDescription>{t.description}</FieldDescription>
                   </FieldContent>
-                  <RadioGroupItem value={f.value} />
+                  <RadioGroupItem value={t.value} />
                 </Field>
               </FieldLabel>
             ))}
           </RadioGroup>
         </FieldSet>
         <Field orientation="horizontal">
-          <Checkbox id="previews" name="previews" defaultChecked />
+          <Checkbox id="private" name="private" />
           <FieldContent>
-            <FieldLabel htmlFor="previews">Preview deployments</FieldLabel>
-            <FieldDescription>Deploy every pull request to its own URL.</FieldDescription>
+            <FieldLabel htmlFor="private">Private project</FieldLabel>
+            <FieldDescription>Only people you invite can see the project and its tasks.</FieldDescription>
           </FieldContent>
         </Field>
       </FieldGroup>
@@ -670,7 +667,7 @@ export default function FieldDocs() {
         do={[
           "Give every control a visible label. Use FieldDescription for format hints, not the placeholder.",
           "Show one message under a field at a time: the description, or the error that replaces it.",
-          "Write errors that say how to fix the value: “Use the owner/name format, like acme/web.”",
+          "Write errors that say how to fix the value: “Use lowercase letters, numbers and single hyphens, like team-offsite.”",
           "Validate on submit or blur, then move focus to the first invalid control.",
           "Use FieldSet and FieldLegend for a group of radios or checkboxes.",
         ]}

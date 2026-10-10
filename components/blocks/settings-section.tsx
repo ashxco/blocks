@@ -31,7 +31,7 @@ export interface SettingsSectionProps {
   title?: React.ReactNode
   /** What the settings in this section control. */
   description?: React.ReactNode
-  /** Controls rendered inside the card. Defaults to workspace settings for Lumen. */
+  /** Controls rendered inside the card. Defaults to the Acme workspace settings. */
   children?: React.ReactNode
   /** Short note on the left of the card footer. */
   footerNote?: React.ReactNode
@@ -54,7 +54,7 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export function SettingsSection({
   title = "General",
-  description = "Your workspace name and URL appear in the dashboard, in invites and on every preview link.",
+  description = "The workspace name and URL appear in the sidebar, in invites and in every link you share.",
   children,
   footerNote = "Changes apply to every project in this workspace.",
   saveLabel = "Save changes",
@@ -137,13 +137,11 @@ export function SettingsSection({
   )
 }
 
-const REGIONS = [
-  { value: "fra1", label: "Frankfurt, Germany (fra1)" },
-  { value: "iad1", label: "Virginia, USA (iad1)" },
-  { value: "sfo1", label: "San Francisco, USA (sfo1)" },
-  { value: "gru1", label: "São Paulo, Brazil (gru1)" },
-  { value: "sin1", label: "Singapore (sin1)" },
-  { value: "syd1", label: "Sydney, Australia (syd1)" },
+const PROJECT_VIEWS = [
+  { value: "list", label: "List" },
+  { value: "board", label: "Board" },
+  { value: "timeline", label: "Timeline" },
+  { value: "calendar", label: "Calendar" },
 ]
 
 export interface WorkspaceFieldsProps {
@@ -151,25 +149,25 @@ export interface WorkspaceFieldsProps {
   defaultName?: string
   /** Workspace URL slug on first render. */
   defaultSlug?: string
-  /** Default region on first render, e.g. "fra1". */
-  defaultRegion?: string
+  /** View new projects open in: "list", "board", "timeline" or "calendar". */
+  defaultView?: string
   /** Require the name and URL before the form saves. */
   required?: boolean
 }
 
 /**
- * Lumen workspace settings: name, URL, default region and preview
- * deployments. SettingsSection shows them when it has no children, and the
+ * Acme workspace settings: name, URL, the view new projects open in and
+ * guest access. SettingsSection shows them when it has no children, and the
  * settings page uses them too, so the fields and their copy live in one place.
  */
 export function WorkspaceFields({
   defaultName = "Acme Inc.",
   defaultSlug = "acme",
-  defaultRegion = "fra1",
+  defaultView = "board",
   required = false,
 }: WorkspaceFieldsProps) {
   const id = React.useId()
-  const [region, setRegion] = React.useState(defaultRegion)
+  const [view, setView] = React.useState(defaultView)
 
   return (
     <FieldGroup>
@@ -201,34 +199,37 @@ export function WorkspaceFields({
       </Field>
 
       <Field>
-        <FieldLabel htmlFor={`${id}-region`}>Default region</FieldLabel>
+        <FieldLabel htmlFor={`${id}-view`}>Default project view</FieldLabel>
         <Select
-          id={`${id}-region`}
-          name="region"
-          items={REGIONS}
-          value={region}
-          onValueChange={(value) => value && setRegion(value)}
+          id={`${id}-view`}
+          name="defaultView"
+          items={PROJECT_VIEWS}
+          value={view}
+          onValueChange={(value) => value && setView(value)}
         >
           <SelectTrigger className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {REGIONS.map((r) => (
-              <SelectItem key={r.value} value={r.value}>
-                {r.label}
+            {PROJECT_VIEWS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <FieldDescription>New projects deploy here unless you pick another region.</FieldDescription>
+        <FieldDescription>New projects open in this view. Anyone can switch views on a project.</FieldDescription>
       </Field>
 
       <Field orientation="horizontal" className="gap-6 border-t pt-6">
         <FieldContent>
-          <FieldLabel htmlFor={`${id}-previews`}>Preview deployments</FieldLabel>
-          <FieldDescription>Deploy every pull request to its own URL and comment the link on GitHub.</FieldDescription>
+          <FieldLabel htmlFor={`${id}-guests`}>Guest access</FieldLabel>
+          <FieldDescription>
+            Let members invite people outside the workspace to the projects they lead. Guests are free and see only
+            those projects.
+          </FieldDescription>
         </FieldContent>
-        <Switch id={`${id}-previews`} name="previews" defaultChecked />
+        <Switch id={`${id}-guests`} name="guests" defaultChecked />
       </Field>
     </FieldGroup>
   )

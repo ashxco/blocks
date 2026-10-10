@@ -13,7 +13,7 @@ export default function AppShellDocs() {
     <Examples>
       <Example
         title="Default"
-        description="Sidebar navigation with the active page from the URL, recent projects, build-minute usage and a workspace switcher. The top bar holds the sidebar toggle, the page title, search (Cmd+K in your app; off here, where it opens the site search), notifications and the user menu."
+        description="Sidebar navigation with the active page from the URL, recent projects, automation-run usage and a workspace switcher. The top bar holds the sidebar toggle, the page title, search (Cmd+K in your app; off here, where it opens the site search), notifications and the user menu."
         layout="full"
         code={`// app/(live)/live/app/layout.tsx
 import { AppShell } from "@/components/blocks/app-shell"
@@ -45,8 +45,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         >
           <div className="grid gap-8">
             <PageHeader
+              as="h2"
               title="Projects"
-              description="Every app and service in Acme Inc."
+              description="26 projects in Acme Inc., 24 of them active."
               actions={
                 <Button>
                   <PlusIcon data-icon="inline-start" />
@@ -54,7 +55,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </Button>
               }
             />
-            <DataTable pageSize={6} hiddenColumns={["region"]} />
+            <DataTable pageSize={6} hiddenColumns={["updated"]} />
           </div>
         </AppShell>
       </Example>

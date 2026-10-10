@@ -3,28 +3,29 @@
 import * as React from "react"
 import Link from "next/link"
 import {
+  ArchiveIcon,
   ArrowDownIcon,
   ArrowUpDownIcon,
   ArrowUpIcon,
+  ChartGanttIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  CircleCheckIcon,
   Columns3Icon,
-  CopyIcon,
   ExternalLinkIcon,
-  FolderGit2Icon,
-  GitBranchIcon,
+  LinkIcon,
   ListFilterIcon,
   MoreHorizontalIcon,
   PauseIcon,
   PlayIcon,
-  RotateCcwIcon,
+  PlusIcon,
   SearchIcon,
-  TerminalIcon,
   Trash2Icon,
   XIcon,
   type LucideIcon,
 } from "lucide-react"
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -43,6 +44,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
+import { Progress } from "@/components/ui/progress"
 import {
   Table,
   TableBody,
@@ -55,20 +57,23 @@ import { toast } from "@/components/ui/toast"
 import { cn } from "@/lib/utils"
 import {
   defaultProjects,
+  formatDue,
+  isActiveProject,
   projectStatuses,
   type ProjectRow,
   type ProjectStatus,
 } from "@/components/blocks/data-table/data"
 import { StatusBadge } from "@/components/blocks/data-table/status-badge"
+import { personTone } from "@/components/blocks/members-list/people"
 
-export { defaultProjects, projectStatuses, type ProjectRow, type ProjectStatus }
+export { defaultProjects, formatDue, isActiveProject, projectStatuses, type ProjectRow, type ProjectStatus }
 export { StatusBadge } from "@/components/blocks/data-table/status-badge"
 
-type SortKey = "name" | "status" | "requests" | "updated"
-type OptionalColumn = "framework" | "region" | "requests" | "updated"
+type SortKey = "name" | "status" | "progress" | "due" | "updated"
+type OptionalColumn = "lead" | "progress" | "due" | "updated"
 
 export interface DataTableProps {
-  /** Rows to show. Defaults to the Lumen projects of Acme Inc. */
+  /** Rows to show. Defaults to the 26 projects of the Acme Inc. workspace. */
   rows?: ProjectRow[]
   /** Rows per page. */
   pageSize?: number
@@ -77,8 +82,8 @@ export interface DataTableProps {
   /** What one row is called, for counts and messages. */
   noun?: { one: string; other: string }
   /**
-   * "compact" sets rows at --table-row-height-sm on one line each (no
-   * repository or branch line), for tables that share a page.
+   * "compact" sets rows at --table-row-height-sm on one line each (no team
+   * line under the name), for tables that share a page.
    */
   density?: "default" | "compact"
   /** Heading of the empty state when there are no rows at all. Defaults to "No projects yet". */
@@ -86,7 +91,7 @@ export interface DataTableProps {
   /** What to do next, under the empty heading. */
   emptyDescription?: string
   /**
-   * The empty state's primary action. Defaults to Import repository for
+   * The empty state's primary action. Defaults to Create project for
    * projects; pass null to leave it out.
    */
   emptyAction?: DataTableEmptyAction | null
@@ -104,31 +109,37 @@ export interface DataTableEmptyAction {
 const defaultNoun = { one: "project", other: "projects" }
 
 const defaultEmptyAction: DataTableEmptyAction = {
-  label: "Import repository",
-  href: "/live/onboarding",
-  icon: FolderGit2Icon,
+  label: "Create project",
+  href: "/live/onboarding?step=template",
+  icon: PlusIcon,
 }
 
 const columnLabels: Record<OptionalColumn, string> = {
-  framework: "Framework",
-  region: "Region",
-  requests: "Requests (24h)",
-  updated: "Last deploy",
+  due: "Due date",
+  progress: "Progress",
+  lead: "Lead",
+  updated: "Updated",
 }
 
+/** Status sorts by urgency: the projects that need attention come first. */
 const statusOrder: Record<ProjectStatus, number> = {
-  failed: 0,
-  building: 1,
-  ready: 2,
+  "off-track": 0,
+  "at-risk": 1,
+  "on-track": 2,
   paused: 3,
+  completed: 4,
 }
 
-/** Three significant figures everywhere, so 101K sits next to 64.2K, 45.6K and 4.31K. */
-const compact = new Intl.NumberFormat("en-US", {
-  notation: "compact",
-  minimumSignificantDigits: 3,
-  maximumSignificantDigits: 3,
-})
+const progressOf = (row: ProjectRow) => (row.total > 0 ? row.done / row.total : 0)
+
+function initialsOf(name: string) {
+  return name
+    .split(/\s+/)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase()
+}
 
 /** Header cells share the small row height token. */
 const headCell = "h-(--table-row-height-sm)"
@@ -178,16 +189,19 @@ function SortHeader({
  * Columns menu still decides which of them show once there is room.
  */
 const columnFrom: Record<OptionalColumn, string> = {
-  updated: "hidden @min-[34rem]/table:table-cell",
-  requests: "hidden @min-[44rem]/table:table-cell",
-  framework: "hidden @min-[52rem]/table:table-cell",
-  region: "hidden @min-[60rem]/table:table-cell",
+  due: "hidden @min-[34rem]/table:table-cell",
+  progress: "hidden @min-[44rem]/table:table-cell",
+  lead: "hidden @min-[52rem]/table:table-cell",
+  updated: "hidden @min-[60rem]/table:table-cell",
 }
 
 /*
- * Below 28rem of table width the cells tighten and the repository name
- * truncates, so checkbox, project, status and the row menu fit a phone slot.
+ * Below 28rem of table width the cells tighten, the project name wraps and
+ * the team name truncates, so the status badge keeps its full width. Below
+ * 20rem the checkbox column steps out too, leaving project, status and the
+ * row menu in a narrow phone slot.
  */
+const selectColumn = "hidden @min-[20rem]/table:table-cell"
 
 /**
  * The row menu stays pinned to the right edge if the table ever scrolls, with
@@ -206,8 +220,8 @@ function ariaSort(
 
 /**
  * Projects table with search, a status filter, column visibility, sortable
- * headers, row selection with bulk actions, row menus and pagination. Plain
- * React state, no table library.
+ * headers, row selection with a bulk archive, row menus and pagination.
+ * Plain React state, no table library.
  */
 export function DataTable({
   rows = defaultProjects,
@@ -228,7 +242,7 @@ export function DataTable({
     description:
       emptyDescription ??
       (projects
-        ? "Import a repository and Lumen builds and deploys it as your first project."
+        ? "Start from a template such as Product roadmap, or create a blank project and add tasks as you go."
         : `Add your first ${noun.one} and it shows up here.`),
     action:
       emptyAction === undefined
@@ -251,9 +265,9 @@ export function DataTable({
   const [selected, setSelected] = React.useState<Set<string>>(() => new Set())
   const [columns, setColumns] = React.useState<Record<OptionalColumn, boolean>>(
     () => ({
-      framework: !hiddenColumns.includes("framework"),
-      region: !hiddenColumns.includes("region"),
-      requests: !hiddenColumns.includes("requests"),
+      due: !hiddenColumns.includes("due"),
+      progress: !hiddenColumns.includes("progress"),
+      lead: !hiddenColumns.includes("lead"),
       updated: !hiddenColumns.includes("updated"),
     })
   )
@@ -263,7 +277,7 @@ export function DataTable({
     return data.filter((row) => {
       if (statuses.length > 0 && !statuses.includes(row.status)) return false
       if (!needle) return true
-      return [row.name, row.repo, row.framework, row.region, row.branch].some(
+      return [row.name, row.team, row.lead].some(
         (value) => value.toLowerCase().includes(needle)
       )
     })
@@ -278,8 +292,10 @@ export function DataTable({
           return a.name.localeCompare(b.name) * factor
         case "status":
           return (statusOrder[a.status] - statusOrder[b.status]) * factor
-        case "requests":
-          return (a.requests - b.requests) * factor
+        case "progress":
+          return (progressOf(a) - progressOf(b)) * factor
+        case "due":
+          return a.due.localeCompare(b.due) * factor
         case "updated":
           // Ascending is oldest first, like a timestamp; fewer minutes ago is newer.
           return (b.updatedMinutes - a.updatedMinutes) * factor
@@ -305,7 +321,7 @@ export function DataTable({
       if (!current || current.key !== key)
         return {
           key,
-          direction: key === "requests" || key === "updated" ? "desc" : "asc",
+          direction: key === "progress" || key === "updated" ? "desc" : "asc",
         }
       if (current.direction === "asc") return { key, direction: "desc" }
       return { key, direction: "asc" }
@@ -338,35 +354,49 @@ export function DataTable({
     setPage(1)
   }
 
-  function redeploy(ids: string[]) {
-    setData((current) =>
-      current.map((row) =>
-        ids.includes(row.id) && row.status !== "paused"
-          ? {
-              ...row,
-              status: "building",
-              updated: "Just now",
-              updatedMinutes: 0,
-            }
-          : row
-      )
-    )
+  function archive(ids: string[]) {
+    const archived = data.filter((row) => ids.includes(row.id))
+    if (archived.length === 0) return
+    setData((current) => current.filter((row) => !ids.includes(row.id)))
+    setSelected(new Set())
     toast.add({
       title:
-        ids.length === 1
-          ? "Redeploy started"
-          : `Redeploying ${ids.length} ${label(ids.length)}`,
-      description:
-        "Builds run in parallel. You will get a notification when they finish.",
+        archived.length === 1
+          ? `Archived ${archived[0].name}`
+          : `Archived ${archived.length} ${label(archived.length)}`,
+      description: "Their tasks, docs and comments are kept. Restore them from the archive at any time.",
+      actionProps: {
+        children: "Undo",
+        onClick: () =>
+          setData((current) => [
+            ...current,
+            ...archived.filter((row) => !current.some((item) => item.id === row.id)),
+          ]),
+      },
     })
   }
 
-  function setPaused(id: string, paused: boolean) {
+  function update(id: string, patch: Partial<ProjectRow>) {
     setData((current) =>
       current.map((row) =>
-        row.id === id ? { ...row, status: paused ? "paused" : "ready" } : row
+        row.id === id
+          ? { ...row, ...patch, updated: "Just now", updatedMinutes: 0 }
+          : row
       )
     )
+  }
+
+  function complete(row: ProjectRow) {
+    update(row.id, { status: "completed", done: row.total })
+    toast.add({
+      title: `${row.name} is complete`,
+      description: "Open tasks were marked done and its automations stopped.",
+      type: "success",
+    })
+  }
+
+  function setPaused(row: ProjectRow, paused: boolean) {
+    update(row.id, { status: paused ? "paused" : "on-track" })
   }
 
   function remove(row: ProjectRow) {
@@ -378,15 +408,15 @@ export function DataTable({
     })
     toast.add({
       title: `Deleted ${row.name}`,
-      description: "Its deployments and domains were removed.",
+      description: `Its ${row.total} tasks, docs and automations were removed.`,
     })
   }
 
-  function copyUrl(row: ProjectRow) {
-    const url = `https://${row.name}.acme.dev`
+  function copyLink(row: ProjectRow) {
+    const url = `https://app.acme.com/acme/projects/${row.id}`
     void navigator.clipboard?.writeText(url).catch(() => undefined)
     toast.add({
-      title: "Copied the production URL",
+      title: "Copied the project link",
       description: url,
       type: "success",
     })
@@ -439,10 +469,10 @@ export function DataTable({
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={() => redeploy([...selected])}
+                  onClick={() => archive([...selected])}
                 >
-                  <RotateCcwIcon data-icon="inline-start" />
-                  Redeploy
+                  <ArchiveIcon data-icon="inline-start" />
+                  Archive
                 </Button>
                 <Button
                   size="sm"
@@ -557,7 +587,8 @@ export function DataTable({
                   className={cn(
                     headCell,
                     "w-10 pl-3",
-                    "@min-[28rem]/table:w-12 @min-[28rem]/table:pl-4"
+                    "@min-[28rem]/table:w-12 @min-[28rem]/table:pl-4",
+                    selectColumn
                   )}
                 >
                   <Checkbox
@@ -571,8 +602,8 @@ export function DataTable({
                 <TableHead
                   className={cn(
                     headCell,
-                    "pr-2 pl-3 font-semibold text-muted-foreground",
-                    "@min-[28rem]/table:px-3"
+                    "pr-2 pl-4 font-semibold text-muted-foreground",
+                    "@min-[20rem]/table:pl-3 @min-[28rem]/table:px-3"
                   )}
                   aria-sort={ariaSort(sort, "name")}
                 >
@@ -586,7 +617,7 @@ export function DataTable({
                 <TableHead
                   className={cn(
                     headCell,
-                    "px-2 font-semibold text-muted-foreground",
+                    "w-px px-2 font-semibold text-muted-foreground",
                     "@min-[28rem]/table:px-3"
                   )}
                   aria-sort={ariaSort(sort, "status")}
@@ -598,45 +629,48 @@ export function DataTable({
                     onSort={toggleSort}
                   />
                 </TableHead>
-                {columns.framework ? (
+                {columns.progress ? (
                   <TableHead
                     className={cn(
                       headCell,
                       "px-3 font-semibold text-muted-foreground",
-                      columnFrom.framework
+                      columnFrom.progress
                     )}
-                  >
-                    <span className="text-caption font-semibold">
-                      Framework
-                    </span>
-                  </TableHead>
-                ) : null}
-                {columns.region ? (
-                  <TableHead
-                    className={cn(
-                      headCell,
-                      "px-3 font-semibold text-muted-foreground",
-                      columnFrom.region
-                    )}
-                  >
-                    <span className="text-caption font-semibold">Region</span>
-                  </TableHead>
-                ) : null}
-                {columns.requests ? (
-                  <TableHead
-                    className={cn(
-                      headCell,
-                      "px-3 text-right font-semibold text-muted-foreground",
-                      columnFrom.requests
-                    )}
-                    aria-sort={ariaSort(sort, "requests")}
+                    aria-sort={ariaSort(sort, "progress")}
                   >
                     <SortHeader
-                      label="Requests (24h)"
-                      column="requests"
+                      label="Progress"
+                      column="progress"
                       sort={sort}
                       onSort={toggleSort}
-                      align="end"
+                    />
+                  </TableHead>
+                ) : null}
+                {columns.lead ? (
+                  <TableHead
+                    className={cn(
+                      headCell,
+                      "px-3 font-semibold text-muted-foreground",
+                      columnFrom.lead
+                    )}
+                  >
+                    <span className="text-caption font-semibold">Lead</span>
+                  </TableHead>
+                ) : null}
+                {columns.due ? (
+                  <TableHead
+                    className={cn(
+                      headCell,
+                      "px-3 font-semibold text-muted-foreground",
+                      columnFrom.due
+                    )}
+                    aria-sort={ariaSort(sort, "due")}
+                  >
+                    <SortHeader
+                      label="Due date"
+                      column="due"
+                      sort={sort}
+                      onSort={toggleSort}
                     />
                   </TableHead>
                 ) : null}
@@ -650,7 +684,7 @@ export function DataTable({
                     aria-sort={ariaSort(sort, "updated")}
                   >
                     <SortHeader
-                      label="Last deploy"
+                      label="Updated"
                       column="updated"
                       sort={sort}
                       onSort={toggleSort}
@@ -683,7 +717,9 @@ export function DataTable({
                         : "h-(--table-row-height)"
                     )}
                   >
-                    <TableCell className="pl-3 @min-[28rem]/table:pl-4">
+                    <TableCell
+                      className={cn("pl-3 @min-[28rem]/table:pl-4", selectColumn)}
+                    >
                       <Checkbox
                         aria-label={`Select ${row.name}`}
                         checked={isSelected}
@@ -695,8 +731,9 @@ export function DataTable({
                     <TableCell
                       className={cn(
                         dense ? "py-1.5" : "py-2.5",
-                        "pr-2 pl-3",
-                        "@min-[28rem]/table:px-3"
+                        "min-w-0 pr-2 pl-4 break-words whitespace-normal",
+                        "@min-[20rem]/table:pl-3",
+                        "@min-[28rem]/table:px-3 @min-[28rem]/table:whitespace-nowrap"
                       )}
                     >
                       <div className="grid gap-0.5">
@@ -711,11 +748,11 @@ export function DataTable({
                         {dense ? null : (
                           <span
                             className={cn(
-                              "block max-w-24 truncate font-mono text-xs text-muted-foreground",
+                              "block max-w-24 truncate text-caption text-muted-foreground",
                               "@min-[22rem]/table:max-w-32 @min-[28rem]/table:max-w-none"
                             )}
                           >
-                            {row.repo}
+                            {row.team}
                           </span>
                         )}
                       </div>
@@ -723,61 +760,58 @@ export function DataTable({
                     <TableCell
                       className={cn(
                         dense ? "py-1.5" : "py-2.5",
-                        "px-2 @min-[28rem]/table:px-3"
+                        "w-px px-2 whitespace-nowrap @min-[28rem]/table:px-3"
                       )}
                     >
-                      <div className="grid justify-items-start gap-1">
+                      {/* Flex, not grid: a grid lets the badge (overflow-hidden) shrink below its label. */}
+                      <div className="flex flex-col items-start gap-1">
                         <StatusBadge status={row.status} />
-                        {/* Until the Last deploy column fits, its time sits under the status. */}
-                        {columns.updated && !dense ? (
-                          <span className="text-caption text-muted-foreground @min-[34rem]/table:hidden">
-                            {row.updated}
+                        {/* Until the Due date column fits, the date sits under the status. */}
+                        {columns.due && !dense ? (
+                          <span className="text-caption whitespace-nowrap text-muted-foreground @min-[34rem]/table:hidden">
+                            Due {formatDue(row.due)}
                           </span>
                         ) : null}
                       </div>
                     </TableCell>
-                    {columns.framework ? (
-                      <TableCell
-                        className={cn("px-3 text-copy", columnFrom.framework)}
-                      >
-                        {row.framework}
+                    {columns.progress ? (
+                      <TableCell className={cn("px-3", columnFrom.progress)}>
+                        <div className="flex items-center gap-3">
+                          <Progress
+                            value={Math.round(progressOf(row) * 100)}
+                            aria-label={`${row.name}: ${row.done} of ${row.total} tasks done`}
+                            className="w-20 gap-0"
+                          />
+                          <span className="text-caption whitespace-nowrap text-muted-foreground tabular">
+                            {row.done}/{row.total}
+                          </span>
+                        </div>
                       </TableCell>
                     ) : null}
-                    {columns.region ? (
-                      <TableCell
-                        className={cn("px-3 text-copy", columnFrom.region)}
-                      >
-                        {row.region}
+                    {columns.lead ? (
+                      <TableCell className={cn("px-3", columnFrom.lead)}>
+                        <div className="flex items-center gap-2.5">
+                          <Avatar size="sm">
+                            <AvatarFallback tone={personTone(row.lead)}>
+                              {initialsOf(row.lead)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-copy whitespace-nowrap">{row.lead}</span>
+                        </div>
                       </TableCell>
                     ) : null}
-                    {columns.requests ? (
+                    {columns.due ? (
                       <TableCell
-                        className={cn(
-                          "px-3 text-right text-foreground tabular",
-                          columnFrom.requests
-                        )}
+                        className={cn("px-3 whitespace-nowrap text-copy tabular", columnFrom.due)}
                       >
-                        {row.requests === 0 ? (
-                          <span className="text-muted-foreground">0</span>
-                        ) : (
-                          compact.format(row.requests)
-                        )}
+                        <time dateTime={row.due}>{formatDue(row.due)}</time>
                       </TableCell>
                     ) : null}
                     {columns.updated ? (
-                      <TableCell className={cn("px-3", columnFrom.updated)}>
-                        <div className="grid gap-0.5">
-                          <span className="text-copy">{row.updated}</span>
-                          {dense ? null : (
-                            <span className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground">
-                              <GitBranchIcon
-                                aria-hidden="true"
-                                className="size-3"
-                              />
-                              {row.branch}
-                            </span>
-                          )}
-                        </div>
+                      <TableCell
+                        className={cn("px-3 whitespace-nowrap text-copy", columnFrom.updated)}
+                      >
+                        {row.updated}
                       </TableCell>
                     ) : null}
                     <TableCell
@@ -807,41 +841,46 @@ export function DataTable({
                               <ExternalLinkIcon />
                               Open project
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => copyUrl(row)}>
-                              <CopyIcon />
-                              Copy production URL
-                            </DropdownMenuItem>
                             <DropdownMenuItem
                               render={<Link href="/live/app/projects" />}
                             >
-                              <TerminalIcon />
-                              View logs
+                              <ChartGanttIcon />
+                              Open timeline
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => copyLink(row)}>
+                              <LinkIcon />
+                              Copy link
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
                           <DropdownMenuSeparator />
                           <DropdownMenuGroup>
                             <DropdownMenuItem
-                              disabled={row.status === "paused"}
-                              onClick={() => redeploy([row.id])}
+                              disabled={row.status === "completed"}
+                              onClick={() => complete(row)}
                             >
-                              <RotateCcwIcon />
-                              Redeploy
+                              <CircleCheckIcon />
+                              Mark as complete
                             </DropdownMenuItem>
                             {row.status === "paused" ? (
                               <DropdownMenuItem
-                                onClick={() => setPaused(row.id, false)}
+                                onClick={() => setPaused(row, false)}
                               >
                                 <PlayIcon />
                                 Resume
                               </DropdownMenuItem>
                             ) : (
                               <DropdownMenuItem
-                                onClick={() => setPaused(row.id, true)}
+                                disabled={row.status === "completed"}
+                                onClick={() => setPaused(row, true)}
                               >
                                 <PauseIcon />
                                 Pause
                               </DropdownMenuItem>
                             )}
+                            <DropdownMenuItem onClick={() => archive([row.id])}>
+                              <ArchiveIcon />
+                              Archive
+                            </DropdownMenuItem>
                           </DropdownMenuGroup>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem

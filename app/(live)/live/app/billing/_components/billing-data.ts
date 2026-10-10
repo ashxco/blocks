@@ -1,42 +1,44 @@
 import type { BillingPlan, PaymentMethod, UsageMeter } from "@/components/blocks/billing-summary"
 
-/** A plan as the billing page shows it: the BillingSummary plan plus what it includes. */
-export interface LumenPlan extends BillingPlan {
+/** A plan as the billing page shows it: the BillingSummary plan plus its monthly price and what it includes. */
+export interface PlanOption extends BillingPlan {
+  /** Price per member per month when billed monthly instead of annually. */
+  monthlyPrice: number
   highlights: string[]
 }
 
-/** Prices and limits match the Lumen pricing page. */
-export const LUMEN_PLANS: LumenPlan[] = [
+/** Prices and limits match the pricing page. Enterprise is sold through sales, below the picker. */
+export const PLAN_OPTIONS: PlanOption[] = [
   {
-    id: "hobby",
-    name: "Hobby",
-    price: 5,
-    description: "Side projects and experiments.",
-    seats: 1,
-    highlights: ["3 projects", "500 build minutes", "100 GB bandwidth", "1 GB Postgres, weekly backups", "Community support"],
-  },
-  {
-    id: "starter",
-    name: "Starter",
-    price: 20,
-    description: "Your first app in production.",
+    id: "free",
+    name: "Free",
+    price: 0,
+    monthlyPrice: 0,
+    description: "5 projects and 1,000 automation runs a month.",
     seats: 3,
-    highlights: ["Unlimited projects", "3,000 build minutes", "500 GB bandwidth", "5 custom domains", "Daily backups, email support"],
+    highlights: ["Up to 3 members", "5 projects", "1,000 automation runs a month", "2 GB storage"],
   },
   {
     id: "pro",
     name: "Pro",
-    price: 39,
-    description: "Production apps that need room to grow.",
-    seats: 10,
-    highlights: ["10,000 build minutes", "1 TB bandwidth", "Unlimited custom domains", "Hourly backups, 30-day logs", "Priority support"],
+    price: 12,
+    monthlyPrice: 15,
+    description: "Unlimited projects, guests and integrations.",
+    highlights: ["Unlimited projects", "10,000 automation runs a month", "100 GB storage", "Guests and integrations"],
   },
   {
-    id: "scale",
-    name: "Scale",
-    price: 99,
-    description: "Teams running serious traffic.",
-    highlights: ["Unlimited build minutes", "5 TB bandwidth", "SAML single sign-on and audit log", "Dedicated build machines", "99.99% uptime SLA"],
+    id: "business",
+    name: "Business",
+    price: 24,
+    monthlyPrice: 29,
+    description: "SSO, audit log and 50,000 automation runs.",
+    highlights: [
+      "Everything in Pro",
+      "SSO/SAML and advanced permissions",
+      "Audit log",
+      "50,000 automation runs and 1 TB storage",
+      "99.9% uptime SLA",
+    ],
   },
 ]
 
@@ -48,28 +50,30 @@ export const PERIOD_LABEL = "October 1 to 31, 2026. Resets in 23 days."
 export const DAYS_IN_PERIOD = 31
 export const DAYS_LEFT = 23
 
-/** People in Acme Inc. plus pending invites, which hold a seat. Matches the team page. */
-export const SEATS_IN_USE = 8
+/** Seats on the plan: one for each of the 18 members on the team page. Guests are free. */
+export const SEATS = 18
 
-/** Limits match Pro on the pricing page; build minutes match the usage panel in the app sidebar. */
+/** Limits match Pro on the pricing page; automation runs match the usage panel in the app sidebar. */
 export const USAGE: UsageMeter[] = [
-  { id: "build-minutes", label: "Build minutes", used: 7240, limit: 10_000, unit: "min" },
-  { id: "bandwidth", label: "Bandwidth", used: 412, limit: 1000, unit: "GB" },
-  { id: "invocations", label: "Function invocations", used: 3_180_000, limit: 5_000_000 },
-  { id: "storage", label: "Database storage", used: 18.6, limit: 50, unit: "GB" },
+  { id: "automation-runs", label: "Automation runs", used: 7240, limit: 10_000, unit: "runs" },
+  { id: "storage", label: "Storage", used: 42, limit: 100, unit: "GB" },
+  { id: "guests", label: "Guests", used: 6, limit: 10 },
 ]
 
 export const PAYMENT_METHOD: PaymentMethod = {
   brand: "Visa",
   last4: "4242",
   expires: "08/2028",
-  email: "billing@acme.dev",
+  email: "lucas@acme.com",
   billedTo: "Acme Inc.",
 }
 
-/** What switching now costs for the rest of the period, rounded to cents. */
+/** The monthly charge for a plan at today’s seats. */
+export const monthlyTotal = (plan: BillingPlan) => plan.price * SEATS
+
+/** What switching now costs for the rest of the period, for every seat, rounded to cents. */
 export function proratedCharge(from: BillingPlan, to: BillingPlan) {
-  const difference = Math.max(0, to.price - from.price)
+  const difference = Math.max(0, to.price - from.price) * SEATS
   return Math.round(((difference * DAYS_LEFT) / DAYS_IN_PERIOD) * 100) / 100
 }
 

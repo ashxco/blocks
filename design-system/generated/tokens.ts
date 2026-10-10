@@ -3,6 +3,11 @@
 
 export type TokenTier = "primitive" | "semantic" | "typography" | "layout" | "component"
 
+export type Breakpoint = "sm" | "md" | "lg" | "xl" | "2xl"
+
+/** System breakpoints, smallest first, with the viewport width each starts at. */
+export const breakpoints: readonly { name: Breakpoint; min: string }[] = [{"name":"sm","min":"40rem"},{"name":"md","min":"48rem"},{"name":"lg","min":"64rem"},{"name":"xl","min":"80rem"},{"name":"2xl","min":"96rem"}]
+
 export interface DesignToken {
   /** Dot path in the token source, e.g. "color.brand". */
   name: string
@@ -18,6 +23,12 @@ export interface DesignToken {
   ref?: string
   /** Dark-mode value for semantic tokens. */
   dark?: { value: unknown; ref?: string }
+  /**
+   * Values from a breakpoint up, for tokens that change with the viewport.
+   * `value` is the base (phones); each entry is the full value from that
+   * breakpoint's min width until the next one listed.
+   */
+  breakpoints?: Partial<Record<Breakpoint, unknown>>
   /** How to use it in Tailwind. */
   utility?: string
   description?: string
@@ -1153,12 +1164,12 @@ export const tokens: DesignToken[] = [
     "tier": "semantic",
     "group": "lines & focus",
     "type": "color",
-    "value": "oklch(0.135 0.008 286 / 0.28)",
+    "value": "oklch(0.135 0.008 286 / 0.2)",
     "dark": {
       "value": "oklch(0 0 0 / 0.6)"
     },
     "utility": "bg-overlay",
-    "description": "Backdrop behind dialogs and sheets."
+    "description": "Backdrop behind dialogs and sheets. Pair with backdrop-blur-glass."
   },
   {
     "name": "color.panel",
@@ -1870,6 +1881,41 @@ export const tokens: DesignToken[] = [
     },
     "utility": "text-label",
     "description": "Form labels, buttons and navigation."
+  },
+  {
+    "name": "type.control",
+    "cssVar": "--text-control",
+    "tier": "typography",
+    "group": "roles",
+    "type": "typography",
+    "value": {
+      "fontFamily": [
+        "var(--font-jakarta)",
+        "ui-sans-serif",
+        "system-ui",
+        "sans-serif"
+      ],
+      "fontSize": "1rem",
+      "fontWeight": 400,
+      "letterSpacing": "0em",
+      "lineHeight": "1.6"
+    },
+    "breakpoints": {
+      "md": {
+        "fontFamily": [
+          "var(--font-jakarta)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif"
+        ],
+        "fontSize": "0.875rem",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": "1.45"
+      }
+    },
+    "utility": "text-control",
+    "description": "Text typed into inputs, selects, comboboxes and textareas. 16px on phones, so iOS does not zoom into a focused field, and 14px from md up."
   },
   {
     "name": "type.caption",
@@ -3171,5 +3217,31 @@ export const tokens: DesignToken[] = [
 
 export const tokensByTier = (tier: TokenTier) => tokens.filter((t) => t.tier === tier)
 
+/**
+ * The CSS variables that change with the viewport: every one at its base
+ * value, and the ones each breakpoint overrides from its min width up.
+ * tokens.css applies them with @media; device previews in the viewer apply
+ * them for the previewed width, which media queries cannot see.
+ */
+export const responsiveVars: {
+  base: Record<string, string>
+  breakpoints: readonly { name: Breakpoint; min: string; vars: Record<string, string> }[]
+} = {
+  "base": {
+    "--text-control": "1rem",
+    "--text-control--line-height": "1.6"
+  },
+  "breakpoints": [
+    {
+      "name": "md",
+      "min": "48rem",
+      "vars": {
+        "--text-control": "0.875rem",
+        "--text-control--line-height": "1.45"
+      }
+    }
+  ]
+}
+
 /** Type role names (text-<role> utilities). Used by cn() so roles merge as font sizes. */
-export const typeRoles = ["hero","display","h1","h2","h3","h4","title","lead","body","label","caption","code"] as const
+export const typeRoles = ["hero","display","h1","h2","h3","h4","title","lead","body","label","control","caption","code"] as const

@@ -48,8 +48,11 @@ export interface ChartCardProps {
   seriesLabel?: string
   /** Draw the previous period as a dashed line (area charts only). */
   showComparison?: boolean
-  /** How values are formatted in the summary, axis and tooltip. */
-  valueFormat?: "compact" | "number" | "ms" | "percent"
+  /**
+   * How values are formatted in the summary, axis and tooltip. "days" and
+   * "percent" average over the period; the others sum.
+   */
+  valueFormat?: "compact" | "number" | "days" | "percent"
   /**
    * Which chart token colours the series. "ink" draws it in a neutral grey,
    * for single-series charts that sit next to the one brand chart.
@@ -108,21 +111,55 @@ function seeded(seed: number) {
   }
 }
 
+/**
+ * Whole numbers that keep the shape of `values` and add up to exactly
+ * `total`: scaled, rounded down, then the remainder goes to the largest
+ * fractions.
+ */
+function fitToTotal(values: number[], total: number) {
+  const sum = values.reduce((a, b) => a + b, 0) || 1
+  const scaled = values.map((value) => (value * total) / sum)
+  const floors = scaled.map(Math.floor)
+  let remainder = total - floors.reduce((a, b) => a + b, 0)
+  const order = scaled
+    .map((value, index) => ({ index, fraction: value - Math.floor(value) }))
+    .sort((a, b) => b.fraction - a.fraction)
+  for (const { index } of order) {
+    if (remainder <= 0) break
+    floors[index] += 1
+    remainder -= 1
+  }
+  return floors
+}
+
+/**
+ * Tasks completed per day in Acme Inc. for the 90 days to October 9, 2026,
+ * today in the sample data, with the same days of the period before. Weekends
+ * are quiet. The last 30 days add up to 1,284, 12% more than the 30 before
+ * them, as on the dashboard.
+ */
 function buildDefaultData(): ChartPoint[] {
-  const random = seeded(20261006)
-  // Today in the Lumen data set is October 9 (billing, uptime and activity agree).
+  const random = seeded(20261009)
   const end = Date.UTC(2026, 9, 9)
   const day = 24 * 60 * 60 * 1000
-  return Array.from({ length: 90 }, (_, index) => {
+  const raw = Array.from({ length: 90 }, (_, index) => {
     const time = end - (89 - index) * day
     const weekday = new Date(time).getUTCDay()
-    const weekend = weekday === 0 || weekday === 6 ? 0.72 : 1
-    const growth = 1 + index * 0.0045
-    const value = Math.round(268000 * growth * weekend * (0.9 + random() * 0.2))
-    const previous = Math.round(
-      242000 * (1 + index * 0.002) * weekend * (0.9 + random() * 0.2)
-    )
-    return { date: new Date(time).toISOString().slice(0, 10), value, previous }
+    const weekend = weekday === 0 || weekday === 6 ? 0.6 : 1
+    return {
+      date: new Date(time).toISOString().slice(0, 10),
+      value: 46 * (1 + index * 0.002) * weekend * (0.9 + random() * 0.2),
+      previous: 42 * (1 + index * 0.0015) * weekend * (0.9 + random() * 0.2),
+    }
+  })
+  const recent = raw.slice(-30)
+  const value = fitToTotal(recent.map((point) => point.value), 1284)
+  const previous = fitToTotal(recent.map((point) => point.previous), 1146)
+  return raw.map((point, index) => {
+    const offset = index - 60
+    return offset >= 0
+      ? { date: point.date, value: value[offset], previous: previous[offset] }
+      : { date: point.date, value: Math.round(point.value), previous: Math.round(point.previous) }
   })
 }
 
@@ -143,8 +180,8 @@ function formatValue(
   switch (format) {
     case "number":
       return numberFormat.format(value)
-    case "ms":
-      return `${numberFormat.format(value)} ms`
+    case "days":
+      return `${value.toLocaleString("en-US", { maximumFractionDigits: 1 })} days`
     case "percent":
       return `${value.toLocaleString("en-US", { maximumFractionDigits: 2 })}%`
     default:
@@ -182,7 +219,7 @@ function formatDay(date: string, long = false) {
  * A titled chart with a 7, 30 and 90 day switch, a summary figure and the
  * change against the previous period. Fills are flat (a 6% wash under areas);
  * colours come from the chart tokens. Axis ticks are round numbers from zero.
- * Rendered with no props it shows Lumen edge requests.
+ * Rendered with no props it shows the tasks Acme Inc. completed each day.
  *
  * Series draw without Recharts' entry animation. That animation reveals the
  * series through a clip path driven by requestAnimationFrame, which ignores
@@ -190,15 +227,15 @@ function formatDay(date: string, long = false) {
  * previews, screenshots), leaving only the comparison line on screen.
  */
 export function ChartCard({
-  title = "Edge requests",
-  description = "Requests served across every project and region.",
+  title = "Tasks completed",
+  description = "Tasks marked done each day, across every project.",
   type = "area",
   data = defaultData,
   defaultPeriod = "30d",
   periods = ["7d", "30d", "90d"],
-  seriesLabel = "Requests",
+  seriesLabel = "Tasks",
   showComparison = true,
-  valueFormat = "compact",
+  valueFormat = "number",
   color = 1,
   goodWhen = "up",
   className,
@@ -212,7 +249,7 @@ export function ChartCard({
     [data, period]
   )
 
-  const averaged = valueFormat === "ms" || valueFormat === "percent"
+  const averaged = valueFormat === "days" || valueFormat === "percent"
   const reduce = (key: "value" | "previous") => {
     const values = visible.map((point) => point[key] ?? 0)
     const sum = values.reduce((total, value) => total + value, 0)
@@ -253,8 +290,8 @@ export function ChartCard({
     ticks,
     domain: [0, ticks[ticks.length - 1]] as [number, number],
     interval: 0 as const,
-    // Units make the labels longer: give them room so "140 ms" stays on one line.
-    width: valueFormat === "ms" || valueFormat === "percent" ? 60 : 48,
+    // Units make the labels longer: give them room so "4 days" stays on one line.
+    width: valueFormat === "days" || valueFormat === "percent" ? 60 : 48,
     tickFormatter: (value: number) =>
       formatValue(value, valueFormat === "number" ? "compact" : valueFormat),
   }

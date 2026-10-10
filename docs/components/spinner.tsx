@@ -62,7 +62,7 @@ export default function SpinnerDocs() {
       <Example title="On a panel" surface="panel" description="On dark panels it inherits the panel text colour.">
         <span className="inline-flex items-center gap-3 text-sm font-semibold text-panel-foreground">
           <Spinner />
-          Provisioning lumen-prod-db
+          Importing 284 tasks
         </span>
       </Example>
 
@@ -71,12 +71,12 @@ export default function SpinnerDocs() {
         description="Replace the leading icon with a spinner while the action runs, and disable the button."
         code={`<Button disabled>
   <Spinner data-icon="inline-start" />
-  Deploying
+  Sending invites
 </Button>`}
       >
         <Button disabled>
           <Spinner data-icon="inline-start" />
-          Deploying
+          Sending invites
         </Button>
         <Button variant="outline" disabled>
           <Spinner data-icon="inline-start" />
@@ -84,7 +84,7 @@ export default function SpinnerDocs() {
         </Button>
         <Badge variant="info">
           <Spinner className="size-3" />
-          Building
+          Importing
         </Badge>
       </Example>
 
@@ -96,17 +96,17 @@ export default function SpinnerDocs() {
         <ul className="divide-y overflow-hidden rounded-(--card-radius) border bg-card">
           <li className="flex items-center justify-between gap-4 px-5 py-4">
             <div className="grid gap-0.5">
-              <p className="text-title text-foreground">api.lumen.app</p>
-              <p className="text-sm text-muted-foreground">Issuing certificate</p>
+              <p className="text-title text-foreground">Google Drive</p>
+              <p className="text-sm text-muted-foreground">Syncing 2 shared folders</p>
             </div>
-            <Spinner className="text-muted-foreground" aria-label="Issuing certificate" />
+            <Spinner className="text-muted-foreground" aria-label="Syncing Google Drive" />
           </li>
           <li className="flex items-center justify-between gap-4 px-5 py-4">
             <div className="grid gap-0.5">
-              <p className="text-title text-foreground">docs.lumen.app</p>
-              <p className="text-sm text-muted-foreground">Waiting for DNS to propagate</p>
+              <p className="text-title text-foreground">Slack</p>
+              <p className="text-sm text-muted-foreground">Waiting for a Slack admin to approve the app</p>
             </div>
-            <Spinner className="text-muted-foreground" aria-label="Waiting for DNS" />
+            <Spinner className="text-muted-foreground" aria-label="Waiting for Slack approval" />
           </li>
         </ul>
       </Example>

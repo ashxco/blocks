@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowUpIcon, FileSearchIcon, SunIcon } from "lucide-react"
+import { ArrowUpIcon, ChartColumnIcon, SparklesIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
@@ -24,21 +24,21 @@ type Turn =
   | { id: string; role: "marker"; text: string }
 
 const history: Turn[] = [
-  { id: "t1", role: "user", text: "How do preview deployments work?" },
-  { id: "t2", role: "assistant", text: "Every push to a branch other than main builds a preview. Each preview gets its own URL, which Lumen posts as a comment on the pull request and keeps until the branch is deleted." },
-  { id: "t3", role: "user", text: "Can previews use their own database?" },
-  { id: "t4", role: "marker", text: "Read Postgres branching in the docs" },
-  { id: "t5", role: "assistant", text: "Yes. Turn on Postgres branching in Settings, then Databases. Each preview gets a copy of production, with personal data masked, and the copy is deleted when the branch merges." },
-  { id: "t6", role: "user", text: "Do branch databases count towards my storage?" },
-  { id: "t7", role: "assistant", text: "Only the data that differs from production counts. A branch that reads but never writes costs almost nothing. You can see storage per branch on the Usage page." },
-  { id: "t8", role: "user", text: "And how long does a preview build usually take?" },
-  { id: "t9", role: "assistant", text: "Your last ten preview builds for lumen-web took 52 seconds on average. Builds reuse the cache from main, so the first build on a new branch is about as fast as the rest." },
+  { id: "t1", role: "user", text: "What’s left before Website relaunch goes live on Nov 14?" },
+  { id: "t2", role: "assistant", text: "Fourteen of 52 tasks are still open. One is blocked: “Fix the pricing table on mobile” is waiting on the final plan names from Hana Kim." },
+  { id: "t3", role: "user", text: "Who has the most on their plate this week?" },
+  { id: "t4", role: "marker", text: "Read the workload report" },
+  { id: "t5", role: "assistant", text: "Jordan Lee, with 18 open tasks across Website relaunch and Mobile app 2.0. Sofia Alvarez has 9, so she could take the pricing table fix." },
+  { id: "t6", role: "user", text: "Move it to Sofia and keep the due date." },
+  { id: "t7", role: "assistant", text: "Done. “Fix the pricing table on mobile” is now assigned to Sofia Alvarez and still due Oct 15. I left a comment on the task so Jordan knows." },
+  { id: "t8", role: "user", text: "Can you draft the agenda for Monday’s planning meeting?" },
+  { id: "t9", role: "assistant", text: "It’s in Docs as “Weekly planning, Oct 12”: blocked tasks first, then the launch checklist, then next week’s priorities. It should take about 30 minutes." },
 ]
 
 const answers = [
-  "Lumen keeps every deployment, so you can promote any earlier one to production from the Deployments page. Rolling back takes a few seconds and does not rebuild.",
-  "Open the project, then Settings, then Domains, and add the domain. Lumen shows the DNS record to create and issues the certificate as soon as the record resolves.",
-  "Build logs are kept for 30 days on the Pro plan and 90 days on Enterprise. You can export them to your own storage from Settings, then Log drains.",
+  "I added a recurring task, “Review the launch checklist”, every Monday at 10:00 until Nov 14, and assigned it to Maya Patel.",
+  "On-time delivery for Website relaunch is 94% this month, up from 88% in September. Most late tasks were waiting on a review.",
+  "I created a rule: when a task in Website relaunch moves to Done, Acme notifies its owner. Each run counts towards your 10,000 runs a month.",
 ]
 
 function Turns({ turns }: { turns: Turn[] }) {
@@ -47,7 +47,7 @@ function Turns({ turns }: { turns: Turn[] }) {
       {turn.role === "marker" ? (
         <Marker className="pl-10">
           <MarkerIcon>
-            <FileSearchIcon />
+            <ChartColumnIcon />
           </MarkerIcon>
           <MarkerContent>{turn.text}</MarkerContent>
         </Marker>
@@ -62,11 +62,11 @@ function Turns({ turns }: { turns: Turn[] }) {
       ) : (
         <Message>
           <MessageAvatar className="bg-primary text-primary-foreground" aria-hidden="true">
-            <SunIcon />
+            <SparklesIcon />
           </MessageAvatar>
           <MessageContent>
             <MessageHeader>
-              <strong>Lumen</strong>
+              <strong>Acme</strong>
             </MessageHeader>
             <Bubble variant="ghost">
               <BubbleContent>{turn.text}</BubbleContent>
@@ -78,7 +78,7 @@ function Turns({ turns }: { turns: Turn[] }) {
   ))
 }
 
-function AskLumen() {
+function AskAcme() {
   const [turns, setTurns] = React.useState<Turn[]>(history)
   const [draft, setDraft] = React.useState("")
   const [thinking, setThinking] = React.useState(false)
@@ -113,15 +113,15 @@ function AskLumen() {
         <div className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border px-5">
           <div className="flex items-center gap-2.5">
             <span className="grid size-7 place-items-center rounded-full bg-primary text-primary-foreground">
-              <SunIcon aria-hidden="true" className="size-3.5" />
+              <SparklesIcon aria-hidden="true" className="size-3.5" />
             </span>
-            <p className="text-title text-foreground">Ask Lumen</p>
+            <p className="text-title text-foreground">Ask Acme</p>
           </div>
-          <p className="text-caption text-muted-foreground">lumen-web</p>
+          <p className="text-caption text-muted-foreground">Website relaunch</p>
         </div>
 
         <MessageScroller className="flex-1">
-          <MessageScrollerViewport aria-label="Conversation with Lumen">
+          <MessageScrollerViewport aria-label="Conversation with Acme">
             <MessageScrollerContent className="px-5 py-6">
               <Turns turns={turns} />
               {thinking ? (
@@ -130,7 +130,7 @@ function AskLumen() {
                     <MarkerIcon>
                       <Spinner className="size-3.5" />
                     </MarkerIcon>
-                    <MarkerContent>Reading your project settings</MarkerContent>
+                    <MarkerContent>Reading the project plan</MarkerContent>
                   </Marker>
                 </MessageScrollerItem>
               ) : null}
@@ -141,16 +141,16 @@ function AskLumen() {
 
         <form onSubmit={send} className="shrink-0 border-t border-border p-3">
           <div className="flex items-center gap-2 rounded-full border border-input bg-muted py-1.5 pr-1.5 pl-4 transition-colors duration-(--duration-fast) ease-standard focus-within:border-ring focus-within:bg-background has-[input:focus-visible]:focus-ring">
-            <label htmlFor="ask-lumen-scroller" className="sr-only">
-              Ask Lumen
+            <label htmlFor="ask-acme-scroller" className="sr-only">
+              Ask Acme
             </label>
             <input
-              id="ask-lumen-scroller"
+              id="ask-acme-scroller"
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="Ask about your deploys"
+              placeholder="Ask about your projects"
               autoComplete="off"
-              className="h-8 min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground sm:text-sm"
+              className="h-8 min-w-0 flex-1 bg-transparent text-control text-foreground outline-none placeholder:text-muted-foreground"
             />
             <Button type="submit" size="icon-sm" aria-label="Send" disabled={!draft.trim() || thinking}>
               <ArrowUpIcon />
@@ -187,7 +187,7 @@ function JumpToLatest() {
     <MessageScrollerProvider defaultScrollPosition="start">
       <ScrollerFrame className="h-96">
         <MessageScroller className="flex-1">
-          <MessageScrollerViewport aria-label="Earlier conversation with Lumen">
+          <MessageScrollerViewport aria-label="Earlier conversation with Acme">
             <MessageScrollerContent className="px-5 py-6">
               <Turns turns={history} />
             </MessageScrollerContent>
@@ -205,10 +205,10 @@ function JumpToLatest() {
 }
 
 const earlier: Turn[] = [
-  { id: "e1", role: "user", text: "Which regions does lumen-web run in?" },
-  { id: "e2", role: "assistant", text: "Frankfurt, Virginia and Singapore. Requests go to the closest one." },
-  { id: "e3", role: "user", text: "Can I pin the database to Frankfurt?" },
-  { id: "e4", role: "assistant", text: "Yes. Choose the region when you create the database. It stays there; only the functions move." },
+  { id: "e1", role: "user", text: "When is Website relaunch due?" },
+  { id: "e2", role: "assistant", text: "Nov 14. Priya Raman leads it, and 38 of 52 tasks are done." },
+  { id: "e3", role: "user", text: "Can you move the launch review to the week before?" },
+  { id: "e4", role: "assistant", text: "Yes. “Book the launch review” is now due Nov 6, and Maya Patel gets a reminder two days before." },
 ]
 
 /**
@@ -216,7 +216,7 @@ const earlier: Turn[] = [
  * their place (preserveScrollOnPrepend), so nothing jumps when history arrives.
  */
 function LoadEarlier() {
-  const [turns, setTurns] = React.useState<Turn[]>(history.slice(-3))
+  const [turns, setTurns] = React.useState<Turn[]>(history.slice(-2))
   const [state, setState] = React.useState<"more" | "loading" | "done">("more")
   const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -238,7 +238,7 @@ function LoadEarlier() {
     <MessageScrollerProvider defaultScrollPosition="end">
       <ScrollerFrame className="h-96">
         <MessageScroller className="flex-1">
-          <MessageScrollerViewport aria-label="Conversation with Lumen, with earlier messages" preserveScrollOnPrepend>
+          <MessageScrollerViewport aria-label="Conversation with Acme, with earlier messages" preserveScrollOnPrepend>
             <MessageScrollerContent className="px-5 py-6">
               {state !== "done" ? (
                 <MessageScrollerItem messageId="earlier" className="flex justify-center">
@@ -270,12 +270,12 @@ export default function MessageScrollerDocs() {
   return (
     <Examples>
       <Example
-        title="Ask Lumen"
+        title="Ask Acme"
         layout="stack"
         description="Send a question. The conversation follows new messages to the bottom; scroll up and it stays put, and a pill button appears to jump back to the latest message."
         code={`<MessageScrollerProvider autoScroll defaultScrollPosition="end">
   <MessageScroller className="h-[34rem]">
-    <MessageScrollerViewport aria-label="Conversation with Lumen">
+    <MessageScrollerViewport aria-label="Conversation with Acme">
       <MessageScrollerContent className="px-5 py-6">
         {turns.map((turn) => (
           <MessageScrollerItem key={turn.id} messageId={turn.id}>
@@ -288,7 +288,7 @@ export default function MessageScrollerDocs() {
   </MessageScroller>
 </MessageScrollerProvider>`}
       >
-        <AskLumen />
+        <AskAcme />
       </Example>
 
       <Example
@@ -297,7 +297,7 @@ export default function MessageScrollerDocs() {
         description="This thread opens at its first message, so the newest one is out of view. MessageScrollerButton fades in; choose it to jump to the latest message, and it fades out again. Inside MessageScroller it floats over the bottom of the thread. Here it sits in the footer row instead, so it never covers a message."
         code={`<MessageScrollerProvider defaultScrollPosition="start">
   <MessageScroller className="h-80">
-    <MessageScrollerViewport aria-label="Conversation with Lumen">…</MessageScrollerViewport>
+    <MessageScrollerViewport aria-label="Conversation with Acme">…</MessageScrollerViewport>
   </MessageScroller>
   <div className="relative flex h-16 items-center border-t px-5">
     <p className="text-caption text-muted-foreground">8 messages</p>
@@ -336,7 +336,7 @@ export default function MessageScrollerDocs() {
           "Give the scroller a fixed height, or let it fill a flex column with flex-1.",
           "Set autoScroll so streaming replies stay in view while the person is at the bottom.",
           "Pass a stable messageId to every item so the scroller can keep its place when history loads above.",
-          "Label the viewport, such as “Conversation with Lumen”.",
+          "Label the viewport, such as “Conversation with Acme”.",
         ]}
         dont={[
           "Don’t pull people back to the bottom while they are reading older messages.",

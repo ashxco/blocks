@@ -8,22 +8,24 @@ import {
   AvatarGroup,
   AvatarGroupCount,
 } from "@/components/ui/avatar"
+import { initialsTone } from "@/components/blocks/members-list/people"
 import { Badge } from "@/components/ui/badge"
 
 const team = [
-  { initials: "PR", name: "Priya Raman", role: "Owner", email: "priya@lumen.app", online: true },
-  { initials: "MO", name: "Mateo Ortiz", role: "Admin", email: "mateo@lumen.app", online: true },
-  { initials: "AK", name: "Aiko Kato", role: "Developer", email: "aiko@lumen.app", online: false },
-  { initials: "JB", name: "Jonas Berg", role: "Developer", email: "jonas@lumen.app", online: false },
+  { initials: "MP", name: "Maya Patel", role: "Owner", email: "maya@acme.com", online: true },
+  { initials: "HK", name: "Hana Kim", role: "Admin", email: "hana@acme.com", online: false },
+  { initials: "PR", name: "Priya Raman", role: "Member", email: "priya@acme.com", online: true },
+  { initials: "SA", name: "Sofia Alvarez", role: "Member", email: "sofia@acme.com", online: false },
+  { initials: "JL", name: "Jordan Lee", role: "Member", email: "jordan@acme.com", online: false },
 ]
 
+/* One teammate per tint, each in the tint the Acme templates give them (components/blocks/members-list/people.ts), so nobody changes colour between examples. */
 const tints = [
-  { tone: "violet", initials: "PR" },
-  { tone: "mint", initials: "MO" },
-  { tone: "sand", initials: "AK" },
-  { tone: "sky", initials: "JB" },
-  { tone: "rose", initials: "LT" },
-  { tone: "muted", initials: "SN" },
+  { tone: "violet", initials: "MP" },
+  { tone: "mint", initials: "JL" },
+  { tone: "sand", initials: "HK" },
+  { tone: "sky", initials: "PR" },
+  { tone: "rose", initials: "SA" },
 ] as const
 
 export default function AvatarDocs() {
@@ -32,34 +34,36 @@ export default function AvatarDocs() {
       <Example
         title="Sizes"
         description="Four sizes, each a token: --avatar-size-sm, --avatar-size-md (the default), --avatar-size-lg and --avatar-size-xl."
-        code={`<Avatar size="sm"><AvatarFallback>PR</AvatarFallback></Avatar>
-<Avatar><AvatarFallback>PR</AvatarFallback></Avatar>
-<Avatar size="lg"><AvatarFallback>PR</AvatarFallback></Avatar>
-<Avatar size="xl"><AvatarFallback>PR</AvatarFallback></Avatar>`}
+        code={`<Avatar size="sm"><AvatarFallback tone="violet">MP</AvatarFallback></Avatar>
+<Avatar><AvatarFallback tone="violet">MP</AvatarFallback></Avatar>
+<Avatar size="lg"><AvatarFallback tone="violet">MP</AvatarFallback></Avatar>
+<Avatar size="xl"><AvatarFallback tone="violet">MP</AvatarFallback></Avatar>`}
       >
         <Avatar size="sm">
-          <AvatarFallback>PR</AvatarFallback>
+          <AvatarFallback tone="violet">MP</AvatarFallback>
         </Avatar>
         <Avatar>
-          <AvatarFallback>PR</AvatarFallback>
+          <AvatarFallback tone="violet">MP</AvatarFallback>
         </Avatar>
         <Avatar size="lg">
-          <AvatarFallback>PR</AvatarFallback>
+          <AvatarFallback tone="violet">MP</AvatarFallback>
         </Avatar>
         <Avatar size="xl">
-          <AvatarFallback>PR</AvatarFallback>
+          <AvatarFallback tone="violet">MP</AvatarFallback>
         </Avatar>
       </Example>
 
       <Example
         title="Fallback tints"
-        description="Initials sit on a flat tint. The tint is picked from the initials, so the same person always gets the same colour. Set tone to choose one."
+        description="Initials sit on a flat tint. Without a tone, the tint is picked from the initials, so the same initials always get the same colour. Set tone to give a person a fixed colour, as the Acme templates do, or muted for an icon."
         code={`<Avatar>
   <AvatarImage src={user.avatarUrl} alt="" />
-  <AvatarFallback>MO</AvatarFallback>
+  <AvatarFallback>JL</AvatarFallback>
 </Avatar>
 
-<AvatarFallback tone="sky">MO</AvatarFallback>`}
+<AvatarFallback tone="violet">MP</AvatarFallback>
+
+<AvatarFallback tone="muted"><UserIcon /></AvatarFallback>`}
       >
         {tints.map((t) => (
           <Avatar key={t.tone} size="lg">
@@ -82,20 +86,20 @@ export default function AvatarDocs() {
         title="With status"
         description="AvatarBadge marks presence. Colour it with a status fill."
         code={`<Avatar size="lg">
-  <AvatarFallback>PR</AvatarFallback>
+  <AvatarFallback tone="violet">MP</AvatarFallback>
   <AvatarBadge className="bg-success" aria-label="Online" />
 </Avatar>`}
       >
         <Avatar>
-          <AvatarFallback>PR</AvatarFallback>
+          <AvatarFallback tone="violet">MP</AvatarFallback>
           <AvatarBadge className="bg-success" aria-label="Online" />
         </Avatar>
         <Avatar size="lg">
-          <AvatarFallback>MO</AvatarFallback>
+          <AvatarFallback tone="mint">JL</AvatarFallback>
           <AvatarBadge className="bg-warning" aria-label="Away" />
         </Avatar>
         <Avatar size="xl">
-          <AvatarFallback>AK</AvatarFallback>
+          <AvatarFallback tone="rose">SA</AvatarFallback>
           <AvatarBadge className="bg-muted-foreground" aria-label="Offline" />
         </Avatar>
       </Example>
@@ -104,48 +108,48 @@ export default function AvatarDocs() {
         title="Stack"
         description="AvatarGroup overlaps avatars with a cut-out in the page colour. End with a count when there are more."
         code={`<AvatarGroup>
-  <Avatar><AvatarFallback>PR</AvatarFallback></Avatar>
-  <Avatar><AvatarFallback>MO</AvatarFallback></Avatar>
-  <Avatar><AvatarFallback>AK</AvatarFallback></Avatar>
+  <Avatar><AvatarFallback tone="violet">MP</AvatarFallback></Avatar>
+  <Avatar><AvatarFallback tone="mint">JL</AvatarFallback></Avatar>
+  <Avatar><AvatarFallback tone="rose">SA</AvatarFallback></Avatar>
   <AvatarGroupCount>+4</AvatarGroupCount>
 </AvatarGroup>`}
       >
         <AvatarGroup>
           <Avatar size="sm">
-            <AvatarFallback>PR</AvatarFallback>
+            <AvatarFallback tone="violet">MP</AvatarFallback>
           </Avatar>
           <Avatar size="sm">
-            <AvatarFallback>MO</AvatarFallback>
+            <AvatarFallback tone="mint">JL</AvatarFallback>
           </Avatar>
           <Avatar size="sm">
-            <AvatarFallback>AK</AvatarFallback>
+            <AvatarFallback tone="rose">SA</AvatarFallback>
           </Avatar>
           <AvatarGroupCount>+4</AvatarGroupCount>
         </AvatarGroup>
         <AvatarGroup>
           <Avatar>
-            <AvatarFallback>PR</AvatarFallback>
+            <AvatarFallback tone="violet">MP</AvatarFallback>
           </Avatar>
           <Avatar>
-            <AvatarFallback>MO</AvatarFallback>
+            <AvatarFallback tone="mint">JL</AvatarFallback>
           </Avatar>
           <Avatar>
-            <AvatarFallback>AK</AvatarFallback>
+            <AvatarFallback tone="rose">SA</AvatarFallback>
           </Avatar>
           <Avatar>
-            <AvatarFallback>JB</AvatarFallback>
+            <AvatarFallback tone="mint">SO</AvatarFallback>
           </Avatar>
           <AvatarGroupCount>+4</AvatarGroupCount>
         </AvatarGroup>
         <AvatarGroup>
           <Avatar size="lg">
-            <AvatarFallback>PR</AvatarFallback>
+            <AvatarFallback tone="violet">MP</AvatarFallback>
           </Avatar>
           <Avatar size="lg">
-            <AvatarFallback>MO</AvatarFallback>
+            <AvatarFallback tone="mint">JL</AvatarFallback>
           </Avatar>
           <Avatar size="lg">
-            <AvatarFallback>AK</AvatarFallback>
+            <AvatarFallback tone="rose">SA</AvatarFallback>
           </Avatar>
           <AvatarGroupCount>+12</AvatarGroupCount>
         </AvatarGroup>
@@ -159,13 +163,13 @@ export default function AvatarDocs() {
         <div className="overflow-hidden rounded-(--card-radius) border bg-card">
           <div className="flex items-center justify-between gap-4 border-b px-5 py-4">
             <div className="grid gap-0.5">
-              <h3 className="text-title text-foreground">Lumen Core</h3>
-              <p className="text-sm text-muted-foreground">4 members · 2 online</p>
+              <h3 className="text-title text-foreground">Website relaunch</h3>
+              <p className="text-sm text-muted-foreground">5 members · 2 online</p>
             </div>
             <AvatarGroup>
               {team.map((m) => (
                 <Avatar key={m.initials} size="sm">
-                  <AvatarFallback>{m.initials}</AvatarFallback>
+                  <AvatarFallback tone={initialsTone(m.initials)}>{m.initials}</AvatarFallback>
                 </Avatar>
               ))}
             </AvatarGroup>
@@ -174,14 +178,14 @@ export default function AvatarDocs() {
             {team.map((m) => (
               <li key={m.email} className="flex items-center gap-3 px-5 py-3.5">
                 <Avatar>
-                  <AvatarFallback>{m.initials}</AvatarFallback>
+                  <AvatarFallback tone={initialsTone(m.initials)}>{m.initials}</AvatarFallback>
                   {m.online ? <AvatarBadge className="bg-success" aria-label="Online" /> : null}
                 </Avatar>
                 <div className="grid min-w-0 flex-1 gap-0.5">
                   <p className="truncate text-sm font-semibold text-foreground">{m.name}</p>
                   <p className="truncate text-sm text-muted-foreground">{m.email}</p>
                 </div>
-                <Badge variant={m.role === "Owner" ? "default" : "secondary"}>{m.role}</Badge>
+                <Badge variant={m.role === "Owner" ? "default" : m.role === "Admin" ? "outline" : "secondary"}>{m.role}</Badge>
               </li>
             ))}
           </ul>

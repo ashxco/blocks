@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, CopyIcon, GaugeIcon, Link2Icon, SlidersHorizontalIcon } from "lucide-react"
+import { BellIcon, CheckIcon, CopyIcon, Link2Icon, SlidersHorizontalIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -71,19 +71,26 @@ function SharePopover({ container }: { container: Stage }) {
     >
       <PopoverTrigger render={<Button variant="outline" />}>
         <Link2Icon data-icon="inline-start" />
-        Share preview
+        Share doc
       </PopoverTrigger>
       <PopoverContent container={container} initialFocus={false} {...pinnedTo(container)}>
         <PopoverHeader>
-          <PopoverTitle>Share preview</PopoverTitle>
-          <PopoverDescription>Anyone with the link can view this deployment.</PopoverDescription>
+          <PopoverTitle>Share this doc</PopoverTitle>
+          <PopoverDescription>Anyone in Acme Inc. with the link can read the launch plan.</PopoverDescription>
         </PopoverHeader>
         <div className="flex gap-2">
-          <Input readOnly aria-label="Preview URL" defaultValue="feat-billing.lumen.app" className="min-w-0 flex-1" />
+          {/* dir="rtl" keeps the end of the link (the doc's name) in view when the field is too narrow for all of it. */}
+          <Input
+            readOnly
+            dir="rtl"
+            aria-label="Doc link"
+            defaultValue="app.acme.com/acme/docs/launch-plan"
+            className="min-w-0 flex-1 text-left text-ellipsis"
+          />
           <Button
             variant="secondary"
             size="icon"
-            aria-label={copied ? "Copied" : "Copy URL"}
+            aria-label={copied ? "Copied" : "Copy link"}
             onClick={() => setCopied(true)}
           >
             {copied ? <CheckIcon /> : <CopyIcon />}
@@ -94,14 +101,14 @@ function SharePopover({ container }: { container: Stage }) {
   )
 }
 
-function SpendLimitPopover({ container }: { container: Stage }) {
+function UsageAlertPopover({ container }: { container: Stage }) {
   const { open, setOpen, onOpenChange } = usePinnedOpen(container)
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger render={<Button />}>
-        <GaugeIcon data-icon="inline-start" />
-        Set spend limit
+        <BellIcon data-icon="inline-start" />
+        Set usage alert
       </PopoverTrigger>
       <PopoverContent align="start" container={container} initialFocus={false} {...pinnedTo(container)}>
         <form
@@ -112,20 +119,20 @@ function SpendLimitPopover({ container }: { container: Stage }) {
           }}
         >
           <PopoverHeader>
-            <PopoverTitle>Monthly spend limit</PopoverTitle>
-            <PopoverDescription>We pause new deployments when the team reaches it.</PopoverDescription>
+            <PopoverTitle>Automation usage alert</PopoverTitle>
+            <PopoverDescription>We email workspace owners when runs pass this number in a month.</PopoverDescription>
           </PopoverHeader>
           <Field>
-            <FieldLabel htmlFor="popover-limit">Limit in USD</FieldLabel>
-            <Input id="popover-limit" type="number" inputMode="numeric" defaultValue={200} min={0} />
-            <FieldDescription>You spent $142 this month.</FieldDescription>
+            <FieldLabel htmlFor="popover-limit">Alert at (runs)</FieldLabel>
+            <Input id="popover-limit" type="number" inputMode="numeric" defaultValue={9000} min={0} step={500} />
+            <FieldDescription>7,240 of 10,000 runs used this month.</FieldDescription>
           </Field>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>
               Cancel
             </Button>
             <Button type="submit" size="sm">
-              Save limit
+              Save alert
             </Button>
           </div>
         </form>
@@ -140,10 +147,10 @@ function SpendLimitPopover({ container }: { container: Stage }) {
  * show top and bottom only.
  */
 const placements = [
-  { side: "top", cell: "col-start-2 row-start-1", region: "Frankfurt", code: "fra1", share: "41%" },
-  { side: "left", cell: "col-start-1 row-start-2 justify-self-end", region: "Virginia", code: "iad1", share: "33%" },
-  { side: "right", cell: "col-start-3 row-start-2 justify-self-start", region: "Singapore", code: "sin1", share: "19%" },
-  { side: "bottom", cell: "col-start-2 row-start-3", region: "São Paulo", code: "gru1", share: "7%" },
+  { side: "top", cell: "col-start-2 row-start-1", priority: "Urgent", count: 2 },
+  { side: "left", cell: "col-start-1 row-start-2 justify-self-end", priority: "High", count: 5 },
+  { side: "right", cell: "col-start-3 row-start-2 justify-self-start", priority: "Medium", count: 4 },
+  { side: "bottom", cell: "col-start-2 row-start-3", priority: "Low", count: 3 },
 ] as const
 
 /** Wide enough for a --popover-width-sm popover on each side of the middle column. */
@@ -173,7 +180,7 @@ function PlacementStage() {
       )}
     >
       {shown.map((placement) => (
-        <RegionPopover
+        <PriorityPopover
           key={placement.side}
           {...placement}
           cell={wide ? placement.cell : undefined}
@@ -185,12 +192,11 @@ function PlacementStage() {
   )
 }
 
-function RegionPopover({
+function PriorityPopover({
   side,
   cell,
-  region,
-  code,
-  share,
+  priority,
+  count,
   container,
 }: Omit<(typeof placements)[number], "cell"> & { cell?: string; container: Stage }) {
   const { open, onOpenChange } = usePinnedOpen(container)
@@ -199,9 +205,9 @@ function RegionPopover({
       <PopoverTrigger render={<Button variant="outline" className={cn("capitalize", cell)} />}>{side}</PopoverTrigger>
       <PopoverContent side={side} className="w-(--popover-width-sm)" container={container} initialFocus={false} {...pinnedTo(container)}>
         <PopoverHeader>
-          <PopoverTitle>Region: {region}</PopoverTitle>
+          <PopoverTitle>{priority} priority</PopoverTitle>
           <PopoverDescription>
-            {code} serves {share} of traffic for lumen-web this week.
+            {count} of the 14 open tasks in Website relaunch.
           </PopoverDescription>
         </PopoverHeader>
       </PopoverContent>
@@ -209,12 +215,12 @@ function RegionPopover({
   )
 }
 
-function LogViewPopover({ container }: { container: Stage }) {
+function BoardViewPopover({ container }: { container: Stage }) {
   const { open, onOpenChange } = usePinnedOpen(container)
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger render={<Button variant="outline" size="icon" aria-label="Log view options" />}>
+      <PopoverTrigger render={<Button variant="outline" size="icon" aria-label="Board view options" />}>
         <SlidersHorizontalIcon />
       </PopoverTrigger>
       <PopoverContent
@@ -225,13 +231,13 @@ function LogViewPopover({ container }: { container: Stage }) {
         {...pinnedTo(container)}
       >
         <PopoverHeader className="border-b px-4 py-3">
-          <PopoverTitle>Log view</PopoverTitle>
+          <PopoverTitle>Board view</PopoverTitle>
         </PopoverHeader>
         <div className="grid gap-4 p-4">
           {[
-            { label: "Show timestamps", on: true },
-            { label: "Wrap long lines", on: false },
-            { label: "Follow new lines", on: true },
+            { label: "Show subtasks", on: true },
+            { label: "Show assignees", on: false },
+            { label: "Show due dates", on: true },
           ].map((option) => (
             <label key={option.label} className="flex items-center justify-between gap-4 text-sm font-medium text-foreground">
               {option.label}
@@ -251,13 +257,13 @@ export default function PopoverDocs() {
         title="Basic"
         description="Rich content anchored to a trigger. It closes on Escape, an outside click or when focus moves away. The previews on this page open on load and stay open until you press their trigger or Escape."
         code={`<Popover>
-  <PopoverTrigger render={<Button variant="outline" />}>Share preview</PopoverTrigger>
+  <PopoverTrigger render={<Button variant="outline" />}>Share doc</PopoverTrigger>
   <PopoverContent>
     <PopoverHeader>
-      <PopoverTitle>Share preview</PopoverTitle>
-      <PopoverDescription>Anyone with the link can view this deployment.</PopoverDescription>
+      <PopoverTitle>Share this doc</PopoverTitle>
+      <PopoverDescription>Anyone in Acme Inc. with the link can read it.</PopoverDescription>
     </PopoverHeader>
-    <Input readOnly defaultValue="feat-billing.lumen.app" />
+    <Input readOnly defaultValue="app.acme.com/acme/docs/launch-plan" />
   </PopoverContent>
 </Popover>`}
       >
@@ -278,13 +284,13 @@ export default function PopoverDocs() {
         code={`const [open, setOpen] = React.useState(false)
 
 <Popover open={open} onOpenChange={setOpen}>
-  <PopoverTrigger render={<Button />}>Set spend limit</PopoverTrigger>
+  <PopoverTrigger render={<Button />}>Set usage alert</PopoverTrigger>
   <PopoverContent align="start">
     <form onSubmit={save} className="contents">…</form>
   </PopoverContent>
 </Popover>`}
       >
-        <PopoverStage className="min-h-84">{(container) => <SpendLimitPopover container={container} />}</PopoverStage>
+        <PopoverStage className="min-h-84">{(container) => <UsageAlertPopover container={container} />}</PopoverStage>
       </Example>
 
       <Example
@@ -292,7 +298,7 @@ export default function PopoverDocs() {
         description="Group a few related toggles behind one button to keep a toolbar quiet."
       >
         <PopoverStage className="min-h-60">
-          {(container) => <LogViewPopover container={container} />}
+          {(container) => <BoardViewPopover container={container} />}
         </PopoverStage>
       </Example>
 

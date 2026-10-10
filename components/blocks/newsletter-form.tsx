@@ -172,7 +172,7 @@ export function NewsletterForm({
           aria-invalid={invalid || undefined}
           aria-describedby={message ? `${id}-message` : undefined}
           className={cn(
-            "h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-0 py-0 text-base md:text-sm",
+            "h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-0 py-0 text-control",
             "ring-0 outline-none! focus-visible:ring-0 focus-visible:outline-none! aria-invalid:ring-0",
             "disabled:bg-transparent disabled:opacity-100 dark:bg-transparent dark:disabled:bg-transparent",
             panel ? "text-panel-foreground placeholder:text-panel-muted" : "text-foreground placeholder:text-muted-foreground"

@@ -1,13 +1,16 @@
 "use client"
 
 import {
-  BookOpenIcon,
-  DatabaseIcon,
-  GaugeIcon,
-  GlobeIcon,
-  LayoutTemplateIcon,
-  ShoppingBagIcon,
-  TerminalIcon,
+  BellIcon,
+  BriefcaseIcon,
+  CalendarDaysIcon,
+  ChartGanttIcon,
+  FileTextIcon,
+  KanbanIcon,
+  ListIcon,
+  UserPlusIcon,
+  UsersIcon,
+  ZapIcon,
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
@@ -20,27 +23,159 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { cn } from "@/lib/utils"
 
 const screens = [
-  { title: "Preview every pull request", body: "Each push gets its own URL, posted to the pull request.", tint: "bg-tint-violet" },
-  { title: "Roll back in one click", body: "Every deploy is immutable. Promote any earlier one to production.", tint: "bg-tint-sky" },
-  { title: "Logs that follow the request", body: "Trace a request from the edge to your database in one view.", tint: "bg-tint-mint" },
-  { title: "Domains with certificates", body: "Add a domain and Lumen issues and renews the certificate.", tint: "bg-tint-sand" },
+  { kind: "views", title: "One project, four views", body: "Switch the same work between list, board, timeline and calendar.", tint: "bg-tint-violet" },
+  { kind: "docs", title: "Docs next to the work", body: "Keep specs and meeting notes beside the tasks they describe.", tint: "bg-tint-sky" },
+  { kind: "automation", title: "Automate the busywork", body: "When a task moves to Done, Acme tells the owner for you.", tint: "bg-tint-mint" },
+  { kind: "reports", title: "Reports that keep up", body: "Workload, on-time delivery and cycle time, always up to date.", tint: "bg-tint-sand" },
+] as const
+
+const viewTabs = [
+  { icon: ListIcon, active: false },
+  { icon: KanbanIcon, active: true },
+  { icon: ChartGanttIcon, active: false },
+  { icon: CalendarDaysIcon, active: false },
 ]
 
+/* Report bars, oldest first; the latest is in ink. */
+const reportBars = [42, 55, 48, 62, 58, 71, 66, 80, 74, 88]
+
+/**
+ * A miniature of the Acme screen each slide describes, drawn with flat ink
+ * shapes and hairlines in a window that runs off the bottom of the frame:
+ * a board under its four view tabs, a doc beside its tasks, an automation
+ * rule, or report bars.
+ */
+function ScreenPreview({ kind }: { kind: (typeof screens)[number]["kind"] }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute inset-x-3 top-3 bottom-0 flex flex-col overflow-hidden rounded-t-md border border-b-0 border-foreground/10 bg-card @xs:inset-x-5 @xs:top-5"
+    >
+      <div className="flex h-8 shrink-0 items-center justify-between gap-3 border-b border-border px-3">
+        <span className="h-1.5 w-14 rounded-full bg-foreground" />
+        {kind === "views" ? (
+          <span className="flex gap-0.5">
+            {viewTabs.map((tab, i) => (
+              <span
+                key={i}
+                className={cn(
+                  "grid size-5 place-items-center rounded-xs",
+                  tab.active ? "bg-secondary text-foreground" : "text-muted-foreground"
+                )}
+              >
+                <tab.icon className="size-3" />
+              </span>
+            ))}
+          </span>
+        ) : (
+          <span className="h-1.5 w-8 rounded-full bg-foreground/20" />
+        )}
+      </div>
+
+      {kind === "views" ? (
+        <div className="grid flex-1 grid-cols-3 gap-2 p-3">
+          {[3, 2, 1].map((cards, column) => (
+            <span key={column} className="grid content-start gap-1.5">
+              <span className="h-1 w-1/2 rounded-full bg-foreground/40" />
+              {Array.from({ length: cards }, (_, i) => (
+                <span key={i} className="grid gap-1 rounded-xs border border-border p-1.5">
+                  <span className="h-1 w-5/6 rounded-full bg-foreground" />
+                  <span className="h-1 w-1/2 rounded-full bg-foreground/25" />
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      ) : null}
+
+      {kind === "docs" ? (
+        <div className="grid flex-1 grid-cols-[3fr_2fr]">
+          <span className="grid content-start gap-1.5 p-3">
+            <span className="mb-1 h-2 w-3/4 rounded-full bg-foreground" />
+            {["w-full", "w-11/12", "w-full", "w-2/3"].map((width, i) => (
+              <span key={i} className={cn("h-1 rounded-full bg-foreground/20", width)} />
+            ))}
+            <span className="mt-1.5 h-1.5 w-1/2 rounded-full bg-foreground/60" />
+            {["w-full", "w-5/6"].map((width, i) => (
+              <span key={i} className={cn("h-1 rounded-full bg-foreground/20", width)} />
+            ))}
+          </span>
+          <span className="grid content-start gap-2 border-l border-border p-3">
+            <span className="h-1 w-1/2 rounded-full bg-foreground/40" />
+            {[true, true, false, false].map((done, i) => (
+              <span key={i} className="flex items-center gap-1.5">
+                <span
+                  className={cn(
+                    "size-2 shrink-0 rounded-full",
+                    done ? "bg-foreground" : "border border-foreground/40"
+                  )}
+                />
+                <span className={cn("h-1 flex-1 rounded-full", done ? "bg-foreground/25" : "bg-foreground")} />
+              </span>
+            ))}
+          </span>
+        </div>
+      ) : null}
+
+      {kind === "automation" ? (
+        <div className="grid flex-1 content-start justify-items-start gap-1 p-2.5 text-xs @xs:gap-1.5 @xs:p-3">
+          <span className="flex max-w-full items-center gap-2 rounded-sm border border-border px-2.5 py-1 @xs:py-1.5">
+            <ZapIcon className="size-3.5 shrink-0 text-muted-foreground" />
+            <span className="min-w-0 text-copy">
+              <span className="font-semibold text-foreground">When</span> a task moves to Done
+            </span>
+          </span>
+          <span className="ml-4 h-2 w-px bg-border-strong @xs:h-2.5" />
+          <span className="flex max-w-full items-center gap-2 rounded-sm border border-border px-2.5 py-1 @xs:py-1.5">
+            <BellIcon className="size-3.5 shrink-0 text-muted-foreground" />
+            <span className="min-w-0 text-copy">
+              <span className="font-semibold text-foreground">Then</span> notify the owner
+            </span>
+          </span>
+          <span className="mt-1.5 hidden text-muted-foreground tabular-nums @xs:block">Ran 412 times this month</span>
+        </div>
+      ) : null}
+
+      {kind === "reports" ? (
+        <div className="flex flex-1 flex-col gap-3 p-3">
+          <span className="flex items-baseline gap-2">
+            <span className="text-sm font-extrabold text-foreground tabular-nums">1,284</span>
+            <span className="h-1 w-10 rounded-full bg-foreground/25" />
+          </span>
+          <span className="flex min-h-0 flex-1 items-end gap-1.5 border-b border-border">
+            {reportBars.map((height, i) => (
+              <span
+                key={i}
+                className={cn(
+                  "flex-1 rounded-t-xs",
+                  i === reportBars.length - 1 ? "bg-foreground" : "bg-foreground/25"
+                )}
+                style={{ height: `${height}%` }}
+              />
+            ))}
+          </span>
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
 const templates = [
-  { name: "Next.js commerce", stack: "Next.js, Postgres", icon: ShoppingBagIcon, tint: "bg-tint-violet" },
-  { name: "Astro docs", stack: "Astro, MDX", icon: BookOpenIcon, tint: "bg-tint-sky" },
-  { name: "Remix SaaS starter", stack: "Remix, Redis, Postgres", icon: LayoutTemplateIcon, tint: "bg-tint-mint" },
-  { name: "Go API", stack: "Go, Postgres", icon: TerminalIcon, tint: "bg-tint-sand" },
-  { name: "Edge status page", stack: "Hono, KV", icon: GaugeIcon, tint: "bg-tint-rose" },
-  { name: "Static marketing site", stack: "HTML, Tailwind", icon: GlobeIcon, tint: "bg-tint-sky" },
+  { name: "Product roadmap", view: "Timeline · 24 tasks", icon: ChartGanttIcon, tint: "bg-tint-violet" },
+  { name: "Marketing calendar", view: "Calendar · 18 tasks", icon: CalendarDaysIcon, tint: "bg-tint-sky" },
+  { name: "Client projects", view: "Board · 30 tasks", icon: BriefcaseIcon, tint: "bg-tint-mint" },
+  { name: "Sprint planning", view: "Board · 16 tasks", icon: KanbanIcon, tint: "bg-tint-sand" },
+  { name: "Meeting notes", view: "Docs · 6 pages", icon: FileTextIcon, tint: "bg-tint-rose" },
+  { name: "Employee onboarding", view: "List · 32 tasks", icon: UserPlusIcon, tint: "bg-tint-sky" },
 ]
 
 const shipped = [
-  { title: "Postgres branching", body: "Every preview deploy gets its own copy of your database, seeded from production and deleted when the branch merges.", icon: DatabaseIcon },
-  { title: "Build cache across branches", body: "Branches now share build output with main, so the first preview build is as fast as the tenth.", icon: GaugeIcon },
-  { title: "Regions in São Paulo and Mumbai", body: "Run functions closer to people in South America and India. Pick regions per project in Settings.", icon: GlobeIcon },
+  { title: "Automations 2.0", body: "Rules can now run up to ten steps, check a condition before they act and post to Slack. A run history shows what each one changed.", icon: ZapIcon },
+  { title: "Timeline view", body: "Plan a project on a timeline, drag tasks to new dates and see which tasks wait on others.", icon: ChartGanttIcon },
+  { title: "Guest access", body: "Invite clients and contractors to the projects they work on. Guests see nothing else in your workspace.", icon: UsersIcon },
 ]
 
 export default function CarouselDocs() {
@@ -61,16 +196,20 @@ export default function CarouselDocs() {
 </Carousel>`}
       >
         <div className="w-full max-w-md px-12">
-          <Carousel aria-label="Lumen features">
+          <Carousel aria-label="Acme features">
             <CarouselContent>
               {screens.map((screen) => (
                 <CarouselItem key={screen.title}>
-                  <AspectRatio ratio={4 / 3} className={`rounded-(--card-radius) ${screen.tint}`}>
-                    <div className="absolute inset-0 flex flex-col justify-end gap-2 p-6">
+                  {/* A taller frame on narrow slides, so the preview keeps room to read. */}
+                  <div className={cn("@container flex h-full flex-col overflow-hidden rounded-(--card-radius)", screen.tint)}>
+                    <AspectRatio ratio={16 / 9} className="aspect-4/3 border-b border-foreground/10 @xs:aspect-(--ratio)">
+                      <ScreenPreview kind={screen.kind} />
+                    </AspectRatio>
+                    <div className="grid content-start gap-2 p-6">
                       <p className="text-h4 text-foreground">{screen.title}</p>
                       <p className="text-sm text-copy">{screen.body}</p>
                     </div>
-                  </AspectRatio>
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -104,7 +243,7 @@ export default function CarouselDocs() {
           <div className="flex items-end justify-between gap-4">
             <div className="grid gap-1">
               <h3 className="text-h4">Start from a template</h3>
-              <p className="text-sm text-copy">Clone a working project and deploy it in under a minute.</p>
+              <p className="text-sm text-copy">Copy a ready-made project, then invite your team to it.</p>
             </div>
             <div className="flex shrink-0 gap-2">
               <CarouselPrevious className="static my-0" />
@@ -123,7 +262,7 @@ export default function CarouselDocs() {
                   </AspectRatio>
                   <div className="grid gap-0.5 px-1 pb-1">
                     <p className="text-title text-foreground">{t.name}</p>
-                    <p className="text-caption text-muted-foreground">{t.stack}</p>
+                    <p className="text-caption text-muted-foreground">{t.view}</p>
                   </div>
                 </a>
               </CarouselItem>
@@ -141,7 +280,7 @@ export default function CarouselDocs() {
 <CarouselNext variant="outline-inverse" className="static" />
 <CarouselDots tone="inverse" />`}
       >
-        <Carousel aria-label="Shipped this month" className="mx-auto grid w-full max-w-2xl gap-8 py-4">
+        <Carousel aria-label="Recently shipped" className="mx-auto grid w-full max-w-2xl gap-8 py-4">
           <CarouselContent>
             {shipped.map((item) => (
               <CarouselItem key={item.title}>

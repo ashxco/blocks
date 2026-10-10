@@ -1,6 +1,6 @@
 "use client"
 
-import { BoxesIcon, CloudIcon, CpuIcon, ServerIcon } from "lucide-react"
+import { CodeIcon, HardDriveIcon, MessageSquareIcon, PenToolIcon, UsersRoundIcon, VideoIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { LogoCloud } from "@/components/blocks/logo-cloud"
@@ -11,7 +11,7 @@ export default function LogoCloudDocs() {
       <Example
         title="Default"
         layout="full"
-        description="A full-bleed band between hairlines. The label sits beside the row on wide screens and above it on narrow ones. Six or more marks spread edge to edge; a shorter list, such as four investors, stays grouped beside the label."
+        description="A full-bleed band between hairlines. The label sits beside the row on wide screens and above it on narrow ones. Six or more short names spread across the row; long names or a shorter list stay in a grid beside the label."
         code={`<LogoCloud />`}
       >
         <LogoCloud />
@@ -22,28 +22,30 @@ export default function LogoCloudDocs() {
         layout="full"
         surface="subtle"
         description="Stack the label above a centred row, for a quieter break under a centred hero."
-        code={`<LogoCloud layout="center" title="Detects your framework and runtime on the first push" />`}
+        code={`<LogoCloud layout="center" title="Used by 12,000+ teams, including" />`}
       >
-        <LogoCloud layout="center" title="Detects your framework and runtime on the first push" />
+        <LogoCloud layout="center" title="Used by 12,000+ teams, including" />
       </Example>
 
       <Example
         title="On a panel"
         layout="full"
         surface="panel"
-        description="Inside dark panels, use the panel tone so the marks stay legible but quiet."
+        description="Inside dark panels, use the panel tone so the marks stay legible but quiet. Here the row lists the tools Acme connects to, by name only."
         code={`<LogoCloud tone="panel" contained={false} items={[…]} />`}
       >
         <div className="p-8 @2xl:p-12">
           <LogoCloud
             tone="panel"
             contained={false}
-            title="Runs anywhere you have a server"
+            title="Connects to the tools you already use"
             items={[
-              { name: "Your servers", icon: ServerIcon },
-              { name: "Lumen Cloud", icon: CloudIcon },
-              { name: "Kubernetes", icon: BoxesIcon },
-              { name: "Bare metal", icon: CpuIcon },
+              { name: "Slack", icon: MessageSquareIcon },
+              { name: "Google Drive", icon: HardDriveIcon },
+              { name: "GitHub", icon: CodeIcon },
+              { name: "Figma", icon: PenToolIcon },
+              { name: "Zoom", icon: VideoIcon },
+              { name: "HubSpot", icon: UsersRoundIcon },
             ]}
           />
         </div>
@@ -52,8 +54,8 @@ export default function LogoCloudDocs() {
       <Guidelines
         do={[
           "Keep every mark the same colour and size so none shouts.",
-          "Show six to eight items; more turns into noise. Fewer is fine for investors or partners.",
-          "Use real names people recognise.",
+          "Show six to eight items; more turns into noise. Fewer is fine for partners.",
+          "Use names people recognise, with a generic mark rather than their real logo.",
         ]}
         dont={[
           "Don’t use brand colours for the logos.",
@@ -64,8 +66,8 @@ export default function LogoCloudDocs() {
 
       <ApiTable
         rows={[
-          { prop: "title", type: "ReactNode", default: '"Deploys the stack you already use"', description: "Short label for the row." },
-          { prop: "items", type: "{ name: string; icon?: LucideIcon }[]", default: "8 runtimes and services", description: "Names with optional monochrome marks." },
+          { prop: "title", type: "ReactNode", default: '"Trusted by 12,000+ teams, including"', description: "Short label for the row." },
+          { prop: "items", type: "{ name: string; icon?: LucideIcon }[]", default: "8 Acme customers", description: "Names with optional monochrome marks." },
           { prop: "layout", type: '"split" | "center"', default: '"split"', description: "Label beside the row, or centred above it." },
           { prop: "tone", type: '"default" | "panel"', default: '"default"', description: "Use panel on dark panels." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container, hairlines and padding. Set to false inside your own layout." },

@@ -30,13 +30,14 @@ import {
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/toast"
 
+/** Where the Acme team works. */
 const TIME_ZONES = [
-  { value: "America/Los_Angeles", label: "Pacific Time, Los Angeles" },
+  { value: "America/Los_Angeles", label: "Pacific Time, San Francisco" },
   { value: "America/New_York", label: "Eastern Time, New York" },
   { value: "Europe/London", label: "London" },
-  { value: "Europe/Berlin", label: "Central European Time, Berlin" },
-  { value: "Asia/Singapore", label: "Singapore" },
-  { value: "Australia/Sydney", label: "Sydney" },
+  { value: "Europe/Lisbon", label: "Lisbon" },
+  { value: "Asia/Kolkata", label: "India Standard Time, Bengaluru" },
+  { value: "Asia/Tokyo", label: "Japan Standard Time, Tokyo" },
 ]
 
 const WORKSPACE_SLUG = "acme"
@@ -50,33 +51,33 @@ const workspaceActions: DangerAction[] = [
     actionLabel: "Transfer",
     confirmTitle: "Transfer ownership of Acme Inc.?",
     confirmDescription:
-      "We email Daniel Okafor, the workspace admin, a link to accept. You stay the owner until Daniel accepts. The link expires in 7 days.",
+      "We email Hana Kim, a workspace admin, a link to accept. You stay the owner until Hana accepts. The link expires in 7 days.",
     confirmLabel: "Send transfer request",
     tone: "default",
-    successMessage: "Transfer request sent to Daniel Okafor.",
+    successMessage: "Transfer request sent to Hana Kim.",
   },
   {
     id: "pause",
-    title: "Pause all deployments",
+    title: "Pause all automations",
     description:
-      "Stop building new commits in every project. Production keeps serving the current deployments.",
+      "Stop every automation rule in Acme Inc. Projects and tasks keep working; the rules wait until you resume them.",
     actionLabel: "Pause all",
-    confirmTitle: "Pause deployments across Acme Inc.?",
+    confirmTitle: "Pause automations across Acme Inc.?",
     confirmDescription:
-      "Pushes and pull requests won’t build until you resume. Production and existing previews stay online at their current versions.",
-    confirmLabel: "Pause deployments",
+      "No rule runs until you resume, so owners aren’t notified and tasks don’t move on their own. Nothing is deleted.",
+    confirmLabel: "Pause automations",
     tone: "default",
-    successMessage: "Deployments paused across Acme Inc.",
+    successMessage: "Automations paused across Acme Inc.",
   },
   {
     id: "delete",
     title: "Delete workspace",
     description:
-      "Permanently delete Acme Inc. with its projects, databases, domains and logs. Members lose access right away.",
+      "Permanently delete Acme Inc. with its 26 projects and every task, doc and file in them. Members and guests lose access right away.",
     actionLabel: "Delete workspace",
     confirmTitle: "Delete Acme Inc.?",
     confirmDescription:
-      "This deletes every project, database and log in the workspace, releases its domains and cancels the Pro plan. You can’t undo this.",
+      "This deletes every project, task and doc in the workspace and cancels the Pro plan. You can’t undo this.",
     requireTyping: true,
     tone: "destructive",
     successMessage: "Acme Inc. is scheduled for deletion.",
@@ -89,21 +90,21 @@ export function GeneralSettings() {
     <div className="divide-y">
       <SettingsSection
         title="Profile"
-        description="How teammates see you in deploy logs, comments and invites."
+        description="How teammates see you on tasks, comments and docs."
         footerNote="Your profile is visible to everyone in Acme Inc."
         saveLabel="Save profile"
         successTitle="Profile saved"
-        successDescription="Teammates see your new details in deploy logs, comments and invites."
+        successDescription="Teammates see your new details on tasks, comments and docs."
       >
         <ProfileFields />
       </SettingsSection>
 
       <SettingsSection
         title="Workspace"
-        description="The workspace name and URL appear in the dashboard, in invites and on every preview link."
-        footerNote="Changes apply to every project in Acme Inc."
+        description="The workspace name and URL appear in the sidebar, in invites and in every link you share."
+        footerNote="Changes apply to everyone in Acme Inc."
         successTitle="Workspace settings saved"
-        successDescription="Every project in Acme Inc. uses them from the next deploy."
+        successDescription="Everyone in Acme Inc. sees the changes the next time a page loads."
       >
         <WorkspaceFields defaultSlug={WORKSPACE_SLUG} required />
       </SettingsSection>
@@ -116,7 +117,7 @@ export function GeneralSettings() {
               Danger zone
             </h2>
             <p className="max-w-prose text-sm text-copy">
-              These actions affect every project in Acme Inc. Deleting the workspace can’t be undone.
+              These actions affect everyone in Acme Inc. Deleting the workspace can’t be undone.
             </p>
           </div>
           <DangerZone projectName={WORKSPACE_SLUG} title={null} actions={workspaceActions} />
@@ -130,7 +131,7 @@ function ProfileFields() {
   const id = React.useId()
   const fileRef = React.useRef<HTMLInputElement>(null)
   const [photo, setPhoto] = React.useState<string | null>(null)
-  const [timeZone, setTimeZone] = React.useState("Europe/Berlin")
+  const [timeZone, setTimeZone] = React.useState("America/Los_Angeles")
 
   // Release the previous preview whenever the photo changes or the form unmounts.
   React.useEffect(() => {
@@ -158,7 +159,7 @@ function ProfileFields() {
       <div className="flex flex-wrap items-center gap-5">
         <Avatar size="xl">
           {photo ? <AvatarImage src={photo} alt="" /> : null}
-          <AvatarFallback tone={personTone("Maya Chen")}>MC</AvatarFallback>
+          <AvatarFallback tone={personTone("Maya Patel")}>MP</AvatarFallback>
         </Avatar>
         <div className="grid gap-3">
           <div className="grid gap-0.5">
@@ -192,7 +193,7 @@ function ProfileFields() {
       <div className="grid gap-6 @min-[30rem]/field-group:grid-cols-2">
         <Field>
           <FieldLabel htmlFor={`${id}-name`}>Full name</FieldLabel>
-          <Input id={`${id}-name`} name="name" defaultValue="Maya Chen" autoComplete="name" required />
+          <Input id={`${id}-name`} name="name" defaultValue="Maya Patel" autoComplete="name" required />
         </Field>
         <Field>
           <FieldLabel htmlFor={`${id}-username`}>Username</FieldLabel>
@@ -220,13 +221,14 @@ function ProfileFields() {
           id={`${id}-email`}
           name="email"
           type="email"
-          defaultValue="maya@acme.dev"
+          defaultValue="maya@acme.com"
           autoComplete="email"
           aria-describedby={`${id}-email-hint`}
           required
         />
         <FieldDescription id={`${id}-email-hint`}>
-          Deploy alerts and receipts go here. If you change it, we send a confirmation link to the new address.
+          Mentions, reminders and the weekly summary go here. If you change it, we send a confirmation link to the new
+          address.
         </FieldDescription>
       </Field>
 
@@ -250,7 +252,7 @@ function ProfileFields() {
             ))}
           </SelectContent>
         </Select>
-        <FieldDescription>Used for log timestamps and the Monday summary email.</FieldDescription>
+        <FieldDescription>Used for due dates, reminders and the Monday summary email.</FieldDescription>
       </Field>
     </FieldGroup>
   )

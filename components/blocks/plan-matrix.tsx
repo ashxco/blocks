@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils"
 
 export interface PlanMatrixColumn {
   name: string
-  /** Short price line under the name, e.g. "$39 / month". */
+  /** Short price line under the name, e.g. "From $12 per member / month". */
   price?: string
   /** Tints the whole column. Use for the plan you recommend. */
   featured?: boolean
@@ -53,48 +53,52 @@ export interface PlanMatrixProps {
   className?: string
 }
 
+// "From" because these are the annual prices. The non-breaking spaces make a
+// narrow column wrap after the amount, not in the middle of "per member / month".
 export const defaultMatrixColumns: PlanMatrixColumn[] = [
-  { name: "Hobby", price: "$5 / month", cta: { label: "Choose Hobby", href: "/live/sign-up" } },
-  { name: "Starter", price: "$20 / month", cta: { label: "Choose Starter", href: "/live/sign-up" } },
-  { name: "Pro", price: "$39 / month", featured: true, cta: { label: "Start free trial", href: "/live/sign-up" } },
-  { name: "Scale", price: "$99 / month", cta: { label: "Choose Scale", href: "/live/sign-up" } },
+  { name: "Free", price: "$0", cta: { label: "Start for free", href: "/live/sign-up" } },
+  { name: "Pro", price: "From\u00a0$12 per\u00a0member\u00a0/\u00a0month", featured: true, cta: { label: "Start free trial", href: "/live/sign-up" } },
+  { name: "Business", price: "From\u00a0$24 per\u00a0member\u00a0/\u00a0month", cta: { label: "Choose Business", href: "/live/sign-up" } },
+  { name: "Enterprise", price: "Custom", cta: { label: "Talk to sales", href: "/live/contact" } },
 ]
 
 export const defaultMatrixGroups: PlanMatrixGroup[] = [
   {
-    title: "Deploy",
+    title: "Projects and tasks",
     rows: [
-      { feature: "Projects", values: [3, "Unlimited", "Unlimited", "Unlimited"] },
-      { feature: "Preview URL for every branch", values: [true, true, true, true] },
-      { feature: "Concurrent builds", values: [1, 2, 5, 20] },
-      { feature: "Build minutes", values: ["500", "3,000", "10,000", "Unlimited"] },
-      { feature: "Instant rollbacks", values: [true, true, true, true] },
+      { feature: "Members", values: ["Up to 3", "Unlimited", "Unlimited", "Unlimited"] },
+      { feature: "Projects", values: [5, "Unlimited", "Unlimited", "Unlimited"] },
+      { feature: "List, board, timeline and calendar views", values: [true, true, true, true] },
+      { feature: "Subtasks, priorities and comments", values: [true, true, true, true] },
+      { feature: "Docs", values: [true, true, true, true] },
+      { feature: "Guests", values: [false, "10", "50", "Custom"] },
     ],
   },
   {
-    title: "Run",
+    title: "Automations and reports",
     rows: [
-      { feature: "Bandwidth", values: ["100 GB", "500 GB", "1 TB", "5 TB"] },
-      { feature: "Custom domains", values: [1, 5, "Unlimited", "Unlimited"] },
-      { feature: "Managed Postgres", values: ["1 GB", "10 GB", "50 GB", "250 GB"] },
-      { feature: "Database backups", values: ["Weekly", "Daily", "Hourly", "Hourly"] },
-      { feature: "Log retention", values: ["1 day", "7 days", "30 days", "90 days"] },
+      { feature: "Automation runs a month", values: ["1,000", "10,000", "50,000", "Custom"] },
+      { feature: "Reports and dashboards", values: [true, true, true, true] },
+      { feature: "Integrations", values: [false, true, true, true] },
+      { feature: "Storage", values: ["2 GB", "100 GB", "1 TB", "Custom"] },
     ],
   },
   {
-    title: "Team and security",
+    title: "Admin and security",
     rows: [
-      { feature: "Team members", values: [1, 3, 10, "Unlimited"] },
-      { feature: "Roles and permissions", values: [false, false, true, true] },
+      { feature: "Two-factor authentication", values: [true, true, true, true] },
+      { feature: "SSO with SAML", values: [false, false, true, true] },
+      { feature: "Advanced permissions", values: [false, false, true, true] },
       { feature: "Audit log", values: [false, false, true, true] },
-      { feature: "SAML single sign-on", values: [false, false, false, true] },
+      { feature: "Data residency", values: [false, false, false, true] },
     ],
   },
   {
     title: "Support",
     rows: [
-      { feature: "Support channel", values: ["Community", "Email", "Priority email", "Shared Slack"] },
-      { feature: "Uptime SLA", values: [false, false, "99.9%", "99.99%"] },
+      { feature: "Uptime SLA", values: [false, false, "99.9%", "99.9%"] },
+      { feature: "Support", values: ["Help center", "Email", "Priority email", "Success manager"] },
+      { feature: "Custom contracts", values: [false, false, false, true] },
     ],
   },
 ]
@@ -219,7 +223,7 @@ export function PlanMatrix({
   columns = defaultMatrixColumns,
   groups = defaultMatrixGroups,
   title = "Compare every plan.",
-  description = "Every plan includes automatic HTTPS, DDoS protection and unlimited deployments. Limits reset on the first of each month.",
+  description = "Every plan includes every view, docs and reports. Automation runs reset on the first of each month.",
   caption = "Features included in each plan",
   contained = true,
   className,

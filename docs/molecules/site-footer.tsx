@@ -9,7 +9,7 @@ export default function SiteFooterDocs() {
       <Example
         title="Default"
         layout="full"
-        description="Wordmark and a monthly release-notes sign-up on the left, three columns of long-tail links on the right, and a bottom row with legal links and live status."
+        description="Wordmark and a monthly product-updates sign-up on the left, three columns of long-tail links on the right, and a bottom row with legal links and live status."
         code={`<SiteFooter />`}
       >
         <SiteFooter />
@@ -53,16 +53,16 @@ export default function SiteFooterDocs() {
               title: "Product",
               links: [
                 { label: "Integrations", href: "#" },
-                { label: "Self-hosting", href: "#" },
+                { label: "Templates", href: "#" },
                 { label: "Security", href: "#" },
               ],
             },
             {
               title: "Developers",
               links: [
-                { label: "Documentation", href: "#" },
-                { label: "CLI reference", href: "#" },
-                { label: "API", href: "#" },
+                { label: "API reference", href: "#" },
+                { label: "SDK", href: "#" },
+                { label: "Webhooks", href: "#" },
               ],
             },
             {
@@ -77,7 +77,7 @@ export default function SiteFooterDocs() {
               title: "Resources",
               links: [
                 { label: "Guides", href: "/live/blog" },
-                { label: "Templates", href: "#" },
+                { label: "Help center", href: "#" },
                 { label: "Partners", href: "#" },
               ],
             },
@@ -100,7 +100,7 @@ export default function SiteFooterDocs() {
 
       <ApiTable
         rows={[
-          { prop: "columns", type: "{ title: string; links: { label: string; href: string }[] }[]", default: "Product, Developers, Company", description: "Link columns beside the newsletter form. The defaults hold long-tail pages, none of the header links." },
+          { prop: "columns", type: "{ title: string; links: { label: string; href: string }[] }[]", default: "Product, Resources, Company", description: "Link columns beside the newsletter form. The defaults hold long-tail pages, none of the header links." },
           { prop: "newsletter", type: "boolean", default: "true", description: "Show the newsletter sign-up. Turn it off on pages with their own sign-up." },
           { prop: "className", type: "string", description: "Classes for the <footer> element." },
         ]}

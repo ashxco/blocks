@@ -10,7 +10,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 
 import { CopyButton } from "./copy-button"
-import { colorAlias, formatValue, isColor, tokens, type DesignToken } from "./data"
+import { breakpointValues, colorAlias, formatValue, isColor, tokens, type DesignToken } from "./data"
 import { CodeList, ScopedChip } from "./layout"
 
 /* ------------------------------------------------------------------------ */
@@ -91,6 +91,8 @@ interface Row {
   /** The primitive behind a colour role in each theme, as the Colour page names it. */
   lightAlias?: string
   darkAlias?: string
+  /** Values from a breakpoint up, for tokens that change with the viewport; light is the base. */
+  breakpoints: { name: string; min: string; value: string }[]
   haystack: string
 }
 
@@ -110,6 +112,7 @@ const rows: Row[] = blocks.flatMap(({ tier, group }) =>
     const semantic = t.tier === "semantic" && isColor(t)
     const lightAlias = semantic ? colorAlias(String(t.value), t.ref) : undefined
     const darkAlias = semantic && t.dark ? colorAlias(String(t.dark.value), t.dark.ref) : undefined
+    const breakpoints = breakpointValues(t).map((b) => ({ name: b.name, min: b.min, value: formatValue(t, b.value) }))
     return {
       token: t,
       tier,
@@ -119,7 +122,20 @@ const rows: Row[] = blocks.flatMap(({ tier, group }) =>
       dark,
       lightAlias,
       darkAlias,
-      haystack: [t.name, t.cssVar, utility, light, dark, lightAlias, darkAlias, t.description, t.group, tier]
+      breakpoints,
+      haystack: [
+        t.name,
+        t.cssVar,
+        utility,
+        light,
+        dark,
+        lightAlias,
+        darkAlias,
+        ...breakpoints.flatMap((b) => [b.name, b.value]),
+        t.description,
+        t.group,
+        tier,
+      ]
         .filter(Boolean)
         .join(" ")
         .toLowerCase(),
@@ -159,11 +175,31 @@ function ColorChip({ token, theme }: { token: DesignToken; theme?: "light" | "da
   )
 }
 
-/** The value, with the primitive behind it on top for semantic colours. */
+/**
+ * The value, with the primitive behind it on top for semantic colours. A token
+ * that changes with the viewport lists its base value (phones) and the value
+ * from each breakpoint up.
+ */
 function Value({ row, theme }: { row: Row; theme?: "light" | "dark" }) {
   const t = row.token
   const value = theme === "dark" ? row.dark : row.light
   const alias = theme === "dark" ? row.darkAlias : row.lightAlias
+  if (row.breakpoints.length > 0 && !theme) {
+    return (
+      <dl className="grid min-w-0 gap-y-0.5 font-mono text-xs @narrow:grid-cols-[auto_minmax(0,1fr)] @narrow:items-baseline @narrow:gap-x-3 @narrow:gap-y-1">
+        <dt className="text-muted-foreground">Base</dt>
+        <dd className="min-w-0 text-foreground">{value}</dd>
+        {row.breakpoints.map((b) => (
+          <React.Fragment key={b.name}>
+            <dt className="text-muted-foreground">
+              From {b.name} · {b.min}
+            </dt>
+            <dd className="min-w-0 text-foreground">{b.value}</dd>
+          </React.Fragment>
+        ))}
+      </dl>
+    )
+  }
   return (
     <span className="flex min-w-0 items-center gap-2.5">
       {isColor(t) ? <ColorChip token={t} theme={theme} /> : null}
