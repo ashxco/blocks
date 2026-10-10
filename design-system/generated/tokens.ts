@@ -975,6 +975,102 @@ export const tokens: DesignToken[] = [
     "description": "Low-chroma dark fill: quiet accent surfaces in dark mode."
   },
   {
+    "name": "color.gold.50",
+    "cssVar": "--bk-gold-50",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.97 0.019 80)"
+  },
+  {
+    "name": "color.gold.100",
+    "cssVar": "--bk-gold-100",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.94 0.039 80)"
+  },
+  {
+    "name": "color.gold.200",
+    "cssVar": "--bk-gold-200",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.885 0.071 80)"
+  },
+  {
+    "name": "color.gold.300",
+    "cssVar": "--bk-gold-300",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.805 0.109 80)"
+  },
+  {
+    "name": "color.gold.400",
+    "cssVar": "--bk-gold-400",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.71 0.139 80)"
+  },
+  {
+    "name": "color.gold.500",
+    "cssVar": "--bk-gold-500",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.62 0.128 80)"
+  },
+  {
+    "name": "color.gold.600",
+    "cssVar": "--bk-gold-600",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.54 0.111 80)"
+  },
+  {
+    "name": "color.gold.700",
+    "cssVar": "--bk-gold-700",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.465 0.096 80)"
+  },
+  {
+    "name": "color.gold.800",
+    "cssVar": "--bk-gold-800",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.39 0.08 80)"
+  },
+  {
+    "name": "color.gold.900",
+    "cssVar": "--bk-gold-900",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.31 0.064 80)"
+  },
+  {
+    "name": "color.gold.950",
+    "cssVar": "--bk-gold-950",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.235 0.049 80)"
+  },
+  {
+    "name": "color.gold.dim",
+    "cssVar": "--bk-gold-dim",
+    "tier": "primitive",
+    "group": "gold",
+    "type": "color",
+    "value": "oklch(0.25 0.037 80)"
+  },
+  {
     "name": "color.slate.0",
     "cssVar": "--bk-slate-0",
     "tier": "primitive",
@@ -2040,6 +2136,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.135 72)",
       "ref": "color.amber.400"
     },
+    "themed": true,
     "utility": "text-warning · bg-warning",
     "description": "Warnings and pending states."
   },
@@ -2071,6 +2168,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.27 0.04 72)",
       "ref": "color.amber.dim"
     },
+    "themed": true,
     "utility": "bg-warning-subtle",
     "description": "Quiet warning fill."
   },
@@ -2429,8 +2527,8 @@ export const tokens: DesignToken[] = [
     "tier": "semantic",
     "group": "chart",
     "type": "color",
-    "value": "oklch(0.71 0.135 72)",
-    "ref": "color.amber.400",
+    "value": "oklch(0.62 0.15 72)",
+    "ref": "color.amber.500",
     "dark": {
       "value": "oklch(0.885 0.068 72)",
       "ref": "color.amber.200"
@@ -2445,8 +2543,8 @@ export const tokens: DesignToken[] = [
     "tier": "semantic",
     "group": "chart",
     "type": "color",
-    "value": "oklch(0.68 0.01 286)",
-    "ref": "theme.neutral.400",
+    "value": "oklch(0.645 0.011 286)",
+    "ref": "theme.neutral.450",
     "dark": {
       "value": "oklch(0.56 0.012 286)",
       "ref": "theme.neutral.500"
@@ -2626,6 +2724,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.135 72)",
       "ref": "color.amber.400"
     },
+    "themed": true,
     "utility": "text-panel-warning · bg-panel-warning",
     "description": "Warning accent on dark panels: pending and degraded states inside bg-panel."
   },
@@ -5196,8 +5295,8 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.chart.5": {
-        "value": "oklch(0.68 0.019 257)",
-        "ref": "theme.neutral.400",
+        "value": "oklch(0.645 0.02 257)",
+        "ref": "theme.neutral.450",
         "dark": {
           "value": "oklch(0.56 0.021 257)",
           "ref": "theme.neutral.500"
@@ -6197,8 +6296,8 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.chart.3": {
-        "value": "oklch(0.71 0.135 72)",
-        "ref": "color.amber.400",
+        "value": "oklch(0.62 0.15 72)",
+        "ref": "color.amber.500",
         "dark": {
           "value": "oklch(0.805 0.105 72)",
           "ref": "color.amber.300"
@@ -6211,8 +6310,8 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.chart.5": {
-        "value": "oklch(0.68 0.018 160)",
-        "ref": "theme.neutral.400",
+        "value": "oklch(0.645 0.019 160)",
+        "ref": "theme.neutral.450",
         "dark": {
           "value": "oklch(0.56 0.02 160)",
           "ref": "theme.neutral.500"
@@ -6913,6 +7012,9 @@ export const themes: readonly Theme[] = [
       "color.tint.sky",
       "color.tint.rose",
       "color.chart.4",
+      "color.warning",
+      "color.warning-subtle",
+      "color.panel-warning",
       "color.brand-subtle-foreground"
     ],
     "values": {
@@ -7092,12 +7194,28 @@ export const themes: readonly Theme[] = [
           "ref": "theme.neutral.1000"
         }
       },
+      "color.warning": {
+        "value": "oklch(0.54 0.111 80)",
+        "ref": "color.gold.600",
+        "dark": {
+          "value": "oklch(0.71 0.139 80)",
+          "ref": "color.gold.400"
+        }
+      },
       "color.warning-foreground": {
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
           "value": "oklch(0.1 0.005 60)",
           "ref": "theme.neutral.1000"
+        }
+      },
+      "color.warning-subtle": {
+        "value": "oklch(0.97 0.019 80)",
+        "ref": "color.gold.50",
+        "dark": {
+          "value": "oklch(0.25 0.037 80)",
+          "ref": "color.gold.dim"
         }
       },
       "color.border": {
@@ -7208,16 +7326,16 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.chart.4": {
-        "value": "oklch(0.71 0.187 283)",
-        "ref": "color.violet.400",
+        "value": "oklch(0.62 0.209 283)",
+        "ref": "color.violet.500",
         "dark": {
           "value": "oklch(0.805 0.146 283)",
           "ref": "color.violet.300"
         }
       },
       "color.chart.5": {
-        "value": "oklch(0.68 0.014 65)",
-        "ref": "theme.neutral.400",
+        "value": "oklch(0.645 0.014 64)",
+        "ref": "theme.neutral.450",
         "dark": {
           "value": "oklch(0.56 0.014 63)",
           "ref": "theme.neutral.500"
@@ -7292,6 +7410,14 @@ export const themes: readonly Theme[] = [
         "dark": {
           "value": "oklch(0.73 0.178 51)",
           "ref": "theme.accent.400"
+        }
+      },
+      "color.panel-warning": {
+        "value": "oklch(0.71 0.139 80)",
+        "ref": "color.gold.400",
+        "dark": {
+          "value": "oklch(0.71 0.139 80)",
+          "ref": "color.gold.400"
         }
       },
       "theme.accent.50": {
@@ -8222,22 +8348,22 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.chart.3": {
-        "value": "oklch(0.505 0 0)",
-        "ref": "theme.neutral.550",
+        "value": "oklch(0.45 0 0)",
+        "ref": "theme.neutral.600",
         "dark": {
           "value": "oklch(0.73 0 0)"
         }
       },
       "color.chart.4": {
-        "value": "oklch(0.82 0 0)",
-        "ref": "theme.neutral.300",
+        "value": "oklch(0.56 0 0)",
+        "ref": "theme.neutral.500",
         "dark": {
           "value": "oklch(0.48 0 0)"
         }
       },
       "color.chart.5": {
-        "value": "oklch(0.68 0 0)",
-        "ref": "theme.neutral.400",
+        "value": "oklch(0.645 0 0)",
+        "ref": "theme.neutral.450",
         "dark": {
           "value": "oklch(0.605 0 0)"
         }

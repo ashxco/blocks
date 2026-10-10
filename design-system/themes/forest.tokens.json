@@ -255,7 +255,7 @@
       },
       "chart": {
         "3": {
-          "$value": "{color.amber.400}"
+          "$value": "{color.amber.500}"
         },
         "4": {
           "$value": "oklch(0.64 0.105 305)"

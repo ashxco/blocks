@@ -121,11 +121,6 @@ export function aliasScaleIn(
   return same?.group
 }
 
-/*
- * Names for the alias scales (aliasScaleLabel, aliasSummary) live in
- * ./scale-names, which reads the theme files for the names their authors gave.
- */
-
 /**
  * The hue of a theme's alias scale, read at its middle step (accent 600,
  * neutral 500) so a scale prints one hue on every page. Null for pure greys.
@@ -134,6 +129,23 @@ export function aliasHue(theme: ThemeId, role: ScaleRole): number | null {
   const alias = byName.get(`theme.${role}.${role === "accent" ? "600" : "500"}`)
   const lch = alias ? parseOklch(valueIn(theme, alias).value) : null
   return lch && lch.c > 0 ? Math.round(lch.h) : null
+}
+
+/** "violet" (the fixed scale it points at), or "own OKLCH values". */
+export function aliasScaleLabel(theme: ThemeId, role: ScaleRole) {
+  return aliasScaleIn(theme, role) ?? "own OKLCH values"
+}
+
+/** "violet · hue 283", "grey · no hue". */
+export function aliasSummary(theme: ThemeId, role: ScaleRole) {
+  const hue = aliasHue(theme, role)
+  return `${aliasScaleLabel(theme, role)} · ${hue === null ? "no hue" : `hue ${hue}`}`
+}
+
+/** "Blocks points it at violet", or "… sets its own OKLCH values". */
+export function aliasSource(theme: ThemeId, themeName: string, role: ScaleRole) {
+  const fixed = aliasScaleIn(theme, role)
+  return fixed ? `${themeName} points it at ${fixed}` : `${themeName} sets its own OKLCH values`
 }
 
 /* ------------------------------------------------------------------------ */

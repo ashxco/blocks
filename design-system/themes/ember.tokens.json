@@ -223,9 +223,21 @@
       },
       "chart": {
         "4": {
-          "$value": "{color.violet.400}",
+          "$value": "{color.violet.500}",
           "$description": "Violet in place of amber: amber sits too close to the orange first series."
         }
+      },
+      "warning": {
+        "$value": "{color.gold.600}",
+        "$description": "Ember moves warning from the shared amber (hue 72) to gold (hue 80), so an 'At risk' state never reads as the orange accent. Same meaning and contrast pairs."
+      },
+      "warning-subtle": {
+        "$value": "{color.gold.50}",
+        "$description": "Quiet warning fill, in Ember's gold."
+      },
+      "panel-warning": {
+        "$value": "{color.gold.400}",
+        "$description": "Warning on dark panels, in Ember's gold."
       }
     }
   },
@@ -254,6 +266,18 @@
           "$value": "{color.violet.300}",
           "$description": "Violet in place of amber: amber sits too close to the orange first series."
         }
+      },
+      "warning": {
+        "$value": "{color.gold.400}",
+        "$description": "Ember moves warning from the shared amber (hue 72) to gold (hue 80), so an 'At risk' state never reads as the orange accent. Same meaning and contrast pairs."
+      },
+      "warning-subtle": {
+        "$value": "{color.gold.dim}",
+        "$description": "Quiet warning fill, in Ember's gold."
+      },
+      "panel-warning": {
+        "$value": "{color.gold.400}",
+        "$description": "Warning on dark panels, in Ember's gold."
       }
     }
   },

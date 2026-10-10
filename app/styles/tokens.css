@@ -333,6 +333,18 @@
   --bk-orange-900: oklch(0.325 0.094 37);
   --bk-orange-950: oklch(0.245 0.07 36);
   --bk-orange-dim: oklch(0.26 0.056 46);
+  --bk-gold-50: oklch(0.97 0.019 80);
+  --bk-gold-100: oklch(0.94 0.039 80);
+  --bk-gold-200: oklch(0.885 0.071 80);
+  --bk-gold-300: oklch(0.805 0.109 80);
+  --bk-gold-400: oklch(0.71 0.139 80);
+  --bk-gold-500: oklch(0.62 0.128 80);
+  --bk-gold-600: oklch(0.54 0.111 80);
+  --bk-gold-700: oklch(0.465 0.096 80);
+  --bk-gold-800: oklch(0.39 0.08 80);
+  --bk-gold-900: oklch(0.31 0.064 80);
+  --bk-gold-950: oklch(0.235 0.049 80);
+  --bk-gold-dim: oklch(0.25 0.037 80);
   --bk-slate-0: oklch(1 0 0);
   --bk-slate-25: oklch(0.985 0.003 257);
   --bk-slate-50: oklch(0.975 0.005 257);
@@ -464,6 +476,10 @@
   --success--dark: var(--bk-green-400);
   --success-subtle--light: var(--bk-green-50);
   --success-subtle--dark: var(--bk-green-dim);
+  --warning--light: var(--bk-amber-600);
+  --warning--dark: var(--bk-amber-400);
+  --warning-subtle--light: var(--bk-amber-50);
+  --warning-subtle--dark: var(--bk-amber-dim);
   --ring--light: var(--bk-accent-600);
   --ring--dark: var(--bk-accent-400);
   --tint-violet--light: var(--bk-violet-100);
@@ -482,9 +498,9 @@
   --chart-2--dark: var(--bk-sky-300);
   --chart-3--light: var(--bk-green-500);
   --chart-3--dark: var(--bk-green-500);
-  --chart-4--light: var(--bk-amber-400);
+  --chart-4--light: var(--bk-amber-500);
   --chart-4--dark: var(--bk-amber-200);
-  --chart-5--light: var(--bk-neutral-400);
+  --chart-5--light: var(--bk-neutral-450);
   --chart-5--dark: var(--bk-neutral-500);
   --sidebar-ring--light: var(--bk-accent-600);
   --sidebar-ring--dark: var(--bk-accent-400);
@@ -492,6 +508,8 @@
   --panel-brand--dark: var(--bk-accent-400);
   --panel-success--light: var(--bk-green-400);
   --panel-success--dark: var(--bk-green-400);
+  --panel-warning--light: var(--bk-amber-400);
+  --panel-warning--dark: var(--bk-amber-400);
 
   /* Semantic colours, light and dark */
   --background: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
@@ -520,9 +538,9 @@
   --success: var(--bk-on-light, var(--success--light)) var(--bk-on-dark, var(--success--dark));
   --success-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
   --success-subtle: var(--bk-on-light, var(--success-subtle--light)) var(--bk-on-dark, var(--success-subtle--dark));
-  --warning: var(--bk-on-light, var(--bk-amber-600)) var(--bk-on-dark, var(--bk-amber-400));
+  --warning: var(--bk-on-light, var(--warning--light)) var(--bk-on-dark, var(--warning--dark));
   --warning-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
-  --warning-subtle: var(--bk-on-light, var(--bk-amber-50)) var(--bk-on-dark, var(--bk-amber-dim));
+  --warning-subtle: var(--bk-on-light, var(--warning-subtle--light)) var(--bk-on-dark, var(--warning-subtle--dark));
   --info: var(--bk-on-light, var(--bk-sky-600)) var(--bk-on-dark, var(--bk-sky-400));
   --info-subtle: var(--bk-on-light, var(--bk-sky-50)) var(--bk-on-dark, var(--bk-sky-dim));
   --border: var(--bk-on-light, var(--bk-neutral-150)) var(--bk-on-dark, oklch(1 0 0 / 0.09));
@@ -558,7 +576,7 @@
   --sidebar-ring: var(--bk-on-light, var(--sidebar-ring--light)) var(--bk-on-dark, var(--sidebar-ring--dark));
   --panel-brand: var(--bk-on-light, var(--panel-brand--light)) var(--bk-on-dark, var(--panel-brand--dark));
   --panel-success: var(--bk-on-light, var(--panel-success--light)) var(--bk-on-dark, var(--panel-success--dark));
-  --panel-warning: var(--bk-amber-400);
+  --panel-warning: var(--bk-on-light, var(--panel-warning--light)) var(--bk-on-dark, var(--panel-warning--dark));
   --panel-destructive: var(--bk-red-400);
 
   /* Layout and motion */
@@ -690,9 +708,9 @@
   --success: var(--bk-on-light, var(--success--light)) var(--bk-on-dark, var(--success--dark));
   --success-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
   --success-subtle: var(--bk-on-light, var(--success-subtle--light)) var(--bk-on-dark, var(--success-subtle--dark));
-  --warning: var(--bk-on-light, var(--bk-amber-600)) var(--bk-on-dark, var(--bk-amber-400));
+  --warning: var(--bk-on-light, var(--warning--light)) var(--bk-on-dark, var(--warning--dark));
   --warning-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
-  --warning-subtle: var(--bk-on-light, var(--bk-amber-50)) var(--bk-on-dark, var(--bk-amber-dim));
+  --warning-subtle: var(--bk-on-light, var(--warning-subtle--light)) var(--bk-on-dark, var(--warning-subtle--dark));
   --info: var(--bk-on-light, var(--bk-sky-600)) var(--bk-on-dark, var(--bk-sky-400));
   --info-subtle: var(--bk-on-light, var(--bk-sky-50)) var(--bk-on-dark, var(--bk-sky-dim));
   --border: var(--bk-on-light, var(--bk-neutral-150)) var(--bk-on-dark, oklch(1 0 0 / 0.09));
@@ -725,6 +743,7 @@
   --sidebar-ring: var(--bk-on-light, var(--sidebar-ring--light)) var(--bk-on-dark, var(--sidebar-ring--dark));
   --panel-brand: var(--bk-on-light, var(--panel-brand--light)) var(--bk-on-dark, var(--panel-brand--dark));
   --panel-success: var(--bk-on-light, var(--panel-success--light)) var(--bk-on-dark, var(--panel-success--dark));
+  --panel-warning: var(--bk-on-light, var(--panel-warning--light)) var(--bk-on-dark, var(--panel-warning--dark));
 }
 
 /* Themes. data-theme="<id>" scopes a theme to its subtree; no attribute means
@@ -800,6 +819,10 @@
   --success--dark: var(--bk-green-400);
   --success-subtle--light: var(--bk-green-50);
   --success-subtle--dark: var(--bk-green-dim);
+  --warning--light: var(--bk-amber-600);
+  --warning--dark: var(--bk-amber-400);
+  --warning-subtle--light: var(--bk-amber-50);
+  --warning-subtle--dark: var(--bk-amber-dim);
   --ring--light: var(--bk-accent-600);
   --ring--dark: var(--bk-accent-400);
   --tint-violet--light: var(--bk-violet-100);
@@ -818,9 +841,9 @@
   --chart-2--dark: var(--bk-sky-300);
   --chart-3--light: var(--bk-green-500);
   --chart-3--dark: var(--bk-green-500);
-  --chart-4--light: var(--bk-amber-400);
+  --chart-4--light: var(--bk-amber-500);
   --chart-4--dark: var(--bk-amber-200);
-  --chart-5--light: var(--bk-neutral-400);
+  --chart-5--light: var(--bk-neutral-450);
   --chart-5--dark: var(--bk-neutral-500);
   --sidebar-ring--light: var(--bk-accent-600);
   --sidebar-ring--dark: var(--bk-accent-400);
@@ -828,6 +851,8 @@
   --panel-brand--dark: var(--bk-accent-400);
   --panel-success--light: var(--bk-green-400);
   --panel-success--dark: var(--bk-green-400);
+  --panel-warning--light: var(--bk-amber-400);
+  --panel-warning--dark: var(--bk-amber-400);
   --button-radius: var(--radius-full);
   --button-radius-sm: var(--button-radius);
   --button-radius-xs: var(--button-radius);
@@ -973,7 +998,7 @@
   --tint-sky--dark: oklch(0.25 0.02 218);
   --tint-rose--light: oklch(0.94 0.03 35);
   --tint-rose--dark: oklch(0.25 0.02 35);
-  --chart-3--light: var(--bk-amber-400);
+  --chart-3--light: var(--bk-amber-500);
   --chart-3--dark: var(--bk-amber-300);
   --chart-4--light: oklch(0.64 0.105 305);
   --chart-4--dark: oklch(0.76 0.095 305);
@@ -1038,6 +1063,10 @@
   --bk-neutral-1000: var(--bk-stone-1000);
   --brand-subtle--light: var(--bk-accent-100);
   --brand-subtle-foreground--dark: var(--bk-accent-300);
+  --warning--light: var(--bk-gold-600);
+  --warning--dark: var(--bk-gold-400);
+  --warning-subtle--light: var(--bk-gold-50);
+  --warning-subtle--dark: var(--bk-gold-dim);
   --tint-violet--light: oklch(0.935 0.04 50);
   --tint-violet--dark: oklch(0.25 0.035 45);
   --tint-sand--light: oklch(0.945 0.045 88);
@@ -1046,8 +1075,10 @@
   --tint-sky--dark: oklch(0.25 0.016 220);
   --tint-rose--light: oklch(0.93 0.038 2);
   --tint-rose--dark: oklch(0.245 0.026 2);
-  --chart-4--light: var(--bk-violet-400);
+  --chart-4--light: var(--bk-violet-500);
   --chart-4--dark: var(--bk-violet-300);
+  --panel-warning--light: var(--bk-gold-400);
+  --panel-warning--dark: var(--bk-gold-400);
   --kern-pull: 0.02em;
 }
 
@@ -1125,11 +1156,11 @@
   --chart-1--dark: var(--bk-neutral-25);
   --chart-2--light: var(--bk-neutral-750);
   --chart-2--dark: oklch(0.86 0 0);
-  --chart-3--light: var(--bk-neutral-550);
+  --chart-3--light: var(--bk-neutral-600);
   --chart-3--dark: oklch(0.73 0 0);
-  --chart-4--light: var(--bk-neutral-300);
+  --chart-4--light: var(--bk-neutral-500);
   --chart-4--dark: oklch(0.48 0 0);
-  --chart-5--light: var(--bk-neutral-400);
+  --chart-5--light: var(--bk-neutral-450);
   --chart-5--dark: oklch(0.605 0 0);
   --sidebar-ring--light: var(--bk-neutral-550);
   --sidebar-ring--dark: var(--bk-neutral-25);
@@ -1170,7 +1201,9 @@
   --success: var(--bk-on-light, var(--success--light)) var(--bk-on-dark, var(--success--dark));
   --success-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
   --success-subtle: var(--bk-on-light, var(--success-subtle--light)) var(--bk-on-dark, var(--success-subtle--dark));
+  --warning: var(--bk-on-light, var(--warning--light)) var(--bk-on-dark, var(--warning--dark));
   --warning-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
+  --warning-subtle: var(--bk-on-light, var(--warning-subtle--light)) var(--bk-on-dark, var(--warning-subtle--dark));
   --border: var(--bk-on-light, var(--bk-neutral-150)) var(--bk-on-dark, oklch(1 0 0 / 0.09));
   --border-strong: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.16));
   --input: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.14));
@@ -1202,6 +1235,7 @@
   --sidebar-ring: var(--bk-on-light, var(--sidebar-ring--light)) var(--bk-on-dark, var(--sidebar-ring--dark));
   --panel-brand: var(--bk-on-light, var(--panel-brand--light)) var(--bk-on-dark, var(--panel-brand--dark));
   --panel-success: var(--bk-on-light, var(--panel-success--light)) var(--bk-on-dark, var(--panel-success--dark));
+  --panel-warning: var(--bk-on-light, var(--panel-warning--light)) var(--bk-on-dark, var(--panel-warning--dark));
   --control-radius: var(--radius-md);
   --card-radius: var(--radius-lg);
   --panel-radius: var(--radius-2xl);

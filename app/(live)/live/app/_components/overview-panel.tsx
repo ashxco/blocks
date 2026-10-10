@@ -38,9 +38,13 @@ const lanes: { id: string; start: string }[] = [
   { id: "mobile-app", start: "2026-09-01" },
 ]
 
-/** Quiet lanes are plain ink, so only the projects that need attention carry colour. */
+/**
+ * Every lane's dot is its status colour, as in the sidebar and the projects
+ * table. On-track bars stay plain ink, so only the projects that need
+ * attention carry a coloured bar.
+ */
 const statusStyle: Partial<Record<ProjectStatus, { label: string; dot: string; fill: string }>> = {
-  "on-track": { label: "On track", dot: "bg-panel-foreground/40", fill: "bg-panel-foreground/70" },
+  "on-track": { label: "On track", dot: "bg-panel-success", fill: "bg-panel-foreground/70" },
   "at-risk": { label: "At risk", dot: "bg-panel-warning", fill: "bg-panel-warning" },
   "off-track": { label: "Off track", dot: "bg-panel-destructive", fill: "bg-panel-destructive" },
 }
@@ -84,7 +88,7 @@ function GuideLines() {
  * attention, four facts about this week, and a timeline of the projects due
  * around now, with today marked in the accent.
  *
- * Status colours use the panel tokens (bg-panel-warning,
+ * Status colours use the panel tokens (bg-panel-success, bg-panel-warning,
  * bg-panel-destructive), which read on the dark panel in both themes.
  */
 export function OverviewPanel() {

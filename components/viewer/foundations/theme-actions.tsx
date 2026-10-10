@@ -5,6 +5,7 @@ import { CheckIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { useThemePreset } from "@/components/theme-provider"
+import { useChooseTheme } from "@/components/viewer/theme-picker"
 import { defaultThemeId, type ThemeId } from "@/lib/themes"
 
 import { ByTheme } from "./by-theme"
@@ -26,7 +27,8 @@ import { ByTheme } from "./by-theme"
  * picks "Current theme" or the button from <html data-theme> (ByTheme).
  */
 export function ThemeActions({ theme, name }: { theme: ThemeId; name: string }) {
-  const { theme: active, forced, savedTheme, setTheme } = useThemePreset()
+  const { theme: active, forced, savedTheme } = useThemePreset()
+  const chooseTheme = useChooseTheme()
   const statusRef = React.useRef<HTMLSpanElement>(null)
   const pendingFocus = React.useRef(false)
   const [applied, setApplied] = React.useState(false)
@@ -51,7 +53,7 @@ export function ThemeActions({ theme, name }: { theme: ThemeId; name: string }) 
   const choose = () => {
     pendingFocus.current = true
     setApplied(true)
-    setTheme(theme)
+    chooseTheme(theme)
   }
 
   const button = (

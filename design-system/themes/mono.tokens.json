@@ -272,13 +272,13 @@
           "$value": "{theme.neutral.750}"
         },
         "3": {
-          "$value": "{theme.neutral.550}"
+          "$value": "{theme.neutral.600}"
         },
         "4": {
-          "$value": "{theme.neutral.300}"
+          "$value": "{theme.neutral.500}"
         },
         "5": {
-          "$value": "{theme.neutral.400}"
+          "$value": "{theme.neutral.450}"
         }
       },
       "sidebar": {

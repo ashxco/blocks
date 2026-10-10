@@ -4,6 +4,8 @@ import Link from "next/link"
 import { formatRatio, parseOklch, textContrast, wcagLevel } from "./color"
 import {
   aliasHue,
+  aliasSource,
+  aliasSummary,
   colorAlias,
   defaultThemeId,
   fixedScales,
@@ -33,7 +35,6 @@ import { cn } from "@/lib/utils"
 import { ByTheme, OnlyInTheme, ThemeText } from "./by-theme"
 import { Code, CodeList, FoundationPage, Meta, Section, SubHeading } from "./layout"
 import { rampFill, rampSteps } from "./scale-fill"
-import { aliasSource, aliasSummary } from "./scale-names"
 
 /* ------------------------------------------------------------------------ */
 /* Helpers                                                                   */
