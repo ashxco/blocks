@@ -200,6 +200,14 @@ export function TimelineScreen({
           Done
         </span>
         <span className="inline-flex items-center gap-1.5">
+          <span className={cn("h-2 w-4 rounded-full", barFill.planned)} />
+          Planned
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="size-2 rotate-45 bg-foreground" />
+          Milestone
+        </span>
+        <span className="inline-flex items-center gap-1.5">
           <span className="h-3 w-0.5 bg-brand" />
           Today
         </span>

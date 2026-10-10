@@ -10,7 +10,8 @@
  * alpha are composited over their surface, then WCAG 2 relative luminance
  * gives the ratio.
  *
- * Text pairs need 4.5:1 and focus rings 3:1 against the canvas. Prints a
+ * Text pairs need 4.5:1; focus rings and chart series need 3:1 against the
+ * canvas (and series against cards too). Prints a
  * table per theme (failures only, plus a summary, unless --all) and exits
  * with 1 when any pair fails.
  *
@@ -53,6 +54,11 @@ for (const status of ["destructive", "success", "warning", "info"]) {
   pairs.push([status, "background", TEXT, "status"], [status, `${status}-subtle`, TEXT, "status"])
 }
 pairs.push(["ring", "background", UI, "focus"])
+// Chart series are graphical objects (WCAG 1.4.11): every bar, line and dot
+// must stand out from the card it is drawn on and from the canvas.
+for (let i = 1; i <= 5; i++) {
+  for (const bg of ["card", "background"]) pairs.push([`chart-${i}`, bg, UI, "chart"])
+}
 
 /* ----------------------------------------------------------------- Colour */
 

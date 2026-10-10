@@ -218,11 +218,11 @@
         "$description": "Data series 3."
       },
       "4": {
-        "$value": "{color.amber.400}",
+        "$value": "{color.amber.500}",
         "$description": "Data series 4."
       },
       "5": {
-        "$value": "{theme.neutral.400}",
+        "$value": "{theme.neutral.450}",
         "$description": "Data series 5 and comparison baselines."
       }
     },

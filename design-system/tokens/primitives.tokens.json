@@ -384,6 +384,45 @@
       },
       "$description": "Ember accent: a warm orange. The hue drifts from apricot tints (60) through orange (51 to 43) to rust shades (36), the way a flame cools: tints stay clear of pink, and the brand steps stay clear of warning amber (72) and destructive red (25). Chroma sits at the sRGB edge from 50 to 600."
     },
+    "gold": {
+      "50": {
+        "$value": "oklch(0.97 0.019 80)"
+      },
+      "100": {
+        "$value": "oklch(0.94 0.039 80)"
+      },
+      "200": {
+        "$value": "oklch(0.885 0.071 80)"
+      },
+      "300": {
+        "$value": "oklch(0.805 0.109 80)"
+      },
+      "400": {
+        "$value": "oklch(0.71 0.139 80)"
+      },
+      "500": {
+        "$value": "oklch(0.62 0.128 80)"
+      },
+      "600": {
+        "$value": "oklch(0.54 0.111 80)"
+      },
+      "700": {
+        "$value": "oklch(0.465 0.096 80)"
+      },
+      "800": {
+        "$value": "oklch(0.39 0.08 80)"
+      },
+      "900": {
+        "$value": "oklch(0.31 0.064 80)"
+      },
+      "950": {
+        "$value": "oklch(0.235 0.049 80)"
+      },
+      "dim": {
+        "$value": "oklch(0.25 0.037 80)"
+      },
+      "$description": "Ember warning: golden ochre at hue 80, so warnings stay clearly apart from Ember's orange accent (hue 43 to 51). Built with scripts/color-scale.mjs accent 80 0.16."
+    },
     "slate": {
       "0": {
         "$value": "oklch(1 0 0)"

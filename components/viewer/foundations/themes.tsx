@@ -14,6 +14,7 @@ import { OnlyInTheme } from "./by-theme"
 import { formatRatio, textContrast, wcagLevel } from "./color"
 import {
   aliasHue,
+  aliasScaleLabel,
   describeSize,
   themes,
   themeValues,
@@ -26,7 +27,6 @@ import {
 } from "./data"
 import { Code, FoundationPage, Meta, ScopedChip, Section, SubHeading } from "./layout"
 import { rampFill, rampSteps } from "./scale-fill"
-import { aliasScaleLabel } from "./scale-names"
 import { ThemeActions } from "./theme-actions"
 
 /*

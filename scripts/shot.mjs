@@ -17,9 +17,9 @@
  *
  * wait is the most time, in milliseconds, to wait for the page to settle
  * before capturing. The script captures as soon as the page has loaded,
- * React has hydrated, the network has been idle for a moment and animations
- * have had time to finish, so a fast page takes about two seconds. Raise it
- * when the machine is busy. SHOT_WAIT sets the default:
+ * React has hydrated, the network has been idle for a moment, the fonts the
+ * page uses have loaded and animations have had time to finish, so a fast
+ * page takes about two seconds. Raise it when the machine is busy. SHOT_WAIT sets the default:
  *
  *   SHOT_WAIT=30000 node scripts/shot.mjs http://localhost:3210/live out.png
  *
@@ -208,7 +208,7 @@ try {
   const started = Date.now()
   const remaining = () => wait - (Date.now() - started)
   const evaluate = async (expression) =>
-    (await cdp.send("Runtime.evaluate", { expression, returnByValue: true })).result?.value
+    (await cdp.send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true })).result?.value
 
   await cdp.send("Page.navigate", { url: target.toString() })
 
@@ -228,7 +228,23 @@ try {
   // 3. The network is quiet (lazy chunks, fonts, preview iframes).
   while (remaining() > 0 && (inflight.size > 0 || Date.now() - lastNetwork < IDLE_MS)) await sleep(50)
 
-  // 4. Entry animations and theme transitions finish, then two frames paint.
+  // 4. Every font face the page uses has loaded. Theme fonts that are not
+  //    preloaded (Inter Tight, Manrope, DM Sans, Geist) load their heavier
+  //    weights only once a heading needs them, so a capture could otherwise
+  //    show headlines in a lighter weight. Capped so a stuck font never hangs.
+  await evaluate(`(async () => {
+    const faces = new Set()
+    for (const el of document.querySelectorAll("body *")) {
+      const s = getComputedStyle(el)
+      faces.add(s.fontStyle + " " + s.fontWeight + " 16px " + s.fontFamily)
+      if (faces.size >= 60) break
+    }
+    const loads = Promise.all([...faces].map((f) => document.fonts.load(f).catch(() => null)))
+    await Promise.race([loads.then(() => document.fonts.ready), new Promise((r) => setTimeout(r, ${Math.max(0, Math.min(5000, remaining()))}))])
+    return true
+  })()`).catch(() => {})
+
+  // 5. Entry animations and theme transitions finish, then two frames paint.
   await sleep(Math.max(0, Math.min(SETTLE_MS, remaining())))
   await evaluate(
     "new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(true))))"

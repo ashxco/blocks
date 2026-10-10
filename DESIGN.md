@@ -53,7 +53,7 @@ A token can change from a breakpoint up. Its `$value` is the phone value, and `$
 
 ### Three tiers
 
-1. **Primitives**: raw OKLCH scales, never used directly in components. Fixed scales: neutrals `--bk-ink-*` (default), `--bk-slate-*`, `--bk-sage-*`, `--bk-stone-*`, `--bk-grey-*`; accents `--bk-violet-*` (default), `--bk-blue-*`, `--bk-emerald-*`, `--bk-orange-*`; status `--bk-green-*`, `--bk-amber-*`, `--bk-red-*`, `--bk-sky-*`. Accent and status scales have steps 50 … 950 plus `dim` (the quiet dark-mode fill); neutrals have 0 … 1000. On top sit the **theme scales** `--bk-accent-*` and `--bk-neutral-*` (`theme.accent.*`, `theme.neutral.*` in the sources): aliases that point at violet and ink by default and at another scale in each theme. Semantic colours reference the theme scales, never violet or ink by name.
+1. **Primitives**: raw OKLCH scales, never used directly in components. Fixed scales: neutrals `--bk-ink-*` (default), `--bk-slate-*`, `--bk-sage-*`, `--bk-stone-*`, `--bk-grey-*`; accents `--bk-violet-*` (default), `--bk-blue-*`, `--bk-emerald-*`, `--bk-orange-*`; status `--bk-green-*`, `--bk-amber-*`, `--bk-red-*`, `--bk-sky-*`, plus `--bk-gold-*` (Ember's warning). Accent and status scales have steps 50 … 950 plus `dim` (the quiet dark-mode fill); neutrals have 0 … 1000. On top sit the **theme scales** `--bk-accent-*` and `--bk-neutral-*` (`theme.accent.*`, `theme.neutral.*` in the sources): aliases that point at violet and ink by default and at another scale in each theme. Semantic colours reference the theme scales, never violet or ink by name.
 2. **Semantic** roles, with light and dark values. These are the colour utilities:
 
 | Role | Utilities | Use |
@@ -123,14 +123,14 @@ A theme can retune a role's tracking for its font (`--text-<role>--letter-spacin
 
 ## Themes
 
-A theme is a full preset: the accent scale, the neutral scale (its tint), the radius scale and the component radii that follow from it, the fonts, and type tracking where a font needs it, always in both light and dark. Mode stays independent: any theme works in either mode. A theme never changes spacing, sizes, type sizes or weights, motion, or what the status colours mean (it may retune `success`, `warning`, `destructive` and `info` only for contrast). Every theme meets the whole contract in this document, not only the default.
+A theme is a full preset: the accent scale, the neutral scale (its tint), the radius scale and the component radii that follow from it, the fonts, and type tracking where a font needs it, always in both light and dark. Mode stays independent: any theme works in either mode. A theme never changes spacing, sizes, type sizes or weights, motion, or what the status colours mean (it may retune `success`, `warning`, `destructive` and `info` for contrast, or to keep them clearly apart from its accent: Forest's success is a leafier green, Ember's warning is gold). Every theme meets the whole contract in this document, not only the default.
 
 | Theme | id | Look |
 |---|---|---|
 | Blocks | `blocks` | The default: violet accent on faint-violet ink, pill buttons, generous radii, Plus Jakarta Sans and Geist Mono |
 | Ocean | `ocean` | A confident blue accent on cool slate, pill buttons with crisp 8px controls and 14px cards, Inter Tight |
 | Forest | `forest` | A deep emerald accent on soft green-grey, rounded-square buttons, medium radii, Manrope |
-| Ember | `ember` | A warm orange accent on warm stone, soft and generous radii, pill buttons, DM Sans |
+| Ember | `ember` | A warm orange accent on warm stone, soft and generous radii, pill buttons, DM Sans. Warnings are gold (hue 80) so they never read as the orange accent |
 | Mono | `mono` | No hue at all: an ink accent on pure greys, sharp radii (6px controls and buttons, 8px cards), Geist and Geist Mono. With no hue to tell them apart, links and the active mobile menu item underline at rest, the logo's accent point gets a canvas-coloured ring, and the light-mode focus ring is graphite rather than ink so it still shows on dark panels |
 
 In the UI the picker is labelled **Theme**; light and dark is **Appearance**.
@@ -152,7 +152,7 @@ In the UI the picker is labelled **Theme**; light and dark is **Appearance**.
 
 ### Contrast gate
 
-`npm run contrast` (`scripts/check-contrast.mjs`, part of `npm run check`) checks every theme in light and dark against WCAG AA and fails the build otherwise: 4.5:1 for `foreground`, `copy` and `muted-foreground` on `background`, `card`, `subtle`, `muted` and `popover`; `primary-foreground` on `primary`; `secondary-foreground` on `secondary`; `brand` on `background` and `card`; `brand-foreground` on `brand`; `panel-foreground`, `panel-muted` and `panel-brand` on `panel` and `panel-raised`; each status colour on `background` and on its `-subtle`; and 3:1 for `ring` against `background`. `--all` prints every ratio.
+`npm run contrast` (`scripts/check-contrast.mjs`, part of `npm run check`) checks every theme in light and dark against WCAG AA and fails the build otherwise: 4.5:1 for `foreground`, `copy` and `muted-foreground` on `background`, `card`, `subtle`, `muted` and `popover`; `primary-foreground` on `primary`; `secondary-foreground` on `secondary`; `brand` on `background` and `card`; `brand-foreground` on `brand`; `panel-foreground`, `panel-muted` and `panel-brand` on `panel` and `panel-raised`; each status colour on `background` and on its `-subtle`; and 3:1 for `ring` against `background` and for every chart series (`chart-1` … `chart-5`) against `card` and `background`, since bars, lines and dots are graphical objects (WCAG 1.4.11). `--all` prints every ratio.
 
 Lines (`border`, `border-strong`, `input`) are not gated. Blocks separates with hairlines on purpose, and they outline components that a label, fill or text already identifies, which WCAG 1.4.11 does not ask to reach 3:1. Gating `border-strong` would darken every outline button, dashed empty state and strong separator in every theme.
 
@@ -219,7 +219,7 @@ Plain, specific, active voice. Buttons say what happens ("Create project", "Invi
 npm run check
 ```
 
-Runs the token build, the contrast gate (`scripts/check-contrast.mjs`), TypeScript and the design-system lint (`scripts/lint-ds.mjs`), which rejects raw colours, gradients, shadows, Tailwind's default palette, light or italic type and `asChild`.
+Runs the token build, the contrast gate (`scripts/check-contrast.mjs`, text, focus rings and chart series in every theme and mode), TypeScript and the design-system lint (`scripts/lint-ds.mjs`), which rejects raw colours, gradients, shadows, Tailwind's default palette, light or italic type and `asChild`.
 
 Screenshots for review:
 
@@ -227,4 +227,4 @@ Screenshots for review:
 node scripts/shot.mjs <url> <out.png> [width=1440] [height=2400] [light|dark] [wait=15000] [theme]
 ```
 
-It captures in real time once the page has hydrated and gone quiet; `wait` (or `SHOT_WAIT`) is the most it waits, in milliseconds. The mode argument adds `&mode=`; `theme` (or `SHOT_THEME`, or `?theme=<id>` in the URL) forces a theme preset. Widths under 600 are emulated as a phone at that exact width.
+It captures in real time once the page has hydrated, gone quiet and loaded every font face it uses; `wait` (or `SHOT_WAIT`) is the most it waits, in milliseconds. The mode argument adds `&mode=`; `theme` (or `SHOT_THEME`, or `?theme=<id>` in the URL) forces a theme preset. Widths under 600 are emulated as a phone at that exact width.
