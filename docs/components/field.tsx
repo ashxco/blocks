@@ -135,7 +135,7 @@ function CreateProjectForm() {
           </CardHeader>
           <CardFooter>
             <Button variant="outline" onClick={reset}>
-              Create another project
+              Create Another Project
             </Button>
           </CardFooter>
         </Card>
@@ -180,7 +180,7 @@ function CreateProjectForm() {
                 <InputGroup>
                   <InputGroupAddon>
                     {/* The full prefix needs room; on a phone the input keeps its width for the slug. */}
-                    <InputGroupText>
+                    <InputGroupText className="gap-0">
                       <span className="hidden @xl/form:inline">app.acme.com/acme</span>/projects/
                     </InputGroupText>
                   </InputGroupAddon>
@@ -298,7 +298,7 @@ function CreateProjectForm() {
                     }
                   >
                     <PlusIcon data-icon="inline-start" />
-                    Add milestone
+                    Add Milestone
                   </Button>
                 </div>
               </FieldSet>
@@ -322,7 +322,7 @@ function CreateProjectForm() {
             <Button type="button" variant="ghost" onClick={reset}>
               Cancel
             </Button>
-            <Button type="submit">Create project</Button>
+            <Button type="submit">Create Project</Button>
           </CardFooter>
         </form>
       </Card>
@@ -584,7 +584,7 @@ export default function FieldDocs() {
         title="Separator"
         layout="stack"
         description="Split alternatives, such as two ways to invite your team."
-        code={`<Button variant="outline" className="w-full">Copy invite link</Button>
+        code={`<Button variant="outline" className="w-full">Copy Invite Link</Button>
 <FieldSeparator>or</FieldSeparator>
 <Field>
   <FieldLabel htmlFor="invite-emails">Invite by email</FieldLabel>
@@ -593,7 +593,7 @@ export default function FieldDocs() {
       >
         <div className="grid w-full max-w-sm gap-6">
           <Button variant="outline" className="w-full">
-            Copy invite link
+            Copy Invite Link
           </Button>
           <FieldSeparator>or</FieldSeparator>
           <Field>
@@ -655,7 +655,7 @@ export default function FieldDocs() {
     </CardContent>
     <CardFooter className="flex-col-reverse items-stretch @xl/form:flex-row @xl/form:justify-end">
       <Button type="button" variant="ghost">Cancel</Button>
-      <Button type="submit">Create project</Button>
+      <Button type="submit">Create Project</Button>
     </CardFooter>
   </form>
 </Card>`}

@@ -114,7 +114,7 @@ export default function KbdDocs() {
           </KbdGroup>
         </Button>
         <Button>
-          Save task
+          Save Task
           <KbdGroup className="ml-1">
             <Kbd>
               <CommandIcon aria-label="Command" />

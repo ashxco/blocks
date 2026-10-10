@@ -142,7 +142,7 @@ function StatusUpdate() {
                 Posted
               </>
             ) : (
-              "Post update"
+              "Post Update"
             )}
           </InputGroupButton>
         </InputGroupAddon>
@@ -326,7 +326,7 @@ export default function InputGroupDocs() {
     <InputGroupAddon align="block-end">
       <InputGroupText className="text-caption tabular">{update.length}/200</InputGroupText>
       <InputGroupButton variant="default" size="sm" className="ml-auto">
-        Post update
+        Post Update
       </InputGroupButton>
     </InputGroupAddon>
   </InputGroup>

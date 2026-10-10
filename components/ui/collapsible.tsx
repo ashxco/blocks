@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
  * a panel that reveals with a height and opacity transition.
  *
  *   <Collapsible>
- *     <CollapsibleTrigger render={<Button variant="ghost" />}>Show 4 subtasks</CollapsibleTrigger>
+ *     <CollapsibleTrigger render={<Button variant="ghost" />}>Show 4 Subtasks</CollapsibleTrigger>
  *     <CollapsibleContent>…</CollapsibleContent>
  *   </Collapsible>
  *

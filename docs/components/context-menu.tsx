@@ -17,7 +17,7 @@ import {
 
 import { ApiTable, Example, Examples, Guidelines, useReturnFocus } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { initialsTone } from "@/components/blocks/members-list/people"
+import { initialsTone } from "@/docs/sample/people"
 import { Badge } from "@/components/ui/badge"
 import {
   ContextMenu,
@@ -379,6 +379,33 @@ export default function ContextMenuDocs() {
       <Example
         title="Doc tree"
         description="A realistic composition. One menu covers the whole list, and the row under the pointer stays highlighted while it is open. The actions match the toolbar, so nothing lives only behind a right-click."
+        code={`const [clicked, setClicked] = React.useState<string | null>(null)
+
+<ContextMenu>
+  <ContextMenuTrigger className="group/tree grid rounded-(--card-radius) border bg-card p-(--overlay-padding)">
+    {docs.map((doc) => (
+      <li
+        key={doc.name}
+        data-clicked={doc.name === clicked || undefined}
+        onContextMenu={() => setClicked(doc.name)}
+        className="hover:bg-accent group-data-popup-open/tree:data-clicked:bg-accent"
+      >
+        {doc.name}
+      </li>
+    ))}
+  </ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem><FilePlusIcon />New doc<ContextMenuShortcut>N</ContextMenuShortcut></ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem><PencilIcon />Rename<ContextMenuShortcut>F2</ContextMenuShortcut></ContextMenuItem>
+    <ContextMenuSub>
+      <ContextMenuSubTrigger><CopyIcon />Copy</ContextMenuSubTrigger>
+      <ContextMenuSubContent>…</ContextMenuSubContent>
+    </ContextMenuSub>
+    <ContextMenuSeparator />
+    <ContextMenuItem variant="destructive"><Trash2Icon />Delete</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>`}
       >
         <MenuStage className="min-h-96">{(container) => <DocTree container={container} />}</MenuStage>
       </Example>

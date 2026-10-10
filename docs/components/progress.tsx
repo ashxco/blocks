@@ -57,7 +57,7 @@ function ImportProgress() {
         </div>
         <Button size="sm" onClick={start} disabled={value !== null && !done}>
           <UploadIcon data-icon="inline-start" />
-          {done ? "Import again" : "Import tasks"}
+          {done ? "Import Again" : "Import Tasks"}
         </Button>
       </div>
       <Progress value={value ?? 0} aria-label="Import progress">

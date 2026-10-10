@@ -1,5 +1,5 @@
 /**
- * Building blocks for docs pages (docs/components/*.tsx, docs/molecules/*.tsx).
+ * Building blocks for component docs pages (docs/components/*.tsx).
  *
  * A docs module default-exports a component that returns a list of
  * <Example>s, optionally followed by <Guidelines> and <ApiTable>. The viewer
@@ -57,7 +57,7 @@ export function Examples({ children }: { children: React.ReactNode }) {
   return <ExamplesList>{children}</ExamplesList>
 }
 
-/** Do / don't guidance for a component or molecule. */
+/** Do / don't guidance for a component. */
 export function Guidelines({
   do: dos = [],
   dont = [],

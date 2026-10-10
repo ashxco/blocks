@@ -12,26 +12,26 @@ export default function ButtonDocs() {
       <Example
         title="Variants"
         description="The ink family on the first row handles everyday actions. Brand and destructive mark the one action that matters most on a view. They share a row here only for comparison: in a product, use one of them at a time and never next to primary. In the mono theme the accent is ink, so brand looks the same as primary."
-        code={`<Button>Invite members</Button>
+        code={`<Button>Invite Members</Button>
 <Button variant="secondary">Cancel</Button>
-<Button variant="outline">Import tasks</Button>
+<Button variant="outline">Import Tasks</Button>
 <Button variant="ghost">Skip</Button>
-<Button variant="link">Read the docs</Button>
+<Button variant="link">Read the Docs</Button>
 
 <Button variant="brand">Upgrade</Button>
-<Button variant="destructive">Delete project</Button>`}
+<Button variant="destructive">Delete Project</Button>`}
       >
         <div className="grid justify-items-center gap-6">
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button>Invite members</Button>
+            <Button>Invite Members</Button>
             <Button variant="secondary">Cancel</Button>
-            <Button variant="outline">Import tasks</Button>
+            <Button variant="outline">Import Tasks</Button>
             <Button variant="ghost">Skip</Button>
-            <Button variant="link">Read the docs</Button>
+            <Button variant="link">Read the Docs</Button>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button variant="brand">Upgrade</Button>
-            <Button variant="destructive">Delete project</Button>
+            <Button variant="destructive">Delete Project</Button>
           </div>
         </div>
       </Example>
@@ -40,19 +40,19 @@ export default function ButtonDocs() {
         title="Hierarchy"
         thumbnail
         description="Give a view one primary action. An outline button carries the alternative and a ghost button the action people can skip."
-        code={`<Button variant="ghost">Skip for now</Button>
-<Button variant="outline">Save draft</Button>
-<Button>Create project</Button>`}
+        code={`<Button variant="ghost">Skip for Now</Button>
+<Button variant="outline">Save Draft</Button>
+<Button>Create Project</Button>`}
       >
-        <Button variant="ghost">Skip for now</Button>
-        <Button variant="outline">Save draft</Button>
-        <Button>Create project</Button>
+        <Button variant="ghost">Skip for Now</Button>
+        <Button variant="outline">Save Draft</Button>
+        <Button>Create Project</Button>
       </Example>
 
       <Example
         title="Sizes"
         description="Medium is the default. Large is for heroes and calls to action; small and extra small suit toolbars, table rows and input addons."
-        code={`<Button size="xs">Extra small</Button>
+        code={`<Button size="xs">Extra Small</Button>
 <Button size="sm">Small</Button>
 <Button>Medium</Button>
 <Button size="lg">Large</Button>
@@ -64,7 +64,7 @@ export default function ButtonDocs() {
       >
         <div className="grid justify-items-center gap-6">
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button size="xs">Extra small</Button>
+            <Button size="xs">Extra Small</Button>
             <Button size="sm">Small</Button>
             <Button>Medium</Button>
             <Button size="lg">Large</Button>
@@ -91,14 +91,14 @@ export default function ButtonDocs() {
         description="Icons sit before the label for actions, after it for navigation. Mark them with data-icon so the padding on that side tightens."
         code={`<Button>
   <PlusIcon data-icon="inline-start" />
-  New project
+  New Project
 </Button>
 <Button variant="outline">
   <DownloadIcon data-icon="inline-start" />
   Export
 </Button>
 <Button>
-  Start free trial
+  Start Free Trial
   <ArrowRightIcon data-icon="inline-end" />
 </Button>
 <Button size="icon" variant="outline" aria-label="Delete">
@@ -107,14 +107,14 @@ export default function ButtonDocs() {
       >
         <Button>
           <PlusIcon data-icon="inline-start" />
-          New project
+          New Project
         </Button>
         <Button variant="outline">
           <DownloadIcon data-icon="inline-start" />
           Export
         </Button>
         <Button>
-          Start free trial
+          Start Free Trial
           <ArrowRightIcon data-icon="inline-end" />
         </Button>
         <Button size="icon" variant="outline" aria-label="Delete">
@@ -127,35 +127,35 @@ export default function ButtonDocs() {
         surface="panel"
         description="Inverse variants keep contrast on dark panels, in light and dark."
         code={`<Button variant="inverse">
-  Start free trial
+  Start Free Trial
   <ArrowRightIcon data-icon="inline-end" />
 </Button>
-<Button variant="outline-inverse">Book a demo</Button>`}
+<Button variant="outline-inverse">Book a Demo</Button>`}
       >
         <Button variant="inverse">
-          Start free trial
+          Start Free Trial
           <ArrowRightIcon data-icon="inline-end" />
         </Button>
-        <Button variant="outline-inverse">Book a demo</Button>
+        <Button variant="outline-inverse">Book a Demo</Button>
       </Example>
 
       <Example
         title="States"
         description="Disabled buttons fade to half strength. While an action runs, keep the button disabled, swap the label to say what is happening and show a spinner."
-        code={`<Button disabled>Create project</Button>
+        code={`<Button disabled>Create Project</Button>
 <Button variant="outline" disabled>Export</Button>
 <Button disabled aria-busy="true">
   <Spinner data-icon="inline-start" />
-  Creating project
+  Creating Project
 </Button>`}
       >
-        <Button disabled>Create project</Button>
+        <Button disabled>Create Project</Button>
         <Button variant="outline" disabled>
           Export
         </Button>
         <Button disabled aria-busy="true">
           <Spinner data-icon="inline-start" />
-          Creating project
+          Creating Project
         </Button>
       </Example>
 
@@ -163,18 +163,18 @@ export default function ButtonDocs() {
         title="As a link"
         description="Render a Next.js Link, or any other element, with the render prop. Set nativeButton to false when it is not a button. Any variant works, including link for a quieter text action."
         code={`<Button variant="outline" nativeButton={false} render={<Link href="/pricing" />}>
-  See pricing
+  See Pricing
 </Button>
 <Button variant="link" nativeButton={false} render={<Link href="/changelog" />}>
-  Read the changelog
+  Read the Changelog
   <ArrowRightIcon data-icon="inline-end" />
 </Button>`}
       >
         <Button nativeButton={false} render={<a href="#pricing" />} variant="outline">
-          See pricing
+          See Pricing
         </Button>
         <Button nativeButton={false} render={<a href="#changelog" />} variant="link">
-          Read the changelog
+          Read the Changelog
           <ArrowRightIcon data-icon="inline-end" />
         </Button>
       </Example>
@@ -182,7 +182,8 @@ export default function ButtonDocs() {
       <Guidelines
         do={[
           "Use one primary button per view.",
-          "Write labels as verbs that say what happens: “Create project”, not “OK”.",
+          "Write labels as verbs that say what happens: “Create Project”, not “OK”.",
+          "Write labels in Title Case, keeping short words like a, the, to and for lowercase: “Read the Docs”, “Skip for Now”.",
           "Use the inverse variants on dark panels.",
         ]}
         dont={[

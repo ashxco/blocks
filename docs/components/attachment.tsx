@@ -46,7 +46,7 @@ function DraftIcon({ kind }: { kind: Draft["kind"] }) {
 function Composer() {
   const [drafts, setDrafts] = React.useState(initialDrafts)
   return (
-    <div className="mx-auto grid w-full max-w-2xl gap-2 rounded-(--card-radius) border border-border bg-background p-2 transition-colors duration-(--duration-fast) ease-standard focus-within:border-ring has-[textarea:focus-visible]:focus-ring">
+    <div className="mx-auto grid w-full max-w-3xl gap-2 rounded-(--card-radius) border border-border bg-background p-2 transition-colors duration-(--duration-fast) ease-standard focus-within:border-ring has-[textarea:focus-visible]:focus-ring">
       {drafts.length > 0 ? (
         <AttachmentGroup aria-label="Attached files">
           {drafts.map((d) => (

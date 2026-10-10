@@ -71,12 +71,12 @@ export default function SpinnerDocs() {
         description="Replace the leading icon with a spinner while the action runs, and disable the button."
         code={`<Button disabled>
   <Spinner data-icon="inline-start" />
-  Sending invites
+  Sending Invites
 </Button>`}
       >
         <Button disabled>
           <Spinner data-icon="inline-start" />
-          Sending invites
+          Sending Invites
         </Button>
         <Button variant="outline" disabled>
           <Spinner data-icon="inline-start" />

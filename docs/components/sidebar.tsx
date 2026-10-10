@@ -16,7 +16,7 @@ import {
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
-import { BrandMark } from "@/components/blocks/wordmark"
+import { AcmeMark } from "@/docs/sample/acme-wordmark"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   Breadcrumb,
@@ -57,7 +57,7 @@ import {
  * on a phone, the sheet it opens as. The frame grows with the page inside it.
  */
 const framed =
-  "relative isolate min-h-[36rem] overflow-hidden contain-layout **:data-[slot=sidebar-container]:absolute **:data-[slot=sidebar-container]:h-full"
+  "relative isolate min-h-[40rem] overflow-hidden contain-layout **:data-[slot=sidebar-container]:absolute **:data-[slot=sidebar-container]:h-full"
 
 const nav = [
   { title: "Home", icon: HouseIcon },
@@ -88,7 +88,7 @@ function WorkspaceButton() {
       <SidebarMenuItem>
         <SidebarMenuButton size="lg" aria-label="Workspace: Acme Inc.">
           {/* The menu button sizes every icon to size-4; the workspace mark keeps its tile size. */}
-          <BrandMark className="size-8!" />
+          <AcmeMark className="size-8!" />
           <span className="grid min-w-0 flex-1">
             <span className="truncate text-label text-foreground">Acme Inc.</span>
             <span className="truncate text-caption font-normal text-muted-foreground">Pro plan</span>
@@ -232,7 +232,7 @@ function AppSidebarDemo({ variant = "sidebar" }: { variant?: "sidebar" | "inset"
             ].map(([label, value]) => (
               <div key={label} className="grid gap-1 rounded-(--card-radius) border bg-card p-5">
                 <p className="text-caption text-muted-foreground">{label}</p>
-                <p className="text-2xl font-extrabold text-foreground tabular">{value}</p>
+                <p className="font-heading text-2xl font-extrabold text-foreground tabular">{value}</p>
               </div>
             ))}
           </div>
@@ -377,6 +377,36 @@ export default function SidebarDocs() {
         title="Menu states"
         description={`Hover fills with bg-sidebar-accent; the active item is an ink row. Badges count, actions appear on hover, and variant="outline" frames an add action, here dashed. Skeletons hold the space while items load.`}
         layout="full"
+        code={`<SidebarMenu>
+  <SidebarMenuItem>
+    <SidebarMenuButton isActive>
+      <InboxIcon />
+      <span>Inbox</span>
+    </SidebarMenuButton>
+    <SidebarMenuBadge>12</SidebarMenuBadge>
+  </SidebarMenuItem>
+  <SidebarMenuItem>
+    <SidebarMenuButton>
+      <ListTodoIcon />
+      <span>My tasks</span>
+    </SidebarMenuButton>
+    <SidebarMenuAction showOnHover aria-label="More actions for My tasks">
+      <MoreHorizontalIcon />
+    </SidebarMenuAction>
+  </SidebarMenuItem>
+  <SidebarMenuItem>
+    <SidebarMenuButton disabled>…</SidebarMenuButton>
+  </SidebarMenuItem>
+  <SidebarMenuItem>
+    <SidebarMenuButton variant="outline" className="border-dashed">
+      <PlusIcon />
+      <span>New project</span>
+    </SidebarMenuButton>
+  </SidebarMenuItem>
+  <SidebarMenuItem>
+    <SidebarMenuSkeleton showIcon />
+  </SidebarMenuItem>
+</SidebarMenu>`}
       >
         <SidebarProvider className="min-h-0 justify-center bg-subtle p-6 sm:p-10">
           <Sidebar collapsible="none" className="rounded-(--card-radius) border">

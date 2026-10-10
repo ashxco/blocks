@@ -71,9 +71,14 @@ function SharePopover({ container }: { container: Stage }) {
     >
       <PopoverTrigger render={<Button variant="outline" />}>
         <Link2Icon data-icon="inline-start" />
-        Share doc
+        Share Doc
       </PopoverTrigger>
-      <PopoverContent container={container} initialFocus={false} {...pinnedTo(container)}>
+      <PopoverContent
+        className="w-(--popover-width-lg)"
+        container={container}
+        initialFocus={false}
+        {...pinnedTo(container)}
+      >
         <PopoverHeader>
           <PopoverTitle>Share this doc</PopoverTitle>
           <PopoverDescription>Anyone in Acme Inc. with the link can read the launch plan.</PopoverDescription>
@@ -108,7 +113,7 @@ function UsageAlertPopover({ container }: { container: Stage }) {
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger render={<Button />}>
         <BellIcon data-icon="inline-start" />
-        Set usage alert
+        Set Usage Alert
       </PopoverTrigger>
       <PopoverContent align="start" container={container} initialFocus={false} {...pinnedTo(container)}>
         <form
@@ -132,7 +137,7 @@ function UsageAlertPopover({ container }: { container: Stage }) {
               Cancel
             </Button>
             <Button type="submit" size="sm">
-              Save alert
+              Save Alert
             </Button>
           </div>
         </form>
@@ -257,8 +262,8 @@ export default function PopoverDocs() {
         title="Basic"
         description="Rich content anchored to a trigger. It closes on Escape, an outside click or when focus moves away. The previews on this page open on load and stay open until you press their trigger or Escape."
         code={`<Popover>
-  <PopoverTrigger render={<Button variant="outline" />}>Share doc</PopoverTrigger>
-  <PopoverContent>
+  <PopoverTrigger render={<Button variant="outline" />}>Share Doc</PopoverTrigger>
+  <PopoverContent className="w-(--popover-width-lg)">
     <PopoverHeader>
       <PopoverTitle>Share this doc</PopoverTitle>
       <PopoverDescription>Anyone in Acme Inc. with the link can read it.</PopoverDescription>
@@ -284,7 +289,7 @@ export default function PopoverDocs() {
         code={`const [open, setOpen] = React.useState(false)
 
 <Popover open={open} onOpenChange={setOpen}>
-  <PopoverTrigger render={<Button />}>Set usage alert</PopoverTrigger>
+  <PopoverTrigger render={<Button />}>Set Usage Alert</PopoverTrigger>
   <PopoverContent align="start">
     <form onSubmit={save} className="contents">…</form>
   </PopoverContent>
@@ -296,6 +301,23 @@ export default function PopoverDocs() {
       <Example
         title="Settings"
         description="Group a few related toggles behind one button to keep a toolbar quiet."
+        code={`<Popover>
+  <PopoverTrigger render={<Button variant="outline" size="icon" aria-label="Board view options" />}>
+    <SlidersHorizontalIcon />
+  </PopoverTrigger>
+  <PopoverContent align="end" className="w-(--popover-width-sm) gap-0 p-0">
+    <PopoverHeader className="border-b px-4 py-3">
+      <PopoverTitle>Board view</PopoverTitle>
+    </PopoverHeader>
+    <div className="grid gap-4 p-4">
+      <label className="flex items-center justify-between gap-4 text-sm font-medium">
+        Show subtasks
+        <Switch defaultChecked />
+      </label>
+      …
+    </div>
+  </PopoverContent>
+</Popover>`}
       >
         <PopoverStage className="min-h-60">
           {(container) => <BoardViewPopover container={container} />}

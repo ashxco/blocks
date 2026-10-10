@@ -13,8 +13,10 @@ import { cn } from "@/lib/utils"
  *   indicator slides to the active tab.
  * - `variant="line"`: the same underline without the hairline track, for
  *   tabs that sit on an existing border (a page header, a card edge).
- * - `variant="segmented"`: a track (button radius) where the active tab turns ink,
- *   matching the segmented toggle group.
+ * - `variant="segmented"`: a track (button radius, or the small button radius
+ *   at `size="sm"`) where the active tab turns ink, matching the segmented
+ *   toggle group. The active shape and the triggers take the track's radius
+ *   minus its 1px border and 3px padding, so the corners nest.
  *
  * Heights come from --tabs-height (default) and --control-height-sm (sm).
  */
@@ -46,13 +48,17 @@ const tabsListVariants = cva(
           "gap-6 border-border data-horizontal:w-full data-horizontal:items-stretch data-horizontal:border-b data-vertical:gap-0.5 data-vertical:border-l",
         line: "w-fit gap-6 border-transparent data-horizontal:items-stretch data-horizontal:border-b data-vertical:gap-0.5 data-vertical:border-l",
         segmented:
-          "w-fit items-center gap-1 rounded-(--button-radius) border border-border bg-muted p-0.75 data-vertical:rounded-(--card-radius)",
+          "w-fit items-center gap-1 rounded-(--button-radius) border border-border bg-muted p-0.75 data-vertical:rounded-[calc(var(--control-radius)+0.25rem)]",
       },
       size: {
         default: "data-horizontal:h-(--tabs-height)",
         sm: "data-horizontal:h-(--control-height-sm)",
       },
     },
+    compoundVariants: [
+      // Small tracks follow small buttons, so a theme's soft square (Forest) never turns into a pill.
+      { variant: "segmented", size: "sm", className: "rounded-(--button-radius-sm)" },
+    ],
     defaultVariants: {
       variant: "default",
       size: "default",
@@ -77,11 +83,19 @@ const tabsIndicatorVariants = cva(
         default:
           "bg-foreground data-horizontal:top-auto data-horizontal:-bottom-px data-horizontal:h-(--border-width-strong) data-horizontal:w-(--active-tab-width) data-horizontal:translate-x-(--active-tab-left) data-vertical:-left-px data-vertical:h-(--active-tab-height) data-vertical:w-(--border-width-strong) data-vertical:translate-y-(--active-tab-top)",
         line: "bg-foreground data-horizontal:top-auto data-horizontal:-bottom-px data-horizontal:h-(--border-width-strong) data-horizontal:w-(--active-tab-width) data-horizontal:translate-x-(--active-tab-left) data-vertical:-left-px data-vertical:h-(--active-tab-height) data-vertical:w-(--border-width-strong) data-vertical:translate-y-(--active-tab-top)",
-        // An ink shape behind the active tab, in the button radius.
+        // An ink shape behind the active tab. Its radius is the track's minus
+        // the 1px border and 3px padding, so the corners nest (pills stay pills).
         segmented:
-          "h-(--active-tab-height) w-(--active-tab-width) translate-x-(--active-tab-left) translate-y-(--active-tab-top) rounded-(--button-radius) bg-primary data-vertical:rounded-(--control-radius)",
+          "h-(--active-tab-height) w-(--active-tab-width) translate-x-(--active-tab-left) translate-y-(--active-tab-top) rounded-[max(0px,calc(var(--button-radius)-0.25rem))] bg-primary data-vertical:rounded-(--control-radius)",
+      },
+      size: {
+        default: "",
+        sm: "",
       },
     },
+    compoundVariants: [
+      { variant: "segmented", size: "sm", className: "rounded-[max(0px,calc(var(--button-radius-sm)-0.25rem))]" },
+    ],
   }
 )
 
@@ -109,7 +123,7 @@ function TabsList({
       <TabsPrimitive.Indicator
         data-slot="tabs-indicator"
         renderBeforeHydration
-        className={tabsIndicatorVariants({ variant: resolved.variant })}
+        className={cn(tabsIndicatorVariants(resolved))}
       />
     </TabsPrimitive.List>
   )
@@ -130,7 +144,7 @@ const tabsTriggerVariants = cva(
           "rounded-xs data-vertical:h-(--control-height-sm) data-vertical:justify-start data-vertical:px-4",
         line: "rounded-xs data-vertical:h-(--control-height-sm) data-vertical:justify-start data-vertical:px-4",
         segmented:
-          "h-full flex-1 rounded-(--button-radius) data-active:text-primary-foreground data-active:hover:text-primary-foreground data-vertical:h-(--control-height-sm) data-vertical:flex-none data-vertical:justify-start data-vertical:rounded-(--control-radius)",
+          "h-full flex-1 rounded-[max(0px,calc(var(--button-radius)-0.25rem))] data-active:text-primary-foreground data-active:hover:text-primary-foreground data-vertical:h-(--control-height-sm) data-vertical:flex-none data-vertical:justify-start data-vertical:rounded-(--control-radius)",
       },
       size: {
         default: "",
@@ -139,7 +153,7 @@ const tabsTriggerVariants = cva(
     },
     compoundVariants: [
       { variant: "segmented", size: "default", className: "px-4" },
-      { variant: "segmented", size: "sm", className: "px-3" },
+      { variant: "segmented", size: "sm", className: "rounded-[max(0px,calc(var(--button-radius-sm)-0.25rem))] px-3" },
     ],
   }
 )

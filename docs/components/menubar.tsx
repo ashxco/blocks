@@ -332,6 +332,17 @@ export default function MenubarDocs() {
         title="In an app window"
         description="A realistic composition: in the window chrome of a desktop app, the menubar drops its own frame so the menus sit on the bar, right after the project name."
         layout="full"
+        code={`<div className="flex items-center gap-3 border-b bg-subtle px-3 py-1.5">
+  <p className="px-2 text-label">Website relaunch</p>
+  <span aria-hidden="true" className="h-4 w-px bg-border" />
+  <Menubar className="border-0 bg-transparent p-0">
+    <MenubarMenu>
+      <MenubarTrigger>File</MenubarTrigger>
+      <MenubarContent>…</MenubarContent>
+    </MenubarMenu>
+    …
+  </Menubar>
+</div>`}
       >
         <div className="p-6 sm:p-10">
           <div className="@container/window overflow-hidden rounded-(--card-radius) border bg-background">

@@ -8,7 +8,7 @@ import {
   AvatarGroup,
   AvatarGroupCount,
 } from "@/components/ui/avatar"
-import { initialsTone } from "@/components/blocks/members-list/people"
+import { initialsTone } from "@/docs/sample/people"
 import { Badge } from "@/components/ui/badge"
 
 const team = [
@@ -19,7 +19,7 @@ const team = [
   { initials: "JL", name: "Jordan Lee", role: "Member", email: "jordan@acme.com", online: false },
 ]
 
-/* One teammate per tint, each in the tint the Acme templates give them (components/blocks/members-list/people.ts), so nobody changes colour between examples. */
+/* One teammate per tint, each in the tint every docs example gives them (docs/sample/people.ts), so nobody changes colour between examples. */
 const tints = [
   { tone: "violet", initials: "MP" },
   { tone: "mint", initials: "JL" },
@@ -55,7 +55,7 @@ export default function AvatarDocs() {
 
       <Example
         title="Fallback tints"
-        description="Initials sit on a flat tint. Without a tone, the tint is picked from the initials, so the same initials always get the same colour. Set tone to give a person a fixed colour, as the Acme templates do, or muted for an icon."
+        description="Initials sit on a flat tint. Without a tone, the tint is picked from the initials, so the same initials always get the same colour. Set tone to give a person the same colour everywhere they appear, or muted for an icon."
         code={`<Avatar>
   <AvatarImage src={user.avatarUrl} alt="" />
   <AvatarFallback>JL</AvatarFallback>

@@ -13,7 +13,7 @@ import {
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { initialsTone } from "@/components/blocks/members-list/people"
+import { initialsTone } from "@/docs/sample/people"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {

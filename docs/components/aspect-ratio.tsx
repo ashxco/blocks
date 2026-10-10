@@ -124,7 +124,10 @@ export default function AspectRatioDocs() {
   <video src="/acme-tour.mp4" poster="/acme-tour.jpg" controls />
 </AspectRatio>`}
       >
-        <AspectRatio ratio={16 / 9} className="rounded-(--panel-radius) border border-panel-border bg-panel text-panel-foreground">
+        <AspectRatio
+          ratio={16 / 9}
+          className="mx-auto w-full max-w-3xl rounded-(--panel-radius) border border-panel-border bg-panel text-panel-foreground"
+        >
           {/* The poster: the board the tour opens on. Hidden on narrow frames, where the button takes the corner. */}
           <div aria-hidden="true" className="absolute inset-x-0 top-0 hidden grid-cols-3 gap-3 p-8 @md:grid">
             {tourBoard.map((column) => (
@@ -179,7 +182,8 @@ export default function AspectRatioDocs() {
                 <p className="mt-2 inline-flex items-center gap-1.5 text-caption text-copy">
                   <UsersIcon aria-hidden="true" className="size-3.5 text-muted-foreground" />
                   {p.members} members
-                  <span className="text-muted-foreground">· {p.updated}</span>
+                  <span aria-hidden="true" className="text-muted-foreground">·</span>
+                  <span className="text-muted-foreground">{p.updated}</span>
                 </p>
               </div>
             </a>

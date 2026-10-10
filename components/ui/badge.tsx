@@ -16,7 +16,8 @@ import { cn } from "@/lib/utils"
 const badgeVariants = cva(
   [
     "group/badge inline-flex h-(--badge-height) w-fit min-w-(--badge-height) shrink-0 items-center justify-center gap-1.5 overflow-hidden rounded-(--badge-radius) border border-transparent px-2.5",
-    "text-xs font-semibold tracking-tight whitespace-nowrap tabular-nums",
+    // Tight, relative to the theme's own text-xs tracking (-0.025em where it has none).
+    "font-sans text-xs font-semibold tracking-[calc(var(--text-xs--letter-spacing)-0.025em)] whitespace-nowrap tabular-nums",
     "transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard",
     "outline-none focus-visible:focus-ring",
     "has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",

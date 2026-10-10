@@ -504,7 +504,7 @@ export default function SelectDocs() {
   </CardContent>
   <CardFooter className="justify-end">
     <Button variant="ghost">Cancel</Button>
-    <Button>Create project</Button>
+    <Button>Create Project</Button>
   </CardFooter>
 </Card>`}
       >
@@ -573,7 +573,7 @@ export default function SelectDocs() {
           </CardContent>
           <CardFooter className="justify-end">
             <Button variant="ghost">Cancel</Button>
-            <Button>Create project</Button>
+            <Button>Create Project</Button>
           </CardFooter>
         </Card>
       </Example>

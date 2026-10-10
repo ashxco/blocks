@@ -14,7 +14,7 @@ import {
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { initialsTone } from "@/components/blocks/members-list/people"
+import { initialsTone } from "@/docs/sample/people"
 import { Button } from "@/components/ui/button"
 import {
   Drawer,
@@ -191,7 +191,7 @@ function SideDrawersDemo() {
                 ))}
               </div>
               <DrawerFooter>
-                <DrawerClose render={<Button />}>Show 6 tasks</DrawerClose>
+                <DrawerClose render={<Button />}>Show 6 Tasks</DrawerClose>
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
@@ -209,7 +209,7 @@ export default function DrawerDocs() {
         layout="full"
         description="The default. It slides up from the bottom, shows a handle and closes when people swipe it down, tap the overlay or press Escape."
         code={`<Drawer>
-  <DrawerTrigger render={<Button variant="outline" />}>Share project</DrawerTrigger>
+  <DrawerTrigger render={<Button variant="outline" />}>Share Project</DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
       <DrawerTitle>Share Website relaunch</DrawerTitle>
@@ -217,7 +217,7 @@ export default function DrawerDocs() {
     </DrawerHeader>
     …
     <DrawerFooter>
-      <Button>Copy link</Button>
+      <Button>Copy Link</Button>
       <DrawerClose render={<Button variant="outline" />}>Done</DrawerClose>
     </DrawerFooter>
   </DrawerContent>
@@ -228,7 +228,7 @@ export default function DrawerDocs() {
             <Drawer {...inlineDrawer}>
               <DrawerTrigger render={<Button variant="outline" />}>
                 <Share2Icon data-icon="inline-start" />
-                Share project
+                Share Project
               </DrawerTrigger>
               <DrawerContent container={container} {...inlineContent}>
                 <DrawerHeader>
@@ -240,13 +240,13 @@ export default function DrawerDocs() {
                 <div className="px-(--dialog-padding)">
                   <Field>
                     <FieldLabel htmlFor="drawer-link">Project link</FieldLabel>
-                    <Input id="drawer-link" readOnly defaultValue="app.acme.com/acme/projects/website-relaunch" />
+                    <Input id="drawer-link" readOnly defaultValue="app.acme.com/acme/projects/website-relaunch" className="text-ellipsis" />
                   </Field>
                 </div>
                 <DrawerFooter>
                   <Button>
                     <CopyIcon data-icon="inline-start" />
-                    Copy link
+                    Copy Link
                   </Button>
                   <DrawerClose render={<Button variant="outline" />}>Done</DrawerClose>
                 </DrawerFooter>
@@ -283,11 +283,31 @@ const [snapPoint, setSnapPoint] = React.useState(snapPoints[0])
         title="Action sheet"
         layout="full"
         description="On phones, a drawer of full-width actions replaces a dropdown menu. Keep the most used action first and the destructive one last."
+        code={`<DrawerContent>
+  <DrawerHeader>
+    <DrawerTitle>Write the launch announcement</DrawerTitle>
+    <DrawerDescription>Priya Raman · Due Oct 14 · High priority</DrawerDescription>
+  </DrawerHeader>
+  <div className="grid gap-2 px-(--dialog-padding)">
+    <Button variant="outline" size="lg" className="w-full justify-start">
+      <CheckIcon data-icon="inline-start" />
+      Mark as Done
+    </Button>
+    …
+    <Button variant="outline" size="lg" className="w-full justify-start text-destructive">
+      <Trash2Icon data-icon="inline-start" />
+      Delete Task
+    </Button>
+  </div>
+  <DrawerFooter>
+    <DrawerClose render={<Button variant="ghost" size="lg" className="w-full" />}>Cancel</DrawerClose>
+  </DrawerFooter>
+</DrawerContent>`}
       >
         <DrawerStage>
           {(container) => (
             <Drawer {...inlineDrawer}>
-              <DrawerTrigger render={<Button />}>Task actions</DrawerTrigger>
+              <DrawerTrigger render={<Button />}>Task Actions</DrawerTrigger>
               <DrawerContent container={container} {...inlineContent}>
                 <DrawerHeader>
                   <DrawerTitle>Write the launch announcement</DrawerTitle>
@@ -296,23 +316,23 @@ const [snapPoint, setSnapPoint] = React.useState(snapPoints[0])
                 <div className="grid gap-2 px-(--dialog-padding)">
                   <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
                     <CheckIcon data-icon="inline-start" />
-                    Mark as done
+                    Mark as Done
                   </Button>
                   <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
                     <UserPlusIcon data-icon="inline-start" />
-                    Assign to someone else
+                    Assign to Someone Else
                   </Button>
                   <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
                     <CalendarIcon data-icon="inline-start" />
-                    Change due date
+                    Change Due Date
                   </Button>
                   <Button variant="outline" size="lg" className="w-full justify-start bg-transparent">
                     <FolderInputIcon data-icon="inline-start" />
-                    Move to another project
+                    Move to Another Project
                   </Button>
                   <Button variant="outline" size="lg" className="w-full justify-start bg-transparent text-destructive hover:border-destructive">
                     <Trash2Icon data-icon="inline-start" />
-                    Delete task
+                    Delete Task
                   </Button>
                 </div>
                 <DrawerFooter>

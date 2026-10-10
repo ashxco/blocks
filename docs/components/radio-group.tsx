@@ -81,7 +81,7 @@ export default function RadioGroupDocs() {
   </RadioGroup>
 </FieldSet>`}
       >
-        <FieldSet>
+        <FieldSet className="w-fit">
           <FieldLegend variant="label">Default view</FieldLegend>
           <RadioGroup defaultValue="list" name="view">
             {views.map((m) => (
@@ -191,7 +191,7 @@ export default function RadioGroupDocs() {
   </RadioGroup>
 </FieldSet>`}
       >
-        <FieldSet>
+        <FieldSet className="w-fit">
           <FieldLegend variant="label">Remind assignees</FieldLegend>
           <RadioGroup defaultValue="1d" name="reminder" className="flex flex-wrap gap-x-6 gap-y-3">
             {[

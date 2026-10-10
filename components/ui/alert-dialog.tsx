@@ -135,7 +135,7 @@ function AlertDialogMedia({
       data-slot="alert-dialog-media"
       data-variant={variant}
       className={cn(
-        "mb-2 inline-flex size-12 shrink-0 items-center justify-center rounded-full border",
+        "mb-2 inline-flex size-12 shrink-0 items-center justify-center rounded-(--control-radius) border",
         alertDialogMediaVariants[variant],
         "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5",
         className

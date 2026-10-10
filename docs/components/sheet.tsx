@@ -120,7 +120,7 @@ function TaskSheet({ container }: { container: Stage }) {
     <Sheet {...inlineSheet}>
       <SheetTrigger render={<Button />}>
         <PanelRightIcon data-icon="inline-start" />
-        Task details
+        Task Details
       </SheetTrigger>
       <SheetContent container={container} initialFocus={false}>
         <SheetHeader>
@@ -163,11 +163,11 @@ function TaskSheet({ container }: { container: Stage }) {
         <SheetFooter>
           <Button variant="outline">
             <LinkIcon data-icon="inline-start" />
-            Copy link
+            Copy Link
           </Button>
           <Button>
             <CheckIcon data-icon="inline-start" />
-            Mark as done
+            Mark as Done
           </Button>
         </SheetFooter>
       </SheetContent>
@@ -176,6 +176,12 @@ function TaskSheet({ container }: { container: Stage }) {
 }
 
 type Side = (typeof sides)[number]
+
+const notificationOptions = [
+  { label: "Tasks assigned to me", hint: "As soon as someone assigns you a task.", on: true },
+  { label: "Mentions and replies", hint: "When someone mentions you in a comment or doc.", on: true },
+  { label: "Weekly progress report", hint: "Every Monday, for the projects you follow.", on: false },
+]
 
 /** One sheet, open in a stage, whose side people switch from the bar above it. */
 function SidesDemo() {
@@ -207,22 +213,31 @@ function SidesDemo() {
       <SheetStage className="min-h-160">
         {(container) => (
           <Sheet open={open} onOpenChange={setOpen} modal={false} disablePointerDismissal>
-            <SheetTrigger render={<Button variant="outline" />}>Notification settings</SheetTrigger>
+            <SheetTrigger render={<Button variant="outline" />}>Notification Settings</SheetTrigger>
             <SheetContent side={side} container={container} initialFocus={false}>
               <SheetHeader>
                 <SheetTitle>Notifications</SheetTitle>
                 <SheetDescription>Choose what Acme emails you about.</SheetDescription>
               </SheetHeader>
               <SheetBody className={inlineBody}>
-                <div className="grid gap-4">
-                  {["Tasks assigned to me", "Mentions and replies", "Weekly progress report"].map((label) => (
-                    <label key={label} className="flex items-center justify-between gap-4 text-sm font-medium text-foreground">
-                      {label}
-                      <Switch defaultChecked={label !== "Weekly progress report"} />
+                <div className="grid divide-y">
+                  {notificationOptions.map((option) => (
+                    <label
+                      key={option.label}
+                      className="flex items-center justify-between gap-6 py-3.5 first:pt-0 last:pb-0"
+                    >
+                      <span className="grid gap-0.5">
+                        <span className="text-sm font-medium text-foreground">{option.label}</span>
+                        <span className="text-caption text-muted-foreground">{option.hint}</span>
+                      </span>
+                      <Switch defaultChecked={option.on} />
                     </label>
                   ))}
                 </div>
               </SheetBody>
+              <SheetFooter>
+                <SheetClose render={<Button />}>Done</SheetClose>
+              </SheetFooter>
             </SheetContent>
           </Sheet>
         )}
@@ -234,7 +249,7 @@ function SidesDemo() {
 function ProjectSettingsSheet({ container }: { container: Stage }) {
   return (
     <Sheet {...inlineSheet}>
-      <SheetTrigger render={<Button variant="outline" />}>Edit project</SheetTrigger>
+      <SheetTrigger render={<Button variant="outline" />}>Edit Project</SheetTrigger>
       <SheetContent container={container} initialFocus={false}>
         <form className="contents" onSubmit={(event) => event.preventDefault()}>
           <SheetHeader>
@@ -275,7 +290,7 @@ function ProjectSettingsSheet({ container }: { container: Stage }) {
           </SheetBody>
           <SheetFooter>
             <SheetClose render={<Button variant="outline" />}>Cancel</SheetClose>
-            <SheetClose render={<Button type="submit" />}>Save changes</SheetClose>
+            <SheetClose render={<Button type="submit" />}>Save Changes</SheetClose>
           </SheetFooter>
         </form>
       </SheetContent>
@@ -297,8 +312,8 @@ export default function SheetDocs() {
   </SheetHeader>
   <SheetBody>…</SheetBody>
   <SheetFooter>
-    <Button variant="outline">Copy link</Button>
-    <Button>Mark as done</Button>
+    <Button variant="outline">Copy Link</Button>
+    <Button>Mark as Done</Button>
   </SheetFooter>
 </SheetContent>`}
       >
@@ -327,12 +342,19 @@ export default function SheetDocs() {
         title="Floating"
         layout="full"
         description={`variant="floating" insets the sheet from the viewport and rounds it with --dialog-radius. It reads as a layer over the app rather than part of its frame.`}
-        code={`<SheetContent variant="floating">…</SheetContent>`}
+        code={`<SheetContent variant="floating">
+  <SheetHeader>…</SheetHeader>
+  <SheetBody>…</SheetBody>
+  <SheetFooter>
+    <Textarea aria-label="Add a comment" placeholder="Add a comment" />
+    <Button>Post Comment</Button>
+  </SheetFooter>
+</SheetContent>`}
       >
-        <SheetStage className="min-h-136">
+        <SheetStage>
           {(container) => (
             <Sheet {...inlineSheet}>
-              <SheetTrigger render={<Button variant="outline" />}>Show comments</SheetTrigger>
+              <SheetTrigger render={<Button variant="outline" />}>Show Comments</SheetTrigger>
               <SheetContent variant="floating" container={container} initialFocus={false}>
                 <SheetHeader>
                   <SheetTitle>Comments</SheetTitle>
@@ -340,16 +362,30 @@ export default function SheetDocs() {
                 </SheetHeader>
                 <SheetBody className={inlineBody}>
                   {[
-                    { name: "Jordan Lee", text: "The pricing section still says $10. Pro is $12 per member, billed annually." },
-                    { name: "Sofia Alvarez", text: "The hero image is final. It’s linked from the Figma file in the doc." },
-                    { name: "Hana Kim", text: "Reads well. I’ll sign off once the pricing is fixed." },
+                    { name: "Jordan Lee", initials: "JL", time: "9:31", text: "The pricing section still says $10. Pro is $12 per member, billed annually." },
+                    { name: "Sofia Alvarez", initials: "SA", time: "9:58", text: "The hero image is final. It’s linked from the Figma file in the doc." },
+                    { name: "Hana Kim", initials: "HK", time: "10:12", text: "Reads well. I’ll sign off once the pricing is fixed." },
                   ].map((comment) => (
-                    <article key={comment.name} className="grid gap-1 border-b pb-5 last:border-b-0">
-                      <h3 className="text-title">{comment.name}</h3>
-                      <p className="text-sm text-copy">{comment.text}</p>
+                    <article key={comment.name} className="flex gap-3 border-b pb-5 last:border-b-0 last:pb-0">
+                      <Avatar size="sm">
+                        <AvatarFallback>{comment.initials}</AvatarFallback>
+                      </Avatar>
+                      <div className="grid min-w-0 gap-1">
+                        <p className="flex items-baseline gap-2">
+                          <span className="text-title">{comment.name}</span>
+                          <span className="text-caption text-muted-foreground">{comment.time}</span>
+                        </p>
+                        <p className="text-sm text-copy">{comment.text}</p>
+                      </div>
                     </article>
                   ))}
                 </SheetBody>
+                <SheetFooter className="flex-col items-stretch sm:flex-col sm:items-stretch">
+                  <Textarea aria-label="Add a comment" placeholder="Add a comment" rows={2} />
+                  <div className="flex justify-end">
+                    <Button>Post Comment</Button>
+                  </div>
+                </SheetFooter>
               </SheetContent>
             </Sheet>
           )}
@@ -360,6 +396,25 @@ export default function SheetDocs() {
         title="Edit form"
         layout="full"
         description="Longer forms fit a sheet better than a dialog. Close it with SheetClose once the save succeeds."
+        code={`<SheetContent>
+  <form className="contents" onSubmit={save}>
+    <SheetHeader>
+      <SheetTitle>Project settings</SheetTitle>
+      <SheetDescription>Changes apply for everyone in Website relaunch.</SheetDescription>
+    </SheetHeader>
+    <SheetBody>
+      <Field>
+        <FieldLabel htmlFor="name">Project name</FieldLabel>
+        <Input id="name" defaultValue="Website relaunch" />
+      </Field>
+      …
+    </SheetBody>
+    <SheetFooter>
+      <SheetClose render={<Button variant="outline" />}>Cancel</SheetClose>
+      <Button type="submit">Save Changes</Button>
+    </SheetFooter>
+  </form>
+</SheetContent>`}
       >
         <SheetStage>{(container) => <ProjectSettingsSheet container={container} />}</SheetStage>
       </Example>

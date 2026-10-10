@@ -142,7 +142,7 @@ function ScreenPreview({ kind }: { kind: (typeof screens)[number]["kind"] }) {
       {kind === "reports" ? (
         <div className="flex flex-1 flex-col gap-3 p-3">
           <span className="flex items-baseline gap-2">
-            <span className="text-sm font-extrabold text-foreground tabular-nums">1,284</span>
+            <span className="font-heading text-sm font-extrabold text-foreground tabular-nums">1,284</span>
             <span className="h-1 w-10 rounded-full bg-foreground/25" />
           </span>
           <span className="flex min-h-0 flex-1 items-end gap-1.5 border-b border-border">

@@ -136,7 +136,7 @@ function RunRuleDialog({ container }: { container: Stage }) {
     <PreviewRoot open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger render={<Button />}>
         <ZapIcon data-icon="inline-start" />
-        Run on existing tasks
+        Run on Existing Tasks
       </AlertDialogTrigger>
       <AlertDialogContent container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
@@ -148,7 +148,7 @@ function RunRuleDialog({ container }: { container: Stage }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => setOpen(false)}>Run rule</AlertDialogAction>
+          <AlertDialogAction onClick={() => setOpen(false)}>Run Rule</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </PreviewRoot>
@@ -160,7 +160,7 @@ function DeleteTaskDialog({ container }: { container: Stage }) {
 
   return (
     <PreviewRoot open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger render={<Button variant="outline" />}>Delete task</AlertDialogTrigger>
+      <AlertDialogTrigger render={<Button variant="outline" />}>Delete Task</AlertDialogTrigger>
       <AlertDialogContent container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
           <AlertDialogMedia variant="destructive">
@@ -175,7 +175,7 @@ function DeleteTaskDialog({ container }: { container: Stage }) {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction variant="destructive" onClick={() => setOpen(false)}>
-            Delete task
+            Delete Task
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -190,7 +190,7 @@ function SignOutDialog({ container }: { container: Stage }) {
     <PreviewRoot open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger render={<Button variant="outline" />}>
         <LogOutIcon data-icon="inline-start" />
-        Sign out everywhere
+        Sign Out Everywhere
       </AlertDialogTrigger>
       <AlertDialogContent size="sm" container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
@@ -202,7 +202,7 @@ function SignOutDialog({ container }: { container: Stage }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => setOpen(false)}>Sign out</AlertDialogAction>
+          <AlertDialogAction onClick={() => setOpen(false)}>Sign Out</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </PreviewRoot>
@@ -254,7 +254,7 @@ function PendingDemo() {
           <PreviewRoot open={open} onOpenChange={(next) => !pending && setOpen(next)}>
             <AlertDialogTrigger render={<Button variant="outline" />}>
               <KeyRoundIcon data-icon="inline-start" />
-              Rotate API key
+              Rotate API Key
             </AlertDialogTrigger>
             <AlertDialogContent container={container} initialFocus={false} className={inStage}>
               <AlertDialogHeader>
@@ -268,7 +268,7 @@ function PendingDemo() {
                 <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={rotate} disabled={pending}>
                   {pending ? <Spinner data-icon="inline-start" /> : null}
-                  {pending ? "Rotating key" : "Rotate key"}
+                  {pending ? "Rotating Key" : "Rotate Key"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -293,7 +293,7 @@ function TypeToConfirmDialog({ container }: { container: Stage }) {
         if (!next) setValue("")
       }}
     >
-      <AlertDialogTrigger render={<Button variant="destructive" />}>Delete project</AlertDialogTrigger>
+      <AlertDialogTrigger render={<Button variant="destructive" />}>Delete Project</AlertDialogTrigger>
       <AlertDialogContent container={container} initialFocus={false} className={inStage}>
         <AlertDialogHeader>
           <AlertDialogMedia variant="destructive">
@@ -322,7 +322,7 @@ function TypeToConfirmDialog({ container }: { container: Stage }) {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction variant="destructive" disabled={!matches} onClick={() => setOpen(false)}>
-            Delete project
+            Delete Project
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -340,7 +340,7 @@ export default function AlertDialogDocs() {
         code={`const [open, setOpen] = React.useState(false)
 
 <AlertDialog open={open} onOpenChange={setOpen}>
-  <AlertDialogTrigger render={<Button />}>Run on existing tasks</AlertDialogTrigger>
+  <AlertDialogTrigger render={<Button />}>Run on Existing Tasks</AlertDialogTrigger>
   <AlertDialogContent>
     <AlertDialogHeader>
       <AlertDialogTitle>Run this rule on 38 tasks?</AlertDialogTitle>
@@ -351,7 +351,7 @@ export default function AlertDialogDocs() {
     <AlertDialogFooter>
       <AlertDialogCancel>Cancel</AlertDialogCancel>
       <AlertDialogAction onClick={() => runRule().then(() => setOpen(false))}>
-        Run rule
+        Run Rule
       </AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
@@ -376,7 +376,7 @@ export default function AlertDialogDocs() {
   </AlertDialogHeader>
   <AlertDialogFooter>
     <AlertDialogCancel>Cancel</AlertDialogCancel>
-    <AlertDialogAction variant="destructive">Delete task</AlertDialogAction>
+    <AlertDialogAction variant="destructive">Delete Task</AlertDialogAction>
   </AlertDialogFooter>
 </AlertDialogContent>`}
       >
@@ -406,7 +406,7 @@ export default function AlertDialogDocs() {
     <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
     <AlertDialogAction onClick={rotate} disabled={pending}>
       {pending ? <Spinner data-icon="inline-start" /> : null}
-      {pending ? "Rotating key" : "Rotate key"}
+      {pending ? "Rotating Key" : "Rotate Key"}
     </AlertDialogAction>
   </AlertDialogFooter>
 </AlertDialog>`}
@@ -418,6 +418,28 @@ export default function AlertDialogDocs() {
         title="Type to confirm"
         layout="full"
         description="For the most destructive actions, ask people to type the name of what they are deleting. The action stays disabled until it matches."
+        code={`const [value, setValue] = React.useState("")
+const matches = value.trim() === "Help center"
+
+<AlertDialogContent>
+  <AlertDialogHeader>
+    <AlertDialogMedia variant="destructive">
+      <Trash2Icon />
+    </AlertDialogMedia>
+    <AlertDialogTitle>Delete Help center?</AlertDialogTitle>
+    <AlertDialogDescription>…</AlertDialogDescription>
+  </AlertDialogHeader>
+  <Field>
+    <FieldLabel htmlFor="confirm">Type Help center to confirm</FieldLabel>
+    <Input id="confirm" autoComplete="off" value={value} onChange={(e) => setValue(e.target.value)} />
+  </Field>
+  <AlertDialogFooter>
+    <AlertDialogCancel>Cancel</AlertDialogCancel>
+    <AlertDialogAction variant="destructive" disabled={!matches}>
+      Delete Project
+    </AlertDialogAction>
+  </AlertDialogFooter>
+</AlertDialogContent>`}
       >
         <DialogStage title="Help center" meta="Paused · Settings · Danger zone" rows={projectRows}>
           {(container) => <TypeToConfirmDialog container={container} />}

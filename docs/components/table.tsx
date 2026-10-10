@@ -88,7 +88,7 @@ function SelectableMembers() {
           {selected.length === 0 ? "4 of 18 members" : `${selected.length} selected`}
         </p>
         <Button size="sm" variant="outline" disabled={selected.length === 0}>
-          Remove from workspace
+          Remove from Workspace
         </Button>
       </div>
       <Table variant="card">

@@ -241,7 +241,11 @@ function LoadEarlier() {
           <MessageScrollerViewport aria-label="Conversation with Acme, with earlier messages" preserveScrollOnPrepend>
             <MessageScrollerContent className="px-5 py-6">
               {state !== "done" ? (
-                <MessageScrollerItem messageId="earlier" className="flex justify-center">
+                <MessageScrollerItem
+                  messageId="earlier"
+                  // mb-auto keeps the control at the top and lets a short thread sit at the bottom, as chats do.
+                  className="mb-auto flex justify-center"
+                >
                   {state === "loading" ? (
                     <Marker>
                       <MarkerIcon>
@@ -251,7 +255,7 @@ function LoadEarlier() {
                     </Marker>
                   ) : (
                     <Button variant="ghost" size="sm" onClick={loadEarlier}>
-                      Show {earlier.length} earlier messages
+                      Show {earlier.length} Earlier Messages
                     </Button>
                   )}
                 </MessageScrollerItem>

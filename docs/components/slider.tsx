@@ -182,7 +182,7 @@ function AutomationBudget() {
           {status === "saved" ? "Saved. Applies from today." : status === "dirty" ? "Unsaved changes" : "No unsaved changes"}
         </p>
         <Button disabled={status !== "dirty"} onClick={() => setStatus("saved")}>
-          Save changes
+          Save Changes
         </Button>
       </CardFooter>
     </Card>

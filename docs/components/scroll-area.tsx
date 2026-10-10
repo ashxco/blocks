@@ -115,7 +115,7 @@ export default function ScrollAreaDocs() {
   <ScrollBar orientation="horizontal" />
 </ScrollArea>`}
       >
-        <ScrollArea className="w-full">
+        <ScrollArea className="w-full min-w-0">
           <div className="flex w-max gap-3 pb-4">
             {projects.map((project) => (
               <div
