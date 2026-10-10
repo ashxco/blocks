@@ -183,8 +183,8 @@ export function Notifications({
         {unread > 0 ? (
           <span
             aria-hidden="true"
-            // Ink, like other counts in the app: violet stays for the unread dots inside.
-            className="absolute top-1 right-1 grid h-4.5 min-w-4.5 place-items-center rounded-full border-2 border-background bg-primary px-1 text-xs leading-none font-bold text-primary-foreground tabular"
+            // Ink, like other counts in the app: the accent stays for the unread dots inside.
+            className="absolute top-1 right-1 grid h-4.5 min-w-4.5 place-items-center rounded-(--badge-radius) border-2 border-background bg-primary px-1 text-xs leading-none font-bold text-primary-foreground tabular"
           >
             {unread}
           </span>

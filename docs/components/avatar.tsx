@@ -201,7 +201,7 @@ export default function AvatarDocs() {
         dont={[
           "Don’t use avatars as decoration. Each one stands for a real person or team.",
           "Don’t put more than five avatars in a stack. Show the rest as a count.",
-          "Don’t use brand violet for status dots. Use success, warning or muted.",
+          "Don’t use the accent for status dots. Use success, warning or muted.",
         ]}
       />
 

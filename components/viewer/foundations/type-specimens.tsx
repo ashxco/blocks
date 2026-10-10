@@ -8,15 +8,15 @@ import { Input } from "@/components/ui/input"
 import { Kern } from "@/components/viewer/kern"
 import { cn } from "@/lib/utils"
 
+import { ThemeText, type PerTheme } from "./by-theme"
+
 export interface RoleSpec {
   /** Role key, e.g. "display". */
   key: string
   utility: string
   description?: string
-  size: string
-  lineHeight: string
-  tracking: string
-  weight: string
+  /** Size · line height · tracking · weight in each theme. A size range means the role is fluid. */
+  meta: PerTheme
   /** Size and line height from each breakpoint up, for roles that change with the viewport. */
   responsive?: string[]
 }
@@ -99,9 +99,9 @@ export function TypeSpecimens({ roles }: { roles: RoleSpec[] }) {
           >
             <div className="grid content-start gap-1">
               <code className="font-mono text-label text-foreground">{role.utility}</code>
-              {/* Size · line height · tracking · weight. A size range means the role is fluid. */}
+              {/* Size · line height · tracking · weight, for the theme the page is on. A size range means the role is fluid. */}
               <span className="font-mono text-xs text-muted-foreground tabular" title="Size · line height · tracking · weight">
-                {[role.size.replace(/ fluid$/, ""), role.lineHeight, role.tracking, role.weight].join(" · ")}
+                <ThemeText value={role.meta} />
               </span>
               {role.responsive?.map((line) => (
                 <span key={line} className="font-mono text-xs text-muted-foreground tabular">

@@ -491,7 +491,7 @@ export function DataTable({
                 <ListFilterIcon data-icon="inline-start" />
                 Status
                 {statuses.length > 0 ? (
-                  <span className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-xs font-bold text-primary-foreground tabular">
+                  <span className="grid h-5 min-w-5 place-items-center rounded-(--badge-radius) bg-primary px-1 text-xs font-bold text-primary-foreground tabular">
                     {statuses.length}
                   </span>
                 ) : null}

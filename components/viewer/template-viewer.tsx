@@ -7,16 +7,19 @@ import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 import { deviceOrder, devices, type Device } from "@/components/viewer/devices"
+import { defaultThemeId, type ThemeId } from "@/lib/themes"
 import {
   LOAD_TIMEOUT,
-  frameHasTheme,
+  frameHasLook,
   frameRendered,
   hideDevIndicator,
   useElementSize,
-  useFrameTheme,
+  useFrameLook,
+  withFrameLook,
 } from "@/components/viewer/scaled-frame"
 import { Segmented } from "@/components/viewer/segmented"
-import { useSiteTheme, type SiteTheme } from "@/components/viewer/site-theme"
+import { useSiteLook, type SiteMode } from "@/components/viewer/site-theme"
+import { ThemePicker } from "@/components/viewer/theme-picker"
 
 const deviceOptions = deviceOrder.map((value) => ({
   value,
@@ -44,16 +47,20 @@ function usePhone() {
 
 /**
  * A full template in a resizable frame: desktop, tablet and mobile widths,
- * light and dark themes, and a link that opens the page in a new tab.
+ * any theme in light or dark, and a link that opens the page in a new tab.
+ * Theme and mode start as the site's and follow it until the reader picks
+ * their own for this preview; that choice is never saved.
  *
- * The frame loads once. Switching the theme restyles the page in place
- * (useFrameTheme), so there is no reload and no flash of the other theme;
- * ?theme= on the address only tells the page which theme to keep once it
- * hydrates, and is never saved.
+ * The frame loads once, with ?theme=<id>&mode=<mode> on its address so the
+ * page paints in that look from its first frame. Switching either restyles
+ * the page in place (useFrameLook), so there is no reload and no flash. The
+ * full-page link carries the same look.
  */
 export function TemplateViewer({ href, title }: { href: string; title: string }) {
-  const siteTheme = useSiteTheme()
-  const [chosenTheme, setChosenTheme] = React.useState<SiteTheme | null>(null)
+  const site = useSiteLook()
+  const siteTheme = site.mode
+  const [chosenTheme, setChosenTheme] = React.useState<SiteMode | null>(null)
+  const [chosenPreset, setChosenPreset] = React.useState<ThemeId | null>(null)
   const [chosenDevice, setChosenDevice] = React.useState<Device | null>(null)
   const [frame, setFrame] = React.useState<{ src: string; key: number } | null>(null)
   const [loadedKey, setLoadedKey] = React.useState<number | null>(null)
@@ -76,11 +83,14 @@ export function TemplateViewer({ href, title }: { href: string; title: string })
   const known = chosenDevice ?? autoDevice
   const device = known ?? "desktop"
   const theme = chosenTheme ?? siteTheme ?? "light"
-  const fullPage = `${href}?theme=${theme}`
+  const preset = chosenPreset ?? site.theme ?? defaultThemeId
+  const look = { theme: preset, mode: theme }
   const target = devices[device].width
   const scale = size ? Math.min(1, size.width / target) : 0
-  const ready = size !== null && size.width > 0 && siteTheme !== undefined
-  const syncTheme = useFrameTheme(ready ? theme : undefined)
+  const ready = size !== null && size.width > 0 && siteTheme !== undefined && site.theme !== undefined
+  // Until the site's look is known, the link opens the page as the visitor saved it.
+  const fullPage = siteTheme !== undefined && site.theme !== undefined ? withFrameLook(href, look) : href
+  const syncLook = useFrameLook(ready ? look : undefined)
 
   // The frame's address is fixed when it first mounts (and on reload).
   if (ready && !frame) setFrame({ src: fullPage, key: 0 })
@@ -109,7 +119,7 @@ export function TemplateViewer({ href, title }: { href: string; title: string })
             className={cn(!known && "invisible")}
           />
           <Segmented
-            label="Preview theme"
+            label="Preview appearance"
             iconOnly
             value={theme}
             onValueChange={setChosenTheme}
@@ -117,6 +127,14 @@ export function TemplateViewer({ href, title }: { href: string; title: string })
               { value: "light", label: "Light", icon: SunIcon },
               { value: "dark", label: "Dark", icon: MoonIcon },
             ]}
+          />
+          <ThemePicker
+            variant="toolbar"
+            label="Preview theme"
+            align="start"
+            value={preset}
+            onValueChange={setChosenPreset}
+            className={cn(!ready && "invisible")}
           />
           <span className="hidden font-mono text-caption whitespace-nowrap text-muted-foreground tabular xl:inline">
             {target}px{scale > 0 && scale < 1 ? ` at ${Math.round(scale * 100)}%` : ""}
@@ -181,8 +199,8 @@ export function TemplateViewer({ href, title }: { href: string; title: string })
                   return
                 }
                 hideDevIndicator(el)
-                syncTheme(el)
-                if (frameHasTheme(el, theme)) setLoadedKey(frame.key)
+                syncLook(el)
+                if (frameHasLook(el, look)) setLoadedKey(frame.key)
               }}
               className={cn(
                 "absolute top-0 left-0 origin-top-left border-0 bg-background",

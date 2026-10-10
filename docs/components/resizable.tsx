@@ -189,7 +189,7 @@ export default function ResizableDocs() {
 
       <Example
         title="Hairline only"
-        description="Leave out withHandle where the split is obvious. The line still darkens on hover and turns violet while you drag it."
+        description="Leave out withHandle where the split is obvious. The line still darkens on hover and turns to the accent while you drag it."
         code={`<ResizableHandle />`}
       >
         {/* Three panes need about 36rem; a narrower stage scrolls sideways instead of squeezing them. */}
@@ -322,7 +322,7 @@ export default function ResizableDocs() {
           { prop: "minSize / maxSize", type: "number | string", description: "ResizablePanel: limits while resizing." },
           { prop: "collapsible", type: "boolean", default: "false", description: "ResizablePanel: collapse to collapsedSize when dragged below minSize." },
           { prop: "onResize", type: "(size: PanelSize) => void", description: "ResizablePanel: called with asPercentage and inPixels as it resizes." },
-          { prop: "withHandle", type: "boolean", default: "false", description: "ResizableHandle: show the pill grip on the hairline." },
+          { prop: "withHandle", type: "boolean", default: "false", description: "ResizableHandle: show the small grip on the hairline." },
           { prop: "disabled", type: "boolean", default: "false", description: "ResizableHandle: stop this handle from resizing." },
         ]}
       />

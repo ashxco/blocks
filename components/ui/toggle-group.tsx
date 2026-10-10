@@ -14,11 +14,11 @@ type ToggleGroupVariant = NonNullable<VariantProps<typeof toggleVariants>["varia
 /**
  * Blocks toggle group.
  *
- * - `variant="default"`: a segmented control. Pill items sit in a muted pill
- *   track; the pressed item turns ink. The track is exactly as tall as a
+ * - `variant="default"`: a segmented control. Items sit in a muted track,
+ *   both in the button radius; the pressed item turns ink. The track is exactly as tall as a
  *   button of the same size. Vertical tracks hold rounded-rectangle items.
- * - `variant="outline"`: separate outline pills, like filter chips. With
- *   `spacing={0}` they join into one pill with shared hairlines.
+ * - `variant="outline"`: separate outline items, like filter chips. With
+ *   `spacing={0}` they join into one shape with shared hairlines.
  */
 const ToggleGroupContext = React.createContext<
   VariantProps<typeof toggleVariants> & {
@@ -54,7 +54,7 @@ function ToggleGroup({
   ...props
 }: ToggleGroupPrimitive.Props &
   VariantProps<typeof toggleVariants> & {
-    /** Gap between items, in spacing units. Defaults to 1 in the segmented track and 2 for outline pills. */
+    /** Gap between items, in spacing units. Defaults to 1 in the segmented track and 2 for outline items. */
     spacing?: number
     orientation?: "horizontal" | "vertical"
   }) {

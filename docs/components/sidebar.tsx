@@ -440,7 +440,7 @@ export default function SidebarDocs() {
         dont={[
           "Don’t put page actions like Save in the sidebar. They belong in the page header.",
           "Don’t nest more than one level of sub-menus.",
-          "Don’t colour the active item violet. Ink marks where you are; violet is for focus.",
+          "Don’t colour the active item in the accent. Ink marks where you are; the accent is for focus.",
           "Don’t hide the trigger. People need a visible way to collapse and reopen the sidebar.",
         ]}
       />

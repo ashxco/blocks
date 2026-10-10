@@ -3,6 +3,7 @@
 import * as React from "react"
 import { createPortal } from "react-dom"
 
+import type { ThemeId } from "@/lib/themes"
 import { cn } from "@/lib/utils"
 
 /**
@@ -10,8 +11,8 @@ import { cn } from "@/lib/utils"
  *
  * Menus, popovers, selects, tooltips, dialogs, sheets and drawers render
  * through a Base UI Portal, by default into <body>. That keeps them clear of
- * overflow and transforms, but it also takes them out of any theme scope
- * (`.dark` / `.light`) around their trigger. Every overlay wrapper in
+ * overflow and transforms, but it also takes them out of any mode or theme
+ * scope (`.dark` / `.light`, `data-theme`) around their trigger. Every overlay wrapper in
  * components/ui resolves its portal container with usePortalContainer, so:
  *
  *   1. a `container` prop on the overlay wins (e.g. a preview stage);
@@ -25,6 +26,8 @@ import { cn } from "@/lib/utils"
  *   <PortalScope className="dark">
  *     <DropdownMenu>…</DropdownMenu>   // the menu opens dark on a light page
  *   </PortalScope>
+ *
+ *   <PortalScope theme="mono" className="dark">…</PortalScope>   // and in the mono theme
  */
 export type PortalContainer =
   | HTMLElement
@@ -94,13 +97,24 @@ const subscribe = () => () => {}
 
 /**
  * Gives every overlay opened inside it a body-level portal container that
- * carries `className`, typically a theme scope ("dark" or "light"). Without a
- * className it changes nothing. Use it around any region whose theme differs
- * from the page, such as a `.dark` preview on a light page.
+ * carries `className`, typically a mode scope ("dark" or "light"), and
+ * `theme` as its data-theme. Without either it changes nothing. Use it around
+ * any region whose mode or theme differs from the page, such as a `.dark`
+ * preview on a light page or a ThemeScope showing another theme.
  */
-export function PortalScope({ className, children }: { className?: string; children: React.ReactNode }) {
+export function PortalScope({
+  className,
+  theme,
+  children,
+}: {
+  className?: string
+  /** A theme preset id for the overlays (data-theme on the container). */
+  theme?: ThemeId
+  children: React.ReactNode
+}) {
   const outer = React.useContext(PortalContainerContext)
   const [node, setNode] = React.useState<HTMLDivElement | null>(null)
+  const scoped = Boolean(className || theme)
   const hydrated = React.useSyncExternalStore(
     subscribe,
     () => true,
@@ -109,12 +123,15 @@ export function PortalScope({ className, children }: { className?: string; child
 
   return (
     // Until the scope element exists, overlays wait (null) rather than open in
-    // <body>. Without a className the outer container passes through; the
-    // provider stays either way, so toggling the scope never remounts children.
-    <PortalContainerProvider container={className ? node : outer}>
+    // <body>. Without a className or theme the outer container passes through;
+    // the provider stays either way, so toggling the scope never remounts children.
+    <PortalContainerProvider container={scoped ? node : outer}>
       {children}
-      {hydrated && className
-        ? createPortal(<div ref={setNode} data-slot="portal-scope" className={cn(className, "text-copy")} />, document.body)
+      {hydrated && scoped
+        ? createPortal(
+            <div ref={setNode} data-slot="portal-scope" data-theme={theme} className={cn(className, "text-copy")} />,
+            document.body
+          )
         : null}
     </PortalContainerProvider>
   )

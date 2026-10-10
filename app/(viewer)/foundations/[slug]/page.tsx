@@ -8,6 +8,7 @@ import { IconographyFoundation } from "@/components/viewer/foundations/iconograp
 import { MotionFoundation } from "@/components/viewer/foundations/motion"
 import { ShapeFoundation } from "@/components/viewer/foundations/shape"
 import { SpacingFoundation } from "@/components/viewer/foundations/spacing"
+import { ThemesFoundation } from "@/components/viewer/foundations/themes"
 import { TokensFoundation } from "@/components/viewer/foundations/tokens-page"
 import { TypographyFoundation } from "@/components/viewer/foundations/typography"
 import { pagerFor } from "@/components/viewer/nav"
@@ -17,6 +18,7 @@ import { foundations } from "@/lib/registry"
 type FoundationPageComponent = (props: { title: string; description: string }) => ReactNode
 
 const pages: Record<string, FoundationPageComponent> = {
+  themes: ThemesFoundation,
   colors: ColorsFoundation,
   typography: TypographyFoundation,
   spacing: SpacingFoundation,
@@ -47,7 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 type SearchParams = Record<string, string | string[] | undefined>
 
-/** The query string to carry across a redirect, so ?theme=dark survives the move. */
+/** The query string to carry across a redirect, so ?theme= and &mode= survive the move. */
 function queryString(params: SearchParams) {
   const qs = new URLSearchParams()
   for (const [key, value] of Object.entries(params)) {

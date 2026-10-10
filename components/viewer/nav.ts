@@ -53,7 +53,7 @@ export const sectionTitle: Record<SectionId, string> = {
 }
 
 export const sectionDescription: Record<SectionId, string> = {
-  foundations: "Colour, type, space, shape and motion: the tokens everything else is made of.",
+  foundations: "Colour, type, space, shape, motion and themes: the tokens everything else is made of.",
   components: "Accessible primitives on Base UI, restyled from the ground up with Blocks tokens.",
   molecules: "Sections and app patterns composed only from components and tokens.",
   templates: "Full pages for Acme Inc., a sample work-management SaaS, built from molecules.",

@@ -121,7 +121,7 @@ const barFill: Record<TimelineItem["state"], string> = {
 }
 
 /**
- * Plan: the project's tasks as bars across the weeks, with a violet line for
+ * Plan: the project's tasks as bars across the weeks, with an accent line for
  * today. Week labels thin out in a narrow frame so they never collide, and
  * the rows share out any spare height so the chart fills a tall window.
  */

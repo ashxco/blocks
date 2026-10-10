@@ -106,7 +106,7 @@ export default function InputDocs() {
       <Example
         title="Default"
         layout="stack"
-        description="A filled control that turns to the canvas colour with a violet border and outline while focused. Always pair it with a label."
+        description="A filled control that turns to the canvas colour with an accent border and outline while focused. Always pair it with a label."
         code={`<Field>
   <FieldLabel htmlFor="name">Project name</FieldLabel>
   <Input id="name" placeholder="Website relaunch" />

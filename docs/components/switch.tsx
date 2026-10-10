@@ -206,7 +206,7 @@ export default function SwitchDocs() {
         title="On a panel"
         surface="panel"
         layout="stack"
-        description="On dark panels, use the inverse variant: the track turns light when on and the thumb takes the panel colour, in both themes."
+        description="On dark panels, use the inverse variant: the track turns light when on and the thumb takes the panel colour, in light and dark."
         code={`<Field orientation="horizontal">
   <FieldContent>
     <FieldLabel htmlFor="public-link" className="text-panel-foreground">Public link</FieldLabel>

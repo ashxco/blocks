@@ -314,7 +314,7 @@ const [code, setCode] = React.useState("")
       <Example
         title="States"
         layout="stack"
-        description="While someone types, the next slot turns to the canvas colour with a caret and the violet focus border. Set aria-invalid on InputOTP and every slot turns destructive. Disabled codes dim as a whole."
+        description="While someone types, the next slot turns to the canvas colour with a caret and the accent focus border. Set aria-invalid on InputOTP and every slot turns destructive. Disabled codes dim as a whole."
         code={`<Field data-invalid className="w-fit">
   <FieldLabel htmlFor="code">Verification code</FieldLabel>
   <InputOTP id="code" maxLength={6} pattern={REGEXP_ONLY_DIGITS} defaultValue="481920" aria-invalid aria-describedby="code-error">

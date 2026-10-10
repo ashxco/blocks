@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * Blocks textarea. The same filled control as <Input>: `bg-muted` and a
- * hairline `border-input` at rest, canvas colour and a violet border plus
+ * hairline `border-input` at rest, canvas colour and an accent border plus
  * focus outline while focused. It grows with its content
  * (`field-sizing: content`) from a comfortable minimum height, so most
  * answers need no manual resizing, and can still be resized vertically with a

@@ -22,7 +22,8 @@ import { TokenText } from "@/components/viewer/token-text"
 
 /**
  * One example on a preview canvas, with Preview and Code tabs, a copy button,
- * a per-example light/dark switch and, for layout="full", a width switch.
+ * a per-example light/dark switch (Appearance) and, for layout="full", a width
+ * switch. The canvas is in the site's theme in either mode.
  * Implemented as a client component in components/viewer/example-canvas.tsx.
  */
 export { Example, type ExampleProps } from "@/components/viewer/example-canvas"

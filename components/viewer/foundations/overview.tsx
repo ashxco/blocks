@@ -13,21 +13,109 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { foundations } from "@/lib/registry"
+import { themeScopeProps } from "@/lib/themes"
 import { cn } from "@/lib/utils"
 
-import { primitiveScales, refLabel, tokenByName, tokenByVar, tokens } from "./data"
+import { ByTheme, ThemeText } from "./by-theme"
+import {
+  colorAlias,
+  fixedScales,
+  formatValue,
+  perTheme,
+  scaleKind,
+  themes,
+  themeScales,
+  tokenByName,
+  tokenByVar,
+  tokens,
+  valueIn,
+  type DesignToken,
+  type ThemeId,
+} from "./data"
 import { FoundationPage, Section } from "./layout"
+
+/** A colour role's primitive in one mode of a theme: "accent.600", "neutral.950". */
+function refIn(t: DesignToken, mode: "light" | "dark", theme: ThemeId) {
+  const v = valueIn(theme, t)
+  const resolved = mode === "dark" && v.dark ? v.dark : v
+  return colorAlias(String(resolved.value), resolved.ref, theme) ?? String(resolved.value)
+}
 
 /* ------------------------------------------------------------------------ */
 /* Tier chain: primitive -> semantic -> component                            */
 /* ------------------------------------------------------------------------ */
 
+const modes = ["light", "dark"] as const
+
+/**
+ * The primitive a colour role reads in one mode of a theme: --bk-accent-600
+ * for the default brand, --bk-neutral-950 for Mono's ink one. A role with a
+ * raw value falls back to its default reference.
+ */
+function primitiveIn(t: DesignToken, mode: "light" | "dark", theme: ThemeId) {
+  const v = valueIn(theme, t)
+  const resolved = mode === "dark" && v.dark ? v.dark : v
+  const ref = resolved.ref ?? (mode === "dark" ? t.dark?.ref : undefined) ?? t.ref
+  return ref ? tokenByName(ref) : undefined
+}
+
+/**
+ * The primitive card: the swatch, CSS variable and OKLCH value of the step
+ * the role reads, in the theme and mode the page is on. Both modes go into
+ * the HTML when they differ, and the dark variant picks one, so it is right
+ * on the first frame.
+ */
+function PrimitiveStep({ role }: { role: DesignToken }) {
+  const variants = (theme: ThemeId) => {
+    const found = modes.map((mode) => ({ mode, token: primitiveIn(role, mode, theme) }))
+    const [light, dark] = found
+    const both = light.token?.cssVar === dark.token?.cssVar ? [light] : found
+    return both.flatMap(({ mode, token }) =>
+      token
+        ? [
+            {
+              mode: both.length === 1 ? undefined : mode,
+              cssVar: token.cssVar,
+              value: String(valueIn(theme, token).value),
+            },
+          ]
+        : []
+    )
+  }
+  return (
+    <ByTheme as="div" by={(theme) => JSON.stringify(variants(theme))}>
+      {(theme) =>
+        variants(theme).map((v) => (
+          <div
+            key={v.cssVar}
+            className={cn(
+              "grid content-start gap-4",
+              v.mode === "light" && "dark:hidden",
+              v.mode === "dark" && "hidden dark:grid"
+            )}
+          >
+            <span
+              aria-hidden
+              className="block h-14 rounded-md border border-panel-border"
+              style={{ backgroundColor: `var(${v.cssVar})` }}
+            />
+            <div className="grid gap-1">
+              <p className="text-title text-panel-foreground">Primitive</p>
+              <code className="font-mono text-code text-panel-muted">{v.cssVar}</code>
+              <span className="font-mono text-xs text-panel-muted">{v.value}</span>
+            </div>
+          </div>
+        ))
+      }
+    </ByTheme>
+  )
+}
+
 function TierChain() {
   const brand = tokenByVar("--brand")
-  const primitive = brand?.ref ? tokenByName(brand.ref) : undefined
   const radius = tokenByVar("--button-radius")
   const height = tokenByVar("--button-height-md")
-  if (!brand || !primitive) return null
+  if (!brand) return null
 
   const step = "grid content-start gap-4 rounded-(--card-radius) border border-panel-border bg-panel-raised p-5"
   const arrow = "size-5 shrink-0 rotate-90 justify-self-center text-panel-muted @narrow:rotate-0 @narrow:self-center"
@@ -42,22 +130,14 @@ function TierChain() {
         </h2>
         <p className="max-w-prose text-body text-panel-muted">
           Tokens are written once and compiled to CSS variables and Tailwind utilities. Change a primitive and every
-          role, component and template that uses it follows, in both themes.
+          role, component and template that uses it follows, in light and dark. A theme re-points the primitives, so
+          the same chain gives each theme its own look.
         </p>
       </div>
 
       <div className="grid gap-3 @narrow:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)]">
         <div className={step}>
-          <span
-            aria-hidden
-            className="block h-14 rounded-md"
-            style={{ backgroundColor: `var(${primitive.cssVar})` }}
-          />
-          <div className="grid gap-1">
-            <p className="text-title text-panel-foreground">Primitive</p>
-            <code className="font-mono text-code text-panel-muted">{primitive.cssVar}</code>
-            <span className="font-mono text-xs text-panel-muted">{String(primitive.value)}</span>
-          </div>
+          <PrimitiveStep role={brand} />
         </div>
         <ArrowRightIcon aria-hidden className={arrow} />
         <div className={step}>
@@ -72,7 +152,9 @@ function TierChain() {
               {[brand.cssVar, brand.utility].filter(Boolean).join(" · ")}
             </code>
             <span className="font-mono text-xs text-panel-muted">
-              {refLabel(brand.ref)} light · {refLabel(brand.dark?.ref)} dark
+              <ThemeText
+                value={perTheme((theme) => `${refIn(brand, "light", theme)} light · ${refIn(brand, "dark", theme)} dark`)}
+              />
             </span>
           </div>
         </div>
@@ -105,9 +187,12 @@ function TierChain() {
 /* Tile samples                                                              */
 /* ------------------------------------------------------------------------ */
 
-/** Steps every primitive scale shares (50 … 950), so the rows form one grid. */
+/**
+ * The theme's own scales (accent and neutral, so the tile changes with the
+ * theme) and the status scales, on the steps they share (50 … 950).
+ */
 function sharedSteps() {
-  const scales = primitiveScales()
+  const scales = [...themeScales(), ...fixedScales().filter((scale) => scaleKind(scale) === "status")]
   const [first, ...rest] = scales
   if (!first) return { scales, steps: [] as string[] }
   const steps = first.steps
@@ -143,6 +228,47 @@ function ColorSample() {
   )
 }
 
+/** How many presets the Themes tile shows on narrow screens, so each keeps its name. */
+const NARROW_PRESETS = 3
+
+/**
+ * The presets side by side, each drawn in its own theme: its font, its
+ * accent and its button shape. Narrow tiles show the first three, named;
+ * from @prose up every preset fits.
+ */
+function ThemesSample() {
+  return (
+    <div
+      aria-hidden
+      className="grid size-full grid-cols-[repeat(var(--narrow),minmax(0,1fr))] gap-2 p-4 @prose:grid-cols-[repeat(var(--all),minmax(0,1fr))] @prose:gap-3 @prose:p-5"
+      style={{ "--narrow": Math.min(NARROW_PRESETS, themes.length), "--all": themes.length } as React.CSSProperties}
+    >
+      {themes.map((theme, i) => (
+        <span
+          key={theme.id}
+          {...themeScopeProps(
+            theme.id,
+            undefined,
+            cn(
+              "grid min-w-0 content-between gap-3 overflow-hidden rounded-(--card-radius) border bg-background p-3 @prose:p-4",
+              i >= NARROW_PRESETS && "hidden @prose:grid"
+            )
+          )}
+        >
+          <span className="grid gap-1">
+            <span className="text-h3 leading-none text-foreground">Aa</span>
+            <span className="truncate text-caption text-muted-foreground">{theme.name}</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="block h-5 w-3/5 min-w-0 rounded-(--button-radius) bg-brand" />
+            <span className="size-5 shrink-0 rounded-(--control-radius) border border-input bg-muted" />
+          </span>
+        </span>
+      ))}
+    </div>
+  )
+}
+
 function TypeSample() {
   return (
     <div aria-hidden className="flex size-full items-end gap-4 p-6">
@@ -170,7 +296,7 @@ function SpacingSample() {
 /*
  * Four steps of the radius scale on equal squares (sm, lg, 2xl, full), far
  * enough apart to read as different shapes. Outlines use the strong line so
- * they hold up on the muted tile in both themes.
+ * they hold up on the muted tile in both modes.
  */
 function ShapeSample() {
   const square = "aspect-square w-full max-w-16 justify-self-center"
@@ -259,12 +385,18 @@ function TokensSample() {
             <TokenGlyph type={t.type} cssVar={t.cssVar} />
             <span className="font-mono text-xs text-foreground">{t.cssVar}</span>
             <span className="ml-auto truncate font-mono text-xs text-muted-foreground">
-              {t.type === "typography"
-                ? "type role"
-                : t.dark
-                  ? // Theme colours: the primitive behind each theme, true in both.
-                    `${refLabel(t.ref) ?? String(t.value)} · ${refLabel(t.dark.ref) ?? String(t.dark.value)}`
-                  : String(t.value)}
+              {t.type === "typography" ? (
+                "type role"
+              ) : (
+                <ThemeText
+                  value={perTheme((theme) =>
+                    t.dark
+                      ? // Colour roles: the primitive behind each mode, in the page's theme.
+                        `${refIn(t, "light", theme)} · ${refIn(t, "dark", theme)}`
+                      : formatValue(t, valueIn(theme, t).value)
+                  )}
+                />
+              )}
             </span>
           </div>
         ))}
@@ -274,6 +406,7 @@ function TokensSample() {
 }
 
 const samples: Record<string, { sample: React.ReactNode; span?: string }> = {
+  themes: { sample: <ThemesSample />, span: "@prose:col-span-2 @narrow:col-span-3" },
   colors: { sample: <ColorSample />, span: "@prose:col-span-2" },
   typography: { sample: <TypeSample /> },
   spacing: { sample: <SpacingSample /> },
@@ -302,7 +435,7 @@ export function FoundationsOverview() {
   return (
     <FoundationPage
       title="Foundations"
-      description="The decisions every Blocks component is built on: colour, type, space, shape, motion and icons. All of it lives in tokens, so the whole kit changes from one place."
+      description="The decisions every Blocks component is built on: themes, colour, type, space, shape, motion and icons. All of it lives in tokens, so the whole kit changes from one place, and a theme changes it all at once."
     >
       <TierChain />
 

@@ -118,7 +118,7 @@ function BrowserBar({ url }: { url: string }) {
         <span className="size-2.5 rounded-full bg-foreground/15" />
         <span className="size-2.5 rounded-full bg-foreground/15" />
       </span>
-      <span className="mx-auto flex h-7 max-w-full min-w-0 items-center gap-1.5 rounded-full border bg-background px-3 font-mono text-caption text-muted-foreground">
+      <span className="mx-auto flex h-7 max-w-full min-w-0 items-center gap-1.5 rounded-(--button-radius) border bg-background px-3 font-mono text-caption text-muted-foreground">
         <LockIcon aria-hidden="true" className="size-3 shrink-0" />
         <span className="truncate">{url}</span>
       </span>

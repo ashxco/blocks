@@ -121,9 +121,9 @@ const actions: ActionItem[] = [
 ]
 
 const themeOptions = [
-  { value: "light", label: "Light theme", icon: SunIcon },
-  { value: "dark", label: "Dark theme", icon: MoonIcon },
-  { value: "system", label: "Match system theme", icon: MonitorIcon },
+  { value: "light", label: "Light appearance", icon: SunIcon },
+  { value: "dark", label: "Dark appearance", icon: MoonIcon },
+  { value: "system", label: "Match system appearance", icon: MonitorIcon },
 ] as const
 
 const subscribeNoop = () => () => {}
@@ -190,7 +190,7 @@ export function CommandMenuButton({
 
 /**
  * A Cmd+K palette for jumping between pages, running common actions and
- * switching theme. Renders its own search trigger, or pass `open` and
+ * switching the appearance (light or dark). Renders its own search trigger, or pass `open` and
  * `onOpenChange` to open it from elsewhere.
  */
 export function CommandMenu({
@@ -269,7 +269,7 @@ export function CommandMenu({
 }
 
 /**
- * The palette itself: search, then navigation, actions and theme, with key
+ * The palette itself: search, then navigation, actions and appearance, with key
  * hints in the footer. CommandMenu shows it in a dialog; CommandMenuPanel
  * shows it inline.
  */
@@ -286,9 +286,9 @@ function CommandPalette({
 }) {
   const router = useRouter()
   const { theme: savedTheme, forcedTheme, setTheme } = useTheme()
-  // The theme is only known in the browser. Inline, the palette renders on the
-  // server too, so the current theme is marked after hydration to keep the two
-  // renders identical. A page can force a theme (?theme=dark); mark that one.
+  // The mode is only known in the browser. Inline, the palette renders on the
+  // server too, so the current mode is marked after hydration to keep the two
+  // renders identical. A page can force the mode (?mode=dark); mark that one.
   const hydrated = React.useSyncExternalStore(
     subscribeNoop,
     () => true,
@@ -344,12 +344,12 @@ function CommandPalette({
           ))}
         </CommandGroup>
         <CommandSeparator />
-        <CommandGroup heading="Theme">
+        <CommandGroup heading="Appearance">
           {themeOptions.map((option) => (
             <CommandItem
               key={option.value}
               value={option.label}
-              keywords={["theme", "appearance", option.value]}
+              keywords={["appearance", "mode", "theme", option.value]}
               data-checked={theme === option.value}
               onSelect={() => run(() => setTheme(option.value))}
             >

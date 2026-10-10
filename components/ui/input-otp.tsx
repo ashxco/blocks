@@ -8,7 +8,7 @@ import { MinusIcon } from "lucide-react"
 /**
  * Blocks one-time code input. Each character sits in its own filled slot
  * (control height, control radius, `bg-muted`), empty or not, exactly like
- * <Input>. Only the active slot turns to the canvas colour with a violet
+ * <Input>. Only the active slot turns to the canvas colour with an accent
  * border and focus outline, and shows a caret.
  *
  * Invalid: set `aria-invalid` on <InputOTP> (or `data-invalid` on the

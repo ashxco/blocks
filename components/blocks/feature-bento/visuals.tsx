@@ -65,9 +65,10 @@ export function BoardPreview({ columns = defaultBoard, className }: { columns?: 
             {column.cards.map((card) => (
               <div
                 key={card.title}
-                className="flex min-w-0 items-center justify-between gap-2 rounded-sm border bg-background py-2 pr-2 pl-2.5"
+                className="flex min-w-0 items-center justify-between gap-2 rounded-sm border bg-background px-1.5 py-1.5 @min-[32rem]/board:py-2 @min-[32rem]/board:pr-2 @min-[32rem]/board:pl-2.5"
               >
-                <span className="min-w-0 text-caption font-semibold text-foreground @min-[32rem]/board:truncate">
+                {/* Narrow cards wrap long titles, hyphenated, rather than run past the card. */}
+                <span className="min-w-0 text-caption font-semibold text-foreground hyphens-auto wrap-break-word @min-[32rem]/board:truncate">
                   {card.title}
                 </span>
                 {/* The owner as a small tinted dot: the same person keeps the same tint. */}
@@ -332,14 +333,14 @@ const defaultChips: LinkChip[] = [
   { label: "HubSpot" },
 ]
 
-/** A wrapping row of pill chips, such as connected apps. Active chips get a green dot. */
+/** A wrapping row of chips (badge radius), such as connected apps. Active chips get a green dot. */
 export function LinkChips({ items = defaultChips, className }: { items?: LinkChip[]; className?: string }) {
   return (
     <ul aria-hidden="true" className={cn("flex flex-wrap gap-2", className)}>
       {items.map((item) => (
         <li
           key={item.label}
-          className="inline-flex h-8 items-center gap-2 rounded-full border bg-background px-3 text-caption font-semibold text-foreground"
+          className="inline-flex h-8 items-center gap-2 rounded-(--badge-radius) border bg-background px-3 text-caption font-semibold text-foreground"
         >
           <span
             className={cn(

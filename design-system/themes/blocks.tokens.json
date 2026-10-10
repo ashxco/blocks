@@ -1,0 +1,15 @@
+{
+  "$description": "The default look: a violet accent on faint-violet ink, pill buttons, generous radii, Plus Jakarta Sans and Geist Mono.",
+  "$extensions": {
+    "blocks": {
+      "theme": {
+        "name": "Blocks",
+        "order": 0,
+        "modes": [
+          "light",
+          "dark"
+        ]
+      }
+    }
+  }
+}

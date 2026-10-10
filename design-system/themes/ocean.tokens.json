@@ -1,0 +1,300 @@
+{
+  "$description": "A confident blue accent on cool slate, pill buttons with crisp 8px controls and 14px cards, Inter Tight.",
+  "$extensions": {
+    "blocks": {
+      "theme": {
+        "name": "Ocean",
+        "order": 1,
+        "modes": [
+          "light",
+          "dark"
+        ]
+      }
+    }
+  },
+  "theme": {
+    "accent": {
+      "$description": "Points at color.blue (design-system/tokens/primitives.tokens.json).",
+      "50": {
+        "$value": "{color.blue.50}"
+      },
+      "100": {
+        "$value": "{color.blue.100}"
+      },
+      "200": {
+        "$value": "{color.blue.200}"
+      },
+      "300": {
+        "$value": "{color.blue.300}"
+      },
+      "400": {
+        "$value": "{color.blue.400}"
+      },
+      "500": {
+        "$value": "{color.blue.500}"
+      },
+      "600": {
+        "$value": "{color.blue.600}"
+      },
+      "700": {
+        "$value": "{color.blue.700}"
+      },
+      "800": {
+        "$value": "{color.blue.800}"
+      },
+      "900": {
+        "$value": "{color.blue.900}"
+      },
+      "950": {
+        "$value": "{color.blue.950}"
+      },
+      "dim": {
+        "$value": "{color.blue.dim}"
+      }
+    },
+    "neutral": {
+      "$description": "Points at color.slate (design-system/tokens/primitives.tokens.json).",
+      "0": {
+        "$value": "{color.slate.0}"
+      },
+      "25": {
+        "$value": "{color.slate.25}"
+      },
+      "50": {
+        "$value": "{color.slate.50}"
+      },
+      "100": {
+        "$value": "{color.slate.100}"
+      },
+      "150": {
+        "$value": "{color.slate.150}"
+      },
+      "200": {
+        "$value": "{color.slate.200}"
+      },
+      "300": {
+        "$value": "{color.slate.300}"
+      },
+      "400": {
+        "$value": "{color.slate.400}"
+      },
+      "450": {
+        "$value": "{color.slate.450}"
+      },
+      "500": {
+        "$value": "{color.slate.500}"
+      },
+      "550": {
+        "$value": "{color.slate.550}"
+      },
+      "600": {
+        "$value": "{color.slate.600}"
+      },
+      "700": {
+        "$value": "{color.slate.700}"
+      },
+      "750": {
+        "$value": "{color.slate.750}"
+      },
+      "800": {
+        "$value": "{color.slate.800}"
+      },
+      "850": {
+        "$value": "{color.slate.850}"
+      },
+      "900": {
+        "$value": "{color.slate.900}"
+      },
+      "925": {
+        "$value": "{color.slate.925}"
+      },
+      "950": {
+        "$value": "{color.slate.950}"
+      },
+      "1000": {
+        "$value": "{color.slate.1000}"
+      }
+    }
+  },
+  "radius": {
+    "xs": {
+      "$value": "0.25rem"
+    },
+    "sm": {
+      "$value": "0.375rem"
+    },
+    "md": {
+      "$value": "0.5rem"
+    },
+    "lg": {
+      "$value": "0.875rem"
+    },
+    "xl": {
+      "$value": "1.125rem"
+    },
+    "2xl": {
+      "$value": "1.25rem"
+    },
+    "3xl": {
+      "$value": "1.5rem"
+    },
+    "4xl": {
+      "$value": "2rem"
+    }
+  },
+  "component": {
+    "overlay": {
+      "item-radius": {
+        "$value": "{radius.xs}",
+        "$description": "Menu items nest inside the 8px overlay with 6px of padding, so they take the 4px radius."
+      }
+    },
+    "kern": {
+      "pull": {
+        "$value": "0.025em"
+      }
+    }
+  },
+  "font": {
+    "family": {
+      "sans": {
+        "$value": [
+          "var(--font-inter-tight)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif"
+        ],
+        "$description": "Inter Tight. Headings, UI and body copy.",
+        "$extensions": {
+          "blocks": {
+            "name": "Inter Tight"
+          }
+        }
+      }
+    }
+  },
+  "type": {
+    "hero": {
+      "$value": {
+        "letterSpacing": "-0.02em"
+      }
+    },
+    "display": {
+      "$value": {
+        "letterSpacing": "-0.015em"
+      }
+    },
+    "h1": {
+      "$value": {
+        "letterSpacing": "-0.02em"
+      }
+    },
+    "h2": {
+      "$value": {
+        "letterSpacing": "-0.018em"
+      }
+    },
+    "h3": {
+      "$value": {
+        "letterSpacing": "-0.014em"
+      }
+    },
+    "h4": {
+      "$value": {
+        "letterSpacing": "-0.01em"
+      }
+    },
+    "title": {
+      "$value": {
+        "letterSpacing": "-0.005em"
+      }
+    },
+    "lead": {
+      "$value": {
+        "letterSpacing": "0.002em"
+      }
+    },
+    "body": {
+      "$value": {
+        "letterSpacing": "0.005em"
+      }
+    },
+    "label": {
+      "$value": {
+        "letterSpacing": "0.004em"
+      }
+    },
+    "control": {
+      "$value": {
+        "letterSpacing": "0.005em"
+      }
+    },
+    "caption": {
+      "$value": {
+        "letterSpacing": "0.008em"
+      }
+    },
+    "3xl": {
+      "$value": {
+        "letterSpacing": "-0.018em"
+      }
+    },
+    "4xl": {
+      "$value": {
+        "letterSpacing": "-0.02em"
+      }
+    },
+    "5xl": {
+      "$value": {
+        "letterSpacing": "-0.024em"
+      }
+    },
+    "6xl": {
+      "$value": {
+        "letterSpacing": "-0.027em"
+      }
+    },
+    "7xl": {
+      "$value": {
+        "letterSpacing": "-0.03em"
+      }
+    }
+  },
+  "light": {
+    "color": {
+      "tint": {
+        "violet": {
+          "$value": "oklch(0.935 0.031 260)",
+          "$description": "The first tint follows the accent: pale cobalt."
+        },
+        "sky": {
+          "$value": "oklch(0.95 0.03 210)",
+          "$description": "Moved to aqua so it stays distinct from the blue first tint."
+        }
+      },
+      "chart": {
+        "2": {
+          "$value": "oklch(0.63 0.11 215)",
+          "$description": "Cyan at 3.4:1 on cards, lighter than the blue first series and apart from the green third one so all three separate."
+        }
+      }
+    }
+  },
+  "dark": {
+    "color": {
+      "tint": {
+        "violet": {
+          "$value": "oklch(0.25 0.035 262)"
+        },
+        "sky": {
+          "$value": "oklch(0.25 0.024 212)"
+        }
+      },
+      "chart": {
+        "2": {
+          "$value": "oklch(0.8 0.1 212)"
+        }
+      }
+    }
+  }
+}

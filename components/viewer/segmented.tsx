@@ -13,7 +13,7 @@ export interface SegmentedOption<T extends string> {
 }
 
 /**
- * A compact single-choice switch for viewer toolbars (theme, width). It is
+ * A compact single-choice switch for viewer toolbars (appearance, width). It is
  * the system's own segmented toggle group: a hairline track where the chosen
  * segment turns ink, so the viewer's chrome matches what it documents.
  */

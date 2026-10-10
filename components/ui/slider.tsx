@@ -14,7 +14,7 @@ function toValues(input: number | readonly number[] | undefined) {
  * unchecked checkbox, so its full length reaches 3:1 on the canvas in both
  * themes) with an ink range and an ink thumb set in a canvas-coloured ring,
  * so the thumb cuts cleanly through the track. Pass a
- * number for one thumb or an array for a range. The violet focus outline
+ * number for one thumb or an array for a range. The accent focus outline
  * sits on the thumb.
  *
  * Label it with `aria-labelledby` (pointing at a <Label id>) or with

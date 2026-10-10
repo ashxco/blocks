@@ -96,7 +96,7 @@ export default function BadgeDocs() {
 
       <Example
         title="Counts"
-        description="Single digits render as a circle. Cap large numbers, such as 99+."
+        description="A single digit renders as wide as the badge is tall. Cap large numbers, such as 99+."
       >
         <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">
           My tasks <Badge variant="secondary">3</Badge>

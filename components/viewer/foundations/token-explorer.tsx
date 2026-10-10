@@ -6,11 +6,28 @@ import { SearchIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { NativeSelect, NativeSelectOptGroup, NativeSelectOption } from "@/components/ui/native-select"
+import { Switch } from "@/components/ui/switch"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { useSitePreset } from "@/components/viewer/site-theme"
+import { isThemeId, themeScopeProps } from "@/lib/themes"
 import { cn } from "@/lib/utils"
 
+import { ByTheme } from "./by-theme"
 import { CopyButton } from "./copy-button"
-import { breakpointValues, colorAlias, formatValue, isColor, tokens, type DesignToken } from "./data"
+import {
+  breakpointValues,
+  colorAlias,
+  defaultThemeId,
+  formatValue,
+  isColor,
+  perTheme,
+  themeById,
+  themes,
+  tokens,
+  valueIn,
+  type DesignToken,
+  type ThemeId,
+} from "./data"
 import { CodeList, ScopedChip } from "./layout"
 
 /* ------------------------------------------------------------------------ */
@@ -93,6 +110,10 @@ interface Row {
   darkAlias?: string
   /** Values from a breakpoint up, for tokens that change with the viewport; light is the base. */
   breakpoints: { name: string; min: string; value: string }[]
+  /** True when this theme's file sets the token itself (not only through a token it follows). */
+  setByTheme: boolean
+  /** Position in display order: the same token in every theme's rows. */
+  index: number
   haystack: string
 }
 
@@ -104,14 +125,22 @@ function groupsOf(tier: Tier) {
 
 const blocks = tierOrder.flatMap((tier) => groupsOf(tier).map((group) => ({ key: `${tier}:${group}`, tier, group })))
 
-const rows: Row[] = blocks.flatMap(({ tier, group }) =>
-  bySize(tokens.filter((t) => tierOf(t) === tier && groupOf(t) === group)).map((t) => {
-    const light = formatValue(t, t.value)
-    const dark = t.dark ? formatValue(t, t.dark.value) : undefined
+/** Tokens in display order, the same in every theme. */
+const ordered = blocks.flatMap(({ tier, group }) =>
+  bySize(tokens.filter((t) => tierOf(t) === tier && groupOf(t) === group)).map((t) => ({ t, tier, group }))
+)
+
+/** Every row as one theme resolves it. Row i is the same token in every theme. */
+function rowsIn(theme: ThemeId): Row[] {
+  return ordered.map(({ t, tier, group }, index) => {
+    const v = valueIn(theme, t)
+    const light = formatValue(t, v.value)
+    const dark = v.dark ? formatValue(t, v.dark.value) : undefined
     const utility = t.utility
     const semantic = t.tier === "semantic" && isColor(t)
-    const lightAlias = semantic ? colorAlias(String(t.value), t.ref) : undefined
-    const darkAlias = semantic && t.dark ? colorAlias(String(t.dark.value), t.dark.ref) : undefined
+    const lightAlias = semantic ? colorAlias(String(v.value), v.ref, theme) : undefined
+    const darkAlias = semantic && v.dark ? colorAlias(String(v.dark.value), v.dark.ref, theme) : undefined
+    // A themed token cannot have breakpoint values, so these are the same in every theme.
     const breakpoints = breakpointValues(t).map((b) => ({ name: b.name, min: b.min, value: formatValue(t, b.value) }))
     return {
       token: t,
@@ -123,6 +152,8 @@ const rows: Row[] = blocks.flatMap(({ tier, group }) =>
       lightAlias,
       darkAlias,
       breakpoints,
+      setByTheme: themeById(theme).overrides.includes(t.name),
+      index,
       haystack: [
         t.name,
         t.cssVar,
@@ -141,13 +172,28 @@ const rows: Row[] = blocks.flatMap(({ tier, group }) =>
         .toLowerCase(),
     }
   })
-)
+}
+
+const rowsByTheme = perTheme(rowsIn)
+const rows = rowsByTheme[defaultThemeId]
+const themedCount = tokens.filter((t) => t.themed).length
+
+/** What a value cell shows, so themes that agree share one copy. */
+function valueKey(row: Row, mode?: Mode) {
+  const value = mode === "dark" ? row.dark : row.light
+  const alias = mode === "dark" ? row.darkAlias : row.lightAlias
+  return [value, alias].join("|")
+}
 
 const tierCounts = Object.fromEntries(
   tierOrder.map((tier) => [tier, rows.filter((r) => r.tier === tier).length])
 ) as Record<Tier, number>
 
 type TierFilter = Tier | "all"
+type Mode = "light" | "dark"
+
+/** Values for the theme the page is on ("current"), or for one theme. */
+type ThemeView = ThemeId | "current"
 
 /** Rows of one tier and group, under a subheader. */
 interface Block {
@@ -161,17 +207,25 @@ interface Block {
 /* Pieces                                                                    */
 /* ------------------------------------------------------------------------ */
 
-/** Primitives paint the raw colour; semantic chips resolve the value inside their theme. */
-function ColorChip({ token, theme }: { token: DesignToken; theme?: "light" | "dark" }) {
-  if (token.tier === "semantic" && theme) {
-    return <ScopedChip cssVar={token.cssVar} theme={theme} base={token.group === "panel" ? "panel" : "background"} />
+/**
+ * Primitives paint the raw colour; semantic chips resolve the value inside
+ * their mode. Both resolve in `theme` when one is chosen, else the page's.
+ */
+function ColorChip({ token, mode, theme }: { token: DesignToken; mode?: Mode; theme?: ThemeId }) {
+  if (token.tier === "semantic" && mode) {
+    return (
+      <ScopedChip
+        cssVar={token.cssVar}
+        mode={mode}
+        theme={theme}
+        base={token.group === "panel" ? "panel" : "background"}
+      />
+    )
   }
   return (
-    <span
-      aria-hidden
-      className="block size-5 shrink-0 rounded-xs border border-border-strong"
-      style={{ backgroundColor: `var(${token.cssVar})` }}
-    />
+    <span aria-hidden {...themeScopeProps(theme, undefined, "block size-5 shrink-0 overflow-hidden rounded-xs border border-border-strong")}>
+      <span className="block size-full" style={{ backgroundColor: `var(${token.cssVar})` }} />
+    </span>
   )
 }
 
@@ -180,11 +234,11 @@ function ColorChip({ token, theme }: { token: DesignToken; theme?: "light" | "da
  * that changes with the viewport lists its base value (phones) and the value
  * from each breakpoint up.
  */
-function Value({ row, theme }: { row: Row; theme?: "light" | "dark" }) {
+function Value({ row, mode, theme }: { row: Row; mode?: Mode; theme?: ThemeId }) {
   const t = row.token
-  const value = theme === "dark" ? row.dark : row.light
-  const alias = theme === "dark" ? row.darkAlias : row.lightAlias
-  if (row.breakpoints.length > 0 && !theme) {
+  const value = mode === "dark" ? row.dark : row.light
+  const alias = mode === "dark" ? row.darkAlias : row.lightAlias
+  if (row.breakpoints.length > 0 && !mode) {
     return (
       <dl className="grid min-w-0 gap-y-0.5 font-mono text-xs @narrow:grid-cols-[auto_minmax(0,1fr)] @narrow:items-baseline @narrow:gap-x-3 @narrow:gap-y-1">
         <dt className="text-muted-foreground">Base</dt>
@@ -202,7 +256,7 @@ function Value({ row, theme }: { row: Row; theme?: "light" | "dark" }) {
   }
   return (
     <span className="flex min-w-0 items-center gap-2.5">
-      {isColor(t) ? <ColorChip token={t} theme={theme} /> : null}
+      {isColor(t) ? <ColorChip token={t} mode={mode} theme={theme} /> : null}
       <span className="grid min-w-0">
         {alias ? <span className="font-mono text-xs text-foreground">{alias}</span> : null}
         <span
@@ -219,6 +273,32 @@ function Value({ row, theme }: { row: Row; theme?: "light" | "dark" }) {
   )
 }
 
+/**
+ * A row's value in one mode. For the current theme every theme's version is
+ * printed and CSS shows the page's (by-theme.tsx), so the table is right on
+ * the first frame; a chosen theme prints only its own.
+ */
+function ValueCell({ index, mode, view }: { index: number; mode?: Mode; view: ThemeView }) {
+  if (view !== "current") return <Value row={rowsByTheme[view][index]} mode={mode} theme={view} />
+  return (
+    <ByTheme as="div" by={(theme) => valueKey(rowsByTheme[theme][index], mode)}>
+      {(theme) => <Value row={rowsByTheme[theme][index]} mode={mode} />}
+    </ByTheme>
+  )
+}
+
+/**
+ * "Set by Ocean" under a token the shown theme's file sets itself. Tokens
+ * that only follow from one (a role on the theme's neutral scale) get no note.
+ */
+function SetByNote({ index, view }: { index: number; view: ThemeView }) {
+  const note = (theme: ThemeId) => (rowsByTheme[theme][index].setByTheme ? `Set by ${themeById(theme).name}` : "")
+  const text = (theme: ThemeId) =>
+    note(theme) ? <span className="text-caption text-muted-foreground">{note(theme)}</span> : null
+  if (view !== "current") return text(view)
+  return <ByTheme by={note}>{text}</ByTheme>
+}
+
 /* ------------------------------------------------------------------------ */
 /* Explorer                                                                  */
 /* ------------------------------------------------------------------------ */
@@ -227,19 +307,26 @@ export function TokenExplorer() {
   const [query, setQuery] = React.useState("")
   const [tier, setTier] = React.useState<TierFilter>("all")
   const [group, setGroup] = React.useState("all")
+  const [view, setView] = React.useState<ThemeView>("current")
+  const [themedOnly, setThemedOnly] = React.useState(false)
   const deferredQuery = React.useDeferredValue(query)
   const searchId = React.useId()
+  const themedId = React.useId()
+  const sitePreset = useSitePreset()
 
   const tiersForGroups = tier === "all" ? tierOrder : [tier]
+  /* Search the values people see: the chosen theme's, or the page's. */
+  const searchTheme: ThemeId = view === "current" ? (sitePreset ?? defaultThemeId) : view
 
   const filtered = React.useMemo(() => {
     const q = deferredQuery.trim().toLowerCase()
-    return rows.filter((row) => {
+    return rowsByTheme[searchTheme].filter((row) => {
       if (tier !== "all" && row.tier !== tier) return false
       if (group !== "all" && `${row.tier}:${row.group}` !== group) return false
+      if (themedOnly && !row.token.themed) return false
       return !q || row.haystack.includes(q)
     })
-  }, [deferredQuery, tier, group])
+  }, [deferredQuery, tier, group, themedOnly, searchTheme])
 
   const visibleBlocks = React.useMemo<Block[]>(
     () =>
@@ -258,6 +345,7 @@ export function TokenExplorer() {
     setQuery("")
     setTier("all")
     setGroup("all")
+    setThemedOnly(false)
   }
 
   const th = "h-(--table-row-height-sm) px-5 text-left align-middle text-caption font-semibold text-muted-foreground"
@@ -293,7 +381,7 @@ export function TokenExplorer() {
           </ToggleGroup>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 @narrow:grid-cols-[minmax(0,1fr)_14rem]">
+        <div className="grid grid-cols-2 gap-3 @narrow:grid-cols-[minmax(0,1fr)_12rem_12rem]">
           <div className="relative col-span-2 @narrow:col-span-1">
             <label htmlFor={searchId} className="sr-only">
               Search tokens
@@ -342,13 +430,33 @@ export function TokenExplorer() {
               </NativeSelectOptGroup>
             ))}
           </NativeSelect>
+          <NativeSelect
+            className="col-span-2 w-full @narrow:col-span-1"
+            value={view}
+            onChange={(e) => setView(isThemeId(e.target.value) ? e.target.value : "current")}
+            aria-label="Show values for a theme"
+          >
+            <NativeSelectOption value="current">Current theme</NativeSelectOption>
+            {themes.map((t) => (
+              <NativeSelectOption key={t.id} value={t.id}>
+                {t.name} theme
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
         </div>
       </div>
 
       <div className="grid gap-4">
-        <p aria-live="polite" className="text-caption text-muted-foreground tabular">
-          Showing {filtered.length} of {tokens.length} tokens
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+          <p aria-live="polite" className="text-caption text-muted-foreground tabular">
+            Showing {filtered.length} of {tokens.length} tokens
+          </p>
+          <label htmlFor={themedId} className="flex items-center gap-2.5 text-label text-foreground">
+            <Switch id={themedId} size="sm" checked={themedOnly} onCheckedChange={setThemedOnly} />
+            Only tokens a theme changes
+            <span className="font-mono text-xs text-muted-foreground tabular">{themedCount}</span>
+          </label>
+        </div>
 
         {filtered.length === 0 ? (
           <div className="grid justify-items-start gap-4 rounded-(--card-radius) border bg-subtle p-(--card-padding)">
@@ -370,8 +478,12 @@ export function TokenExplorer() {
                 <tr>
                   <th scope="col" className={cn(th, "w-[32%]")}>Token</th>
                   <th scope="col" className={cn(th, "w-[24%]")}>Utility</th>
-                  <th scope="col" className={th}>Light</th>
-                  <th scope="col" className={th}>Dark</th>
+                  <th scope="col" className={th}>
+                    Light
+                  </th>
+                  <th scope="col" className={th}>
+                    Dark
+                  </th>
                 </tr>
               </thead>
               {visibleBlocks.map((block) => {
@@ -392,7 +504,7 @@ export function TokenExplorer() {
                             {[
                               `${block.rows.length} ${block.rows.length === 1 ? "token" : "tokens"}`,
                               variablesOnly ? "CSS variables only" : null,
-                              themed ? null : "same in both themes",
+                              themed ? null : "same in light and dark",
                             ]
                               .filter(Boolean)
                               .join(" · ")}
@@ -402,6 +514,7 @@ export function TokenExplorer() {
                     </tr>
                     {block.rows.map((row) => {
                       const t = row.token
+                      const index = row.index
                       const hasDark = row.dark !== undefined
                       return (
                         <tr
@@ -422,6 +535,7 @@ export function TokenExplorer() {
                               {t.tier === "semantic" && t.description ? (
                                 <p className="text-caption text-copy">{t.description}</p>
                               ) : null}
+                              {t.themed ? <SetByNote index={index} view={view} /> : null}
                             </div>
                           </td>
                           <td className={cn(td, "min-w-0", !row.utility && "hidden @narrow:table-cell")}>
@@ -431,19 +545,19 @@ export function TokenExplorer() {
                             <>
                               <td className={cn(td, "flex min-w-0 items-center @narrow:table-cell")}>
                                 <span className={label}>Light</span>
-                                <Value row={row} theme="light" />
+                                <ValueCell index={index} mode="light" view={view} />
                               </td>
                               <td className={cn(td, "flex min-w-0 items-center @narrow:table-cell")}>
                                 <span className={label}>Dark</span>
-                                <Value row={row} theme="dark" />
+                                <ValueCell index={index} mode="dark" view={view} />
                               </td>
                             </>
                           ) : (
                             <td colSpan={2} className={cn(td, "min-w-0")}>
                               <span className="flex min-w-0 items-center gap-3">
-                                {/* Wide rows drop it: the block header already says "same in both themes". */}
-                                <span className="shrink-0 text-caption text-muted-foreground @narrow:hidden">Both themes</span>
-                                <Value row={row} />
+                                {/* Wide rows drop it: the block header already says "same in light and dark". */}
+                                <span className="shrink-0 text-caption text-muted-foreground @narrow:hidden">Light and dark</span>
+                                <ValueCell index={index} view={view} />
                               </span>
                             </td>
                           )}

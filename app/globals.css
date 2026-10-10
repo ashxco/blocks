@@ -32,6 +32,12 @@
     @apply min-h-dvh bg-background text-body text-copy;
   }
 
+  /* A theme scope (data-theme="<id>") brings its own font: font-family is
+     inherited as a resolved value, so the scope sets it again. */
+  [data-theme] {
+    @apply font-sans;
+  }
+
   h1,
   h2,
   h3,
@@ -103,6 +109,20 @@
 @utility focus-ring {
   outline: var(--focus-width) solid var(--ring);
   outline-offset: var(--focus-offset);
+}
+
+/* Text link cue: underlined on hover, and at rest where the theme says so
+   (--link-decoration-line: underline in Mono, whose accent is ink, so links
+   still read as links without a hue). */
+@utility link-underline {
+  text-decoration-line: var(--link-decoration-line);
+  text-decoration-color: color-mix(in oklab, currentColor 35%, transparent);
+  text-underline-offset: 4px;
+
+  @variant hover {
+    text-decoration-line: underline;
+    text-decoration-color: currentColor;
+  }
 }
 
 /* Tabular figures for numbers that line up. */

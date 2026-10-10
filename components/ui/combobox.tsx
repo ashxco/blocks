@@ -82,9 +82,9 @@ function ComboboxTrigger({
   )
 }
 
-/** Small round icon button used for the chevron and clear actions inside the input. */
+/** Small icon button, shaped like the other buttons, used for the chevron and clear actions inside the input. */
 const inputActionClass = cn(
-  "grid size-(--button-height-xs) shrink-0 place-items-center rounded-full text-muted-foreground outline-none",
+  "grid size-(--button-height-xs) shrink-0 place-items-center rounded-(--button-radius-xs) text-muted-foreground outline-none",
   "transition-[background-color,color] duration-(--duration-fast) ease-standard",
   "hover:bg-accent hover:text-foreground focus-visible:focus-ring",
   "disabled:pointer-events-none disabled:opacity-50",
@@ -359,7 +359,7 @@ function ComboboxChip({
           data-slot="combobox-chip-remove"
           aria-label="Remove"
           className={cn(
-            "grid size-5 place-items-center rounded-full text-muted-foreground outline-none",
+            "grid size-5 place-items-center rounded-(--badge-radius) text-muted-foreground outline-none",
             "transition-[background-color,color] duration-(--duration-fast) ease-standard",
             "hover:bg-accent hover:text-foreground",
             "group-focus/combobox-chip:text-primary-foreground group-focus/combobox-chip:hover:bg-primary-foreground/15",

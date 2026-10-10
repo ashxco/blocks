@@ -12,6 +12,7 @@ import { CommandPalette } from "@/components/viewer/command-palette"
 import { MobileMenu } from "@/components/viewer/mobile-menu"
 import { navSections, sectionForPath } from "@/components/viewer/nav"
 import { OPEN_SEARCH_EVENT, useModKey } from "@/components/viewer/search-trigger"
+import { ThemePicker } from "@/components/viewer/theme-picker"
 import { ThemeToggle } from "@/components/viewer/theme-toggle"
 import { Wordmark } from "@/components/viewer/wordmark"
 
@@ -27,8 +28,9 @@ function useScrolled(threshold = 4) {
 }
 
 /**
- * The slim top bar: wordmark, section links, search (⌘K), theme switch and a
- * link that opens the live templates in a new tab. It blends into the page
+ * The slim top bar: wordmark, section links, search (⌘K), the Theme picker,
+ * the Appearance (light or dark) toggle and a link that opens the live
+ * templates in a new tab. It blends into the page
  * and turns into frosted glass with a hairline once the page scrolls.
  */
 export function ViewerHeader() {
@@ -97,7 +99,7 @@ export function ViewerHeader() {
             aria-label="Search Blocks"
             aria-keyshortcuts="Meta+K Control+K"
             className={cn(
-              "group/search flex h-(--button-height-sm) items-center gap-2 rounded-(--button-radius) border border-transparent text-label text-muted-foreground outline-none",
+              "group/search flex h-(--button-height-sm) items-center gap-2 rounded-(--button-radius-sm) border border-transparent text-label text-muted-foreground outline-none",
               "transition-colors duration-(--duration-fast) hover:text-foreground focus-visible:focus-ring",
               "w-(--button-height-sm) justify-center lg:w-44 lg:justify-start lg:border-border lg:bg-muted lg:pr-1.5 lg:pl-3.5 lg:hover:border-border-strong xl:w-56"
             )}
@@ -109,7 +111,10 @@ export function ViewerHeader() {
             </Kbd>
           </button>
 
-          <ThemeToggle />
+          <div className="flex items-center gap-0.5">
+            <ThemePicker />
+            <ThemeToggle />
+          </div>
 
           <Button
             size="sm"

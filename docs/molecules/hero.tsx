@@ -10,7 +10,7 @@ export default function HeroDocs() {
       <Example
         title="Split"
         layout="full"
-        description="The default. Copy on the left with one word in brand violet, a product moment on the right. Stacks when the section is narrow."
+        description="The default. Copy on the left with one word in the accent, a product moment on the right. Stacks when the section is narrow."
         code={`<Hero />`}
       >
         <Hero />
@@ -109,7 +109,7 @@ export default function HeroDocs() {
         ]}
         dont={[
           "Don’t put a badge, label or announcement pill above the headline.",
-          "Don’t highlight more than one word, or a whole line, in violet.",
+          "Don’t highlight more than one word, or a whole line, in the accent.",
           "Don’t add glows, gradients or shadows behind the product moment.",
           "Don’t use the hero below the top of the page; use a section heading instead.",
         ]}

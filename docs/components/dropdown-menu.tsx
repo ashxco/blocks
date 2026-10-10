@@ -170,7 +170,7 @@ function AccountMenu({ container }: { container: Stage }) {
   return (
     <DropdownMenu {...shown}>
       <DropdownMenuTrigger
-        render={<Button variant="ghost" className="h-auto gap-3 rounded-full py-1.5 pr-3 pl-1.5" />}
+        render={<Button variant="ghost" className="h-auto gap-3 py-1.5 pr-3 pl-1.5" />}
       >
         <Avatar size="sm">
           <AvatarFallback tone="violet">MP</AvatarFallback>
@@ -210,7 +210,7 @@ function AccountMenu({ container }: { container: Stage }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuLabel inset>Theme</DropdownMenuLabel>
+          <DropdownMenuLabel inset>Appearance</DropdownMenuLabel>
           <DropdownMenuRadioGroup value={theme} onValueChange={(value) => setTheme(String(value))}>
             <DropdownMenuRadioItem value="light">
               <SunIcon />
@@ -425,7 +425,7 @@ export default function DropdownMenuDocs() {
 
       <Example
         title="Account menu"
-        description="A realistic composition: identity at the top, grouped links, a theme choice and sign out at the end."
+        description="A realistic composition: identity at the top, grouped links, an appearance choice and sign out at the end."
       >
         <MenuStage className="min-h-128">{(container) => <AccountMenu container={container} />}</MenuStage>
       </Example>

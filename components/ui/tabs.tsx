@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils"
  *   indicator slides to the active tab.
  * - `variant="line"`: the same underline without the hairline track, for
  *   tabs that sit on an existing border (a page header, a card edge).
- * - `variant="segmented"`: a pill track where the active tab turns ink,
+ * - `variant="segmented"`: a track (button radius) where the active tab turns ink,
  *   matching the segmented toggle group.
  *
  * Heights come from --tabs-height (default) and --control-height-sm (sm).
@@ -77,7 +77,7 @@ const tabsIndicatorVariants = cva(
         default:
           "bg-foreground data-horizontal:top-auto data-horizontal:-bottom-px data-horizontal:h-(--border-width-strong) data-horizontal:w-(--active-tab-width) data-horizontal:translate-x-(--active-tab-left) data-vertical:-left-px data-vertical:h-(--active-tab-height) data-vertical:w-(--border-width-strong) data-vertical:translate-y-(--active-tab-top)",
         line: "bg-foreground data-horizontal:top-auto data-horizontal:-bottom-px data-horizontal:h-(--border-width-strong) data-horizontal:w-(--active-tab-width) data-horizontal:translate-x-(--active-tab-left) data-vertical:-left-px data-vertical:h-(--active-tab-height) data-vertical:w-(--border-width-strong) data-vertical:translate-y-(--active-tab-top)",
-        // An ink pill behind the active tab.
+        // An ink shape behind the active tab, in the button radius.
         segmented:
           "h-(--active-tab-height) w-(--active-tab-width) translate-x-(--active-tab-left) translate-y-(--active-tab-top) rounded-(--button-radius) bg-primary data-vertical:rounded-(--control-radius)",
       },

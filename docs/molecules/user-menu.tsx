@@ -34,7 +34,7 @@ export default function UserMenuDocs() {
     <Examples>
       <Example
         title="Avatar"
-        description="For top bars. Opens account links, a theme switch and sign out; the theme switch changes this site’s theme too. Shown open; click the avatar to close it."
+        description="For top bars. Opens account links, an Appearance switch and sign out; the switch changes this site’s appearance (light or dark) too. Shown open; click the avatar to close it."
         code={`<UserMenu user={{ name: "Maya Patel", email: "maya@acme.com" }} />`}
       >
         <OpenStage />
@@ -70,7 +70,7 @@ export default function UserMenuDocs() {
         do={[
           "Show the person’s name and email at the top of the menu, so they know which account is active.",
           "Keep sign out last, after a separator.",
-          "Let the theme switch apply immediately and keep the menu open.",
+          "Let the Appearance switch apply immediately and keep the menu open.",
         ]}
         dont={[
           "Don’t put workspace switching here; use a workspace switcher.",

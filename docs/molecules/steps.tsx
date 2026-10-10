@@ -72,7 +72,7 @@ export default function StepsDocs() {
         dont={[
           "Don’t number the steps or add “Step 1 of 4” labels.",
           "Don’t use more than four steps; link to a guide instead.",
-          "Don’t colour the icons in brand violet; the heading carries the emphasis.",
+          "Don’t colour the icons in the accent; the heading carries the emphasis.",
         ]}
       />
 

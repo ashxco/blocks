@@ -114,7 +114,7 @@ export default function PageHeaderDocs() {
   }
 />`}
       >
-        <div className="w-full max-w-80 rounded-lg border border-border bg-background p-5">
+        <div className="w-full max-w-80 rounded-(--card-radius) border border-border bg-background p-5">
           <PageHeader
             as="h2"
             title="Automations"

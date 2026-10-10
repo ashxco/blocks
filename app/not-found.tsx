@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 
 import { NotFoundContent } from "@/components/viewer/not-found-content"
+import { ThemePicker } from "@/components/viewer/theme-picker"
 import { ThemeToggle } from "@/components/viewer/theme-toggle"
 import { Wordmark } from "@/components/viewer/wordmark"
 
@@ -15,7 +16,10 @@ export default function NotFound() {
     <div className="flex min-h-dvh flex-col bg-background">
       <header className="flex h-(--header-height-sm) shrink-0 items-center justify-between gap-4 px-gutter">
         <Wordmark />
-        <ThemeToggle />
+        <div className="flex items-center gap-0.5">
+          <ThemePicker />
+          <ThemeToggle />
+        </div>
       </header>
       <main id="content" className="container-wide flex flex-1 flex-col justify-center pt-section-sm pb-section">
         <NotFoundContent />

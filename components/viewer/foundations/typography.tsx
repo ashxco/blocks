@@ -1,14 +1,19 @@
 import * as React from "react"
 
+import { ThemeText } from "./by-theme"
 import {
   breakpointValues,
   describeSize,
   familyStack,
   leafName,
+  perTheme,
   sentenceCase,
+  themeById,
   tokenByName,
   tokensIn,
   typeValue,
+  valueIn,
+  type DesignToken,
 } from "./data"
 import { Code, FoundationPage, Meta, Section } from "./layout"
 import { TypeSpecimens, type RoleSpec } from "./type-specimens"
@@ -45,10 +50,11 @@ function roleSpecs(): RoleSpec[] {
         key: leafName(t.name),
         utility: t.utility ?? `text-${leafName(t.name)}`,
         description: t.description,
-        size: describeSize(v.fontSize),
-        lineHeight: v.lineHeight,
-        tracking: v.letterSpacing,
-        weight: String(v.fontWeight),
+        // Size · line height · tracking · weight, in each theme: a theme may retune tracking for its font.
+        meta: perTheme((theme) => {
+          const tv = typeValue({ ...t, value: valueIn(theme, t).value }) ?? v
+          return [describeSize(tv.fontSize).replace(/ fluid$/, ""), tv.lineHeight, tv.letterSpacing, String(tv.fontWeight)].join(" · ")
+        }),
         // Roles with breakpoint values: the size and line height from each breakpoint up.
         responsive: breakpointValues(t).flatMap((b) => {
           const bv = typeValue({ ...t, value: b.value })
@@ -95,9 +101,17 @@ function ScaleLadder() {
 /* Families                                                                  */
 /* ------------------------------------------------------------------------ */
 
-/** Token descriptions start with the family name, which the card already shows. */
-function withoutName(description: string | undefined, name: string) {
-  return description?.startsWith(`${name}. `) ? description.slice(name.length + 2) : description
+/** Token descriptions start with the family name ("Geist Mono. Code, …"), which the card already shows. */
+function withoutName(description: string | undefined) {
+  return description?.replace(/^[^.]+\.\s+/, "")
+}
+
+/** The family's name and its CSS stack in each theme. */
+function familyIn(t: DesignToken | undefined, kind: "sans" | "mono") {
+  return {
+    name: perTheme((theme) => themeById(theme).fonts[kind]),
+    stack: perTheme((theme) => (t ? familyStack(valueIn(theme, t).value) : "")),
+  }
 }
 
 const metrics: [label: string, value: string][] = [
@@ -115,14 +129,18 @@ function Families() {
   const sans = tokenByName("font.family.sans")
   const mono = tokenByName("font.family.mono")
   const weights = tokensIn("primitive", "font-weight")
+  const sansFamily = familyIn(sans, "sans")
+  const monoFamily = familyIn(mono, "mono")
 
   return (
     <div className="grid gap-6 @narrow:grid-cols-2">
       {/* Sans */}
       <div className="flex flex-col gap-10 rounded-(--panel-radius) border bg-card p-(--panel-padding-sm)">
         <div className="grid gap-2">
-          <h3 className="text-h3 text-foreground">Plus Jakarta Sans</h3>
-          <p className="text-caption text-copy">{withoutName(sans?.description, "Plus Jakarta Sans")}</p>
+          <h3 className="text-h3 text-foreground">
+            <ThemeText value={sansFamily.name} />
+          </h3>
+          <p className="text-caption text-copy">{withoutName(sans?.description)}</p>
           {/* font-heading is an alias of the sans stack that headings use. */}
           <Code className="text-muted-foreground">{[sans?.utility ?? "font-sans", "font-heading"].join(" · ")}</Code>
         </div>
@@ -155,14 +173,18 @@ function Families() {
           ))}
         </ul>
         {/* mt-auto: both cards end on their font stack, on the same line. */}
-        <Meta className="mt-auto [overflow-wrap:anywhere]">{familyStack(sans?.value)}</Meta>
+        <Meta className="mt-auto [overflow-wrap:anywhere]">
+          <ThemeText value={sansFamily.stack} />
+        </Meta>
       </div>
 
       {/* Mono, on a panel */}
       <div className="flex flex-col gap-10 rounded-(--panel-radius) bg-panel p-(--panel-padding-sm) text-panel-foreground">
         <div className="grid gap-2">
-          <h3 className="text-h3 text-panel-foreground">Geist Mono</h3>
-          <p className="text-caption text-panel-muted">{withoutName(mono?.description, "Geist Mono")}</p>
+          <h3 className="text-h3 text-panel-foreground">
+            <ThemeText value={monoFamily.name} />
+          </h3>
+          <p className="text-caption text-panel-muted">{withoutName(mono?.description)}</p>
           <code className="font-mono text-code text-panel-muted">{mono?.utility ?? "font-mono"}</code>
         </div>
         <p aria-hidden className="font-mono text-7xl leading-none font-bold text-panel-foreground">
@@ -193,7 +215,9 @@ function Families() {
             </div>
           ))}
         </dl>
-        <span className="mt-auto font-mono text-xs text-panel-muted [overflow-wrap:anywhere]">{familyStack(mono?.value)}</span>
+        <span className="mt-auto font-mono text-xs text-panel-muted [overflow-wrap:anywhere]">
+          <ThemeText value={monoFamily.stack} />
+        </span>
       </div>
     </div>
   )
@@ -209,7 +233,7 @@ export function TypographyFoundation({ title, description }: { title: string; de
       <Section
         id="roles"
         title="Type roles"
-        description="One utility sets size, line height, tracking and weight together; a size range means the role scales with the viewport. Pick the role for the job; never assemble type by hand. Hero to h2 are extra-bold (800), h3 to title are bold (700), and every heading is full ink."
+        description="One utility sets size, line height, tracking and weight together; a size range means the role scales with the viewport. Pick the role for the job; never assemble type by hand. Hero to h2 are extra-bold (800), h3 to title are bold (700), and every heading is full ink. A theme may retune tracking for its font, never size or weight; the values shown are the theme you are on."
       >
         <TypeSpecimens roles={roleSpecs()} />
       </Section>
@@ -225,7 +249,7 @@ export function TypographyFoundation({ title, description }: { title: string; de
       <Section
         id="families"
         title="Families"
-        description="Two families and five weights. There are no light weights and no slanted styles."
+        description="Two families, set by the theme, and five weights. Components only name font-sans, font-heading and font-mono, so a theme changes the type everywhere at once. There are no light weights and no slanted styles."
       >
         <Families />
       </Section>

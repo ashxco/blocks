@@ -62,7 +62,7 @@ const defaultDescription =
 
 /**
  * The opening section of a marketing page: a display headline with one word
- * in brand violet, a lead, two actions and a product moment built from real
+ * in the accent, a lead, two actions and a product moment built from real
  * components. An optional command line suits developer pages.
  */
 export function Hero({

@@ -129,7 +129,7 @@ export default function CodeWindowDocs() {
         do={[
           "Show real API calls and believable values, short enough to read at a glance.",
           "Name the window after the file, command or endpoint it shows.",
-          "Use it on light pages and inside panels alike; it stays dark in both themes.",
+          "Use it on light pages and inside panels alike; it stays dark in light and dark.",
         ]}
         dont={[
           "Don’t paste long files; five to ten lines tell the story.",

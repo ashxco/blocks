@@ -152,7 +152,7 @@ export default function ChartDocs() {
       <Example
         title="Stacked bars"
         layout="stack"
-        description="Counts per day. Parts of a whole stack with a 2px gap in the card colour; only the top segment gets rounded ends. Two or more series always get a legend."
+        description="Counts per day. Parts of a whole stack with a 2px gap in the card colour; only the top segment gets rounded ends. Recharts takes the corner radius as a number, so bars keep 4px corners in every theme. Two or more series always get a legend."
         code={`const config = {
   onTime: { label: "On time", color: "var(--chart-1)" },
   late: { label: "Late", color: "var(--chart-5)" },

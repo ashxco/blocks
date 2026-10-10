@@ -6,13 +6,14 @@ import { MoonIcon, SunIcon } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { PortalScope } from "@/lib/portal-container"
+import { defaultThemeId, isThemeId, THEME_ATTRIBUTE, type ThemeId } from "@/lib/themes"
 import { CodeBlock } from "@/components/viewer/code-block"
 import { CopyButton } from "@/components/viewer/copy-button"
 import { deviceOrder, devices, viewportStyle, type Device } from "@/components/viewer/devices"
 import { slugify } from "@/components/viewer/nav"
 import { useElementSize } from "@/components/viewer/scaled-frame"
 import { Segmented } from "@/components/viewer/segmented"
-import { themeScope, useSiteTheme, type SiteTheme } from "@/components/viewer/site-theme"
+import { themeScope, useSiteLook, type SiteTheme } from "@/components/viewer/site-theme"
 import { thumbnailExample } from "@/components/viewer/thumbnail-example"
 import { TokenText } from "@/components/viewer/token-text"
 
@@ -349,6 +350,42 @@ function ExampleThumbnail({
 }
 
 /* -------------------------------------------------------------------------- */
+/* Outer scopes                                                                */
+/* -------------------------------------------------------------------------- */
+
+interface OuterLook {
+  theme?: ThemeId
+  mode?: CanvasTheme
+}
+
+/**
+ * The theme and mode scopes an element sits in below <html>: the nearest
+ * data-theme and the nearest .dark or .light between it and the page, if
+ * any (a ThemeScope around an example, say). The page's own theme and mode
+ * live on <html> and every overlay inherits them already; an outer scope has
+ * to be handed to the example's overlays explicitly.
+ */
+function useOuterLook(ref: React.RefObject<HTMLElement | null>, siteLook: string): OuterLook {
+  const [outer, setOuter] = React.useState<OuterLook>({})
+  // Two closest() lookups, and a state update only when a scope changed.
+  // Read again whenever the page's look changes.
+  React.useLayoutEffect(() => {
+    const parent = ref.current?.parentElement
+    if (!parent) return
+    const root = parent.ownerDocument.documentElement
+    const themeScope = parent.closest(`[${THEME_ATTRIBUTE}]`)
+    const modeScope = parent.closest(".dark, .light")
+    const value = themeScope && themeScope !== root ? themeScope.getAttribute(THEME_ATTRIBUTE) : null
+    const next: OuterLook = {
+      theme: value === null ? undefined : isThemeId(value) ? value : defaultThemeId,
+      mode: modeScope && modeScope !== root ? (modeScope.classList.contains("dark") ? "dark" : "light") : undefined,
+    }
+    setOuter((prev) => (prev.theme === next.theme && prev.mode === next.mode ? prev : next))
+  }, [ref, siteLook])
+  return outer
+}
+
+/* -------------------------------------------------------------------------- */
 /* Example                                                                     */
 /* -------------------------------------------------------------------------- */
 
@@ -360,8 +397,13 @@ const deviceOptions = deviceOrder.map((value) => ({
 
 /**
  * A preview canvas for one example: Preview and Code tabs, a copy button, a
- * per-example light/dark switch and, for full-width examples, a
+ * per-example light/dark switch (Appearance) and, for full-width examples, a
  * desktop/tablet/mobile switch.
+ *
+ * The canvas is in the site's theme. Forcing its mode keeps that theme: only
+ * .dark or .light is scoped on the canvas. Menus, dialogs and popovers opened
+ * from the example portal into a body-level element with the canvas's mode,
+ * and with the theme and mode of any scope around the example (PortalScope).
  *
  * Tablet and mobile render the example in a virtual viewport of exactly that
  * width, scaled down when the canvas is narrower. Container queries respond to
@@ -380,7 +422,10 @@ export function Example({
   children,
 }: ExampleProps) {
   const thumbnail = React.useContext(ExampleThumbnailContext)
-  const siteTheme = useSiteTheme()
+  const siteLook = useSiteLook()
+  const sectionRef = React.useRef<HTMLElement>(null)
+  const outer = useOuterLook(sectionRef, `${siteLook.theme}:${siteLook.mode}`)
+  const siteTheme = outer.mode ?? siteLook.mode
   const [chosenTheme, setChosenTheme] = React.useState<CanvasTheme | null>(null)
   const [device, setDevice] = React.useState<Device>("desktop")
   const [tab, setTab] = React.useState<"preview" | "code">("preview")
@@ -388,9 +433,12 @@ export function Example({
   const [frameRef, frame] = useElementSize<HTMLDivElement>("border-box")
 
   const theme = chosenTheme ?? siteTheme ?? "light"
-  // Only scope the canvas when it differs from the site, so it inherits
-  // everything else (fonts, focus) untouched.
+  // Only scope the canvas when it differs from what it inherits, so it keeps
+  // everything else (the theme, fonts, focus) untouched.
   const scope = chosenTheme && chosenTheme !== siteTheme ? themeScope(chosenTheme) : undefined
+  // Overlays leave the canvas for <body>: they need the canvas's mode, and
+  // any theme or mode scoped around the example, but not the page's own.
+  const portalMode = scope ?? outer.mode
   const constrained = layout === "full" && device !== "desktop"
   const virtualWidth = constrained ? devices[device].width : undefined
   const scale = virtualWidth && stage ? Math.min(1, stage.width / virtualWidth) : 1
@@ -405,7 +453,7 @@ export function Example({
   }
 
   return (
-    <section data-slot="example" id={id} className="grid scroll-mt-24 grid-cols-[minmax(0,1fr)] gap-5">
+    <section ref={sectionRef} data-slot="example" id={id} className="grid scroll-mt-24 grid-cols-[minmax(0,1fr)] gap-5">
       <header className="grid gap-2">
         <h2 className="text-h3">{title}</h2>
         {description ? (
@@ -439,7 +487,7 @@ export function Example({
             ) : null}
             {tab === "preview" ? (
               <Segmented
-                label="Preview theme"
+                label="Preview appearance"
                 iconOnly
                 value={theme}
                 onValueChange={setChosenTheme}
@@ -508,8 +556,10 @@ export function Example({
                     )}
                   >
                     {/* Menus, dialogs and popovers opened here portal into a
-                        body-level element with the example's theme. */}
-                    <PortalScope className={scope}>{children}</PortalScope>
+                        body-level element with the example's theme and mode. */}
+                    <PortalScope className={portalMode} theme={outer.theme}>
+                      {children}
+                    </PortalScope>
                   </div>
                 </div>
               </div>

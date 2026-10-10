@@ -77,7 +77,7 @@ export default function CheckboxDocs() {
       <Example
         title="Default"
         layout="stack"
-        description="A hairline square that fills with ink when checked. Violet appears only as the focus outline."
+        description="A hairline square that fills with ink when checked. The accent appears only as the focus outline."
         code={`<div className="flex items-center gap-3">
   <Checkbox id="overdue" defaultChecked />
   <Label htmlFor="overdue" className="font-medium">

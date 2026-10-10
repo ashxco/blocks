@@ -1,0 +1,307 @@
+{
+  "$description": "A deep emerald accent on soft green-grey, rounded-square buttons, medium radii, Manrope.",
+  "$extensions": {
+    "blocks": {
+      "theme": {
+        "name": "Forest",
+        "order": 2,
+        "modes": [
+          "light",
+          "dark"
+        ]
+      }
+    }
+  },
+  "theme": {
+    "accent": {
+      "$description": "Points at color.emerald (design-system/tokens/primitives.tokens.json).",
+      "50": {
+        "$value": "{color.emerald.50}"
+      },
+      "100": {
+        "$value": "{color.emerald.100}"
+      },
+      "200": {
+        "$value": "{color.emerald.200}"
+      },
+      "300": {
+        "$value": "{color.emerald.300}"
+      },
+      "400": {
+        "$value": "{color.emerald.400}"
+      },
+      "500": {
+        "$value": "{color.emerald.500}"
+      },
+      "600": {
+        "$value": "{color.emerald.600}"
+      },
+      "700": {
+        "$value": "{color.emerald.700}"
+      },
+      "800": {
+        "$value": "{color.emerald.800}"
+      },
+      "900": {
+        "$value": "{color.emerald.900}"
+      },
+      "950": {
+        "$value": "{color.emerald.950}"
+      },
+      "dim": {
+        "$value": "{color.emerald.dim}"
+      }
+    },
+    "neutral": {
+      "$description": "Points at color.sage (design-system/tokens/primitives.tokens.json).",
+      "0": {
+        "$value": "{color.sage.0}"
+      },
+      "25": {
+        "$value": "{color.sage.25}"
+      },
+      "50": {
+        "$value": "{color.sage.50}"
+      },
+      "100": {
+        "$value": "{color.sage.100}"
+      },
+      "150": {
+        "$value": "{color.sage.150}"
+      },
+      "200": {
+        "$value": "{color.sage.200}"
+      },
+      "300": {
+        "$value": "{color.sage.300}"
+      },
+      "400": {
+        "$value": "{color.sage.400}"
+      },
+      "450": {
+        "$value": "{color.sage.450}"
+      },
+      "500": {
+        "$value": "{color.sage.500}"
+      },
+      "550": {
+        "$value": "{color.sage.550}"
+      },
+      "600": {
+        "$value": "{color.sage.600}"
+      },
+      "700": {
+        "$value": "{color.sage.700}"
+      },
+      "750": {
+        "$value": "{color.sage.750}"
+      },
+      "800": {
+        "$value": "{color.sage.800}"
+      },
+      "850": {
+        "$value": "{color.sage.850}"
+      },
+      "900": {
+        "$value": "{color.sage.900}"
+      },
+      "925": {
+        "$value": "{color.sage.925}"
+      },
+      "950": {
+        "$value": "{color.sage.950}"
+      },
+      "1000": {
+        "$value": "{color.sage.1000}"
+      }
+    }
+  },
+  "radius": {
+    "xs": {
+      "$value": "0.25rem"
+    },
+    "sm": {
+      "$value": "0.375rem"
+    },
+    "md": {
+      "$value": "0.625rem"
+    },
+    "lg": {
+      "$value": "0.875rem"
+    },
+    "xl": {
+      "$value": "1rem"
+    },
+    "2xl": {
+      "$value": "1.25rem"
+    },
+    "3xl": {
+      "$value": "1.5rem"
+    },
+    "4xl": {
+      "$value": "1.75rem"
+    }
+  },
+  "component": {
+    "button": {
+      "radius": {
+        "$value": "{radius.md}"
+      },
+      "radius-sm": {
+        "$value": "0.5rem",
+        "$description": "8px on 36px buttons, in proportion with 10px on 44px ones."
+      },
+      "radius-xs": {
+        "$value": "{radius.sm}",
+        "$description": "6px, so 28px buttons stay rounded squares rather than pills."
+      }
+    },
+    "badge": {
+      "radius": {
+        "$value": "{radius.sm}"
+      }
+    },
+    "kern": {
+      "pull": {
+        "$value": "0.02em"
+      }
+    }
+  },
+  "font": {
+    "family": {
+      "sans": {
+        "$value": [
+          "var(--font-manrope)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif"
+        ],
+        "$description": "Manrope. Headings, UI and body copy.",
+        "$extensions": {
+          "blocks": {
+            "name": "Manrope"
+          }
+        }
+      }
+    }
+  },
+  "type": {
+    "hero": {
+      "$value": {
+        "letterSpacing": "-0.04em"
+      }
+    },
+    "display": {
+      "$value": {
+        "letterSpacing": "-0.038em"
+      }
+    },
+    "h1": {
+      "$value": {
+        "letterSpacing": "-0.036em"
+      }
+    },
+    "h2": {
+      "$value": {
+        "letterSpacing": "-0.034em"
+      }
+    },
+    "h3": {
+      "$value": {
+        "letterSpacing": "-0.026em"
+      }
+    },
+    "h4": {
+      "$value": {
+        "letterSpacing": "-0.02em"
+      }
+    },
+    "title": {
+      "$value": {
+        "letterSpacing": "-0.012em"
+      }
+    }
+  },
+  "light": {
+    "color": {
+      "success": {
+        "$value": "oklch(0.52 0.155 140)",
+        "$description": "Shifted from the shared green (hue 152) to hue 140, a leafier green, so success stays clearly distinct from the emerald accent (hue 165). It passes the same contrast pairs as the shared green."
+      },
+      "success-subtle": {
+        "$value": "oklch(0.97 0.022 140)",
+        "$description": "Quiet success fill, at the forest success hue (140)."
+      },
+      "panel-success": {
+        "$value": "oklch(0.76 0.17 140)",
+        "$description": "Success on dark panels, at the forest success hue (140)."
+      },
+      "tint": {
+        "violet": {
+          "$value": "oklch(0.94 0.034 305)"
+        },
+        "mint": {
+          "$value": "oklch(0.94 0.04 138)"
+        },
+        "sand": {
+          "$value": "oklch(0.945 0.036 78)"
+        },
+        "sky": {
+          "$value": "oklch(0.94 0.028 218)"
+        },
+        "rose": {
+          "$value": "oklch(0.94 0.03 35)"
+        }
+      },
+      "chart": {
+        "3": {
+          "$value": "{color.amber.400}"
+        },
+        "4": {
+          "$value": "oklch(0.64 0.105 305)"
+        }
+      }
+    }
+  },
+  "dark": {
+    "color": {
+      "success": {
+        "$value": "oklch(0.76 0.17 140)",
+        "$description": "Shifted from the shared green (hue 152) to hue 140, a leafier green, so success stays clearly distinct from the emerald accent (hue 165). It passes the same contrast pairs as the shared green."
+      },
+      "success-subtle": {
+        "$value": "oklch(0.26 0.04 140)",
+        "$description": "Quiet success fill, at the forest success hue (140)."
+      },
+      "panel-success": {
+        "$value": "oklch(0.76 0.17 140)",
+        "$description": "Success on dark panels, at the forest success hue (140)."
+      },
+      "tint": {
+        "violet": {
+          "$value": "oklch(0.25 0.024 305)"
+        },
+        "mint": {
+          "$value": "oklch(0.25 0.022 138)"
+        },
+        "sand": {
+          "$value": "oklch(0.255 0.018 78)"
+        },
+        "sky": {
+          "$value": "oklch(0.25 0.02 218)"
+        },
+        "rose": {
+          "$value": "oklch(0.25 0.02 35)"
+        }
+      },
+      "chart": {
+        "3": {
+          "$value": "{color.amber.300}"
+        },
+        "4": {
+          "$value": "oklch(0.76 0.095 305)"
+        }
+      }
+    }
+  }
+}

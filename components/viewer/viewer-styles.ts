@@ -13,8 +13,17 @@
  *   page fades out fast, the new one fades in with a 4px rise just after it,
  *   about 300ms in all. The header stays put. Reduced motion turns the
  *   transition off entirely.
+ * - `[data-theme-text="<id>"]`: text that belongs to one theme (ThemeName in
+ *   theme-picker.tsx). Only the page theme's text shows, the theme on <html>,
+ *   so a trigger names the right theme on first paint, before React hydrates.
+ *   With `data-stable` the others stay in the layout, invisible, so the text
+ *   is as wide as the widest one.
+ * - `[data-theme-card="<id>"]`: a card that stands for one theme (ThemeShowcase).
+ *   The page theme's card gets an ink border and a filled check
+ *   (`[data-theme-check]`), keyed on <html> like the text above, so the
+ *   selection is right on first paint. Colours come from the card's own scope.
  */
-import { tokens } from "@/design-system/generated/tokens"
+import { defaultThemeId, themeIds, tokens } from "@/design-system/generated/tokens"
 
 /** The CSS value of a token: its own value, or its font size for type roles. */
 function cssValue(value: unknown): string | undefined {
@@ -32,6 +41,27 @@ const fluidTokens = tokens
   .map((t) => `${t.cssVar}:${t.value.replace(/(\d*\.?\d+)vw/g, "calc($1 * var(--bk-vw))")};`)
   .join("")
 
+/** The selector for the page's own theme: <html data-theme="<id>">, or no attribute for the default. */
+const pageTheme = (id: string) =>
+  id === defaultThemeId ? `:root:not([data-theme]),:root[data-theme="${id}"]` : `:root[data-theme="${id}"]`
+
+/** Each page-theme root paired with that theme's element: `:root[data-theme="ocean"] [data-theme-card="ocean"]`. */
+const onPageTheme = (attribute: string, suffix = "") =>
+  themeIds
+    .flatMap((id) => pageTheme(id).split(",").map((root) => `${root} [${attribute}="${id}"]${suffix}`))
+    .join(",")
+
+const themeTextCss = [
+  `[data-theme-text]{display:none;}`,
+  `[data-theme-text][data-stable]{display:inline;visibility:hidden;}`,
+  `${onPageTheme("data-theme-text")}{display:inline;visibility:visible;}`,
+].join("\n")
+
+const themeCardCss = [
+  `${onPageTheme("data-theme-card")}{border-color:var(--foreground);}`,
+  `${onPageTheme("data-theme-card", " [data-theme-check]")}{border-color:var(--foreground);background-color:var(--foreground);color:var(--background);}`,
+].join("\n")
+
 export const viewerCss = [
   `:root{--viewer-bar:var(--header-height-sm);}`,
   // 1vw until a preview measures its width and sets --bk-vw inline.
@@ -46,4 +76,6 @@ export const viewerCss = [
   `@keyframes bk-page-out{to{opacity:0;}}`,
   `@keyframes bk-page-in{from{opacity:0;translate:0 4px;}}`,
   `@media (prefers-reduced-motion: reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none !important;}}`,
+  themeTextCss,
+  themeCardCss,
 ].join("\n")

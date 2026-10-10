@@ -107,7 +107,7 @@ export default function ToggleDocs() {
     <Examples>
       <Example
         title="Default"
-        description="A quiet pill that turns ink when it is on. Icon-only toggles become circles and need an aria-label."
+        description="A quiet toggle, shaped like a button, that turns ink when it is on. Icon-only toggles are square and need an aria-label."
         code={`<Toggle aria-label="Wrap long titles">
   <WrapTextIcon />
 </Toggle>
@@ -272,7 +272,7 @@ const [wrap, setWrap] = React.useState(true)
 
       <ApiTable
         rows={[
-          { prop: "variant", type: '"default" | "outline"', default: '"default"', description: "Quiet pill, or a pill with a hairline border." },
+          { prop: "variant", type: '"default" | "outline"', default: '"default"', description: "Quiet, or with a hairline border." },
           { prop: "size", type: '"sm" | "default" | "lg"', default: '"default"', description: "Height from --button-height-* tokens." },
           { prop: "pressed", type: "boolean", description: "Controlled pressed state." },
           { prop: "defaultPressed", type: "boolean", default: "false", description: "Initial pressed state when uncontrolled." },

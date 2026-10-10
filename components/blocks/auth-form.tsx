@@ -298,7 +298,7 @@ export function AuthForm({
                     {mode === "sign-in" ? (
                       <Link
                         href={forgotPasswordHref}
-                        className="rounded-xs text-caption font-semibold text-brand underline-offset-4 outline-none hover:underline focus-visible:focus-ring"
+                        className="rounded-xs text-caption font-semibold text-brand link-underline outline-none focus-visible:focus-ring"
                       >
                         Forgot password?
                       </Link>
@@ -371,7 +371,7 @@ export function AuthForm({
               {copy.switchPrompt}{" "}
               <Link
                 href={mode === "sign-in" ? signUpHref : signInHref}
-                className="rounded-xs font-semibold text-brand underline-offset-4 outline-none hover:underline focus-visible:focus-ring"
+                className="rounded-xs font-semibold text-brand link-underline outline-none focus-visible:focus-ring"
               >
                 {copy.switchLabel}
               </Link>

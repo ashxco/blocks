@@ -16,7 +16,7 @@ const RESEND_AFTER_SECONDS = 30
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const textLink =
-  "rounded-xs font-semibold text-brand underline-offset-4 outline-none hover:underline focus-visible:focus-ring"
+  "rounded-xs font-semibold text-brand link-underline outline-none focus-visible:focus-ring"
 
 function validate(email: string) {
   const value = email.trim()

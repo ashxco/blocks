@@ -219,7 +219,7 @@ export function ContactPanel({
                     {topics.map((t) => (
                       <label
                         key={t}
-                        className="inline-flex h-(--button-height-sm) cursor-pointer items-center gap-2.5 rounded-(--button-radius) border border-input bg-background pr-4 pl-3 text-label text-foreground transition-colors duration-(--duration-fast) ease-standard select-none hover:border-foreground/40 has-data-checked:border-primary has-data-checked:bg-primary has-data-checked:text-primary-foreground"
+                        className="inline-flex h-(--button-height-sm) cursor-pointer items-center gap-2.5 rounded-(--button-radius-sm) border border-input bg-background pr-4 pl-3 text-label text-foreground transition-colors duration-(--duration-fast) ease-standard select-none hover:border-foreground/40 has-data-checked:border-primary has-data-checked:bg-primary has-data-checked:text-primary-foreground"
                       >
                         <RadioGroupItem value={t} />
                         {t}

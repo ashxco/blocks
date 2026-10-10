@@ -14,6 +14,7 @@ import {
 import { Kern, Punct } from "@/components/viewer/kern"
 import { sectionDescription } from "@/components/viewer/nav"
 import { SearchTrigger } from "@/components/viewer/search-trigger"
+import { ThemeShowcase } from "@/components/viewer/theme-showcase"
 import { tokens } from "@/design-system/generated/tokens"
 import { components, molecules, templates } from "@/lib/registry"
 
@@ -33,12 +34,12 @@ const principles = [
   {
     icon: SquareIcon,
     title: "No shadows",
-    text: "Nothing floats. Surfaces sit flat on the page and stay crisp at any size, in either theme.",
+    text: "Nothing floats. Surfaces sit flat on the page and stay crisp at any size, in light and dark.",
   },
   {
     icon: DropletIcon,
     title: "No gradients",
-    text: "Solid colour throughout. One violet accent, saved for links, focus and the one thing that matters most.",
+    text: "Solid colour throughout. One accent per theme, saved for links, focus and the one thing that matters most.",
   },
   {
     icon: BoldIcon,
@@ -48,7 +49,7 @@ const principles = [
   {
     icon: PanelsTopLeftIcon,
     title: "Borders and panels, not depth",
-    text: "Hairlines separate and tinted bands group. Dark panels carry emphasis and stay dark in both themes.",
+    text: "Hairlines separate and tinted bands group. Dark panels carry emphasis and stay dark in both modes.",
   },
 ]
 
@@ -159,11 +160,31 @@ export default function Overview() {
         </div>
       </section>
 
-      {/* Light and dark */}
+      {/* Themes */}
       <section aria-labelledby="themes" className="container-wide grid gap-10">
         <div className="grid gap-4 lg:grid-cols-2 lg:items-end lg:gap-16">
           <h2 id="themes" className="text-h2">
-            <Kern>One set of tokens. Two themes.</Kern>
+            <Kern>Five themes. One system.</Kern>
+          </h2>
+          <div className="grid justify-items-start gap-4">
+            <p className="max-w-prose text-lead text-copy">
+              A theme sets the accent, the neutrals, the corner radii and the type, in light and dark. The components
+              stay the same. Choose one and the whole site follows, live templates included.
+            </p>
+            <Button variant="link" nativeButton={false} render={<Link href="/foundations/themes" />}>
+              How themes work
+              <ArrowRightIcon data-icon="inline-end" />
+            </Button>
+          </div>
+        </div>
+        <ThemeShowcase />
+      </section>
+
+      {/* Light and dark */}
+      <section aria-labelledby="modes" className="container-wide grid gap-10">
+        <div className="grid gap-4 lg:grid-cols-2 lg:items-end lg:gap-16">
+          <h2 id="modes" className="text-h2">
+            <Kern>One set of tokens. Light and dark.</Kern>
           </h2>
           <p className="max-w-prose text-lead text-copy">
             Components read semantic roles, not colours. The markup below is identical on both sides: only the tokens
@@ -239,7 +260,7 @@ export default function Overview() {
             </h2>
             <p className="text-body text-copy">
               Search every foundation, component, molecule and template.
-              <span className="hidden sm:not-pointer-coarse:inline"> Press D at any time to switch themes.</span>
+              <span className="hidden sm:not-pointer-coarse:inline"> Press D at any time to switch between light and dark.</span>
             </p>
           </div>
           <SearchTrigger />

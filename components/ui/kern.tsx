@@ -1,9 +1,15 @@
 import * as React from "react"
 
 /*
- * Plus Jakarta Sans keeps wide side bearings on commas and full stops. At
- * display sizes, with the type roles' tight tracking, they look detached from
- * the word before them ("Ship anything ."). Kern pulls them back in.
+ * Plus Jakarta Sans, the default theme's font, keeps wide side bearings on
+ * commas and full stops. At display sizes, with the type roles' tight
+ * tracking, they look detached from the word before them ("Ship anything .").
+ * Kern pulls them back in.
+ *
+ * How far depends on the font, so the pull is a themed token,
+ * --kern-pull (component.kern.pull): 0.08em for Plus Jakarta Sans, less for
+ * the tighter punctuation of Inter Tight, Manrope and DM Sans, and none for
+ * Geist, where a pull would make the mark touch the letter before it.
  *
  * Use it inside text-hero, text-display, text-h1 and text-h2 headings:
  *
@@ -13,8 +19,8 @@ import * as React from "react"
  * elements such as a highlighted <span>. Components are left alone.
  */
 
-/** Pull applied to a punctuation mark that ends a word. */
-const PUNCT_PULL = "-ms-[0.08em]"
+/** Pull applied to a punctuation mark that ends a word: the theme's --kern-pull. */
+const PUNCT_PULL = "-ms-(--kern-pull)"
 
 /** A sentence mark that ends a word: followed by a space or the end of the text. */
 const TRAILING_MARK = /(?<=[\p{L}\p{N}’”)])([.,;:!?])(?=\s|$)/u

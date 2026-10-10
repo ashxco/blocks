@@ -73,11 +73,11 @@ function SpacingLadder() {
 /*
  * Each diagram sits in a stage tall enough for the largest section value, so
  * the cards line up. Muted, the fill for wells inside a card: it stands clear
- * of the card in both themes.
+ * of the card in both modes.
  */
 const stage = "grid h-48 content-center rounded-md bg-muted px-4"
 
-/* The highlighted space: a brand wash with dashed edges, which keeps its violet in both themes. */
+/* The highlighted space: a brand wash with dashed edges, which keeps its accent colour in both modes. */
 const highlight = "border-dashed border-brand/60 bg-brand/25"
 
 function GutterDiagram() {
@@ -369,7 +369,7 @@ export function SpacingFoundation({ title, description }: { title: string; descr
           <>
             Padding, margin and gap come from this ladder of <Code>--spacing</Code> ({describeSize(unit?.value)}) multiples:{" "}
             <Code>p-4</Code> is four units, 16px. Use steps from the ladder; half steps exist only below 16px. Fluid page
-            spacing has its own names, below.
+            spacing has its own names, below. Spacing, sizes and widths are the same in every theme.
           </>
         }
       >

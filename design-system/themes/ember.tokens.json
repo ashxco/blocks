@@ -1,0 +1,267 @@
+{
+  "$description": "A warm orange accent on warm stone, soft and generous radii, pill buttons, DM Sans.",
+  "$extensions": {
+    "blocks": {
+      "theme": {
+        "name": "Ember",
+        "order": 3,
+        "modes": [
+          "light",
+          "dark"
+        ]
+      }
+    }
+  },
+  "theme": {
+    "accent": {
+      "$description": "Points at color.orange (design-system/tokens/primitives.tokens.json).",
+      "50": {
+        "$value": "{color.orange.50}"
+      },
+      "100": {
+        "$value": "{color.orange.100}"
+      },
+      "200": {
+        "$value": "{color.orange.200}"
+      },
+      "300": {
+        "$value": "{color.orange.300}"
+      },
+      "400": {
+        "$value": "{color.orange.400}"
+      },
+      "500": {
+        "$value": "{color.orange.500}"
+      },
+      "600": {
+        "$value": "{color.orange.600}"
+      },
+      "700": {
+        "$value": "{color.orange.700}"
+      },
+      "800": {
+        "$value": "{color.orange.800}"
+      },
+      "900": {
+        "$value": "{color.orange.900}"
+      },
+      "950": {
+        "$value": "{color.orange.950}"
+      },
+      "dim": {
+        "$value": "{color.orange.dim}"
+      }
+    },
+    "neutral": {
+      "$description": "Points at color.stone (design-system/tokens/primitives.tokens.json).",
+      "0": {
+        "$value": "{color.stone.0}"
+      },
+      "25": {
+        "$value": "{color.stone.25}"
+      },
+      "50": {
+        "$value": "{color.stone.50}"
+      },
+      "100": {
+        "$value": "{color.stone.100}"
+      },
+      "150": {
+        "$value": "{color.stone.150}"
+      },
+      "200": {
+        "$value": "{color.stone.200}"
+      },
+      "300": {
+        "$value": "{color.stone.300}"
+      },
+      "400": {
+        "$value": "{color.stone.400}"
+      },
+      "450": {
+        "$value": "{color.stone.450}"
+      },
+      "500": {
+        "$value": "{color.stone.500}"
+      },
+      "550": {
+        "$value": "{color.stone.550}"
+      },
+      "600": {
+        "$value": "{color.stone.600}"
+      },
+      "700": {
+        "$value": "{color.stone.700}"
+      },
+      "750": {
+        "$value": "{color.stone.750}"
+      },
+      "800": {
+        "$value": "{color.stone.800}"
+      },
+      "850": {
+        "$value": "{color.stone.850}"
+      },
+      "900": {
+        "$value": "{color.stone.900}"
+      },
+      "925": {
+        "$value": "{color.stone.925}"
+      },
+      "950": {
+        "$value": "{color.stone.950}"
+      },
+      "1000": {
+        "$value": "{color.stone.1000}"
+      }
+    }
+  },
+  "radius": {
+    "xs": {
+      "$value": "0.375rem"
+    },
+    "sm": {
+      "$value": "0.625rem"
+    },
+    "md": {
+      "$value": "1rem"
+    },
+    "lg": {
+      "$value": "1.5rem"
+    },
+    "xl": {
+      "$value": "2rem"
+    },
+    "2xl": {
+      "$value": "2.25rem"
+    },
+    "3xl": {
+      "$value": "2.5rem"
+    },
+    "4xl": {
+      "$value": "3rem"
+    }
+  },
+  "font": {
+    "family": {
+      "sans": {
+        "$value": [
+          "var(--font-dm-sans)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif"
+        ],
+        "$description": "DM Sans. Headings, UI and body copy.",
+        "$extensions": {
+          "blocks": {
+            "name": "DM Sans"
+          }
+        }
+      }
+    }
+  },
+  "type": {
+    "hero": {
+      "$value": {
+        "letterSpacing": "-0.032em"
+      }
+    },
+    "display": {
+      "$value": {
+        "letterSpacing": "-0.024em"
+      }
+    },
+    "h1": {
+      "$value": {
+        "letterSpacing": "-0.024em"
+      }
+    },
+    "h2": {
+      "$value": {
+        "letterSpacing": "-0.022em"
+      }
+    },
+    "h3": {
+      "$value": {
+        "letterSpacing": "-0.018em"
+      }
+    },
+    "h4": {
+      "$value": {
+        "letterSpacing": "-0.014em"
+      }
+    },
+    "title": {
+      "$value": {
+        "letterSpacing": "-0.008em"
+      }
+    }
+  },
+  "light": {
+    "color": {
+      "brand-subtle": {
+        "$value": "{theme.accent.100}",
+        "$description": "One step stronger than the default: the 50 tint sits on top of the warning amber fill, so brand badges would read as warnings."
+      },
+      "tint": {
+        "violet": {
+          "$value": "oklch(0.935 0.04 50)",
+          "$description": "The first tint follows the accent: pale peach."
+        },
+        "sand": {
+          "$value": "oklch(0.945 0.045 88)",
+          "$description": "Moved towards butter so it stays apart from the peach first tint."
+        },
+        "sky": {
+          "$value": "oklch(0.945 0.02 220)",
+          "$description": "Softer, so it sits on warm stone without reading icy."
+        },
+        "rose": {
+          "$value": "oklch(0.93 0.038 2)",
+          "$description": "Moved from coral towards pink so it stays apart from the peach first tint beside it."
+        }
+      },
+      "chart": {
+        "4": {
+          "$value": "{color.violet.400}",
+          "$description": "Violet in place of amber: amber sits too close to the orange first series."
+        }
+      }
+    }
+  },
+  "dark": {
+    "color": {
+      "brand-subtle-foreground": {
+        "$value": "{theme.accent.300}",
+        "$description": "One step stronger than the default so brand badges read orange on the dark ember fill, like the status badges beside them."
+      },
+      "tint": {
+        "violet": {
+          "$value": "oklch(0.25 0.035 45)"
+        },
+        "sand": {
+          "$value": "oklch(0.26 0.02 88)"
+        },
+        "sky": {
+          "$value": "oklch(0.25 0.016 220)"
+        },
+        "rose": {
+          "$value": "oklch(0.245 0.026 2)"
+        }
+      },
+      "chart": {
+        "4": {
+          "$value": "{color.violet.300}",
+          "$description": "Violet in place of amber: amber sits too close to the orange first series."
+        }
+      }
+    }
+  },
+  "component": {
+    "kern": {
+      "pull": {
+        "$value": "0.02em"
+      }
+    }
+  }
+}

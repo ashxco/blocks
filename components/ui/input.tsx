@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * Blocks input. A filled control: `bg-muted` with a hairline `border-input`
- * at rest, the canvas colour and a violet border plus focus outline while
+ * at rest, the canvas colour and an accent border plus focus outline while
  * focused. Height, padding and radius come from the --control-* tokens.
  *
  * Invalid: set `aria-invalid` on the input, or `data-invalid` on the
@@ -22,7 +22,7 @@ const inputVariants = cva(
     "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",
     "group-data-[invalid=true]/field:border-destructive! group-data-[invalid=true]/field:focus-visible:outline-destructive",
     "disabled:pointer-events-none disabled:opacity-50",
-    "file:mr-3 file:h-(--button-height-xs) file:rounded-(--button-radius) file:border-0 file:bg-secondary file:px-(--button-padding-x-xs) file:text-caption file:font-semibold file:text-secondary-foreground",
+    "file:mr-3 file:h-(--button-height-xs) file:rounded-(--button-radius-xs) file:border-0 file:bg-secondary file:px-(--button-padding-x-xs) file:text-caption file:font-semibold file:text-secondary-foreground",
   ],
   {
     variants: {

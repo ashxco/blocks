@@ -270,7 +270,7 @@ function DialogPalette() {
   )
 }
 
-/** A settings search: the theme options and a project setting the viewer can’t change. */
+/** A settings search: the appearance options and a project setting the viewer can’t change. */
 function SettingsSearch() {
   const [theme, setTheme] = React.useState("system")
   const options = [
@@ -283,7 +283,7 @@ function SettingsSearch() {
       <CommandInput placeholder="Search settings" />
       <CommandList>
         <CommandEmpty>No settings match.</CommandEmpty>
-        <CommandGroup heading="Theme">
+        <CommandGroup heading="Appearance">
           {options.map((option) => (
             <CommandItem
               key={option.value}
