@@ -1,17 +1,27 @@
 import type { Metadata } from "next"
-import { DM_Sans, Geist, Geist_Mono, Inter_Tight, Manrope, Plus_Jakarta_Sans } from "next/font/google"
+import {
+  Bricolage_Grotesque,
+  DM_Sans,
+  Fraunces,
+  Geist,
+  Geist_Mono,
+  Inter_Tight,
+  Manrope,
+  Plus_Jakarta_Sans,
+} from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toast"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { siteDescription, siteName, siteUrl } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 /*
  * Fonts. Each one sets a CSS variable on <html> that the font tokens read
- * (font.family.sans and .mono in design-system/tokens and design-system/themes).
- * The default theme's fonts are preloaded; a theme's own font downloads when a
- * page first uses that theme.
+ * (font.family.sans, .heading and .mono in design-system/tokens and
+ * design-system/themes). The default theme's fonts are preloaded; a theme's
+ * own fonts download when a page first uses that theme.
  */
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -19,8 +29,10 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
 })
 
+/** Code in every theme, and Mono's headings at 800: the variable font, weights 100 to 900. */
 const geistMono = Geist_Mono({
   subsets: ["latin"],
+  weight: "variable",
   variable: "--font-geist-mono",
 })
 
@@ -40,11 +52,36 @@ const manrope = Manrope({
   preload: false,
 })
 
+/**
+ * Forest's headings: Bricolage Grotesque as the variable font (weights 200 to
+ * 800) with its optical-size axis, so display sizes get the display cut.
+ */
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: "variable",
+  axes: ["opsz"],
+  variable: "--font-bricolage",
+  preload: false,
+})
+
 /** Ember. */
 const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-dm-sans",
+  preload: false,
+})
+
+/**
+ * Ember's headings: Fraunces, upright only, as the variable font (weights 100
+ * to 900) with its optical-size axis, so display sizes get the display cut.
+ */
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: "variable",
+  style: "normal",
+  axes: ["opsz"],
+  variable: "--font-fraunces",
   preload: false,
 })
 
@@ -57,12 +94,15 @@ const geist = Geist({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "Blocks",
-    template: "%s · Blocks",
+    default: siteName,
+    template: `%s · ${siteName}`,
   },
-  description:
-    "Blocks is a design system and template kit: tokens, components, molecules and page templates.",
+  description: siteDescription,
+  applicationName: siteName,
+  openGraph: { type: "website", siteName, title: siteName, description: siteDescription },
+  twitter: { card: "summary", title: siteName, description: siteDescription },
 }
 
 export default function RootLayout({
@@ -79,7 +119,9 @@ export default function RootLayout({
         geistMono.variable,
         interTight.variable,
         manrope.variable,
+        bricolage.variable,
         dmSans.variable,
+        fraunces.variable,
         geist.variable
       )}
     >

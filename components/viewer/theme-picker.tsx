@@ -20,24 +20,34 @@ import { loadThemeFonts, warmThemeFonts } from "@/components/viewer/theme-fonts"
 /*
  * The theme picker: a compact trigger showing the active theme, and a menu
  * of every preset, each row drawn in its own theme (data-theme on the row):
- * its font in "Aa" on a tile with its input radius, and its accent and
- * neutral as two dots in a chip shaped like its buttons. Choosing a row saves
- * and applies the theme (useThemePreset), after its fonts have loaded. The
- * theme is the preset; light or dark is the separate Appearance toggle.
+ * its name set in its heading font, a line on its look in its body font, and
+ * a ThemeChip, its accent as a dot on its muted fill. Choosing a row saves and applies the theme
+ * (useThemePreset), after its fonts have loaded. The theme is the preset;
+ * light or dark is the separate Appearance toggle.
  */
 
-/** One line per theme for the picker. A theme without one falls back to the start of its description. */
+/**
+ * One line per theme on what makes it itself, for the picker, the command
+ * palette and the overview. A theme without one falls back to the start of
+ * its description.
+ */
 const taglines: Partial<Record<ThemeId, string>> = {
-  blocks: "Violet on ink. The default.",
-  ocean: "Confident blue on cool slate.",
-  forest: "Deep emerald on soft sage.",
-  ember: "Warm orange on stone.",
-  mono: "Ink and grey. No hue at all.",
+  blocks: "Violet on ink, pills. The default.",
+  ocean: "Cobalt on slate, crisp corners.",
+  forest: "Emerald on sage, soft squares.",
+  ember: "Orange on stone, serif headings.",
+  mono: "Ink on grey, sharp and mono.",
 }
 
 /** A short, one-line description of a theme. */
 export function themeTagline(theme: Theme): string {
   return taglines[theme.id] ?? theme.description.split(/[,.:]/)[0]
+}
+
+/** "Fraunces and DM Sans" when headings have their own face, else the one family. */
+export function themeFontsLabel(theme: Theme): string {
+  const { heading, sans } = theme.fonts
+  return heading === sans ? sans : `${heading} and ${sans}`
 }
 
 /* -------------------------------------------------------------------------- */
@@ -96,6 +106,23 @@ export function ThemeSwatch({ theme, className }: { theme?: ThemeId; className?:
   )
 }
 
+/**
+ * A theme in one quiet mark: its accent as a dot on its own muted fill,
+ * inside a hairline circle, so every row in the menu has the same shape and
+ * only the colours change. Without `theme` it shows whatever theme it sits in.
+ */
+export function ThemeChip({ theme, className }: { theme?: ThemeId; className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      {...scope(theme)}
+      className={cn("flex size-7 shrink-0 items-center justify-center rounded-full border bg-muted", className)}
+    >
+      <span className="size-3 rounded-full bg-brand" />
+    </span>
+  )
+}
+
 /** The accent of the theme it sits in (or of `theme`), as one dot: for triggers. */
 function AccentDot({ theme, className }: { theme?: ThemeId; className?: string }) {
   return <span aria-hidden="true" {...scope(theme)} className={cn("size-3 shrink-0 rounded-full bg-brand", className)} />
@@ -132,7 +159,7 @@ export function ThemeName({ theme, className }: { theme?: ThemeId; className?: s
  * it takes the width of the current text. Use it only outside any other
  * theme scope.
  */
-export function PageThemeText({ field }: { field: "name" | "sans" | "mono" }) {
+export function PageThemeText({ field }: { field: "name" | "heading" | "sans" | "mono" }) {
   return (
     <>
       {themes.map((t) => (
@@ -158,7 +185,7 @@ export interface ThemePickerProps {
   onValueChange?: (theme: ThemeId) => void
   /**
    * - header: a ghost button, the accent dot alone below xl, plus the name and a chevron from xl (below
-   *   that the header has no room for them next to the search field and the section links)
+   *   that a narrow bar has no room for them); pass nameClassName to show the name at every width, as the sidebar does)
    * - toolbar: a hairline track like the viewer's segmented switches: the dot and a chevron, plus the name from md
    */
   variant?: "header" | "toolbar"
@@ -257,10 +284,10 @@ export function ThemePicker({
 }
 
 /**
- * One preset in the menu, drawn in that theme (and the menu's mode): the row
- * takes the theme's font, colours and radii, so it previews the theme. The
- * chosen row inks its "Aa" tile and shows a check at the end, in place of the
- * menu's own radio dot, which would read as a third swatch dot.
+ * One preset in the menu, drawn in that theme (and the menu's mode): the
+ * name is set in the theme's heading font, the line under it in its body
+ * font, and the chip shows its accent on its muted fill. The chosen row shows a
+ * check at the end, in place of the menu's own radio dot.
  */
 function ThemeOption({ theme }: { theme: Theme }) {
   return (
@@ -271,24 +298,13 @@ function ThemeOption({ theme }: { theme: Theme }) {
       {...scope(theme.id)}
       className="group/theme-option gap-3 py-2 pr-2.5 pl-2 [&>[data-slot=dropdown-menu-radio-item-indicator]]:hidden"
     >
-      {/* The theme's font, on a tile the size and radius of its inputs. */}
-      <span
-        aria-hidden="true"
-        className={cn(
-          "grid size-(--control-height-md) shrink-0 place-items-center rounded-(--control-radius) border bg-background",
-          "font-heading text-lg font-extrabold text-foreground group-data-checked/theme-option:border-foreground"
-        )}
-      >
-        Aa
-      </span>
-      <span className="grid min-w-0 flex-1 gap-0.5">
-        <span className="truncate text-label font-bold text-foreground">{theme.name}</span>
+      <ThemeChip />
+      <span className="grid min-w-0 flex-1">
+        <span className="truncate font-heading text-sm font-semibold text-foreground">{theme.name}</span>
         <span className="truncate text-caption font-normal text-muted-foreground">{themeTagline(theme)}</span>
       </span>
-      <ThemeSwatch />
       <CheckIcon
         aria-hidden="true"
-        strokeWidth={2.5}
         className="size-4 shrink-0 text-foreground opacity-0 group-data-checked/theme-option:opacity-100"
       />
     </DropdownMenuRadioItem>

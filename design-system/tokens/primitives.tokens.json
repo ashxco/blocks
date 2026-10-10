@@ -264,45 +264,45 @@
       },
       "$description": "Information and secondary data series."
     },
-    "blue": {
+    "cobalt": {
       "50": {
-        "$value": "oklch(0.965 0.017 258)"
+        "$value": "oklch(0.97 0.014 252)"
       },
       "100": {
-        "$value": "oklch(0.94 0.029 259)"
+        "$value": "oklch(0.94 0.028 252)"
       },
       "200": {
-        "$value": "oklch(0.885 0.056 260)"
+        "$value": "oklch(0.885 0.055 253)"
       },
       "300": {
-        "$value": "oklch(0.805 0.098 261)"
+        "$value": "oklch(0.805 0.097 254)"
       },
       "400": {
-        "$value": "oklch(0.71 0.151 262)"
+        "$value": "oklch(0.71 0.15 255)"
       },
       "500": {
-        "$value": "oklch(0.62 0.198 262)"
+        "$value": "oklch(0.62 0.185 256)"
       },
       "600": {
-        "$value": "oklch(0.54 0.195 263)"
+        "$value": "oklch(0.54 0.188 257)"
       },
       "700": {
-        "$value": "oklch(0.465 0.176 264)"
+        "$value": "oklch(0.465 0.175 259)"
       },
       "800": {
-        "$value": "oklch(0.39 0.15 265)"
+        "$value": "oklch(0.39 0.152 261)"
       },
       "900": {
-        "$value": "oklch(0.31 0.118 266)"
+        "$value": "oklch(0.31 0.122 263)"
       },
       "950": {
-        "$value": "oklch(0.235 0.088 267)"
+        "$value": "oklch(0.235 0.092 265)"
       },
       "dim": {
-        "$value": "oklch(0.25 0.05 264)",
-        "$description": "Low-chroma dark fill: quiet accent surfaces in dark mode."
+        "$value": "oklch(0.27 0.075 259)",
+        "$description": "Dark fill for quiet accent surfaces. It carries more chroma than the other accents' dim so cobalt brand chips still read blue beside Ocean's navy secondary chips."
       },
-      "$description": "Ocean accent: cobalt blue. The hue drifts from 258 in the light steps to 267 in the dark ones so every step reads as the same blue (light blues at one fixed OKLCH hue turn lavender). The working steps (400 to 700) sit near 263, well clear of the info sky at 235, so a brand chip never reads as a status. Light steps sit at the edge of sRGB."
+      "$description": "Ocean accent: cobalt. The hue drifts from 252 in the pale steps to 265 in the deep ones so every step reads as one blue (pale blues at a fixed OKLCH hue turn lavender). The working steps (500 to 700) sit at 256 to 259, a developer-tool blue 26 degrees from the Blocks violet and well clear of the info sky (235), so a brand chip never reads as a status. Steps 50 to 600 sit at the edge of sRGB."
     },
     "emerald": {
       "50": {
@@ -428,63 +428,63 @@
         "$value": "oklch(1 0 0)"
       },
       "25": {
-        "$value": "oklch(0.985 0.003 257)"
+        "$value": "oklch(0.985 0.005 250)"
       },
       "50": {
-        "$value": "oklch(0.975 0.005 257)"
+        "$value": "oklch(0.975 0.01 250)"
       },
       "100": {
-        "$value": "oklch(0.955 0.007 257)"
+        "$value": "oklch(0.955 0.014 251)"
       },
       "150": {
-        "$value": "oklch(0.93 0.009 257)"
+        "$value": "oklch(0.93 0.019 252)"
       },
       "200": {
-        "$value": "oklch(0.9 0.011 257)"
+        "$value": "oklch(0.9 0.023 253)"
       },
       "300": {
-        "$value": "oklch(0.82 0.015 257)"
+        "$value": "oklch(0.82 0.029 255)"
       },
       "400": {
-        "$value": "oklch(0.68 0.019 257)"
+        "$value": "oklch(0.68 0.035 256)"
       },
       "450": {
-        "$value": "oklch(0.645 0.02 257)"
+        "$value": "oklch(0.645 0.037 257)"
       },
       "500": {
-        "$value": "oklch(0.56 0.021 257)"
+        "$value": "oklch(0.56 0.04 257)"
       },
       "550": {
-        "$value": "oklch(0.505 0.022 257)"
+        "$value": "oklch(0.505 0.042 258)"
       },
       "600": {
-        "$value": "oklch(0.45 0.022 257)"
+        "$value": "oklch(0.45 0.044 258)"
       },
       "700": {
-        "$value": "oklch(0.36 0.022 257)"
+        "$value": "oklch(0.36 0.046 259)"
       },
       "750": {
-        "$value": "oklch(0.315 0.022 257)"
+        "$value": "oklch(0.315 0.048 260)"
       },
       "800": {
-        "$value": "oklch(0.27 0.022 257)"
+        "$value": "oklch(0.27 0.05 260)"
       },
       "850": {
-        "$value": "oklch(0.215 0.022 257)"
+        "$value": "oklch(0.215 0.052 261)"
       },
       "900": {
-        "$value": "oklch(0.175 0.021 257)"
+        "$value": "oklch(0.175 0.055 262)"
       },
       "925": {
-        "$value": "oklch(0.158 0.019 257)"
+        "$value": "oklch(0.158 0.054 262)"
       },
       "950": {
-        "$value": "oklch(0.135 0.016 257)"
+        "$value": "oklch(0.135 0.052 262)"
       },
       "1000": {
-        "$value": "oklch(0.1 0.012 257)"
+        "$value": "oklch(0.1 0.046 262)"
       },
-      "$description": "Ocean neutral: cool slate. The ink ladder at hue 257 with about 1.8 times its chroma, a clear hint of blue that deepens towards the dark end."
+      "$description": "Ocean neutral: a blue slate on the ink lightness ladder at three to four times its chroma. The light steps carry 0.005 to 0.029 chroma at hue 250 to 255, so bands, input fills, hairlines and secondary buttons read blue-grey; the mid steps hold 0.035 to 0.046 for blue-grey copy; the deep steps (750 to 1000) carry 0.046 to 0.055 at hue 260 to 262, so headings, primary buttons, panels and the dark canvas read deep navy rather than black. Every step stays inside sRGB."
     },
     "sage": {
       "0": {
@@ -554,63 +554,63 @@
         "$value": "oklch(1 0 0)"
       },
       "25": {
-        "$value": "oklch(0.985 0.004 70)"
+        "$value": "oklch(0.985 0.006 80)"
       },
       "50": {
-        "$value": "oklch(0.975 0.006 70)"
+        "$value": "oklch(0.975 0.01 78)"
       },
       "100": {
-        "$value": "oklch(0.955 0.008 69)"
+        "$value": "oklch(0.955 0.013 76)"
       },
       "150": {
-        "$value": "oklch(0.93 0.009 68)"
+        "$value": "oklch(0.93 0.015 74)"
       },
       "200": {
-        "$value": "oklch(0.9 0.011 67)"
+        "$value": "oklch(0.9 0.017 72)"
       },
       "300": {
-        "$value": "oklch(0.82 0.012 66)"
+        "$value": "oklch(0.82 0.019 68)"
       },
       "400": {
-        "$value": "oklch(0.68 0.014 65)"
+        "$value": "oklch(0.68 0.021 64)"
       },
       "450": {
-        "$value": "oklch(0.645 0.014 64)"
+        "$value": "oklch(0.645 0.021 62)"
       },
       "500": {
-        "$value": "oklch(0.56 0.014 63)"
+        "$value": "oklch(0.56 0.021 60)"
       },
       "550": {
-        "$value": "oklch(0.505 0.014 62)"
+        "$value": "oklch(0.505 0.02 58)"
       },
       "600": {
-        "$value": "oklch(0.45 0.013 61)"
+        "$value": "oklch(0.45 0.019 56)"
       },
       "700": {
-        "$value": "oklch(0.36 0.012 60)"
+        "$value": "oklch(0.36 0.02 54)"
       },
       "750": {
-        "$value": "oklch(0.315 0.011 60)"
+        "$value": "oklch(0.315 0.021 53)"
       },
       "800": {
-        "$value": "oklch(0.27 0.01 60)"
+        "$value": "oklch(0.27 0.022 52)"
       },
       "850": {
-        "$value": "oklch(0.215 0.01 60)"
+        "$value": "oklch(0.215 0.021 52)"
       },
       "900": {
-        "$value": "oklch(0.175 0.009 60)"
+        "$value": "oklch(0.175 0.02 50)"
       },
       "925": {
-        "$value": "oklch(0.158 0.008 60)"
+        "$value": "oklch(0.158 0.019 50)"
       },
       "950": {
-        "$value": "oklch(0.135 0.007 60)"
+        "$value": "oklch(0.135 0.018 50)"
       },
       "1000": {
-        "$value": "oklch(0.1 0.005 60)"
+        "$value": "oklch(0.1 0.015 50)"
       },
-      "$description": "Ember neutral: warm stone. Cream at the light end (hue 70), warm graphite at the dark end (hue 60) with chroma held at 0.010 or less, so dark mode reads warm without turning brown."
+      "$description": "Ember neutral: warm stone, paper to espresso, on the ink lightness ladder. The hue drifts from 80 (cream) in the light steps to 50 (espresso) in the dark ones. The light steps carry about three times the ink scale's chroma, so bands and fills read as paper; the middle steps about 1.75 times, so copy reads as a warm sepia grey; the dark steps about twice, at hue 50, so the dark canvas, cards, fills and panels read as espresso rather than neutral black, without drifting towards khaki or mud."
     },
     "grey": {
       "0": {
@@ -792,12 +792,17 @@
           "system-ui",
           "sans-serif"
         ],
-        "$description": "Plus Jakarta Sans. Headings, UI and body copy.",
+        "$description": "Plus Jakarta Sans. UI and body copy, and headings unless the theme gives them their own face.",
         "$extensions": {
           "blocks": {
-            "name": "Plus Jakarta Sans"
+            "name": "Plus Jakarta Sans",
+            "genre": "geometric"
           }
         }
+      },
+      "heading": {
+        "$value": "{font.family.sans}",
+        "$description": "The heading face: every display and heading role (text-hero, text-display, text-h1 to text-h4, text-title), h1 to h6 and font-heading. Follows the sans font unless a theme sets its own."
       },
       "mono": {
         "$value": [
@@ -807,10 +812,11 @@
           "Menlo",
           "monospace"
         ],
-        "$description": "Geist Mono. Code, commands, IDs and tabular data.",
+        "$description": "Geist Mono. Code, commands, IDs and tabular data, and the heading face in the Mono theme.",
         "$extensions": {
           "blocks": {
-            "name": "Geist Mono"
+            "name": "Geist Mono",
+            "genre": "mono"
           }
         }
       }

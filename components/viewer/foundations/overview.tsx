@@ -130,7 +130,7 @@ function TierChain() {
         </h2>
         <p className="max-w-prose text-body text-panel-muted">
           Tokens are written once and compiled to CSS variables and Tailwind utilities. Change a primitive and every
-          role, component and template that uses it follows, in light and dark. A theme re-points the primitives, so
+          role and component that uses it follows, in light and dark. A theme re-points the primitives, so
           the same chain gives each theme its own look.
         </p>
       </div>
@@ -163,7 +163,7 @@ function TierChain() {
           <span className="flex h-14 items-center">
             <Button type="button" variant="brand" tabIndex={-1} aria-hidden>
               <PlusIcon data-icon="inline-start" />
-              Create project
+              Create Project
             </Button>
           </span>
           <div className="grid gap-1">

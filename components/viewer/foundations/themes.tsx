@@ -5,12 +5,13 @@ import { ArrowUpRightIcon } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CodeBlock } from "@/components/viewer/code-block"
-import { ThemeScope } from "@/lib/theme-scope"
-import { themeScopeProps, withLook, type ThemeMode } from "@/lib/themes"
+import { withLook, type ThemeMode } from "@/lib/themes"
 import { cn } from "@/lib/utils"
 
-import { OnlyInTheme } from "./by-theme"
 import { formatRatio, textContrast, wcagLevel } from "./color"
 import {
   aliasHue,
@@ -18,21 +19,28 @@ import {
   describeSize,
   themes,
   themeValues,
-  tokenByName,
   tokenByVar,
-  typeValue,
-  valueIn,
   type ScaleRole,
   type Theme,
 } from "./data"
 import { Code, FoundationPage, Meta, ScopedChip, Section, SubHeading } from "./layout"
 import { rampFill, rampSteps } from "./scale-fill"
 import { ThemeActions } from "./theme-actions"
+import { ThemeCompare } from "./theme-compare"
+import { ThemeStage, type StageItem } from "./theme-stage"
 
 /*
  * Every preview on this page is scoped with data-theme (and .light / .dark
  * for the mode), so it shows that theme whatever the site is on. Only the
- * "Current theme" marks follow the site's own theme.
+ * "Current" and "Current theme" marks follow the site's own theme.
+ *
+ * - The stage (theme-stage.tsx): one theme at a time, large, as a live
+ *   project page of real components (tabs, a card with a chart, an input, a
+ *   select, a table, every button variant, badges and a dark panel), with
+ *   its description, actions, scales, shapes and faces under it.
+ * - Side by side: the comparison strip (theme-compare.tsx), the same small
+ *   composition in all five themes.
+ * - Make your own: the theme file, scoping, previewing and the two gates.
  */
 
 const modes: { mode: ThemeMode; label: string }[] = [
@@ -47,83 +55,15 @@ function shapeOf(value: string) {
 }
 
 /* ------------------------------------------------------------------------ */
-/* Presets at a glance                                                       */
-/* ------------------------------------------------------------------------ */
-
-/**
- * Where a preset card sits. Two across on phones, a lone last card spanning
- * both; three across from @prose (on a six-column grid, so a short last row
- * shares the full width); one row from @5xl, where each card is wide enough
- * for its name, its mark and both chips.
- */
-function railSpan(index: number, count: number) {
-  const short = count % 3
-  const inShortRow = short > 0 && index >= count - short
-  return cn(
-    count % 2 === 1 && index === count - 1 && "col-span-2",
-    !inShortRow ? "@prose:col-span-2" : short === 2 ? "@prose:col-span-3" : "@prose:col-span-6",
-    "@5xl:col-span-1"
-  )
-}
-
-function PresetRail() {
-  return (
-    <ul className="grid grid-cols-2 gap-4 @prose:grid-cols-6 @5xl:grid-flow-col @5xl:grid-cols-none @5xl:auto-cols-fr">
-      {themes.map((theme, i) => (
-        <li key={theme.id} className={cn("min-w-0", railSpan(i, themes.length))}>
-          <a
-            href={`#${theme.id}`}
-            {...themeScopeProps(
-              theme.id,
-              undefined,
-              "group grid h-full overflow-hidden rounded-(--card-radius) border bg-card transition-colors duration-(--duration-fast) ease-standard hover:border-foreground focus-visible:focus-ring outline-none"
-            )}
-          >
-            <span aria-hidden className="grid h-32 content-between bg-subtle p-4">
-              <span className="flex items-start justify-between gap-2">
-                <span className="text-h2 leading-none text-foreground">Aa</span>
-                <span className="flex -space-x-1">
-                  <span className="size-4 rounded-full border-2 border-subtle bg-brand" />
-                  <span className="size-4 rounded-full border-2 border-subtle bg-muted-foreground" />
-                  <span className="size-4 rounded-full border-2 border-subtle bg-panel" />
-                </span>
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="inline-flex h-(--button-height-xs) items-center rounded-(--button-radius) bg-primary px-(--button-padding-x-xs) text-caption font-semibold text-primary-foreground">
-                  Create
-                </span>
-                <span className="inline-flex h-(--button-height-xs) items-center rounded-(--control-radius) border border-input bg-background px-2.5 text-caption text-muted-foreground">
-                  Search
-                </span>
-              </span>
-            </span>
-            <span className="grid content-start gap-0.5 border-t p-4">
-              <span className="flex items-baseline justify-between gap-2">
-                <span className="text-title text-foreground">{theme.name}</span>
-                {/* Printed for every theme; CSS shows the active one, so it is right on the first frame. */}
-                <OnlyInTheme theme={theme.id}>
-                  <span className="text-caption font-semibold text-brand">Current</span>
-                </OnlyInTheme>
-              </span>
-              <span className="text-caption text-muted-foreground">{theme.fonts.sans}</span>
-            </span>
-          </a>
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-/* ------------------------------------------------------------------------ */
 /* One theme: a live composition in light and dark, then its tokens          */
 /* ------------------------------------------------------------------------ */
 
 const projects = [
-  { name: "Website", open: 42 },
-  { name: "Mobile app", open: 31 },
+  { name: "Website relaunch", open: 42 },
+  { name: "Mobile app 2.0", open: 31 },
   { name: "Brand refresh", open: 24 },
-  { name: "Help centre", open: 16 },
-  { name: "Hiring", open: 9 },
+  { name: "Help center", open: 16 },
+  { name: "Q4 planning", open: 9 },
 ]
 
 /* Literal class names so Tailwind generates every series. */
@@ -134,62 +74,171 @@ const people = [
   { initials: "JL", fill: "bg-tint-sand" },
 ]
 
-/** Real components on the theme's tokens: card, badge, chart, input, buttons and a dark panel. */
-function Composition({ label }: { label: string }) {
+const priorities = [
+  { value: "urgent", label: "Urgent" },
+  { value: "high", label: "High" },
+  { value: "medium", label: "Medium" },
+  { value: "low", label: "Low" },
+]
+
+const tasks: { title: string; owner: string; status: string; tone: "success" | "info" | "warning" }[] = [
+  { title: "Write the homepage hero copy", owner: "Priya Raman", status: "Done", tone: "success" },
+  { title: "Review the pricing page", owner: "Maya Patel", status: "In progress", tone: "info" },
+  { title: "Choose the new icon set", owner: "Sofia Alvarez", status: "At risk", tone: "warning" },
+]
+
+/** The bar chart card: open tasks per project in the chart series. */
+function ChartCard() {
   const max = Math.max(...projects.map((p) => p.open))
   return (
+    <figure className="grid gap-4 rounded-(--card-radius) border bg-card p-(--card-padding) text-card-foreground">
+      <figcaption className="flex items-start justify-between gap-3">
+        <span className="grid gap-0.5">
+          <span className="text-h4 text-foreground">Open tasks by project</span>
+          <span className="text-caption text-muted-foreground">122 open across 5 projects</span>
+        </span>
+        <Badge variant="brand">3 new</Badge>
+      </figcaption>
+      <ul className="grid gap-2">
+        {projects.map((p, i) => (
+          <li key={p.name} className="grid grid-cols-[7.5rem_minmax(0,1fr)_1.75rem] items-center gap-3">
+            <span className="truncate text-caption text-copy">{p.name}</span>
+            <span aria-hidden className="block h-2.5 overflow-hidden rounded-xs bg-muted">
+              <span className={cn("block h-full rounded-xs", seriesFill[i])} style={{ width: `${(p.open / max) * 100}%` }} />
+            </span>
+            <span className="text-right font-mono text-xs text-foreground tabular">{p.open}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="flex items-center justify-between gap-3 border-t pt-4">
+        <span className="flex -space-x-1.5">
+          {people.map((p) => (
+            <span
+              key={p.initials}
+              aria-hidden
+              className={cn(
+                "grid size-(--avatar-size-sm) place-items-center rounded-full border-2 border-card text-xs font-semibold text-foreground",
+                p.fill
+              )}
+            >
+              {p.initials}
+            </span>
+          ))}
+        </span>
+        <Button type="button" variant="link">
+          View All Tasks
+        </Button>
+      </div>
+    </figure>
+  )
+}
+
+/**
+ * Real components on the theme's tokens, as a project page: tabs over a
+ * card with a chart, an input and a select, a table, every button variant,
+ * the badges and a dark panel. `label` names the copy ("Ember, dark") so
+ * every control on the page has its own accessible name.
+ */
+function Composition({ label }: { label: string }) {
+  return (
     <>
-      <div className="grid gap-5 rounded-(--card-radius) border bg-card p-(--card-padding) text-card-foreground">
-        <div className="flex items-start justify-between gap-4">
-          <div className="grid min-w-0 gap-1">
-            <p className="text-h4 text-foreground">Website relaunch</p>
-            <p className="text-caption text-muted-foreground">12 of 18 tasks done · Due 24 October</p>
-          </div>
-          <Badge variant="success">On track</Badge>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="grid min-w-0 gap-1">
+          <p className="text-h3 text-foreground">Website relaunch</p>
+          <p className="text-caption text-muted-foreground">Marketing · 12 of 18 tasks done · Due Nov 14</p>
         </div>
+        <Badge variant="success">On track</Badge>
+      </div>
 
-        <figure className="grid gap-3">
-          <figcaption className="flex items-center justify-between gap-3">
-            <span className="text-label text-foreground">Open tasks by project</span>
-            <Badge variant="brand">3 new</Badge>
-          </figcaption>
-          <ul className="grid gap-2">
-            {projects.map((p, i) => (
-              <li key={p.name} className="grid grid-cols-[6.5rem_minmax(0,1fr)_1.75rem] items-center gap-3">
-                <span className="truncate text-caption text-copy">{p.name}</span>
-                <span aria-hidden className="block h-2.5 overflow-hidden rounded-xs bg-muted">
-                  <span className={cn("block h-full rounded-xs", seriesFill[i])} style={{ width: `${(p.open / max) * 100}%` }} />
-                </span>
-                <span className="text-right font-mono text-xs text-foreground tabular">{p.open}</span>
-              </li>
+      <Tabs defaultValue="overview" className="gap-5">
+        <TabsList aria-label={`Project views (${label})`}>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="board">Board</TabsTrigger>
+          <TabsTrigger value="timeline">Timeline</TabsTrigger>
+        </TabsList>
+        <TabsContent value="overview">
+          <ChartCard />
+        </TabsContent>
+        <TabsContent value="board" className="text-caption">
+          18 tasks in four columns: To do, In progress, In review and Done.
+        </TabsContent>
+        <TabsContent value="timeline" className="text-caption">
+          Six milestones from Sep 1 to the launch on Nov 14.
+        </TabsContent>
+      </Tabs>
+
+      <div className="grid gap-2 @md:grid-cols-[minmax(0,1fr)_8.5rem_auto]">
+        <Input aria-label={`New task (${label})`} placeholder="Add a task" />
+        <Select items={priorities} defaultValue="high">
+          <SelectTrigger aria-label={`Priority (${label})`} className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {priorities.map((p) => (
+              <SelectItem key={p.value} value={p.value}>
+                {p.label}
+              </SelectItem>
             ))}
-          </ul>
-        </figure>
+          </SelectContent>
+        </Select>
+        <Button type="button">Add Task</Button>
+      </div>
 
-        <div className="flex gap-2">
-          <Input aria-label={`New task (${label})`} placeholder="Add a task" className="min-w-0 flex-1" />
-          <Button type="button">Add task</Button>
-        </div>
+      {/* On a phone the owner moves under the task and a long title wraps, so Status stays in view. */}
+      <Table variant="card" size="sm" aria-label={`Tasks (${label})`}>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Task</TableHead>
+            <TableHead className="hidden @md:table-cell">Owner</TableHead>
+            <TableHead>Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tasks.map((task) => (
+            <TableRow key={task.title}>
+              <TableCell className="py-2.5 font-semibold text-pretty whitespace-normal">
+                {task.title}
+                <span className="block text-caption font-normal text-muted-foreground @md:hidden">{task.owner}</span>
+              </TableCell>
+              <TableCell className="hidden text-copy @md:table-cell">{task.owner}</TableCell>
+              <TableCell>
+                <Badge variant={task.tone}>{task.status}</Badge>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
-        <div className="flex items-center justify-between gap-3 border-t pt-4">
-          <span className="flex -space-x-1.5">
-            {people.map((p) => (
-              <span
-                key={p.initials}
-                aria-hidden
-                className={cn(
-                  "grid size-(--avatar-size-sm) place-items-center rounded-full border-2 border-card text-xs font-semibold text-foreground",
-                  p.fill
-                )}
-              >
-                {p.initials}
-              </span>
-            ))}
-          </span>
-          <Button type="button" variant="link">
-            View all tasks
-          </Button>
-        </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button type="button">Create Project</Button>
+        <Button type="button" variant="brand">
+          Start Free Trial
+        </Button>
+        <Button type="button" variant="secondary">
+          Duplicate
+        </Button>
+        <Button type="button" variant="outline">
+          Share
+        </Button>
+        <Button type="button" variant="ghost">
+          Archive
+        </Button>
+        <Button type="button" variant="destructive">
+          Delete
+        </Button>
+        <Button type="button" variant="link">
+          View Report
+        </Button>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Badge variant="success">On track</Badge>
+        <Badge variant="warning">At risk</Badge>
+        <Badge variant="destructive">Off track</Badge>
+        <Badge variant="brand">3 new</Badge>
+        <Badge variant="secondary">Paused</Badge>
+        <Badge variant="outline">Guest</Badge>
+        <Badge>Owner</Badge>
       </div>
 
       <div className="grid gap-4 rounded-(--panel-radius) bg-panel p-(--panel-padding-sm) text-panel-foreground">
@@ -197,35 +246,26 @@ function Composition({ label }: { label: string }) {
         <p className="text-body text-panel-muted">
           <span className="font-semibold text-panel-brand">92%</span> of tasks closed on schedule this month.
         </p>
+        <ul className="grid gap-1.5 text-caption text-panel-muted">
+          <li className="flex items-center gap-2">
+            <span aria-hidden className="size-2 rounded-full bg-panel-success" />
+            Homepage copy approved
+          </li>
+          <li className="flex items-center gap-2">
+            <span aria-hidden className="size-2 rounded-full bg-panel-warning" />
+            Pricing review due Friday
+          </li>
+        </ul>
         <div className="flex flex-wrap gap-2">
           <Button type="button" variant="inverse" size="sm">
-            Invite team
+            Invite Team
           </Button>
           <Button type="button" variant="outline-inverse" size="sm">
-            View report
+            View Report
           </Button>
         </div>
       </div>
     </>
-  )
-}
-
-function Compositions({ theme }: { theme: Theme }) {
-  return (
-    <div className="grid gap-6 @narrow:grid-cols-2">
-      {modes.map(({ mode, label }) => (
-        <figure key={mode} className="grid min-w-0 content-start gap-3">
-          <figcaption className="text-caption text-muted-foreground">{label}</figcaption>
-          <ThemeScope
-            theme={theme.id}
-            mode={mode}
-            className="grid gap-4 rounded-(--panel-radius) border bg-background p-4 text-copy @prose:p-6"
-          >
-            <Composition label={`${theme.name}, ${label.toLowerCase()}`} />
-          </ThemeScope>
-        </figure>
-      ))}
-    </div>
   )
 }
 
@@ -247,23 +287,8 @@ function Ramp({ theme, role }: { theme: Theme; role: ScaleRole }) {
           <span key={step} className={rampFill[role][step]} />
         ))}
       </span>
-      <span aria-hidden className="flex justify-between">
-        <Meta>50</Meta>
-        <Meta>500</Meta>
-        <Meta>950</Meta>
-      </span>
     </div>
   )
-}
-
-/* Literal class names so Tailwind generates every corner. */
-const cornerClass: Record<string, string> = {
-  xs: "rounded-tl-xs",
-  sm: "rounded-tl-sm",
-  md: "rounded-tl-md",
-  lg: "rounded-tl-lg",
-  xl: "rounded-tl-xl",
-  "2xl": "rounded-tl-2xl",
 }
 
 function ShapeDetails({ theme }: { theme: Theme }) {
@@ -276,26 +301,6 @@ function ShapeDetails({ theme }: { theme: Theme }) {
   return (
     <div className="grid content-start gap-5">
       <h3 className="text-title text-foreground">Shape</h3>
-      <ul aria-label="Radius scale" className="grid grid-cols-6 gap-2">
-        {Object.keys(cornerClass).map((step) => {
-          const t = tokenByName(`radius.${step}`)
-          return (
-            <li key={step} className="grid min-w-0 justify-items-start gap-2">
-              <span
-                aria-hidden
-                className={cn(
-                  "block aspect-square w-full max-w-12 border-t-(length:--border-width-strong) border-l-(length:--border-width-strong) border-foreground",
-                  cornerClass[step]
-                )}
-              />
-              <span className="grid">
-                <span className="font-mono text-xs font-semibold text-foreground">{step}</span>
-                <Meta>{t ? describeSize(valueIn(theme.id, t).value) : ""}</Meta>
-              </span>
-            </li>
-          )
-        })}
-      </ul>
       <dl className="grid border-b">
         {components.map(([label, value]) => (
           <div key={label} className="flex items-baseline justify-between gap-4 border-t py-2.5">
@@ -308,30 +313,18 @@ function ShapeDetails({ theme }: { theme: Theme }) {
   )
 }
 
+/** The theme's heading face and text face, each as a short sample with its name. */
 function TypeDetails({ theme }: { theme: Theme }) {
-  const h1 = tokenByName("type.h1")
-  const tracking = h1 ? typeValue({ ...h1, value: valueIn(theme.id, h1).value })?.letterSpacing : undefined
   return (
     <div className="grid content-start gap-5">
       <h3 className="text-title text-foreground">Type</h3>
-      <div className="grid gap-4 border-t pt-4">
-        <div className="flex items-end justify-between gap-4">
-          <span aria-hidden className="text-6xl leading-none font-extrabold text-foreground">
-            Aa
-          </span>
-          <span className="grid justify-items-end text-right">
-            <span className="text-label text-foreground">{theme.fonts.sans}</span>
-            <Meta>{tracking ? `h1 tracking ${tracking}` : "Headings and UI"}</Meta>
-          </span>
-        </div>
-        <p className="text-h3 text-balance text-foreground">Plan it. Track it. Ship it together.</p>
-        <p className="text-caption text-copy">
-          Give each task an owner and a due date, and keep the discussion next to the work.
-        </p>
+      <div className="grid gap-1.5 border-t pt-4">
+        <p className="text-h3 text-foreground">Plan it. Track it.</p>
+        <Meta>{theme.fonts.heading}</Meta>
       </div>
-      <div className="flex items-baseline justify-between gap-4 border-t pt-4">
-        <code className="truncate font-mono text-code text-foreground">npm install @acme/sdk</code>
-        <span className="shrink-0 text-label text-foreground">{theme.fonts.mono}</span>
+      <div className="grid gap-1.5 border-t pt-4">
+        <p className="text-body text-copy">Give each task an owner and a due date.</p>
+        <Meta>{theme.fonts.sans}</Meta>
       </div>
     </div>
   )
@@ -351,95 +344,92 @@ function ThemeDetails({ theme }: { theme: Theme }) {
   )
 }
 
-/**
- * A theme's section is itself scoped to the theme, in the page's mode: its
- * heading, buttons and details are drawn by that theme.
- */
-function ThemeSection({ theme }: { theme: Theme }) {
-  const titleId = `${theme.id}-title`
+/** Under the stage: what the theme is, its id, and the actions to use or preview it. */
+function ThemeSummary({ theme }: { theme: Theme }) {
   return (
-    <section
-      id={theme.id}
-      aria-labelledby={titleId}
-      data-slot="foundation-section"
-      {...themeScopeProps(theme.id, undefined, "grid min-w-0 scroll-mt-24 gap-10 border-t pt-10")}
-    >
-      <header className="grid gap-5 @narrow:grid-cols-2 @narrow:items-start @narrow:gap-10">
-        <div className="grid gap-3">
-          <h2 id={titleId} className="text-h2 text-foreground">
-            {theme.name}
-          </h2>
-          <Code className="text-muted-foreground">data-theme=&quot;{theme.id}&quot;</Code>
-        </div>
-        <div className="grid gap-5 @narrow:justify-items-start">
-          <p className="max-w-prose text-body text-copy">{theme.description}</p>
-          <div className="flex flex-wrap items-center gap-3">
-            <ThemeActions theme={theme.id} name={theme.name} />
-            <Button
-              variant="outline"
-              nativeButton={false}
-              render={<a href={withLook("/live", { theme: theme.id })} target="_blank" rel="noopener" />}
-            >
-              Preview templates
-              <ArrowUpRightIcon data-icon="inline-end" />
-              <span className="sr-only">(opens in a new tab)</span>
-            </Button>
-          </div>
-        </div>
-      </header>
-      <Compositions theme={theme} />
-      <ThemeDetails theme={theme} />
-    </section>
+    <div className="grid gap-6 @narrow:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] @narrow:items-end @narrow:gap-10">
+      <p className="max-w-prose text-lead text-copy">{theme.description}</p>
+      <div className="flex flex-wrap items-center gap-3 @narrow:justify-end">
+        <ThemeActions theme={theme.id} name={theme.name} />
+        <Button
+          variant="outline"
+          nativeButton={false}
+          render={<a href={withLook("/components", { theme: theme.id })} target="_blank" rel="noopener" />}
+        >
+          Preview Components
+          <ArrowUpRightIcon data-icon="inline-end" />
+          <span className="sr-only">(Opens in a New Tab)</span>
+        </Button>
+      </div>
+    </div>
   )
 }
+
+const stageItems: StageItem[] = themes.map((theme) => ({
+  id: theme.id,
+  name: theme.name,
+  composition: <Composition label={theme.name} />,
+  summary: <ThemeSummary theme={theme} />,
+  details: <ThemeDetails theme={theme} />,
+}))
 
 /* ------------------------------------------------------------------------ */
 /* Make your own theme                                                       */
 /* ------------------------------------------------------------------------ */
 
 const themeFile = `{
-  "$description": "A blue accent on ink neutrals, rounded-square buttons and Manrope.",
+  "$description": "A fuchsia accent on ink, 8px buttons, 12px cards, Space Grotesk headings over Inter.",
   "$extensions": {
     "blocks": {
-      "theme": { "name": "Harbor", "order": 5, "modes": ["light", "dark"] }
+      "theme": { "name": "Orchid", "order": 5, "modes": ["light", "dark"] }
     }
   },
   "theme": {
     "accent": {
-      "50": { "$value": "{color.blue.50}" },
-      "100": { "$value": "{color.blue.100}" },
-      "200": { "$value": "{color.blue.200}" },
-      "300": { "$value": "{color.blue.300}" },
-      "400": { "$value": "{color.blue.400}" },
-      "500": { "$value": "{color.blue.500}" },
-      "600": { "$value": "{color.blue.600}" },
-      "700": { "$value": "{color.blue.700}" },
-      "800": { "$value": "{color.blue.800}" },
-      "900": { "$value": "{color.blue.900}" },
-      "950": { "$value": "{color.blue.950}" },
-      "dim": { "$value": "{color.blue.dim}" }
+      "50": { "$value": "{color.fuchsia.50}" },
+      "100": { "$value": "{color.fuchsia.100}" },
+      "200": { "$value": "{color.fuchsia.200}" },
+      "300": { "$value": "{color.fuchsia.300}" },
+      "400": { "$value": "{color.fuchsia.400}" },
+      "500": { "$value": "{color.fuchsia.500}" },
+      "600": { "$value": "{color.fuchsia.600}" },
+      "700": { "$value": "{color.fuchsia.700}" },
+      "800": { "$value": "{color.fuchsia.800}" },
+      "900": { "$value": "{color.fuchsia.900}" },
+      "950": { "$value": "{color.fuchsia.950}" },
+      "dim": { "$value": "{color.fuchsia.dim}" }
     }
   },
   "component": {
-    "button": { "radius": { "$value": "{radius.md}" } },
-    "badge": { "radius": { "$value": "{radius.sm}" } }
+    "button": { "radius": { "$value": "{radius.sm}" } },
+    "card": { "radius": { "$value": "{radius.md}" } },
+    "badge": { "radius": { "$value": "{radius.xs}" } }
   },
   "font": {
     "family": {
-      "sans": {
+      "heading": {
         "$value": [
-          "var(--font-manrope)",
+          "var(--font-space-grotesk)",
           "ui-sans-serif",
           "system-ui",
           "sans-serif"
         ],
-        "$extensions": { "blocks": { "name": "Manrope" } }
+        "$extensions": { "blocks": { "name": "Space Grotesk" } }
+      },
+      "sans": {
+        "$value": [
+          "var(--font-inter)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif"
+        ],
+        "$extensions": { "blocks": { "name": "Inter" } }
       }
     }
   },
   "type": {
-    "h1": { "$value": { "letterSpacing": "-0.038em" } },
-    "h2": { "$value": { "letterSpacing": "-0.035em" } }
+    "h1": { "$value": { "letterSpacing": "-0.03em" } },
+    "h2": { "$value": { "letterSpacing": "-0.028em" } }
   },
   "light": {
     "color": { "ring": { "$value": "{theme.accent.700}" } }
@@ -454,8 +444,6 @@ const scopeCode = `// Any element. The theme applies to its subtree;
 </section>
 
 // In React, from server or client components
-import { ThemeScope } from "@/lib/theme-scope"
-import { PortalScope } from "@/lib/portal-container"
 
 <ThemeScope theme="forest" mode="light" className="bg-background">
   {/* Menus and dialogs opened in here use Forest, light */}
@@ -469,27 +457,41 @@ const codeFrame = "rounded-(--card-radius) border"
 const commands = `npm run tokens
 npm run contrast
 npm run contrast -- --all
+npm run themes
 `
 
 const settable: { keys: string[]; sets: string }[] = [
   {
     keys: ["theme.accent.50 … 950", "dim"],
-    sets: "The accent scale that links, focus, the brand button and highlights read. Point each step at a fixed scale, such as {color.blue.600}, or give it an OKLCH value.",
+    sets: "The accent scale that links, focus, the brand button and highlights read. Point each step at a fixed scale, such as {color.cobalt.600}, or give it an OKLCH value.",
   },
   { keys: ["theme.neutral.0 … 1000"], sets: "The neutral scale, and with it the tint of every surface, line and text colour." },
-  { keys: ["radius.xs … 4xl"], sets: "The radius scale. Component radii that point at it follow." },
   {
-    keys: ["component.button.radius", "component.badge.radius", "component.kern.pull", "component.link.decoration-line"],
-    sets: "Component tokens: the button and badge shape, how far display headings pull in punctuation for the font, and whether links underline at rest.",
+    keys: ["radius.xs … 4xl"],
+    sets: "The radius scale. Component radii that point at it follow: controls at md, cards at lg, dialogs at xl, panels at 2xl.",
   },
-  { keys: ["font.family.sans", "font.family.mono"], sets: "Font stacks, with the family's name in $extensions.blocks.name." },
+  {
+    keys: [
+      "component.button.radius",
+      "component.button.radius-sm",
+      "component.card.radius",
+      "component.badge.radius",
+      "component.kern.pull",
+      "component.link.decoration-line",
+    ],
+    sets: "Component tokens: a shape of its own for buttons, cards or badges, how far display headings pull in punctuation for the font, and whether links underline at rest.",
+  },
+  {
+    keys: ["font.family.sans", "font.family.heading", "font.family.mono"],
+    sets: "Font stacks, with the family's name in $extensions.blocks.name and its genre (geometric, neo-grotesque, grotesque, humanist, serif or mono) in $extensions.blocks.genre. The heading face follows the sans face unless the theme gives it one, such as Forest's grotesque, Ember's serif or Mono's monospace.",
+  },
   { keys: ["type.<role>"], sets: "Tracking only: { \"letterSpacing\": … }, where a font needs it." },
   { keys: ["light.color.*", "dark.color.*"], sets: "One semantic colour in one mode, such as Mono's ink accent." },
 ]
 
 const previewLinks: { label: string; href: string }[] = [
-  { label: "Home in Ember, dark", href: withLook("/live", { theme: "ember", mode: "dark" }) },
-  { label: "Dashboard in Forest, light", href: withLook("/live/app", { theme: "forest", mode: "light" }) },
+  { label: "Components in Ember, dark", href: withLook("/components", { theme: "ember", mode: "dark" }) },
+  { label: "Dialog in Forest, light", href: withLook("/components/dialog", { theme: "forest", mode: "light" }) },
   { label: "Colour in Mono", href: withLook("/foundations/colors", { theme: "mono" }) },
 ]
 
@@ -507,7 +509,15 @@ const gatePairs: { pairs: [text: string, surface: string][]; label: string; min:
     label: "Status on its fill",
     min: 4.5,
   },
-  { pairs: [["--ring", "--background"]], label: "Focus ring", min: 3 },
+  {
+    pairs: [
+      ["--ring", "--background"],
+      ["--ring", "--panel"],
+      ["--ring", "--panel-raised"],
+    ],
+    label: "Focus ring",
+    min: 3,
+  },
 ]
 
 function GateRatio({ ratio, min }: { ratio: number | null; min: number }) {
@@ -619,13 +629,13 @@ function MakeYourOwn() {
           <p className="text-caption text-copy">
             A theme never changes spacing, sizes, type sizes or weights, motion, or what the status colours mean. Tokens
             with breakpoint values cannot be themed. The build stops with an error on anything else. A new scale goes
-            in <Code>primitives.tokens.json</Code>: <Code>node scripts/color-scale.mjs accent 250 0.18</Code> prints one
-            built like the others. A new font loads with <Code>next/font/google</Code> in <Code>app/layout.tsx</Code>,
+            in <Code>primitives.tokens.json</Code>: <Code>node scripts/color-scale.mjs accent 330 0.2</Code> prints one
+            built like the others, such as the fuchsia scale the example points at. A new font loads with <Code>next/font/google</Code> in <Code>app/layout.tsx</Code>,
             with a <Code>variable</Code> and <Code>preload: false</Code>, and the theme names that variable.
           </p>
         </div>
         <div className="grid min-w-0 gap-3">
-          <Meta>design-system/themes/harbor.tokens.json</Meta>
+          <Meta>design-system/themes/orchid.tokens.json</Meta>
           <CodeBlock code={themeFile} className={codeFrame} />
         </div>
       </div>
@@ -668,13 +678,20 @@ function MakeYourOwn() {
       <div className="grid gap-8">
         <div className="grid gap-8 @narrow:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] @narrow:items-start @narrow:gap-10">
           <div className="grid gap-2">
-            <SubHeading>Pass the contrast gate</SubHeading>
+            <SubHeading>Pass the gates</SubHeading>
             <p className="text-body text-copy">
               <Code>npm run tokens</Code> compiles every theme into the CSS and the typed token list.{" "}
               <Code>npm run contrast</Code> then checks every theme in light and dark against WCAG AA: 4.5:1 for text,
-              links and status colours on the surfaces they sit on, 3:1 for the focus ring. Lines are not gated: they are hairlines by design. Add{" "}
-              <Code>-- --all</Code> to print every ratio. <Code>npm run check</Code> runs both, and a failing pair stops
-              it, so a theme that ships is readable. The table shows the pairs that come closest.
+              links and status colours on the surfaces they sit on, 3:1 for the focus ring on the canvas and on panels
+              and for every chart series, and 4.5:1 for the syntax colours of code blocks on the terminal. Lines are
+              not gated: they are hairlines by design. Add <Code>-- --all</Code> to print every ratio.
+            </p>
+            <p className="text-body text-copy">
+              <Code>npm run themes</Code> checks that the theme is an identity of its own, not a recolour: against every
+              other theme it has to differ on at least four of six traits, the accent hue, the neutrals&apos; tint, the
+              button shape, the card radius, and the kind of heading face and of text face. Faces compare by genre, so
+              two geometric sans count as alike. It prints each theme&apos;s traits and what every pair shares. <Code>npm run check</Code> runs all three, and a failure stops it. The table shows
+              the contrast pairs that come closest.
             </p>
           </div>
           <CodeBlock code={commands} className={cn("min-w-0", codeFrame)} />
@@ -692,22 +709,20 @@ function MakeYourOwn() {
 export function ThemesFoundation({ title, description }: { title: string; description: string }) {
   return (
     <FoundationPage title={title} description={description}>
-      <Section
-        id="presets"
-        title="Presets"
-        description="A theme sets the accent, the neutrals' tint, the radius scale and the fonts. Appearance, light or dark, is separate: every theme works in both. The theme you choose is saved in this browser and applies to the viewer and the templates."
-      >
-        <PresetRail />
-      </Section>
+      <ThemeStage items={stageItems} />
 
-      {themes.map((theme) => (
-        <ThemeSection key={theme.id} theme={theme} />
-      ))}
+      <Section
+        id="side-by-side"
+        title="Side by side"
+        description="The same composition in all five themes."
+      >
+        <ThemeCompare />
+      </Section>
 
       <Section
         id="make-your-own"
         title="Make your own theme"
-        description="A theme is one token file. The build turns it into a data-theme scope, adds it to the Theme picker and the ?theme= parameter, and checks its contrast."
+        description="A theme is one token file. The build turns it into a data-theme scope and adds it to the Theme picker and the ?theme= parameter. Two gates check it: its contrast, and that it stands apart from every other theme."
       >
         <MakeYourOwn />
       </Section>

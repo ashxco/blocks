@@ -1,5 +1,5 @@
 {
-  "$description": "A confident blue accent on cool slate, pill buttons with crisp 8px controls and 14px cards, Inter Tight.",
+  "$description": "A cobalt accent on a visibly blue slate with deep navy ink, panels and dark mode, 8px rectangular buttons and controls, crisp 12px cards, Inter Tight throughout at its own open spacing.",
   "$extensions": {
     "blocks": {
       "theme": {
@@ -14,46 +14,46 @@
   },
   "theme": {
     "accent": {
-      "$description": "Points at color.blue (design-system/tokens/primitives.tokens.json).",
+      "$description": "Ocean points the accent at cobalt (color.cobalt in the primitives): a crisp, saturated blue whose working steps sit at hue 256 to 259, 26 degrees from the Blocks violet and clear of the info sky.",
       "50": {
-        "$value": "{color.blue.50}"
+        "$value": "{color.cobalt.50}"
       },
       "100": {
-        "$value": "{color.blue.100}"
+        "$value": "{color.cobalt.100}"
       },
       "200": {
-        "$value": "{color.blue.200}"
+        "$value": "{color.cobalt.200}"
       },
       "300": {
-        "$value": "{color.blue.300}"
+        "$value": "{color.cobalt.300}"
       },
       "400": {
-        "$value": "{color.blue.400}"
+        "$value": "{color.cobalt.400}"
       },
       "500": {
-        "$value": "{color.blue.500}"
+        "$value": "{color.cobalt.500}"
       },
       "600": {
-        "$value": "{color.blue.600}"
+        "$value": "{color.cobalt.600}"
       },
       "700": {
-        "$value": "{color.blue.700}"
+        "$value": "{color.cobalt.700}"
       },
       "800": {
-        "$value": "{color.blue.800}"
+        "$value": "{color.cobalt.800}"
       },
       "900": {
-        "$value": "{color.blue.900}"
+        "$value": "{color.cobalt.900}"
       },
       "950": {
-        "$value": "{color.blue.950}"
+        "$value": "{color.cobalt.950}"
       },
       "dim": {
-        "$value": "{color.blue.dim}"
+        "$value": "{color.cobalt.dim}"
       }
     },
     "neutral": {
-      "$description": "Points at color.slate (design-system/tokens/primitives.tokens.json).",
+      "$description": "Ocean points the neutrals at slate (color.slate in the primitives): blue-grey bands, fills and hairlines, and deep navy headings, primary buttons, panels and dark canvas instead of near-black.",
       "0": {
         "$value": "{color.slate.0}"
       },
@@ -127,22 +127,38 @@
       "$value": "0.5rem"
     },
     "lg": {
-      "$value": "0.875rem"
+      "$value": "0.75rem"
     },
     "xl": {
-      "$value": "1.125rem"
+      "$value": "0.875rem"
     },
     "2xl": {
-      "$value": "1.25rem"
+      "$value": "1rem"
     },
     "3xl": {
-      "$value": "1.5rem"
+      "$value": "1.25rem"
     },
     "4xl": {
-      "$value": "2rem"
+      "$value": "1.5rem"
     }
   },
   "component": {
+    "button": {
+      "radius": {
+        "$value": "{radius.md}",
+        "$description": "8px rectangles, not pills: the same corner as Ocean's controls."
+      },
+      "radius-xs": {
+        "$value": "{radius.sm}",
+        "$description": "6px, in proportion on 28px buttons."
+      }
+    },
+    "badge": {
+      "radius": {
+        "$value": "{radius.sm}",
+        "$description": "6px tags, matching the rectangular buttons."
+      }
+    },
     "overlay": {
       "item-radius": {
         "$value": "{radius.xs}",
@@ -151,7 +167,8 @@
     },
     "kern": {
       "pull": {
-        "$value": "0.025em"
+        "$value": "0.025em",
+        "$description": "Inter Tight's comma and full stop sit close already; a larger pull runs a comma into the leg of a k or the tail of a y at hero sizes."
       }
     }
   },
@@ -167,16 +184,18 @@
         "$description": "Inter Tight. Headings, UI and body copy.",
         "$extensions": {
           "blocks": {
-            "name": "Inter Tight"
+            "name": "Inter Tight",
+            "genre": "neo-grotesque"
           }
         }
       }
     }
   },
   "type": {
+    "$description": "Inter Tight is Inter with the spacing already drawn in, so it is set close to its own spacing: display roles take only a light pull, from -0.015em (hero, display) through -0.012em (h1, h2) to -0.004em (title), which keeps its open, engineered rhythm instead of the crushed setting of Plus Jakarta Sans. Text from 13 to 19px opens by 0.004em to 0.012em, more as it gets smaller, and the size steps run from 0.003em (lg) and 0em (xl) to -0.006em (2xl) and -0.016em (7xl), so the scale never tightens out of order.",
     "hero": {
       "$value": {
-        "letterSpacing": "-0.02em"
+        "letterSpacing": "-0.015em"
       }
     },
     "display": {
@@ -186,77 +205,107 @@
     },
     "h1": {
       "$value": {
-        "letterSpacing": "-0.02em"
+        "letterSpacing": "-0.012em"
       }
     },
     "h2": {
       "$value": {
-        "letterSpacing": "-0.018em"
+        "letterSpacing": "-0.012em"
       }
     },
     "h3": {
       "$value": {
-        "letterSpacing": "-0.014em"
+        "letterSpacing": "-0.01em"
       }
     },
     "h4": {
       "$value": {
-        "letterSpacing": "-0.01em"
+        "letterSpacing": "-0.007em"
       }
     },
     "title": {
       "$value": {
-        "letterSpacing": "-0.005em"
+        "letterSpacing": "-0.004em"
       }
     },
     "lead": {
       "$value": {
-        "letterSpacing": "0.002em"
+        "letterSpacing": "0.004em"
       }
     },
     "body": {
       "$value": {
-        "letterSpacing": "0.005em"
+        "letterSpacing": "0.008em"
       }
     },
     "label": {
       "$value": {
-        "letterSpacing": "0.004em"
+        "letterSpacing": "0.006em"
       }
     },
     "control": {
       "$value": {
-        "letterSpacing": "0.005em"
+        "letterSpacing": "0.008em"
       }
     },
     "caption": {
       "$value": {
-        "letterSpacing": "0.008em"
+        "letterSpacing": "0.012em"
+      }
+    },
+    "xs": {
+      "$value": {
+        "letterSpacing": "0.012em"
+      }
+    },
+    "sm": {
+      "$value": {
+        "letterSpacing": "0.006em"
+      }
+    },
+    "base": {
+      "$value": {
+        "letterSpacing": "0.006em"
+      }
+    },
+    "lg": {
+      "$value": {
+        "letterSpacing": "0.003em"
+      }
+    },
+    "xl": {
+      "$value": {
+        "letterSpacing": "0em"
+      }
+    },
+    "2xl": {
+      "$value": {
+        "letterSpacing": "-0.006em"
       }
     },
     "3xl": {
       "$value": {
-        "letterSpacing": "-0.018em"
+        "letterSpacing": "-0.01em"
       }
     },
     "4xl": {
       "$value": {
-        "letterSpacing": "-0.02em"
+        "letterSpacing": "-0.012em"
       }
     },
     "5xl": {
       "$value": {
-        "letterSpacing": "-0.024em"
+        "letterSpacing": "-0.014em"
       }
     },
     "6xl": {
       "$value": {
-        "letterSpacing": "-0.027em"
+        "letterSpacing": "-0.015em"
       }
     },
     "7xl": {
       "$value": {
-        "letterSpacing": "-0.03em"
+        "letterSpacing": "-0.016em"
       }
     }
   },
@@ -264,7 +313,7 @@
     "color": {
       "tint": {
         "violet": {
-          "$value": "oklch(0.935 0.031 260)",
+          "$value": "oklch(0.935 0.028 255)",
           "$description": "The first tint follows the accent: pale cobalt."
         },
         "sky": {
@@ -274,9 +323,25 @@
       },
       "chart": {
         "2": {
-          "$value": "oklch(0.63 0.11 215)",
-          "$description": "Cyan at 3.4:1 on cards, lighter than the blue first series and apart from the green third one so all three separate."
+          "$value": "oklch(0.47 0.079 212)",
+          "$description": "Deep petrol at 6.6:1 on cards, in place of the shared sky. With the leaf third series it splits the blue-green family by lightness as well as hue: 0.17 darker and 74 degrees from chart 3, and far less chromatic than the cobalt first series, so lines stay easy to follow where they cross."
+        },
+        "3": {
+          "$value": "oklch(0.64 0.16 138)",
+          "$description": "A yellower leaf green at 3.2:1 on cards, in place of the shared green, so it no longer shares the petrol second series' hue family or lightness."
         }
+      },
+      "info": {
+        "$value": "oklch(0.52 0.093 217)",
+        "$description": "Ocean moves info from the shared sky (hue 235) to cerulean (about hue 216), so an info state never reads as the cobalt accent beside it. Same meaning and contrast pairs."
+      },
+      "info-subtle": {
+        "$value": "oklch(0.97 0.022 215)",
+        "$description": "Quiet info fill, at the Ocean info hue."
+      },
+      "brand-subtle": {
+        "$value": "oklch(0.93 0.034 256)",
+        "$description": "Pale cobalt at the edge of sRGB, a step deeper and about 2.4 times as chromatic as the slate secondary fill, so brand badges and bubbles read blue beside secondary chips. Pale blues hold little chroma near white, so the default theme.accent.50 cannot carry it."
       }
     }
   },
@@ -284,7 +349,7 @@
     "color": {
       "tint": {
         "violet": {
-          "$value": "oklch(0.25 0.035 262)"
+          "$value": "oklch(0.25 0.04 259)"
         },
         "sky": {
           "$value": "oklch(0.25 0.024 212)"
@@ -292,8 +357,24 @@
       },
       "chart": {
         "2": {
-          "$value": "oklch(0.8 0.1 212)"
+          "$value": "oklch(0.8 0.115 198)"
+        },
+        "3": {
+          "$value": "oklch(0.66 0.16 138)",
+          "$description": "The same leaf green as in light mode, so the third series keeps its colour when the mode changes."
         }
+      },
+      "info": {
+        "$value": "oklch(0.72 0.11 215)",
+        "$description": "Ocean moves info from the shared sky (hue 235) to cerulean (about hue 216), so an info state never reads as the cobalt accent beside it. Same meaning and contrast pairs."
+      },
+      "info-subtle": {
+        "$value": "oklch(0.26 0.035 215)",
+        "$description": "Quiet info fill, at the Ocean info hue."
+      },
+      "brand-subtle-foreground": {
+        "$value": "{theme.accent.300}",
+        "$description": "One step stronger than the default so brand badges read cobalt on the dark navy fill, like the status badges beside them."
       }
     }
   }
