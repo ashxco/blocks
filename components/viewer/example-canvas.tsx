@@ -11,7 +11,7 @@ import { CodeBlock } from "@/components/viewer/code-block"
 import { CopyButton } from "@/components/viewer/copy-button"
 import { deviceOrder, devices, viewportStyle, type Device } from "@/components/viewer/devices"
 import { slugify } from "@/components/viewer/nav"
-import { useElementSize } from "@/components/viewer/scaled-frame"
+import { useElementSize } from "@/components/viewer/use-element-size"
 import { Segmented } from "@/components/viewer/segmented"
 import { themeScope, useSiteLook, type SiteTheme } from "@/components/viewer/site-theme"
 import { thumbnailExample } from "@/components/viewer/thumbnail-example"
@@ -29,8 +29,10 @@ export interface ExampleProps {
   /**
    * How the preview canvas lays out its children.
    * - center: centred, wrapping row (default)
-   * - stack: left-aligned column
-   * - full: no padding, children fill the canvas (molecules, sections)
+   * - stack: a column centred on the canvas. Each child fills the column up
+   *   to its own max-width (max-w-sm, max-w-prose …) and centres; a child
+   *   with its own width or margins keeps them.
+   * - full: no padding, children fill the canvas (app frames, site navigation, a page with a dialog pinned open)
    *
    * The canvas is a container that includes the center and stack padding, so
    * container queries and cqw units in an example see about 5rem more than
@@ -51,6 +53,13 @@ export interface ExampleProps {
 }
 
 type CanvasTheme = SiteTheme
+
+/*
+ * The stack layout's children: full width up to their own max-width, centred.
+ * Written with :where() so it has no specificity and a child's own width or
+ * margin classes (w-64, w-fit, mx-0) always win.
+ */
+const stackChildren = "[:where(&>*)]:mx-auto [:where(&>*)]:w-full"
 
 /* -------------------------------------------------------------------------- */
 /* Thumbnails                                                                  */
@@ -331,7 +340,7 @@ function ExampleThumbnail({
             // its popup stays inside, and a long page or panel is clipped.
             stage && "grid h-full w-full grid-rows-1 *:h-full! *:min-h-0!",
             layout === "center" && "flex h-full flex-wrap content-center items-center justify-center gap-4 p-10",
-            layout === "stack" && "grid h-full content-center gap-4 p-10"
+            layout === "stack" && cn("grid h-full content-center gap-4 p-10", stackChildren)
           )}
           style={
             framing && !full
@@ -550,7 +559,7 @@ export function Example({
                   <div
                     className={cn(
                       layout === "center" && "flex min-h-52 flex-wrap content-center items-center justify-center gap-4 p-6 sm:p-12",
-                      layout === "stack" && "grid gap-4 p-6 sm:p-10",
+                      layout === "stack" && cn("grid gap-4 p-6 sm:p-10", stackChildren),
                       layout === "full" && "w-full",
                       minHeight
                     )}

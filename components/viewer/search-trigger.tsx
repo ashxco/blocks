@@ -6,7 +6,7 @@ import { SearchIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Kbd } from "@/components/ui/kbd"
 
-/** Event the viewer header listens for to open the command palette. */
+/** Event the viewer's search (ViewerSearch) listens for to open the command palette. */
 export const OPEN_SEARCH_EVENT = "blocks:open-search"
 
 export function openSearch() {

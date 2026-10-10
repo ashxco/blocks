@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { ExampleThumbnailContext } from "@/components/viewer/example-canvas"
-import { useElementSize } from "@/components/viewer/scaled-frame"
+import { useElementSize } from "@/components/viewer/use-element-size"
 
 /*
  * On phones each tile is the width of the screen, and a 1280px section scaled

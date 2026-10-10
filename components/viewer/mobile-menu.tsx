@@ -2,29 +2,16 @@
 
 import * as React from "react"
 import { usePathname } from "next/navigation"
-import { ArrowUpRightIcon, MenuIcon, XIcon } from "lucide-react"
+import { MenuIcon, XIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import {
-  Sheet,
-  SheetBody,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { SidebarNav } from "@/components/viewer/sidebar-nav"
-import { ThemePicker } from "@/components/viewer/theme-picker"
-import { ThemeToggle } from "@/components/viewer/theme-toggle"
-import { Wordmark } from "@/components/viewer/wordmark"
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { SidebarPanel } from "@/components/viewer/sidebar-panel"
 
 /**
- * Navigation for screens without the sidebar: the system's own sheet, from
- * the right. The Appearance toggle sits by the close button, as in the
- * header; the Theme picker gets a labelled row of its own above the footer
- * link, with the theme's name, since the header only has room for its dot.
+ * Navigation below lg, where there is no sidebar: one small frosted button
+ * floating in the top corner, which opens the sidebar's panel in a sheet
+ * from the left. There is no top bar, so the page keeps the whole screen.
  */
 export function MobileMenu() {
   const [open, setOpen] = React.useState(false)
@@ -41,48 +28,31 @@ export function MobileMenu() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
-        render={<Button variant="ghost" size="icon-sm" className="lg:hidden" />}
+        render={
+          <Button
+            variant="outline"
+            size="icon-sm"
+            className="fixed top-3 left-3 z-(--z-header) border-border bg-background/80 backdrop-blur-glass lg:hidden"
+          />
+        }
         aria-label="Open navigation"
       >
         <MenuIcon aria-hidden="true" />
       </SheetTrigger>
       <SheetContent
-        side="right"
+        side="left"
         showCloseButton={false}
-        className="w-(--sidebar-width-mobile) max-w-[calc(100%-3rem)]"
+        className="w-(--sidebar-width-mobile) max-w-[calc(100%-3rem)] p-0"
       >
-        <SheetHeader className="h-(--viewer-bar) flex-row items-center justify-between gap-3 border-b py-0 pr-3">
-          <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <Wordmark onClick={close} />
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
+        <SheetTitle className="sr-only">Navigation</SheetTitle>
+        <SidebarPanel
+          onNavigate={close}
+          end={
             <SheetClose render={<Button variant="ghost" size="icon-sm" />} aria-label="Close navigation">
               <XIcon aria-hidden="true" />
             </SheetClose>
-          </div>
-        </SheetHeader>
-        <SheetBody className="pt-6">
-          <SidebarNav onNavigate={close} />
-        </SheetBody>
-        <SheetFooter className="flex-col gap-4 sm:flex-col sm:items-stretch">
-          {/* The trigger's own name is "Theme: <name>", so the visible label is not read twice. */}
-          <div className="flex items-center justify-between gap-3">
-            <span aria-hidden="true" className="text-label text-foreground">
-              Theme
-            </span>
-            <ThemePicker variant="toolbar" nameClassName="inline-grid" align="end" />
-          </div>
-          <Button
-            size="lg"
-            nativeButton={false}
-            render={<a href="/live" target="_blank" rel="noopener" onClick={close} />}
-            className="w-full"
-          >
-            Open the live templates
-            <ArrowUpRightIcon data-icon="inline-end" />
-            <span className="sr-only">(opens in a new tab)</span>
-          </Button>
-        </SheetFooter>
+          }
+        />
       </SheetContent>
     </Sheet>
   )

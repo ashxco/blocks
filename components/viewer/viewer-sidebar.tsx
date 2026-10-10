@@ -1,17 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { usePathname } from "next/navigation"
-
-import { SidebarNav } from "@/components/viewer/sidebar-nav"
+import { SidebarPanel } from "@/components/viewer/sidebar-panel"
 
 /**
- * Sticky desktop sidebar. Hidden on the overview, which is a full-bleed
- * landing page, and below the lg breakpoint, where the mobile menu takes over.
+ * The viewer's only chrome: a full-height sidebar on every page, with the
+ * wordmark, search, navigation, Theme and Appearance. Below lg the phone menu
+ * opens the same panel in a sheet.
  */
 export function ViewerSidebar() {
-  const pathname = usePathname()
-  const ref = React.useRef<HTMLElement>(null)
+  const ref = React.useRef<HTMLDivElement>(null)
 
   // Bring the active link into view on first load, without moving the page.
   // The list stops on a whole row: the active section's heading sits at the
@@ -52,15 +50,13 @@ export function ViewerSidebar() {
     // Only on mount: later navigations happen from the sidebar itself.
   }, [])
 
-  if (pathname === "/") return null
-
   return (
     <aside
-      ref={ref}
       aria-label="Documentation"
-      className="sticky top-(--viewer-bar) hidden h-[calc(100dvh-var(--viewer-bar))] w-(--sidebar-width) shrink-0 overflow-y-auto overscroll-contain border-r px-4 pt-8 pb-16 [scrollbar-width:thin] lg:block"
+      style={{ viewTransitionName: "viewer-sidebar" }}
+      className="sticky top-0 hidden h-dvh w-(--sidebar-width) shrink-0 border-r lg:block"
     >
-      <SidebarNav />
+      <SidebarPanel navRef={ref} />
     </aside>
   )
 }

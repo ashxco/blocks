@@ -3,7 +3,6 @@
  * value is read from the generated token list or from token variables, so
  * nothing here is hand-picked.
  *
- * - `--viewer-bar`: height of the viewer's top bar, from the header token.
  * - `.bk-viewport`: a virtual viewport for device previews. Every fluid token
  *   (type roles, gutter, section rhythm, panel padding) is defined with `vw`,
  *   which would follow the real browser window. Inside `.bk-viewport` the same
@@ -11,7 +10,7 @@
  *   width), so a 390px preview gets the type and spacing of a real phone.
  * - View transition timing for page changes, from the motion tokens: the old
  *   page fades out fast, the new one fades in with a 4px rise just after it,
- *   about 300ms in all. The header stays put. Reduced motion turns the
+ *   about 300ms in all. The sidebar stays put. Reduced motion turns the
  *   transition off entirely.
  * - `[data-theme-text="<id>"]`: text that belongs to one theme (ThemeName in
  *   theme-picker.tsx). Only the page theme's text shows, the theme on <html>,
@@ -63,7 +62,6 @@ const themeCardCss = [
 ].join("\n")
 
 export const viewerCss = [
-  `:root{--viewer-bar:var(--header-height-sm);}`,
   // 1vw until a preview measures its width and sets --bk-vw inline.
   `.bk-viewport{--bk-vw:1vw;${fluidTokens}}`,
   `::view-transition{pointer-events:none;}`,
@@ -71,8 +69,8 @@ export const viewerCss = [
   `::view-transition-old(viewer-content){animation:var(--duration-fast) var(--ease-in) both bk-page-out;}`,
   `::view-transition-new(viewer-content){animation:var(--duration-base) var(--ease-out) var(--duration-instant) both bk-page-in;}`,
   `::view-transition-old(root),::view-transition-new(root){animation-duration:var(--duration-base);animation-timing-function:var(--ease-standard);}`,
-  `::view-transition-group(viewer-header),::view-transition-new(viewer-header){animation:none;}`,
-  `::view-transition-old(viewer-header){display:none;}`,
+  `::view-transition-group(viewer-sidebar),::view-transition-new(viewer-sidebar){animation:none;}`,
+  `::view-transition-old(viewer-sidebar){display:none;}`,
   `@keyframes bk-page-out{to{opacity:0;}}`,
   `@keyframes bk-page-in{from{opacity:0;translate:0 4px;}}`,
   `@media (prefers-reduced-motion: reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none !important;}}`,

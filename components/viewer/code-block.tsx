@@ -5,7 +5,9 @@ import { cn } from "@/lib/utils"
 /*
  * A small, dependency-free highlighter for the TSX, TS and shell snippets in
  * the docs. Colours are token roles read inside a `.dark` scope, because the
- * terminal surface is dark in both themes:
+ * terminal surface is dark in both modes. The contrast gate
+ * (scripts/check-contrast.mjs) holds every one of them to 4.5:1 on the dark
+ * terminal in every theme:
  *
  *   plain       --terminal-foreground
  *   keyword     --brand

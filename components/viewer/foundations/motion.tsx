@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { leafName, tokensIn } from "./data"
 import { DoDont, FoundationPage, Section } from "./layout"
-import { DurationDemos, EasingDemos, type DurationItem, type EasingItem } from "./motion-demos"
+import { DurationDemos, EasingDemos, MotionInUse, type DurationItem, type EasingItem } from "./motion-demos"
 
 function durations(): DurationItem[] {
   return tokensIn("layout", "duration").map((t) => ({
@@ -39,9 +39,17 @@ export function MotionFoundation({ title, description }: { title: string; descri
   return (
     <FoundationPage title={title} description={description}>
       <Section
+        id="in-use"
+        title="In use"
+        description="Overlays fade and travel 4px or scale from 98%. They enter with ease-out and leave faster with ease-in."
+      >
+        <MotionInUse />
+      </Section>
+
+      <Section
         id="durations"
         title="Durations"
-        description="Five steps from instant press feedback to large reveals. Small, frequent changes are fast; big surfaces take longer so the eye can follow them. Motion is the same in every theme."
+        description="Five steps, from press feedback to large reveals. Small changes are fast; big surfaces take longer. Motion is the same in every theme."
       >
         <DurationDemos items={durationItems} easingVar={standard} />
       </Section>
@@ -49,7 +57,7 @@ export function MotionFoundation({ title, description }: { title: string; descri
       <Section
         id="easing"
         title="Easing"
-        description="Elements entering decelerate into place, elements leaving accelerate away, and anything that moves on screen eases both ways. Everything else uses standard."
+        description="Entering slows into place, leaving speeds away, moving eases both ways. Everything else uses standard."
       >
         <EasingDemos items={easingItems} durationVar={slowest} />
       </Section>
