@@ -1,13 +1,15 @@
 # Blocks
 
-A design system and template kit: tokens, components, molecules and page templates, with a viewer that documents all of it.
+A design system: design tokens, five themes and 64 components, documented in one viewer.
 
-- **Tokens:** W3C DTCG token files compiled by Style Dictionary into Tailwind CSS v4 theme variables, in light and dark.
-- **Themes:** five presets (Blocks, Ocean, Forest, Ember, Mono) that change the accent, neutrals, radii and fonts, each in light and dark.
-- **Components:** shadcn/ui on Base UI, restyled to Blocks.
-- **Molecules:** marketing sections and app patterns built from the components.
-- **Templates:** marketing, auth and app pages for Acme Inc., a sample work-management SaaS company.
-- **Viewer:** the design-system site at `/`.
+- **Tokens:** W3C DTCG files compiled by Style Dictionary into Tailwind CSS v4 variables, in light and dark, with per-breakpoint values where a token needs them.
+- **Themes:** Blocks, Ocean, Forest, Ember and Mono. Each sets its own accent, neutrals, shapes and fonts, works in light and dark, and passes the contrast and uniqueness gates.
+- **Components:** shadcn/ui on Base UI, restyled to Blocks, including the layout primitives (Container, Stack, Inline, Grid) and a 4 / 8 / 12-column grid.
+- **Viewer:** the site at `/`, with Foundations, Components and Themes. Examples use Acme Inc., a fictional work-management company.
+
+## Requirements
+
+Node.js 20.9 or later.
 
 ## Run it
 
@@ -19,42 +21,53 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000 for the viewer and http://localhost:3000/live for the templates.
+Open http://localhost:3000.
+
+## Scripts
+
+| Script | What it does |
+|---|---|
+| `npm run dev` | Builds the tokens, then starts the dev server |
+| `npm run tokens` | Compiles `design-system/` into `app/styles/tokens.css` and `design-system/generated/` |
+| `npm run check` | Tokens, contrast gate, theme uniqueness gate, TypeScript and the design-system lint |
+| `npm run lint` | ESLint |
+| `npm run verify` | `check`, `lint` and a production build: run it before every deploy |
+| `npm run build` / `npm start` | Production build and server |
+
+## Deploy
+
+Set `NEXT_PUBLIC_SITE_URL` to the public origin (for example `https://blocks.example.com`) in the build environment: it is read when the site is built, so metadata, `sitemap.xml` and `robots.txt` point at it. Without it they fall back to localhost. Then:
+
+```bash
+npm run verify
+```
+
+```bash
+npm start
+```
+
+Every page is static, so the build output works on any Next.js host.
 
 ## Change the look
 
-Edit the token files in `design-system/tokens/`, then rebuild:
+Edit the token files in `design-system/tokens/` (or a theme in `design-system/themes/`), then run `npm run tokens`. Every component and viewer page follows, because none of them use raw values. [DESIGN.md](DESIGN.md) is the contract: the rules, every token tier, the themes and how to add one.
 
-```bash
-npm run tokens
-```
+## Themes
 
-Every component, molecule, template and viewer page updates, because none of them use raw values. See [DESIGN.md](DESIGN.md) for the rules.
-
-## Switch themes
-
-Pick a theme from the **Theme** menu in the viewer header; light and dark is the **Appearance** toggle next to it (or press D). The choice is saved and shared by the viewer and the templates. To preview without saving, add `?theme=ocean` (or `forest`, `ember`, `mono`, `blocks`) to any URL, and `&mode=dark` or `&mode=light` for the mode, for example http://localhost:3000/live?theme=ember&mode=dark.
-
-In code, `data-theme="<id>"` scopes a theme to any subtree. Theme sources live in `design-system/themes/<id>.tokens.json` and hold only what they change; [DESIGN.md](DESIGN.md#themes) explains how to add one.
-
-## Check
-
-```bash
-npm run check
-```
+Pick a theme from the **Theme** menu at the foot of the sidebar. Light and dark is the **Appearance** toggle beside it, or press D. The choice is saved in the browser. To preview without saving, add `?theme=ember&mode=dark` to any URL. In code, `data-theme="<id>"` scopes a theme to any subtree.
 
 ## Structure
 
 | Path | What |
 |---|---|
 | `design-system/tokens/` | Token sources (DTCG JSON) |
-| `design-system/themes/` | Theme presets: only what each changes |
-| `design-system/build.mjs` | Token build (Style Dictionary) |
+| `design-system/themes/` | Theme presets, holding only what each changes |
+| `design-system/build.mjs` | Token build |
 | `app/styles/tokens.css` | Generated Tailwind theme and CSS variables |
 | `components/ui/` | Components |
-| `components/blocks/` | Molecules |
 | `components/viewer/` | Viewer UI |
-| `docs/` | Docs pages for components and molecules |
+| `docs/components/` | Docs page for each component |
+| `docs/sample/` | Acme sample data shared by the docs |
 | `lib/registry.ts` | Everything the viewer lists |
 | `app/(viewer)/` | Viewer routes |
-| `app/(live)/live/` | Live templates |
+| `scripts/` | Contrast and uniqueness gates, design-system lint, screenshots |

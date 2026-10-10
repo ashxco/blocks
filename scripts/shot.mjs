@@ -12,8 +12,8 @@
  * ?theme=<id>, which forces that theme without saving it. SHOT_THEME sets it
  * too, and a ?theme=<id> already in the URL works the same way:
  *
- *   node scripts/shot.mjs http://localhost:3210/live out.png 1440 2400 dark 15000 ocean
- *   SHOT_THEME=mono node scripts/shot.mjs http://localhost:3210/live out.png 1440 2400 light
+ *   node scripts/shot.mjs http://localhost:3210/components out.png 1440 2400 dark 15000 ocean
+ *   SHOT_THEME=mono node scripts/shot.mjs http://localhost:3210/components/dialog out.png 1440 2400 light
  *
  * wait is the most time, in milliseconds, to wait for the page to settle
  * before capturing. The script captures as soon as the page has loaded,
@@ -21,7 +21,7 @@
  * page uses have loaded and animations have had time to finish, so a fast
  * page takes about two seconds. Raise it when the machine is busy. SHOT_WAIT sets the default:
  *
- *   SHOT_WAIT=30000 node scripts/shot.mjs http://localhost:3210/live out.png
+ *   SHOT_WAIT=30000 node scripts/shot.mjs http://localhost:3210/components out.png
  *
  * Widths under 600px are emulated as a phone (mobile viewport, exact width),
  * so viewport media queries, matchMedia and container queries all see that
@@ -229,9 +229,10 @@ try {
   while (remaining() > 0 && (inflight.size > 0 || Date.now() - lastNetwork < IDLE_MS)) await sleep(50)
 
   // 4. Every font face the page uses has loaded. Theme fonts that are not
-  //    preloaded (Inter Tight, Manrope, DM Sans, Geist) load their heavier
-  //    weights only once a heading needs them, so a capture could otherwise
-  //    show headlines in a lighter weight. Capped so a stuck font never hangs.
+  //    preloaded (Inter Tight, Manrope, Bricolage Grotesque, DM Sans,
+  //    Fraunces, Geist) load their heavier weights only once a heading needs
+  //    them, so a capture could otherwise show headlines in a lighter weight
+  //    or the fallback face. Capped so a stuck font never hangs.
   await evaluate(`(async () => {
     const faces = new Set()
     for (const el of document.querySelectorAll("body *")) {
