@@ -18,12 +18,12 @@
   --ease-*: initial;
   --blur-*: initial;
   --breakpoint-*: initial;
-  --font-heading: var(--font-sans);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
   --default-transition-duration: var(--duration-fast);
   --default-transition-timing-function: var(--ease-standard);
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
@@ -215,6 +215,69 @@
   --color-panel-destructive: var(--panel-destructive);
 }
 
+/* Role fonts. text-<role> sets size, line height, tracking and weight; the
+   roles below also set their font, so a heading role on any element (a div,
+   a span, a button) renders in the theme's heading face.
+   --bk-font-family lets a font utility on the same element win
+   (font-mono text-h3); it does not inherit, so a parent's font utility never
+   reaches a role. */
+@property --bk-font-family {
+  syntax: "*";
+  inherits: false;
+}
+
+@utility font-sans {
+  --bk-font-family: var(--font-sans);
+}
+
+@utility font-heading {
+  --bk-font-family: var(--font-heading);
+}
+
+@utility font-mono {
+  --bk-font-family: var(--font-mono);
+}
+
+@utility text-hero {
+  font-family: var(--bk-font-family, var(--font-heading));
+}
+
+@utility text-display {
+  font-family: var(--bk-font-family, var(--font-heading));
+}
+
+@utility text-h1 {
+  font-family: var(--bk-font-family, var(--font-heading));
+}
+
+@utility text-h2 {
+  font-family: var(--bk-font-family, var(--font-heading));
+}
+
+@utility text-h3 {
+  font-family: var(--bk-font-family, var(--font-heading));
+}
+
+@utility text-h4 {
+  font-family: var(--bk-font-family, var(--font-heading));
+}
+
+@utility text-title {
+  font-family: var(--bk-font-family, var(--font-heading));
+}
+
+@utility text-code {
+  font-family: var(--bk-font-family, var(--font-mono));
+}
+
+/* h1 to h6 take the heading face (globals.css). One given a role that sets no
+   font, such as text-label, takes the sans font like that role anywhere else. */
+@layer base {
+  :where(h1, h2, h3, h4, h5, h6):is(.text-lead, .text-body, .text-label, .text-control, .text-caption) {
+    font-family: var(--font-sans);
+  }
+}
+
 :root {
   /* Primitives. --bk-accent-* and --bk-neutral-* are the theme's scales. */
   --bk-ink-0: oklch(1 0 0);
@@ -297,18 +360,18 @@
   --bk-sky-900: oklch(0.31 0.091 235);
   --bk-sky-950: oklch(0.235 0.068 235);
   --bk-sky-dim: oklch(0.26 0.035 235);
-  --bk-blue-50: oklch(0.965 0.017 258);
-  --bk-blue-100: oklch(0.94 0.029 259);
-  --bk-blue-200: oklch(0.885 0.056 260);
-  --bk-blue-300: oklch(0.805 0.098 261);
-  --bk-blue-400: oklch(0.71 0.151 262);
-  --bk-blue-500: oklch(0.62 0.198 262);
-  --bk-blue-600: oklch(0.54 0.195 263);
-  --bk-blue-700: oklch(0.465 0.176 264);
-  --bk-blue-800: oklch(0.39 0.15 265);
-  --bk-blue-900: oklch(0.31 0.118 266);
-  --bk-blue-950: oklch(0.235 0.088 267);
-  --bk-blue-dim: oklch(0.25 0.05 264);
+  --bk-cobalt-50: oklch(0.97 0.014 252);
+  --bk-cobalt-100: oklch(0.94 0.028 252);
+  --bk-cobalt-200: oklch(0.885 0.055 253);
+  --bk-cobalt-300: oklch(0.805 0.097 254);
+  --bk-cobalt-400: oklch(0.71 0.15 255);
+  --bk-cobalt-500: oklch(0.62 0.185 256);
+  --bk-cobalt-600: oklch(0.54 0.188 257);
+  --bk-cobalt-700: oklch(0.465 0.175 259);
+  --bk-cobalt-800: oklch(0.39 0.152 261);
+  --bk-cobalt-900: oklch(0.31 0.122 263);
+  --bk-cobalt-950: oklch(0.235 0.092 265);
+  --bk-cobalt-dim: oklch(0.27 0.075 259);
   --bk-emerald-50: oklch(0.97 0.02 165);
   --bk-emerald-100: oklch(0.94 0.042 165);
   --bk-emerald-200: oklch(0.885 0.075 165);
@@ -346,25 +409,25 @@
   --bk-gold-950: oklch(0.235 0.049 80);
   --bk-gold-dim: oklch(0.25 0.037 80);
   --bk-slate-0: oklch(1 0 0);
-  --bk-slate-25: oklch(0.985 0.003 257);
-  --bk-slate-50: oklch(0.975 0.005 257);
-  --bk-slate-100: oklch(0.955 0.007 257);
-  --bk-slate-150: oklch(0.93 0.009 257);
-  --bk-slate-200: oklch(0.9 0.011 257);
-  --bk-slate-300: oklch(0.82 0.015 257);
-  --bk-slate-400: oklch(0.68 0.019 257);
-  --bk-slate-450: oklch(0.645 0.02 257);
-  --bk-slate-500: oklch(0.56 0.021 257);
-  --bk-slate-550: oklch(0.505 0.022 257);
-  --bk-slate-600: oklch(0.45 0.022 257);
-  --bk-slate-700: oklch(0.36 0.022 257);
-  --bk-slate-750: oklch(0.315 0.022 257);
-  --bk-slate-800: oklch(0.27 0.022 257);
-  --bk-slate-850: oklch(0.215 0.022 257);
-  --bk-slate-900: oklch(0.175 0.021 257);
-  --bk-slate-925: oklch(0.158 0.019 257);
-  --bk-slate-950: oklch(0.135 0.016 257);
-  --bk-slate-1000: oklch(0.1 0.012 257);
+  --bk-slate-25: oklch(0.985 0.005 250);
+  --bk-slate-50: oklch(0.975 0.01 250);
+  --bk-slate-100: oklch(0.955 0.014 251);
+  --bk-slate-150: oklch(0.93 0.019 252);
+  --bk-slate-200: oklch(0.9 0.023 253);
+  --bk-slate-300: oklch(0.82 0.029 255);
+  --bk-slate-400: oklch(0.68 0.035 256);
+  --bk-slate-450: oklch(0.645 0.037 257);
+  --bk-slate-500: oklch(0.56 0.04 257);
+  --bk-slate-550: oklch(0.505 0.042 258);
+  --bk-slate-600: oklch(0.45 0.044 258);
+  --bk-slate-700: oklch(0.36 0.046 259);
+  --bk-slate-750: oklch(0.315 0.048 260);
+  --bk-slate-800: oklch(0.27 0.05 260);
+  --bk-slate-850: oklch(0.215 0.052 261);
+  --bk-slate-900: oklch(0.175 0.055 262);
+  --bk-slate-925: oklch(0.158 0.054 262);
+  --bk-slate-950: oklch(0.135 0.052 262);
+  --bk-slate-1000: oklch(0.1 0.046 262);
   --bk-sage-0: oklch(1 0 0);
   --bk-sage-25: oklch(0.985 0.003 160);
   --bk-sage-50: oklch(0.975 0.006 160);
@@ -386,25 +449,25 @@
   --bk-sage-950: oklch(0.135 0.014 160);
   --bk-sage-1000: oklch(0.1 0.011 160);
   --bk-stone-0: oklch(1 0 0);
-  --bk-stone-25: oklch(0.985 0.004 70);
-  --bk-stone-50: oklch(0.975 0.006 70);
-  --bk-stone-100: oklch(0.955 0.008 69);
-  --bk-stone-150: oklch(0.93 0.009 68);
-  --bk-stone-200: oklch(0.9 0.011 67);
-  --bk-stone-300: oklch(0.82 0.012 66);
-  --bk-stone-400: oklch(0.68 0.014 65);
-  --bk-stone-450: oklch(0.645 0.014 64);
-  --bk-stone-500: oklch(0.56 0.014 63);
-  --bk-stone-550: oklch(0.505 0.014 62);
-  --bk-stone-600: oklch(0.45 0.013 61);
-  --bk-stone-700: oklch(0.36 0.012 60);
-  --bk-stone-750: oklch(0.315 0.011 60);
-  --bk-stone-800: oklch(0.27 0.01 60);
-  --bk-stone-850: oklch(0.215 0.01 60);
-  --bk-stone-900: oklch(0.175 0.009 60);
-  --bk-stone-925: oklch(0.158 0.008 60);
-  --bk-stone-950: oklch(0.135 0.007 60);
-  --bk-stone-1000: oklch(0.1 0.005 60);
+  --bk-stone-25: oklch(0.985 0.006 80);
+  --bk-stone-50: oklch(0.975 0.01 78);
+  --bk-stone-100: oklch(0.955 0.013 76);
+  --bk-stone-150: oklch(0.93 0.015 74);
+  --bk-stone-200: oklch(0.9 0.017 72);
+  --bk-stone-300: oklch(0.82 0.019 68);
+  --bk-stone-400: oklch(0.68 0.021 64);
+  --bk-stone-450: oklch(0.645 0.021 62);
+  --bk-stone-500: oklch(0.56 0.021 60);
+  --bk-stone-550: oklch(0.505 0.02 58);
+  --bk-stone-600: oklch(0.45 0.019 56);
+  --bk-stone-700: oklch(0.36 0.02 54);
+  --bk-stone-750: oklch(0.315 0.021 53);
+  --bk-stone-800: oklch(0.27 0.022 52);
+  --bk-stone-850: oklch(0.215 0.021 52);
+  --bk-stone-900: oklch(0.175 0.02 50);
+  --bk-stone-925: oklch(0.158 0.019 50);
+  --bk-stone-950: oklch(0.135 0.018 50);
+  --bk-stone-1000: oklch(0.1 0.015 50);
   --bk-grey-0: oklch(1 0 0);
   --bk-grey-25: oklch(0.985 0 0);
   --bk-grey-50: oklch(0.975 0 0);
@@ -464,6 +527,34 @@
   --bk-on-dark: ;
 
   /* Light and dark sources of the semantic colours a theme sets directly */
+  --background--light: var(--bk-neutral-0);
+  --background--dark: var(--bk-neutral-1000);
+  --foreground--light: var(--bk-neutral-950);
+  --foreground--dark: var(--bk-neutral-25);
+  --subtle--light: var(--bk-neutral-50);
+  --subtle--dark: var(--bk-neutral-925);
+  --card--light: var(--bk-neutral-0);
+  --card--dark: var(--bk-neutral-950);
+  --card-foreground--light: var(--bk-neutral-950);
+  --card-foreground--dark: var(--bk-neutral-25);
+  --popover--light: var(--bk-neutral-0);
+  --popover--dark: var(--bk-neutral-900);
+  --popover-foreground--light: var(--bk-neutral-950);
+  --popover-foreground--dark: var(--bk-neutral-25);
+  --primary--light: var(--bk-neutral-950);
+  --primary--dark: var(--bk-neutral-0);
+  --primary-foreground--light: var(--bk-neutral-0);
+  --primary-foreground--dark: var(--bk-neutral-950);
+  --secondary--light: var(--bk-neutral-100);
+  --secondary--dark: var(--bk-neutral-850);
+  --secondary-foreground--light: var(--bk-neutral-950);
+  --secondary-foreground--dark: var(--bk-neutral-25);
+  --muted--light: var(--bk-neutral-50);
+  --muted--dark: var(--bk-neutral-900);
+  --accent--light: var(--bk-neutral-100);
+  --accent--dark: var(--bk-neutral-850);
+  --accent-foreground--light: var(--bk-neutral-950);
+  --accent-foreground--dark: var(--bk-neutral-25);
   --brand--light: var(--bk-accent-600);
   --brand--dark: var(--bk-accent-400);
   --brand-foreground--light: var(--bk-neutral-0);
@@ -480,8 +571,28 @@
   --warning--dark: var(--bk-amber-400);
   --warning-subtle--light: var(--bk-amber-50);
   --warning-subtle--dark: var(--bk-amber-dim);
+  --info--light: var(--bk-sky-600);
+  --info--dark: var(--bk-sky-400);
+  --info-subtle--light: var(--bk-sky-50);
+  --info-subtle--dark: var(--bk-sky-dim);
+  --border--light: var(--bk-neutral-150);
+  --border--dark: oklch(1 0 0 / 0.09);
+  --border-strong--light: var(--bk-neutral-200);
+  --border-strong--dark: oklch(1 0 0 / 0.16);
+  --input--light: var(--bk-neutral-200);
+  --input--dark: oklch(1 0 0 / 0.14);
+  --popover-border--light: var(--bk-neutral-200);
+  --popover-border--dark: oklch(1 0 0 / 0.14);
   --ring--light: var(--bk-accent-600);
   --ring--dark: var(--bk-accent-400);
+  --overlay--light: color-mix(in oklab, var(--bk-neutral-950) 20%, transparent);
+  --overlay--dark: oklch(0 0 0 / 0.6);
+  --panel--light: var(--bk-neutral-900);
+  --panel--dark: var(--bk-neutral-800);
+  --panel-raised--light: var(--bk-neutral-850);
+  --panel-raised--dark: var(--bk-neutral-750);
+  --terminal--light: var(--bk-neutral-1000);
+  --terminal--dark: var(--bk-neutral-950);
   --tint-violet--light: var(--bk-violet-100);
   --tint-violet--dark: oklch(0.245 0.03 283);
   --tint-mint--light: var(--bk-green-100);
@@ -502,6 +613,20 @@
   --chart-4--dark: var(--bk-amber-200);
   --chart-5--light: var(--bk-neutral-450);
   --chart-5--dark: var(--bk-neutral-500);
+  --sidebar--light: var(--bk-neutral-25);
+  --sidebar--dark: var(--bk-neutral-950);
+  --sidebar-foreground--light: var(--bk-neutral-950);
+  --sidebar-foreground--dark: var(--bk-neutral-25);
+  --sidebar-primary--light: var(--bk-neutral-950);
+  --sidebar-primary--dark: var(--bk-neutral-0);
+  --sidebar-primary-foreground--light: var(--bk-neutral-0);
+  --sidebar-primary-foreground--dark: var(--bk-neutral-950);
+  --sidebar-accent--light: var(--bk-neutral-100);
+  --sidebar-accent--dark: var(--bk-neutral-850);
+  --sidebar-accent-foreground--light: var(--bk-neutral-950);
+  --sidebar-accent-foreground--dark: var(--bk-neutral-25);
+  --sidebar-border--light: var(--bk-neutral-150);
+  --sidebar-border--dark: oklch(1 0 0 / 0.09);
   --sidebar-ring--light: var(--bk-accent-600);
   --sidebar-ring--dark: var(--bk-accent-400);
   --panel-brand--light: var(--bk-accent-400);
@@ -512,22 +637,22 @@
   --panel-warning--dark: var(--bk-amber-400);
 
   /* Semantic colours, light and dark */
-  --background: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
-  --foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
+  --background: var(--bk-on-light, var(--background--light)) var(--bk-on-dark, var(--background--dark));
+  --foreground: var(--bk-on-light, var(--foreground--light)) var(--bk-on-dark, var(--foreground--dark));
   --copy: var(--bk-on-light, var(--bk-neutral-600)) var(--bk-on-dark, var(--bk-neutral-300));
   --muted-foreground: var(--bk-on-light, var(--bk-neutral-550)) var(--bk-on-dark, var(--bk-neutral-400));
-  --subtle: var(--bk-on-light, var(--bk-neutral-50)) var(--bk-on-dark, var(--bk-neutral-925));
-  --card: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-950));
-  --card-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --popover: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-900));
-  --popover-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --primary: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-0));
-  --primary-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-950));
-  --secondary: var(--bk-on-light, var(--bk-neutral-100)) var(--bk-on-dark, var(--bk-neutral-850));
-  --secondary-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --muted: var(--bk-on-light, var(--bk-neutral-50)) var(--bk-on-dark, var(--bk-neutral-900));
-  --accent: var(--bk-on-light, var(--bk-neutral-100)) var(--bk-on-dark, var(--bk-neutral-850));
-  --accent-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
+  --subtle: var(--bk-on-light, var(--subtle--light)) var(--bk-on-dark, var(--subtle--dark));
+  --card: var(--bk-on-light, var(--card--light)) var(--bk-on-dark, var(--card--dark));
+  --card-foreground: var(--bk-on-light, var(--card-foreground--light)) var(--bk-on-dark, var(--card-foreground--dark));
+  --popover: var(--bk-on-light, var(--popover--light)) var(--bk-on-dark, var(--popover--dark));
+  --popover-foreground: var(--bk-on-light, var(--popover-foreground--light)) var(--bk-on-dark, var(--popover-foreground--dark));
+  --primary: var(--bk-on-light, var(--primary--light)) var(--bk-on-dark, var(--primary--dark));
+  --primary-foreground: var(--bk-on-light, var(--primary-foreground--light)) var(--bk-on-dark, var(--primary-foreground--dark));
+  --secondary: var(--bk-on-light, var(--secondary--light)) var(--bk-on-dark, var(--secondary--dark));
+  --secondary-foreground: var(--bk-on-light, var(--secondary-foreground--light)) var(--bk-on-dark, var(--secondary-foreground--dark));
+  --muted: var(--bk-on-light, var(--muted--light)) var(--bk-on-dark, var(--muted--dark));
+  --accent: var(--bk-on-light, var(--accent--light)) var(--bk-on-dark, var(--accent--dark));
+  --accent-foreground: var(--bk-on-light, var(--accent-foreground--light)) var(--bk-on-dark, var(--accent-foreground--dark));
   --brand: var(--bk-on-light, var(--brand--light)) var(--bk-on-dark, var(--brand--dark));
   --brand-foreground: var(--bk-on-light, var(--brand-foreground--light)) var(--bk-on-dark, var(--brand-foreground--dark));
   --brand-subtle: var(--bk-on-light, var(--brand-subtle--light)) var(--bk-on-dark, var(--brand-subtle--dark));
@@ -541,20 +666,20 @@
   --warning: var(--bk-on-light, var(--warning--light)) var(--bk-on-dark, var(--warning--dark));
   --warning-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
   --warning-subtle: var(--bk-on-light, var(--warning-subtle--light)) var(--bk-on-dark, var(--warning-subtle--dark));
-  --info: var(--bk-on-light, var(--bk-sky-600)) var(--bk-on-dark, var(--bk-sky-400));
-  --info-subtle: var(--bk-on-light, var(--bk-sky-50)) var(--bk-on-dark, var(--bk-sky-dim));
-  --border: var(--bk-on-light, var(--bk-neutral-150)) var(--bk-on-dark, oklch(1 0 0 / 0.09));
-  --border-strong: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.16));
-  --input: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.14));
-  --popover-border: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.14));
+  --info: var(--bk-on-light, var(--info--light)) var(--bk-on-dark, var(--info--dark));
+  --info-subtle: var(--bk-on-light, var(--info-subtle--light)) var(--bk-on-dark, var(--info-subtle--dark));
+  --border: var(--bk-on-light, var(--border--light)) var(--bk-on-dark, var(--border--dark));
+  --border-strong: var(--bk-on-light, var(--border-strong--light)) var(--bk-on-dark, var(--border-strong--dark));
+  --input: var(--bk-on-light, var(--input--light)) var(--bk-on-dark, var(--input--dark));
+  --popover-border: var(--bk-on-light, var(--popover-border--light)) var(--bk-on-dark, var(--popover-border--dark));
   --ring: var(--bk-on-light, var(--ring--light)) var(--bk-on-dark, var(--ring--dark));
-  --overlay: var(--bk-on-light, color-mix(in oklab, var(--bk-neutral-950) 20%, transparent)) var(--bk-on-dark, oklch(0 0 0 / 0.6));
-  --panel: var(--bk-on-light, var(--bk-neutral-900)) var(--bk-on-dark, var(--bk-neutral-800));
+  --overlay: var(--bk-on-light, var(--overlay--light)) var(--bk-on-dark, var(--overlay--dark));
+  --panel: var(--bk-on-light, var(--panel--light)) var(--bk-on-dark, var(--panel--dark));
   --panel-foreground: var(--bk-neutral-0);
   --panel-muted: oklch(1 0 0 / 0.64);
-  --panel-raised: var(--bk-on-light, var(--bk-neutral-850)) var(--bk-on-dark, var(--bk-neutral-750));
+  --panel-raised: var(--bk-on-light, var(--panel-raised--light)) var(--bk-on-dark, var(--panel-raised--dark));
   --panel-border: var(--bk-on-light, oklch(1 0 0 / 0.09)) var(--bk-on-dark, oklch(1 0 0 / 0.12));
-  --terminal: var(--bk-on-light, var(--bk-neutral-1000)) var(--bk-on-dark, var(--bk-neutral-950));
+  --terminal: var(--bk-on-light, var(--terminal--light)) var(--bk-on-dark, var(--terminal--dark));
   --terminal-foreground: var(--bk-neutral-150);
   --tint-violet: var(--bk-on-light, var(--tint-violet--light)) var(--bk-on-dark, var(--tint-violet--dark));
   --tint-mint: var(--bk-on-light, var(--tint-mint--light)) var(--bk-on-dark, var(--tint-mint--dark));
@@ -566,13 +691,13 @@
   --chart-3: var(--bk-on-light, var(--chart-3--light)) var(--bk-on-dark, var(--chart-3--dark));
   --chart-4: var(--bk-on-light, var(--chart-4--light)) var(--bk-on-dark, var(--chart-4--dark));
   --chart-5: var(--bk-on-light, var(--chart-5--light)) var(--bk-on-dark, var(--chart-5--dark));
-  --sidebar: var(--bk-on-light, var(--bk-neutral-25)) var(--bk-on-dark, var(--bk-neutral-950));
-  --sidebar-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --sidebar-primary: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-0));
-  --sidebar-primary-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-950));
-  --sidebar-accent: var(--bk-on-light, var(--bk-neutral-100)) var(--bk-on-dark, var(--bk-neutral-850));
-  --sidebar-accent-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --sidebar-border: var(--bk-on-light, var(--bk-neutral-150)) var(--bk-on-dark, oklch(1 0 0 / 0.09));
+  --sidebar: var(--bk-on-light, var(--sidebar--light)) var(--bk-on-dark, var(--sidebar--dark));
+  --sidebar-foreground: var(--bk-on-light, var(--sidebar-foreground--light)) var(--bk-on-dark, var(--sidebar-foreground--dark));
+  --sidebar-primary: var(--bk-on-light, var(--sidebar-primary--light)) var(--bk-on-dark, var(--sidebar-primary--dark));
+  --sidebar-primary-foreground: var(--bk-on-light, var(--sidebar-primary-foreground--light)) var(--bk-on-dark, var(--sidebar-primary-foreground--dark));
+  --sidebar-accent: var(--bk-on-light, var(--sidebar-accent--light)) var(--bk-on-dark, var(--sidebar-accent--dark));
+  --sidebar-accent-foreground: var(--bk-on-light, var(--sidebar-accent-foreground--light)) var(--bk-on-dark, var(--sidebar-accent-foreground--dark));
+  --sidebar-border: var(--bk-on-light, var(--sidebar-border--light)) var(--bk-on-dark, var(--sidebar-border--dark));
   --sidebar-ring: var(--bk-on-light, var(--sidebar-ring--light)) var(--bk-on-dark, var(--sidebar-ring--dark));
   --panel-brand: var(--bk-on-light, var(--panel-brand--light)) var(--bk-on-dark, var(--panel-brand--dark));
   --panel-success: var(--bk-on-light, var(--panel-success--light)) var(--bk-on-dark, var(--panel-success--dark));
@@ -580,6 +705,8 @@
   --panel-destructive: var(--bk-red-400);
 
   /* Layout and motion */
+  --grid-columns: 4;
+  --grid-gutter: 1rem;
   --border-width-hairline: 1px;
   --border-width-strong: 2px;
   --focus-width: 2px;
@@ -682,22 +809,22 @@
 
 .dark,
 .light {
-  --background: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
-  --foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
+  --background: var(--bk-on-light, var(--background--light)) var(--bk-on-dark, var(--background--dark));
+  --foreground: var(--bk-on-light, var(--foreground--light)) var(--bk-on-dark, var(--foreground--dark));
   --copy: var(--bk-on-light, var(--bk-neutral-600)) var(--bk-on-dark, var(--bk-neutral-300));
   --muted-foreground: var(--bk-on-light, var(--bk-neutral-550)) var(--bk-on-dark, var(--bk-neutral-400));
-  --subtle: var(--bk-on-light, var(--bk-neutral-50)) var(--bk-on-dark, var(--bk-neutral-925));
-  --card: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-950));
-  --card-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --popover: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-900));
-  --popover-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --primary: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-0));
-  --primary-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-950));
-  --secondary: var(--bk-on-light, var(--bk-neutral-100)) var(--bk-on-dark, var(--bk-neutral-850));
-  --secondary-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --muted: var(--bk-on-light, var(--bk-neutral-50)) var(--bk-on-dark, var(--bk-neutral-900));
-  --accent: var(--bk-on-light, var(--bk-neutral-100)) var(--bk-on-dark, var(--bk-neutral-850));
-  --accent-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
+  --subtle: var(--bk-on-light, var(--subtle--light)) var(--bk-on-dark, var(--subtle--dark));
+  --card: var(--bk-on-light, var(--card--light)) var(--bk-on-dark, var(--card--dark));
+  --card-foreground: var(--bk-on-light, var(--card-foreground--light)) var(--bk-on-dark, var(--card-foreground--dark));
+  --popover: var(--bk-on-light, var(--popover--light)) var(--bk-on-dark, var(--popover--dark));
+  --popover-foreground: var(--bk-on-light, var(--popover-foreground--light)) var(--bk-on-dark, var(--popover-foreground--dark));
+  --primary: var(--bk-on-light, var(--primary--light)) var(--bk-on-dark, var(--primary--dark));
+  --primary-foreground: var(--bk-on-light, var(--primary-foreground--light)) var(--bk-on-dark, var(--primary-foreground--dark));
+  --secondary: var(--bk-on-light, var(--secondary--light)) var(--bk-on-dark, var(--secondary--dark));
+  --secondary-foreground: var(--bk-on-light, var(--secondary-foreground--light)) var(--bk-on-dark, var(--secondary-foreground--dark));
+  --muted: var(--bk-on-light, var(--muted--light)) var(--bk-on-dark, var(--muted--dark));
+  --accent: var(--bk-on-light, var(--accent--light)) var(--bk-on-dark, var(--accent--dark));
+  --accent-foreground: var(--bk-on-light, var(--accent-foreground--light)) var(--bk-on-dark, var(--accent-foreground--dark));
   --brand: var(--bk-on-light, var(--brand--light)) var(--bk-on-dark, var(--brand--dark));
   --brand-foreground: var(--bk-on-light, var(--brand-foreground--light)) var(--bk-on-dark, var(--brand-foreground--dark));
   --brand-subtle: var(--bk-on-light, var(--brand-subtle--light)) var(--bk-on-dark, var(--brand-subtle--dark));
@@ -711,18 +838,18 @@
   --warning: var(--bk-on-light, var(--warning--light)) var(--bk-on-dark, var(--warning--dark));
   --warning-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
   --warning-subtle: var(--bk-on-light, var(--warning-subtle--light)) var(--bk-on-dark, var(--warning-subtle--dark));
-  --info: var(--bk-on-light, var(--bk-sky-600)) var(--bk-on-dark, var(--bk-sky-400));
-  --info-subtle: var(--bk-on-light, var(--bk-sky-50)) var(--bk-on-dark, var(--bk-sky-dim));
-  --border: var(--bk-on-light, var(--bk-neutral-150)) var(--bk-on-dark, oklch(1 0 0 / 0.09));
-  --border-strong: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.16));
-  --input: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.14));
-  --popover-border: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.14));
+  --info: var(--bk-on-light, var(--info--light)) var(--bk-on-dark, var(--info--dark));
+  --info-subtle: var(--bk-on-light, var(--info-subtle--light)) var(--bk-on-dark, var(--info-subtle--dark));
+  --border: var(--bk-on-light, var(--border--light)) var(--bk-on-dark, var(--border--dark));
+  --border-strong: var(--bk-on-light, var(--border-strong--light)) var(--bk-on-dark, var(--border-strong--dark));
+  --input: var(--bk-on-light, var(--input--light)) var(--bk-on-dark, var(--input--dark));
+  --popover-border: var(--bk-on-light, var(--popover-border--light)) var(--bk-on-dark, var(--popover-border--dark));
   --ring: var(--bk-on-light, var(--ring--light)) var(--bk-on-dark, var(--ring--dark));
-  --overlay: var(--bk-on-light, color-mix(in oklab, var(--bk-neutral-950) 20%, transparent)) var(--bk-on-dark, oklch(0 0 0 / 0.6));
-  --panel: var(--bk-on-light, var(--bk-neutral-900)) var(--bk-on-dark, var(--bk-neutral-800));
-  --panel-raised: var(--bk-on-light, var(--bk-neutral-850)) var(--bk-on-dark, var(--bk-neutral-750));
+  --overlay: var(--bk-on-light, var(--overlay--light)) var(--bk-on-dark, var(--overlay--dark));
+  --panel: var(--bk-on-light, var(--panel--light)) var(--bk-on-dark, var(--panel--dark));
+  --panel-raised: var(--bk-on-light, var(--panel-raised--light)) var(--bk-on-dark, var(--panel-raised--dark));
   --panel-border: var(--bk-on-light, oklch(1 0 0 / 0.09)) var(--bk-on-dark, oklch(1 0 0 / 0.12));
-  --terminal: var(--bk-on-light, var(--bk-neutral-1000)) var(--bk-on-dark, var(--bk-neutral-950));
+  --terminal: var(--bk-on-light, var(--terminal--light)) var(--bk-on-dark, var(--terminal--dark));
   --tint-violet: var(--bk-on-light, var(--tint-violet--light)) var(--bk-on-dark, var(--tint-violet--dark));
   --tint-mint: var(--bk-on-light, var(--tint-mint--light)) var(--bk-on-dark, var(--tint-mint--dark));
   --tint-sand: var(--bk-on-light, var(--tint-sand--light)) var(--bk-on-dark, var(--tint-sand--dark));
@@ -733,13 +860,13 @@
   --chart-3: var(--bk-on-light, var(--chart-3--light)) var(--bk-on-dark, var(--chart-3--dark));
   --chart-4: var(--bk-on-light, var(--chart-4--light)) var(--bk-on-dark, var(--chart-4--dark));
   --chart-5: var(--bk-on-light, var(--chart-5--light)) var(--bk-on-dark, var(--chart-5--dark));
-  --sidebar: var(--bk-on-light, var(--bk-neutral-25)) var(--bk-on-dark, var(--bk-neutral-950));
-  --sidebar-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --sidebar-primary: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-0));
-  --sidebar-primary-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-950));
-  --sidebar-accent: var(--bk-on-light, var(--bk-neutral-100)) var(--bk-on-dark, var(--bk-neutral-850));
-  --sidebar-accent-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --sidebar-border: var(--bk-on-light, var(--bk-neutral-150)) var(--bk-on-dark, oklch(1 0 0 / 0.09));
+  --sidebar: var(--bk-on-light, var(--sidebar--light)) var(--bk-on-dark, var(--sidebar--dark));
+  --sidebar-foreground: var(--bk-on-light, var(--sidebar-foreground--light)) var(--bk-on-dark, var(--sidebar-foreground--dark));
+  --sidebar-primary: var(--bk-on-light, var(--sidebar-primary--light)) var(--bk-on-dark, var(--sidebar-primary--dark));
+  --sidebar-primary-foreground: var(--bk-on-light, var(--sidebar-primary-foreground--light)) var(--bk-on-dark, var(--sidebar-primary-foreground--dark));
+  --sidebar-accent: var(--bk-on-light, var(--sidebar-accent--light)) var(--bk-on-dark, var(--sidebar-accent--dark));
+  --sidebar-accent-foreground: var(--bk-on-light, var(--sidebar-accent-foreground--light)) var(--bk-on-dark, var(--sidebar-accent-foreground--dark));
+  --sidebar-border: var(--bk-on-light, var(--sidebar-border--light)) var(--bk-on-dark, var(--sidebar-border--dark));
   --sidebar-ring: var(--bk-on-light, var(--sidebar-ring--light)) var(--bk-on-dark, var(--sidebar-ring--dark));
   --panel-brand: var(--bk-on-light, var(--panel-brand--light)) var(--bk-on-dark, var(--panel-brand--dark));
   --panel-success: var(--bk-on-light, var(--panel-success--light)) var(--bk-on-dark, var(--panel-success--dark));
@@ -750,6 +877,7 @@
    blocks. Every theme scope starts from the default theme… */
 [data-theme] {
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
   --text-hero--letter-spacing: -0.055em;
   --text-display--letter-spacing: -0.045em;
   --text-h1--letter-spacing: -0.042em;
@@ -762,6 +890,12 @@
   --text-label--letter-spacing: -0.005em;
   --text-control--letter-spacing: 0em;
   --text-caption--letter-spacing: 0em;
+  --text-xs--letter-spacing: 0em;
+  --text-sm--letter-spacing: 0em;
+  --text-base--letter-spacing: 0em;
+  --text-lg--letter-spacing: -0.005em;
+  --text-xl--letter-spacing: -0.01em;
+  --text-2xl--letter-spacing: -0.02em;
   --text-3xl--letter-spacing: -0.025em;
   --text-4xl--letter-spacing: -0.03em;
   --text-5xl--letter-spacing: -0.035em;
@@ -807,6 +941,24 @@
   --bk-neutral-925: var(--bk-ink-925);
   --bk-neutral-950: var(--bk-ink-950);
   --bk-neutral-1000: var(--bk-ink-1000);
+  --background--dark: var(--bk-neutral-1000);
+  --foreground--light: var(--bk-neutral-950);
+  --subtle--light: var(--bk-neutral-50);
+  --subtle--dark: var(--bk-neutral-925);
+  --card--dark: var(--bk-neutral-950);
+  --card-foreground--light: var(--bk-neutral-950);
+  --popover--dark: var(--bk-neutral-900);
+  --popover-foreground--light: var(--bk-neutral-950);
+  --primary--light: var(--bk-neutral-950);
+  --primary-foreground--dark: var(--bk-neutral-950);
+  --secondary--light: var(--bk-neutral-100);
+  --secondary--dark: var(--bk-neutral-850);
+  --secondary-foreground--light: var(--bk-neutral-950);
+  --muted--light: var(--bk-neutral-50);
+  --muted--dark: var(--bk-neutral-900);
+  --accent--light: var(--bk-neutral-100);
+  --accent--dark: var(--bk-neutral-850);
+  --accent-foreground--light: var(--bk-neutral-950);
   --brand--light: var(--bk-accent-600);
   --brand--dark: var(--bk-accent-400);
   --brand-foreground--light: var(--bk-neutral-0);
@@ -823,8 +975,27 @@
   --warning--dark: var(--bk-amber-400);
   --warning-subtle--light: var(--bk-amber-50);
   --warning-subtle--dark: var(--bk-amber-dim);
+  --info--light: var(--bk-sky-600);
+  --info--dark: var(--bk-sky-400);
+  --info-subtle--light: var(--bk-sky-50);
+  --info-subtle--dark: var(--bk-sky-dim);
+  --border--light: var(--bk-neutral-150);
+  --border--dark: oklch(1 0 0 / 0.09);
+  --border-strong--light: var(--bk-neutral-200);
+  --border-strong--dark: oklch(1 0 0 / 0.16);
+  --input--light: var(--bk-neutral-200);
+  --input--dark: oklch(1 0 0 / 0.14);
+  --popover-border--light: var(--bk-neutral-200);
+  --popover-border--dark: oklch(1 0 0 / 0.14);
   --ring--light: var(--bk-accent-600);
   --ring--dark: var(--bk-accent-400);
+  --overlay--light: color-mix(in oklab, var(--bk-neutral-950) 20%, transparent);
+  --overlay--dark: oklch(0 0 0 / 0.6);
+  --panel--light: var(--bk-neutral-900);
+  --panel--dark: var(--bk-neutral-800);
+  --panel-raised--light: var(--bk-neutral-850);
+  --panel-raised--dark: var(--bk-neutral-750);
+  --terminal--dark: var(--bk-neutral-950);
   --tint-violet--light: var(--bk-violet-100);
   --tint-violet--dark: oklch(0.245 0.03 283);
   --tint-mint--light: var(--bk-green-100);
@@ -845,6 +1016,16 @@
   --chart-4--dark: var(--bk-amber-200);
   --chart-5--light: var(--bk-neutral-450);
   --chart-5--dark: var(--bk-neutral-500);
+  --sidebar--light: var(--bk-neutral-25);
+  --sidebar--dark: var(--bk-neutral-950);
+  --sidebar-foreground--light: var(--bk-neutral-950);
+  --sidebar-primary--light: var(--bk-neutral-950);
+  --sidebar-primary-foreground--dark: var(--bk-neutral-950);
+  --sidebar-accent--light: var(--bk-neutral-100);
+  --sidebar-accent--dark: var(--bk-neutral-850);
+  --sidebar-accent-foreground--light: var(--bk-neutral-950);
+  --sidebar-border--light: var(--bk-neutral-150);
+  --sidebar-border--dark: oklch(1 0 0 / 0.09);
   --sidebar-ring--light: var(--bk-accent-600);
   --sidebar-ring--dark: var(--bk-accent-400);
   --panel-brand--light: var(--bk-accent-400);
@@ -864,46 +1045,52 @@
 }
 
 /* …takes its theme's values… */
-/* Ocean. A confident blue accent on cool slate, pill buttons with crisp 8px controls and 14px cards, Inter Tight. */
+/* Ocean. A cobalt accent on a visibly blue slate with deep navy ink, panels and dark mode, 8px rectangular buttons and controls, crisp 12px cards, Inter Tight throughout at its own open spacing. */
 [data-theme="ocean"] {
   --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
-  --text-hero--letter-spacing: -0.02em;
+  --text-hero--letter-spacing: -0.015em;
   --text-display--letter-spacing: -0.015em;
-  --text-h1--letter-spacing: -0.02em;
-  --text-h2--letter-spacing: -0.018em;
-  --text-h3--letter-spacing: -0.014em;
-  --text-h4--letter-spacing: -0.01em;
-  --text-title--letter-spacing: -0.005em;
-  --text-lead--letter-spacing: 0.002em;
-  --text-body--letter-spacing: 0.005em;
-  --text-label--letter-spacing: 0.004em;
-  --text-control--letter-spacing: 0.005em;
-  --text-caption--letter-spacing: 0.008em;
-  --text-3xl--letter-spacing: -0.018em;
-  --text-4xl--letter-spacing: -0.02em;
-  --text-5xl--letter-spacing: -0.024em;
-  --text-6xl--letter-spacing: -0.027em;
-  --text-7xl--letter-spacing: -0.03em;
+  --text-h1--letter-spacing: -0.012em;
+  --text-h2--letter-spacing: -0.012em;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h4--letter-spacing: -0.007em;
+  --text-title--letter-spacing: -0.004em;
+  --text-lead--letter-spacing: 0.004em;
+  --text-body--letter-spacing: 0.008em;
+  --text-label--letter-spacing: 0.006em;
+  --text-control--letter-spacing: 0.008em;
+  --text-caption--letter-spacing: 0.012em;
+  --text-xs--letter-spacing: 0.012em;
+  --text-sm--letter-spacing: 0.006em;
+  --text-base--letter-spacing: 0.006em;
+  --text-lg--letter-spacing: 0.003em;
+  --text-xl--letter-spacing: 0em;
+  --text-2xl--letter-spacing: -0.006em;
+  --text-3xl--letter-spacing: -0.01em;
+  --text-4xl--letter-spacing: -0.012em;
+  --text-5xl--letter-spacing: -0.014em;
+  --text-6xl--letter-spacing: -0.015em;
+  --text-7xl--letter-spacing: -0.016em;
   --radius-xs: 0.25rem;
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
-  --radius-lg: 0.875rem;
-  --radius-xl: 1.125rem;
-  --radius-2xl: 1.25rem;
-  --radius-3xl: 1.5rem;
-  --radius-4xl: 2rem;
-  --bk-accent-50: var(--bk-blue-50);
-  --bk-accent-100: var(--bk-blue-100);
-  --bk-accent-200: var(--bk-blue-200);
-  --bk-accent-300: var(--bk-blue-300);
-  --bk-accent-400: var(--bk-blue-400);
-  --bk-accent-500: var(--bk-blue-500);
-  --bk-accent-600: var(--bk-blue-600);
-  --bk-accent-700: var(--bk-blue-700);
-  --bk-accent-800: var(--bk-blue-800);
-  --bk-accent-900: var(--bk-blue-900);
-  --bk-accent-950: var(--bk-blue-950);
-  --bk-accent-dim: var(--bk-blue-dim);
+  --radius-lg: 0.75rem;
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.25rem;
+  --radius-4xl: 1.5rem;
+  --bk-accent-50: var(--bk-cobalt-50);
+  --bk-accent-100: var(--bk-cobalt-100);
+  --bk-accent-200: var(--bk-cobalt-200);
+  --bk-accent-300: var(--bk-cobalt-300);
+  --bk-accent-400: var(--bk-cobalt-400);
+  --bk-accent-500: var(--bk-cobalt-500);
+  --bk-accent-600: var(--bk-cobalt-600);
+  --bk-accent-700: var(--bk-cobalt-700);
+  --bk-accent-800: var(--bk-cobalt-800);
+  --bk-accent-900: var(--bk-cobalt-900);
+  --bk-accent-950: var(--bk-cobalt-950);
+  --bk-accent-dim: var(--bk-cobalt-dim);
   --bk-neutral-0: var(--bk-slate-0);
   --bk-neutral-25: var(--bk-slate-25);
   --bk-neutral-50: var(--bk-slate-50);
@@ -924,34 +1111,46 @@
   --bk-neutral-925: var(--bk-slate-925);
   --bk-neutral-950: var(--bk-slate-950);
   --bk-neutral-1000: var(--bk-slate-1000);
-  --tint-violet--light: oklch(0.935 0.031 260);
-  --tint-violet--dark: oklch(0.25 0.035 262);
+  --brand-subtle--light: oklch(0.93 0.034 256);
+  --brand-subtle-foreground--dark: var(--bk-accent-300);
+  --info--light: oklch(0.52 0.093 217);
+  --info--dark: oklch(0.72 0.11 215);
+  --info-subtle--light: oklch(0.97 0.022 215);
+  --info-subtle--dark: oklch(0.26 0.035 215);
+  --tint-violet--light: oklch(0.935 0.028 255);
+  --tint-violet--dark: oklch(0.25 0.04 259);
   --tint-sky--light: oklch(0.95 0.03 210);
   --tint-sky--dark: oklch(0.25 0.024 212);
-  --chart-2--light: oklch(0.63 0.11 215);
-  --chart-2--dark: oklch(0.8 0.1 212);
+  --chart-2--light: oklch(0.47 0.079 212);
+  --chart-2--dark: oklch(0.8 0.115 198);
+  --chart-3--light: oklch(0.64 0.16 138);
+  --chart-3--dark: oklch(0.66 0.16 138);
+  --button-radius: var(--radius-md);
+  --button-radius-xs: var(--radius-sm);
   --kern-pull: 0.025em;
   --overlay-item-radius: var(--radius-xs);
+  --badge-radius: var(--radius-sm);
 }
 
-/* Forest. A deep emerald accent on soft green-grey, rounded-square buttons, medium radii, Manrope. */
+/* Forest. A deep emerald accent on sage green-grey with mint-tinted fills, pine-black ink, pine primary buttons, panels and dialog scrim, and a forest-night dark mode; 14px soft-square buttons, 12px controls, 24px cards, 30px panels, Bricolage Grotesque headings over Manrope. */
 [data-theme="forest"] {
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  --text-hero--letter-spacing: -0.04em;
-  --text-display--letter-spacing: -0.038em;
-  --text-h1--letter-spacing: -0.036em;
-  --text-h2--letter-spacing: -0.034em;
-  --text-h3--letter-spacing: -0.026em;
-  --text-h4--letter-spacing: -0.02em;
-  --text-title--letter-spacing: -0.012em;
-  --radius-xs: 0.25rem;
-  --radius-sm: 0.375rem;
-  --radius-md: 0.625rem;
-  --radius-lg: 0.875rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.25rem;
-  --radius-3xl: 1.5rem;
-  --radius-4xl: 1.75rem;
+  --font-heading: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --text-hero--letter-spacing: -0.01em;
+  --text-display--letter-spacing: -0.01em;
+  --text-h1--letter-spacing: -0.012em;
+  --text-h2--letter-spacing: -0.014em;
+  --text-h3--letter-spacing: -0.014em;
+  --text-h4--letter-spacing: -0.01em;
+  --text-title--letter-spacing: -0.005em;
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 1.625rem;
+  --radius-2xl: 1.875rem;
+  --radius-3xl: 2rem;
+  --radius-4xl: 2.25rem;
   --bk-accent-50: var(--bk-emerald-50);
   --bk-accent-100: var(--bk-emerald-100);
   --bk-accent-200: var(--bk-emerald-200);
@@ -984,10 +1183,41 @@
   --bk-neutral-925: var(--bk-sage-925);
   --bk-neutral-950: var(--bk-sage-950);
   --bk-neutral-1000: var(--bk-sage-1000);
-  --success--light: oklch(0.52 0.155 140);
-  --success--dark: oklch(0.76 0.17 140);
+  --background--dark: oklch(0.15 0.016 160);
+  --foreground--light: oklch(0.17 0.032 165);
+  --subtle--light: oklch(0.975 0.01 160);
+  --subtle--dark: oklch(0.2 0.019 160);
+  --card--dark: oklch(0.185 0.018 160);
+  --card-foreground--light: oklch(0.17 0.032 165);
+  --popover--dark: oklch(0.215 0.02 160);
+  --popover-foreground--light: oklch(0.17 0.032 165);
+  --primary--light: oklch(0.26 0.05 165);
+  --primary-foreground--dark: oklch(0.2 0.035 165);
+  --secondary--light: oklch(0.95 0.016 160);
+  --secondary--dark: oklch(0.25 0.022 160);
+  --secondary-foreground--light: oklch(0.17 0.032 165);
+  --muted--light: oklch(0.968 0.013 160);
+  --muted--dark: oklch(0.215 0.02 160);
+  --accent--light: oklch(0.95 0.016 160);
+  --accent--dark: oklch(0.25 0.022 160);
+  --accent-foreground--light: oklch(0.17 0.032 165);
+  --brand-subtle-foreground--dark: var(--bk-accent-300);
+  --success--light: oklch(0.515 0.14 140);
+  --success--dark: oklch(0.77 0.15 140);
   --success-subtle--light: oklch(0.97 0.022 140);
   --success-subtle--dark: oklch(0.26 0.04 140);
+  --border--light: oklch(0.925 0.016 160);
+  --border-strong--light: oklch(0.895 0.02 160);
+  --input--light: oklch(0.895 0.02 160);
+  --popover-border--light: oklch(0.895 0.02 160);
+  --ring--light: oklch(0.535 0.112 165);
+  --overlay--light: color-mix(in oklab, oklch(0.28 0.04 165) 26%, transparent);
+  --overlay--dark: color-mix(in oklab, oklch(0.09 0.02 165) 60%, transparent);
+  --panel--light: oklch(0.2 0.03 165);
+  --panel--dark: oklch(0.28 0.032 165);
+  --panel-raised--light: oklch(0.24 0.034 165);
+  --panel-raised--dark: oklch(0.32 0.034 165);
+  --terminal--dark: oklch(0.185 0.018 160);
   --tint-violet--light: oklch(0.94 0.034 305);
   --tint-violet--dark: oklch(0.25 0.024 305);
   --tint-mint--light: oklch(0.94 0.04 138);
@@ -1002,29 +1232,40 @@
   --chart-3--dark: var(--bk-amber-300);
   --chart-4--light: oklch(0.64 0.105 305);
   --chart-4--dark: oklch(0.76 0.095 305);
-  --panel-success--light: oklch(0.76 0.17 140);
-  --panel-success--dark: oklch(0.76 0.17 140);
-  --button-radius: var(--radius-md);
-  --button-radius-sm: 0.5rem;
+  --sidebar--light: oklch(0.982 0.007 160);
+  --sidebar--dark: oklch(0.185 0.018 160);
+  --sidebar-foreground--light: oklch(0.17 0.032 165);
+  --sidebar-primary--light: oklch(0.26 0.05 165);
+  --sidebar-primary-foreground--dark: oklch(0.2 0.035 165);
+  --sidebar-accent--light: oklch(0.95 0.016 160);
+  --sidebar-accent--dark: oklch(0.25 0.022 160);
+  --sidebar-accent-foreground--light: oklch(0.17 0.032 165);
+  --sidebar-border--light: oklch(0.925 0.016 160);
+  --sidebar-ring--light: oklch(0.535 0.112 165);
+  --panel-success--light: oklch(0.77 0.15 140);
+  --panel-success--dark: oklch(0.77 0.15 140);
+  --button-radius: 0.875rem;
+  --button-radius-sm: var(--radius-md);
   --button-radius-xs: var(--radius-sm);
   --kern-pull: 0.02em;
   --badge-radius: var(--radius-sm);
 }
 
-/* Ember. A warm orange accent on warm stone, soft and generous radii, pill buttons, DM Sans. */
+/* Ember. A burnt-orange accent on warm paper-and-espresso stone, pill buttons and the softest radii (28px cards), Fraunces serif headings over DM Sans, and gold warnings. */
 [data-theme="ember"] {
   --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-  --text-hero--letter-spacing: -0.032em;
-  --text-display--letter-spacing: -0.024em;
-  --text-h1--letter-spacing: -0.024em;
-  --text-h2--letter-spacing: -0.022em;
-  --text-h3--letter-spacing: -0.018em;
-  --text-h4--letter-spacing: -0.014em;
-  --text-title--letter-spacing: -0.008em;
+  --font-heading: var(--font-fraunces), ui-serif, Georgia, serif;
+  --text-hero--letter-spacing: -0.024em;
+  --text-display--letter-spacing: -0.022em;
+  --text-h1--letter-spacing: -0.021em;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h3--letter-spacing: -0.015em;
+  --text-h4--letter-spacing: -0.01em;
+  --text-title--letter-spacing: -0.005em;
   --radius-xs: 0.375rem;
   --radius-sm: 0.625rem;
   --radius-md: 1rem;
-  --radius-lg: 1.5rem;
+  --radius-lg: 1.75rem;
   --radius-xl: 2rem;
   --radius-2xl: 2.25rem;
   --radius-3xl: 2.5rem;
@@ -1067,6 +1308,7 @@
   --warning--dark: var(--bk-gold-400);
   --warning-subtle--light: var(--bk-gold-50);
   --warning-subtle--dark: var(--bk-gold-dim);
+  --overlay--light: color-mix(in oklab, oklch(0.32 0.04 52) 26%, transparent);
   --tint-violet--light: oklch(0.935 0.04 50);
   --tint-violet--dark: oklch(0.25 0.035 45);
   --tint-sand--light: oklch(0.945 0.045 88);
@@ -1075,31 +1317,32 @@
   --tint-sky--dark: oklch(0.25 0.016 220);
   --tint-rose--light: oklch(0.93 0.038 2);
   --tint-rose--dark: oklch(0.245 0.026 2);
-  --chart-4--light: var(--bk-violet-500);
-  --chart-4--dark: var(--bk-violet-300);
+  --chart-4--light: oklch(0.58 0.15 340);
+  --chart-4--dark: oklch(0.74 0.12 340);
   --panel-warning--light: var(--bk-gold-400);
   --panel-warning--dark: var(--bk-gold-400);
-  --kern-pull: 0.02em;
+  --kern-pull: 0em;
 }
 
-/* Mono. No hue at all: ink accents on pure greys, a grey chart ramp, sharp 6px controls and buttons, 8px cards, Geist and Geist Mono. */
+/* Mono. No hue at all: ink on pure greys, crisp ruled lines, square 2px buttons and controls, 4px cards, Geist Mono headings over Geist. */
 [data-theme="mono"] {
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --text-hero--letter-spacing: -0.038em;
-  --text-display--letter-spacing: -0.03em;
-  --text-h1--letter-spacing: -0.028em;
-  --text-h2--letter-spacing: -0.026em;
+  --font-heading: var(--font-mono);
+  --text-hero--letter-spacing: -0.04em;
+  --text-display--letter-spacing: -0.036em;
+  --text-h1--letter-spacing: -0.032em;
+  --text-h2--letter-spacing: -0.03em;
   --text-h3--letter-spacing: -0.022em;
-  --text-h4--letter-spacing: -0.016em;
-  --text-title--letter-spacing: -0.01em;
-  --radius-xs: 0.1875rem;
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.625rem;
-  --radius-2xl: 0.75rem;
-  --radius-3xl: 0.875rem;
-  --radius-4xl: 1rem;
+  --text-h4--letter-spacing: -0.015em;
+  --text-title--letter-spacing: -0.008em;
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.125rem;
+  --radius-md: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.375rem;
+  --radius-2xl: 0.375rem;
+  --radius-3xl: 0.5rem;
+  --radius-4xl: 0.5rem;
   --bk-accent-50: var(--bk-grey-50);
   --bk-accent-100: var(--bk-grey-100);
   --bk-accent-200: var(--bk-grey-200);
@@ -1136,11 +1379,19 @@
   --brand--dark: var(--bk-neutral-25);
   --brand-foreground--light: var(--bk-neutral-0);
   --brand-foreground--dark: var(--bk-neutral-1000);
-  --brand-subtle--light: var(--bk-neutral-150);
-  --brand-subtle--dark: var(--bk-neutral-800);
+  --brand-subtle--light: var(--bk-neutral-300);
+  --brand-subtle--dark: var(--bk-neutral-700);
   --brand-subtle-foreground--light: var(--bk-neutral-950);
   --brand-subtle-foreground--dark: var(--bk-neutral-25);
-  --ring--light: var(--bk-neutral-550);
+  --border--light: var(--bk-neutral-200);
+  --border--dark: oklch(1 0 0 / 0.13);
+  --border-strong--light: var(--bk-neutral-300);
+  --border-strong--dark: oklch(1 0 0 / 0.24);
+  --input--light: var(--bk-neutral-300);
+  --input--dark: oklch(1 0 0 / 0.22);
+  --popover-border--light: var(--bk-neutral-300);
+  --popover-border--dark: oklch(1 0 0 / 0.22);
+  --ring--light: var(--bk-neutral-500);
   --ring--dark: var(--bk-neutral-25);
   --tint-violet--light: oklch(0.86 0 0);
   --tint-violet--dark: var(--bk-neutral-750);
@@ -1154,45 +1405,61 @@
   --tint-rose--dark: oklch(0.4 0 0);
   --chart-1--light: var(--bk-neutral-950);
   --chart-1--dark: var(--bk-neutral-25);
-  --chart-2--light: var(--bk-neutral-750);
-  --chart-2--dark: oklch(0.86 0 0);
-  --chart-3--light: var(--bk-neutral-600);
-  --chart-3--dark: oklch(0.73 0 0);
-  --chart-4--light: var(--bk-neutral-500);
-  --chart-4--dark: oklch(0.48 0 0);
-  --chart-5--light: var(--bk-neutral-450);
-  --chart-5--dark: oklch(0.605 0 0);
-  --sidebar-ring--light: var(--bk-neutral-550);
+  --chart-2--light: oklch(0.66 0 0);
+  --chart-2--dark: oklch(0.58 0 0);
+  --chart-3--light: oklch(0.44 0 0);
+  --chart-3--dark: oklch(0.76 0 0);
+  --chart-4--light: oklch(0.29 0 0);
+  --chart-4--dark: oklch(0.87 0 0);
+  --chart-5--light: oklch(0.55 0 0);
+  --chart-5--dark: oklch(0.665 0 0);
+  --sidebar-border--light: var(--bk-neutral-200);
+  --sidebar-border--dark: oklch(1 0 0 / 0.13);
+  --sidebar-ring--light: var(--bk-neutral-500);
   --sidebar-ring--dark: var(--bk-neutral-25);
   --panel-brand--light: var(--bk-neutral-0);
   --panel-brand--dark: var(--bk-neutral-0);
   --button-radius: var(--radius-md);
   --link-decoration-line: underline;
-  --kern-pull: 0em;
+  --kern-pull: 0.17em;
   --brand-mark-ring: 1.25px;
   --badge-radius: var(--radius-sm);
 }
 
 /* …and evaluates everything that depends on them again, in the subtree's mode. */
 [data-theme] {
-  --font-heading: var(--font-sans);
   --default-font-family: var(--font-sans);
-  --background: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
-  --foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
+  --background--light: var(--bk-neutral-0);
+  --foreground--dark: var(--bk-neutral-25);
+  --card--light: var(--bk-neutral-0);
+  --card-foreground--dark: var(--bk-neutral-25);
+  --popover--light: var(--bk-neutral-0);
+  --popover-foreground--dark: var(--bk-neutral-25);
+  --primary--dark: var(--bk-neutral-0);
+  --primary-foreground--light: var(--bk-neutral-0);
+  --secondary-foreground--dark: var(--bk-neutral-25);
+  --accent-foreground--dark: var(--bk-neutral-25);
+  --terminal--light: var(--bk-neutral-1000);
+  --sidebar-foreground--dark: var(--bk-neutral-25);
+  --sidebar-primary--dark: var(--bk-neutral-0);
+  --sidebar-primary-foreground--light: var(--bk-neutral-0);
+  --sidebar-accent-foreground--dark: var(--bk-neutral-25);
+  --background: var(--bk-on-light, var(--background--light)) var(--bk-on-dark, var(--background--dark));
+  --foreground: var(--bk-on-light, var(--foreground--light)) var(--bk-on-dark, var(--foreground--dark));
   --copy: var(--bk-on-light, var(--bk-neutral-600)) var(--bk-on-dark, var(--bk-neutral-300));
   --muted-foreground: var(--bk-on-light, var(--bk-neutral-550)) var(--bk-on-dark, var(--bk-neutral-400));
-  --subtle: var(--bk-on-light, var(--bk-neutral-50)) var(--bk-on-dark, var(--bk-neutral-925));
-  --card: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-950));
-  --card-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --popover: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-900));
-  --popover-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --primary: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-0));
-  --primary-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-950));
-  --secondary: var(--bk-on-light, var(--bk-neutral-100)) var(--bk-on-dark, var(--bk-neutral-850));
-  --secondary-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --muted: var(--bk-on-light, var(--bk-neutral-50)) var(--bk-on-dark, var(--bk-neutral-900));
-  --accent: var(--bk-on-light, var(--bk-neutral-100)) var(--bk-on-dark, var(--bk-neutral-850));
-  --accent-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
+  --subtle: var(--bk-on-light, var(--subtle--light)) var(--bk-on-dark, var(--subtle--dark));
+  --card: var(--bk-on-light, var(--card--light)) var(--bk-on-dark, var(--card--dark));
+  --card-foreground: var(--bk-on-light, var(--card-foreground--light)) var(--bk-on-dark, var(--card-foreground--dark));
+  --popover: var(--bk-on-light, var(--popover--light)) var(--bk-on-dark, var(--popover--dark));
+  --popover-foreground: var(--bk-on-light, var(--popover-foreground--light)) var(--bk-on-dark, var(--popover-foreground--dark));
+  --primary: var(--bk-on-light, var(--primary--light)) var(--bk-on-dark, var(--primary--dark));
+  --primary-foreground: var(--bk-on-light, var(--primary-foreground--light)) var(--bk-on-dark, var(--primary-foreground--dark));
+  --secondary: var(--bk-on-light, var(--secondary--light)) var(--bk-on-dark, var(--secondary--dark));
+  --secondary-foreground: var(--bk-on-light, var(--secondary-foreground--light)) var(--bk-on-dark, var(--secondary-foreground--dark));
+  --muted: var(--bk-on-light, var(--muted--light)) var(--bk-on-dark, var(--muted--dark));
+  --accent: var(--bk-on-light, var(--accent--light)) var(--bk-on-dark, var(--accent--dark));
+  --accent-foreground: var(--bk-on-light, var(--accent-foreground--light)) var(--bk-on-dark, var(--accent-foreground--dark));
   --brand: var(--bk-on-light, var(--brand--light)) var(--bk-on-dark, var(--brand--dark));
   --brand-foreground: var(--bk-on-light, var(--brand-foreground--light)) var(--bk-on-dark, var(--brand-foreground--dark));
   --brand-subtle: var(--bk-on-light, var(--brand-subtle--light)) var(--bk-on-dark, var(--brand-subtle--dark));
@@ -1204,16 +1471,18 @@
   --warning: var(--bk-on-light, var(--warning--light)) var(--bk-on-dark, var(--warning--dark));
   --warning-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-1000));
   --warning-subtle: var(--bk-on-light, var(--warning-subtle--light)) var(--bk-on-dark, var(--warning-subtle--dark));
-  --border: var(--bk-on-light, var(--bk-neutral-150)) var(--bk-on-dark, oklch(1 0 0 / 0.09));
-  --border-strong: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.16));
-  --input: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.14));
-  --popover-border: var(--bk-on-light, var(--bk-neutral-200)) var(--bk-on-dark, oklch(1 0 0 / 0.14));
+  --info: var(--bk-on-light, var(--info--light)) var(--bk-on-dark, var(--info--dark));
+  --info-subtle: var(--bk-on-light, var(--info-subtle--light)) var(--bk-on-dark, var(--info-subtle--dark));
+  --border: var(--bk-on-light, var(--border--light)) var(--bk-on-dark, var(--border--dark));
+  --border-strong: var(--bk-on-light, var(--border-strong--light)) var(--bk-on-dark, var(--border-strong--dark));
+  --input: var(--bk-on-light, var(--input--light)) var(--bk-on-dark, var(--input--dark));
+  --popover-border: var(--bk-on-light, var(--popover-border--light)) var(--bk-on-dark, var(--popover-border--dark));
   --ring: var(--bk-on-light, var(--ring--light)) var(--bk-on-dark, var(--ring--dark));
-  --overlay: var(--bk-on-light, color-mix(in oklab, var(--bk-neutral-950) 20%, transparent)) var(--bk-on-dark, oklch(0 0 0 / 0.6));
-  --panel: var(--bk-on-light, var(--bk-neutral-900)) var(--bk-on-dark, var(--bk-neutral-800));
+  --overlay: var(--bk-on-light, var(--overlay--light)) var(--bk-on-dark, var(--overlay--dark));
+  --panel: var(--bk-on-light, var(--panel--light)) var(--bk-on-dark, var(--panel--dark));
   --panel-foreground: var(--bk-neutral-0);
-  --panel-raised: var(--bk-on-light, var(--bk-neutral-850)) var(--bk-on-dark, var(--bk-neutral-750));
-  --terminal: var(--bk-on-light, var(--bk-neutral-1000)) var(--bk-on-dark, var(--bk-neutral-950));
+  --panel-raised: var(--bk-on-light, var(--panel-raised--light)) var(--bk-on-dark, var(--panel-raised--dark));
+  --terminal: var(--bk-on-light, var(--terminal--light)) var(--bk-on-dark, var(--terminal--dark));
   --terminal-foreground: var(--bk-neutral-150);
   --tint-violet: var(--bk-on-light, var(--tint-violet--light)) var(--bk-on-dark, var(--tint-violet--dark));
   --tint-mint: var(--bk-on-light, var(--tint-mint--light)) var(--bk-on-dark, var(--tint-mint--dark));
@@ -1225,13 +1494,13 @@
   --chart-3: var(--bk-on-light, var(--chart-3--light)) var(--bk-on-dark, var(--chart-3--dark));
   --chart-4: var(--bk-on-light, var(--chart-4--light)) var(--bk-on-dark, var(--chart-4--dark));
   --chart-5: var(--bk-on-light, var(--chart-5--light)) var(--bk-on-dark, var(--chart-5--dark));
-  --sidebar: var(--bk-on-light, var(--bk-neutral-25)) var(--bk-on-dark, var(--bk-neutral-950));
-  --sidebar-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --sidebar-primary: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-0));
-  --sidebar-primary-foreground: var(--bk-on-light, var(--bk-neutral-0)) var(--bk-on-dark, var(--bk-neutral-950));
-  --sidebar-accent: var(--bk-on-light, var(--bk-neutral-100)) var(--bk-on-dark, var(--bk-neutral-850));
-  --sidebar-accent-foreground: var(--bk-on-light, var(--bk-neutral-950)) var(--bk-on-dark, var(--bk-neutral-25));
-  --sidebar-border: var(--bk-on-light, var(--bk-neutral-150)) var(--bk-on-dark, oklch(1 0 0 / 0.09));
+  --sidebar: var(--bk-on-light, var(--sidebar--light)) var(--bk-on-dark, var(--sidebar--dark));
+  --sidebar-foreground: var(--bk-on-light, var(--sidebar-foreground--light)) var(--bk-on-dark, var(--sidebar-foreground--dark));
+  --sidebar-primary: var(--bk-on-light, var(--sidebar-primary--light)) var(--bk-on-dark, var(--sidebar-primary--dark));
+  --sidebar-primary-foreground: var(--bk-on-light, var(--sidebar-primary-foreground--light)) var(--bk-on-dark, var(--sidebar-primary-foreground--dark));
+  --sidebar-accent: var(--bk-on-light, var(--sidebar-accent--light)) var(--bk-on-dark, var(--sidebar-accent--dark));
+  --sidebar-accent-foreground: var(--bk-on-light, var(--sidebar-accent-foreground--light)) var(--bk-on-dark, var(--sidebar-accent-foreground--dark));
+  --sidebar-border: var(--bk-on-light, var(--sidebar-border--light)) var(--bk-on-dark, var(--sidebar-border--dark));
   --sidebar-ring: var(--bk-on-light, var(--sidebar-ring--light)) var(--bk-on-dark, var(--sidebar-ring--dark));
   --panel-brand: var(--bk-on-light, var(--panel-brand--light)) var(--bk-on-dark, var(--panel-brand--dark));
   --panel-success: var(--bk-on-light, var(--panel-success--light)) var(--bk-on-dark, var(--panel-success--dark));
@@ -1249,5 +1518,14 @@
   :root {
     --text-control: 0.875rem;
     --text-control--line-height: 1.45;
+    --grid-columns: 8;
+    --grid-gutter: 1.5rem;
+  }
+}
+
+@media (width >= 64rem) {
+  :root {
+    --grid-columns: 12;
+    --grid-gutter: 2rem;
   }
 }
