@@ -467,7 +467,7 @@ export function TokenExplorer() {
               </p>
             </div>
             <Button type="button" variant="secondary" size="sm" onClick={clearAll}>
-              Clear filters
+              Clear Filters
             </Button>
           </div>
         ) : (

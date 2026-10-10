@@ -1,5 +1,5 @@
 {
-  "$description": "A deep emerald accent on soft green-grey, rounded-square buttons, medium radii, Manrope.",
+  "$description": "A deep emerald accent on sage green-grey with mint-tinted fills, pine-black ink, pine primary buttons, panels and dialog scrim, and a forest-night dark mode; 14px soft-square buttons, 12px controls, 24px cards, 30px panels, Bricolage Grotesque headings over Manrope.",
   "$extensions": {
     "blocks": {
       "theme": {
@@ -118,42 +118,46 @@
   },
   "radius": {
     "xs": {
-      "$value": "0.25rem"
-    },
-    "sm": {
       "$value": "0.375rem"
     },
+    "sm": {
+      "$value": "0.5rem"
+    },
     "md": {
-      "$value": "0.625rem"
+      "$value": "0.75rem"
     },
     "lg": {
-      "$value": "0.875rem"
+      "$value": "1.5rem",
+      "$description": "24px cards: 6px rounder than the default's 18px, so a Forest card reads as a soft, generous tile beside the 12px controls."
     },
     "xl": {
-      "$value": "1rem"
+      "$value": "1.625rem",
+      "$description": "26px dialogs, a step past the cards."
     },
     "2xl": {
-      "$value": "1.25rem"
+      "$value": "1.875rem",
+      "$description": "30px panels."
     },
     "3xl": {
-      "$value": "1.5rem"
+      "$value": "2rem"
     },
     "4xl": {
-      "$value": "1.75rem"
+      "$value": "2.25rem"
     }
   },
   "component": {
     "button": {
       "radius": {
-        "$value": "{radius.md}"
+        "$value": "0.875rem",
+        "$description": "14px soft squares on 44px buttons: rounder than the 12px controls, never a pill."
       },
       "radius-sm": {
-        "$value": "0.5rem",
-        "$description": "8px on 36px buttons, in proportion with 10px on 44px ones."
+        "$value": "{radius.md}",
+        "$description": "12px on 36px buttons, in proportion with 14px on 44px ones."
       },
       "radius-xs": {
         "$value": "{radius.sm}",
-        "$description": "6px, so 28px buttons stay rounded squares rather than pills."
+        "$description": "8px, so 28px buttons stay soft squares rather than pills."
       }
     },
     "badge": {
@@ -163,7 +167,8 @@
     },
     "kern": {
       "pull": {
-        "$value": "0.02em"
+        "$value": "0.02em",
+        "$description": "Bricolage Grotesque keeps a little air before commas and full stops at display sizes; a small pull closes it."
       }
     }
   },
@@ -176,64 +181,188 @@
           "system-ui",
           "sans-serif"
         ],
-        "$description": "Manrope. Headings, UI and body copy.",
+        "$description": "Manrope. UI and body copy.",
         "$extensions": {
           "blocks": {
-            "name": "Manrope"
+            "name": "Manrope",
+            "genre": "geometric"
+          }
+        }
+      },
+      "heading": {
+        "$value": [
+          "var(--font-bricolage)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif"
+        ],
+        "$description": "Bricolage Grotesque, a characterful grotesque with an optical-size axis, at the heading roles' 800 and 700. Body copy and UI stay in Manrope.",
+        "$extensions": {
+          "blocks": {
+            "name": "Bricolage Grotesque",
+            "genre": "grotesque"
           }
         }
       }
     }
   },
   "type": {
+    "$description": "Tracking for Bricolage Grotesque, Forest's heading face, at 800 and 700. Its optical sizes draw the display cut (96px and up) with tight spacing already, so hero and display take only -0.01em; the smaller cuts are looser and take a little more, -0.012em to -0.014em from h1 to h3, easing to -0.005em on titles. Body, label and caption keep the default tracking for Manrope.",
     "hero": {
       "$value": {
-        "letterSpacing": "-0.04em"
+        "letterSpacing": "-0.01em"
       }
     },
     "display": {
       "$value": {
-        "letterSpacing": "-0.038em"
+        "letterSpacing": "-0.01em"
       }
     },
     "h1": {
       "$value": {
-        "letterSpacing": "-0.036em"
+        "letterSpacing": "-0.012em"
       }
     },
     "h2": {
       "$value": {
-        "letterSpacing": "-0.034em"
+        "letterSpacing": "-0.014em"
       }
     },
     "h3": {
       "$value": {
-        "letterSpacing": "-0.026em"
+        "letterSpacing": "-0.014em"
       }
     },
     "h4": {
       "$value": {
-        "letterSpacing": "-0.02em"
+        "letterSpacing": "-0.01em"
       }
     },
     "title": {
       "$value": {
-        "letterSpacing": "-0.012em"
+        "letterSpacing": "-0.005em"
       }
     }
   },
   "light": {
     "color": {
+      "foreground": {
+        "$value": "oklch(0.17 0.032 165)",
+        "$description": "Pine-black ink for headings and primary text: as dark as the default's ink, with enough chroma at the accent hue that full-strength text reads green-black rather than neutral black."
+      },
+      "card-foreground": {
+        "$value": "oklch(0.17 0.032 165)",
+        "$description": "Text on cards, in the pine-black ink."
+      },
+      "popover-foreground": {
+        "$value": "oklch(0.17 0.032 165)",
+        "$description": "Text in menus, popovers and dialogs, in the pine-black ink."
+      },
+      "primary": {
+        "$value": "oklch(0.26 0.05 165)",
+        "$description": "Pine: primary buttons, active segmented tabs and dialog actions are a deep green a step above the pine panel, still dark enough to read as ink rather than brand, so every primary action reads Forest even where the emerald accent does not appear. White text on it passes AA with room to spare (15:1)."
+      },
+      "secondary-foreground": {
+        "$value": "oklch(0.17 0.032 165)",
+        "$description": "Text on secondary buttons, in the pine-black ink."
+      },
+      "accent-foreground": {
+        "$value": "oklch(0.17 0.032 165)",
+        "$description": "Text on hovered and selected rows, in the pine-black ink."
+      },
+      "subtle": {
+        "$value": "oklch(0.975 0.01 160)",
+        "$description": "Sage band: about 1.7 times the scale's chroma at this step, so tinted bands read green-grey rather than white."
+      },
+      "muted": {
+        "$value": "oklch(0.968 0.013 160)",
+        "$description": "Input fills and quiet fills, a visible mint that sets Forest's fields apart from the default's near-white."
+      },
+      "secondary": {
+        "$value": "oklch(0.95 0.016 160)",
+        "$description": "Secondary buttons and filled controls, in the same sage."
+      },
+      "accent": {
+        "$value": "oklch(0.95 0.016 160)",
+        "$description": "Hover and selected rows, at the secondary step."
+      },
+      "border": {
+        "$value": "oklch(0.925 0.016 160)",
+        "$description": "Sage hairlines, tinted like the fills they separate."
+      },
+      "border-strong": {
+        "$value": "oklch(0.895 0.02 160)",
+        "$description": "Emphasised outlines, a step past the sage hairline."
+      },
+      "input": {
+        "$value": "oklch(0.895 0.02 160)",
+        "$description": "Form control borders, at the border-strong step."
+      },
+      "popover-border": {
+        "$value": "oklch(0.895 0.02 160)",
+        "$description": "Edge of anchored overlays, at the border-strong step."
+      },
+      "overlay": {
+        "$value": "oklch(0.28 0.04 165)",
+        "$description": "A pine scrim in place of 20% of the ink, which reads as neutral grey over white. Darkens the page by about as much and tints it forest green.",
+        "$extensions": {
+          "blocks": {
+            "alpha": 0.26
+          }
+        }
+      },
+      "sidebar": {
+        "DEFAULT": {
+          "$value": "oklch(0.982 0.007 160)",
+          "$description": "App sidebar, a faint sage between the canvas and the subtle band."
+        },
+        "foreground": {
+          "$value": "oklch(0.17 0.032 165)",
+          "$description": "Sidebar text, in the pine-black ink."
+        },
+        "primary": {
+          "$value": "oklch(0.26 0.05 165)",
+          "$description": "Active sidebar item fill, in the pine of primary buttons."
+        },
+        "accent": {
+          "$value": "oklch(0.95 0.016 160)",
+          "$description": "Hovered sidebar item, at the secondary step."
+        },
+        "accent-foreground": {
+          "$value": "oklch(0.17 0.032 165)",
+          "$description": "Hovered sidebar item text, in the pine-black ink."
+        },
+        "border": {
+          "$value": "oklch(0.925 0.016 160)",
+          "$description": "Sidebar dividers, at the border step."
+        },
+        "ring": {
+          "$value": "oklch(0.535 0.112 165)",
+          "$description": "Sidebar focus outline, as the ring."
+        }
+      },
+      "ring": {
+        "$value": "oklch(0.535 0.112 165)",
+        "$description": "Focus outline: emerald between the 500 and 600 steps, so it keeps 3:1 on the canvas (4.9) and on pine panels (3.7) and raised panel surfaces (3.3), where emerald 600 fell under 3:1."
+      },
+      "panel": {
+        "$value": "oklch(0.2 0.03 165)",
+        "$description": "Pine: the dark emphasis surface carries a deep green at the accent hue, darker and far quieter than the brand, so Forest panels read as forest, not black."
+      },
+      "panel-raised": {
+        "$value": "oklch(0.24 0.034 165)",
+        "$description": "Raised element inside a pine panel."
+      },
       "success": {
-        "$value": "oklch(0.52 0.155 140)",
-        "$description": "Shifted from the shared green (hue 152) to hue 140, a leafier green, so success stays clearly distinct from the emerald accent (hue 165). It passes the same contrast pairs as the shared green."
+        "$value": "oklch(0.515 0.14 140)",
+        "$description": "Shifted from the shared green (hue 152) to hue 140, a leafier green, so success stays clearly apart from the emerald accent (hue 165), at a slightly calmer chroma than the shared green. It passes the same contrast pairs."
       },
       "success-subtle": {
         "$value": "oklch(0.97 0.022 140)",
         "$description": "Quiet success fill, at the forest success hue (140)."
       },
       "panel-success": {
-        "$value": "oklch(0.76 0.17 140)",
+        "$value": "oklch(0.77 0.15 140)",
         "$description": "Success on dark panels, at the forest success hue (140)."
       },
       "tint": {
@@ -265,16 +394,87 @@
   },
   "dark": {
     "color": {
+      "background": {
+        "$value": "oklch(0.15 0.016 160)",
+        "$description": "Forest night: a green-black canvas, lifted from the default near-black so the sage tint shows in dark mode."
+      },
+      "card": {
+        "$value": "oklch(0.185 0.018 160)",
+        "$description": "A clear step above the forest-night canvas."
+      },
+      "subtle": {
+        "$value": "oklch(0.2 0.019 160)",
+        "$description": "Tinted band, between card and muted."
+      },
+      "muted": {
+        "$value": "oklch(0.215 0.02 160)",
+        "$description": "Input fills and quiet fills."
+      },
+      "popover": {
+        "$value": "oklch(0.215 0.02 160)",
+        "$description": "Menus, popovers and dialogs, at the muted step."
+      },
+      "secondary": {
+        "$value": "oklch(0.25 0.022 160)",
+        "$description": "Secondary buttons and filled controls."
+      },
+      "accent": {
+        "$value": "oklch(0.25 0.022 160)",
+        "$description": "Hover and selected rows."
+      },
+      "primary-foreground": {
+        "$value": "oklch(0.2 0.035 165)",
+        "$description": "Text on the white primary buttons, in pine rather than neutral black."
+      },
+      "overlay": {
+        "$value": "oklch(0.09 0.02 165)",
+        "$description": "A pine-black scrim in place of the default's neutral black, so the page behind a dialog stays forest night rather than turning grey-black.",
+        "$extensions": {
+          "blocks": {
+            "alpha": 0.6
+          }
+        }
+      },
+      "sidebar": {
+        "DEFAULT": {
+          "$value": "oklch(0.185 0.018 160)",
+          "$description": "App sidebar, at the card step."
+        },
+        "primary-foreground": {
+          "$value": "oklch(0.2 0.035 165)",
+          "$description": "Active sidebar item text, in pine like primary buttons."
+        },
+        "accent": {
+          "$value": "oklch(0.25 0.022 160)",
+          "$description": "Hovered sidebar item."
+        }
+      },
+      "panel": {
+        "$value": "oklch(0.28 0.032 165)",
+        "$description": "Pine panel, the lightest surface in dark mode so it still reads as the emphasis surface."
+      },
+      "panel-raised": {
+        "$value": "oklch(0.32 0.034 165)",
+        "$description": "Raised element inside a pine panel."
+      },
+      "terminal": {
+        "$value": "oklch(0.185 0.018 160)",
+        "$description": "Code windows at the card step, above the canvas."
+      },
+      "brand-subtle-foreground": {
+        "$value": "{theme.accent.300}",
+        "$description": "One step stronger than the default so brand badges read emerald on the dark emerald fill, beside the leafier success badges, instead of pale grey-green."
+      },
       "success": {
-        "$value": "oklch(0.76 0.17 140)",
-        "$description": "Shifted from the shared green (hue 152) to hue 140, a leafier green, so success stays clearly distinct from the emerald accent (hue 165). It passes the same contrast pairs as the shared green."
+        "$value": "oklch(0.77 0.15 140)",
+        "$description": "Shifted from the shared green (hue 152) to hue 140, a leafier green, so success stays clearly apart from the emerald accent (hue 165), at a slightly calmer chroma than the shared green. It passes the same contrast pairs."
       },
       "success-subtle": {
         "$value": "oklch(0.26 0.04 140)",
         "$description": "Quiet success fill, at the forest success hue (140)."
       },
       "panel-success": {
-        "$value": "oklch(0.76 0.17 140)",
+        "$value": "oklch(0.77 0.15 140)",
         "$description": "Success on dark panels, at the forest success hue (140)."
       },
       "tint": {

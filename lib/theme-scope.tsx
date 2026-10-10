@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
  *   <ThemeScope theme="ocean" mode="dark">…</ThemeScope>
  *
  * Every token inside resolves for that theme and mode, nested scopes
- * included, and the subtree takes the theme's font. Omit `theme` or `mode` to
+ * included, and the subtree takes the theme's fonts. Omit `theme` or `mode` to
  * inherit it. Text colour and background are inherited like any element's;
  * add `bg-background text-copy` for a standalone surface. A server component:
  * use it anywhere. For another element, spread themeScopeProps() instead.

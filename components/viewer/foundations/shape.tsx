@@ -196,7 +196,7 @@ const componentDemo: Record<string, { label: string; demo: React.ReactNode; stag
       <span className="flex flex-wrap items-center justify-center gap-2">
         <Button type="button" size="sm" tabIndex={-1} aria-hidden>
           <PlusIcon data-icon="inline-start" />
-          New task
+          New Task
         </Button>
         <Button type="button" variant="outline" size="icon-sm" tabIndex={-1} aria-hidden>
           <EllipsisIcon />
@@ -473,10 +473,10 @@ function Focus() {
               Assign
             </Button>
             <Button type="button" variant="secondary" size="sm">
-              Set due date
+              Set Due Date
             </Button>
             <Button type="button" variant="secondary" size="sm">
-              Add subtask
+              Add Subtask
             </Button>
           </div>
         </div>

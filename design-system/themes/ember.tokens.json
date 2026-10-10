@@ -1,5 +1,5 @@
 {
-  "$description": "A warm orange accent on warm stone, soft and generous radii, pill buttons, DM Sans.",
+  "$description": "A burnt-orange accent on warm paper-and-espresso stone, pill buttons and the softest radii (28px cards), Fraunces serif headings over DM Sans, and gold warnings.",
   "$extensions": {
     "blocks": {
       "theme": {
@@ -14,7 +14,6 @@
   },
   "theme": {
     "accent": {
-      "$description": "Points at color.orange (design-system/tokens/primitives.tokens.json).",
       "50": {
         "$value": "{color.orange.50}"
       },
@@ -48,12 +47,12 @@
       "950": {
         "$value": "{color.orange.950}"
       },
+      "$description": "Points at color.orange (design-system/tokens/primitives.tokens.json).",
       "dim": {
         "$value": "{color.orange.dim}"
       }
     },
     "neutral": {
-      "$description": "Points at color.stone (design-system/tokens/primitives.tokens.json).",
       "0": {
         "$value": "{color.stone.0}"
       },
@@ -113,7 +112,8 @@
       },
       "1000": {
         "$value": "{color.stone.1000}"
-      }
+      },
+      "$description": "Points at color.stone (design-system/tokens/primitives.tokens.json): Ember's warm stone, paper to espresso."
     }
   },
   "radius": {
@@ -127,7 +127,7 @@
       "$value": "1rem"
     },
     "lg": {
-      "$value": "1.5rem"
+      "$value": "1.75rem"
     },
     "xl": {
       "$value": "2rem"
@@ -142,6 +142,14 @@
       "$value": "3rem"
     }
   },
+  "component": {
+    "kern": {
+      "pull": {
+        "$value": "0em",
+        "$description": "Fraunces' display cut already sets commas and full stops close to the letter before them; with the serif tracking, any pull makes the mark touch it."
+      }
+    }
+  },
   "font": {
     "family": {
       "sans": {
@@ -151,10 +159,26 @@
           "system-ui",
           "sans-serif"
         ],
-        "$description": "DM Sans. Headings, UI and body copy.",
+        "$description": "DM Sans. UI and body copy.",
         "$extensions": {
           "blocks": {
-            "name": "DM Sans"
+            "name": "DM Sans",
+            "genre": "geometric"
+          }
+        }
+      },
+      "heading": {
+        "$value": [
+          "var(--font-fraunces)",
+          "ui-serif",
+          "Georgia",
+          "serif"
+        ],
+        "$description": "Fraunces, an upright display serif with an optical-size axis, at the heading roles' 800 and 700. Body copy and UI stay in DM Sans.",
+        "$extensions": {
+          "blocks": {
+            "name": "Fraunces",
+            "genre": "serif"
           }
         }
       }
@@ -163,37 +187,37 @@
   "type": {
     "hero": {
       "$value": {
-        "letterSpacing": "-0.032em"
+        "letterSpacing": "-0.024em"
       }
     },
     "display": {
       "$value": {
-        "letterSpacing": "-0.024em"
+        "letterSpacing": "-0.022em"
       }
     },
     "h1": {
       "$value": {
-        "letterSpacing": "-0.024em"
+        "letterSpacing": "-0.021em"
       }
     },
     "h2": {
       "$value": {
-        "letterSpacing": "-0.022em"
+        "letterSpacing": "-0.02em"
       }
     },
     "h3": {
       "$value": {
-        "letterSpacing": "-0.018em"
+        "letterSpacing": "-0.015em"
       }
     },
     "h4": {
       "$value": {
-        "letterSpacing": "-0.014em"
+        "letterSpacing": "-0.01em"
       }
     },
     "title": {
       "$value": {
-        "letterSpacing": "-0.008em"
+        "letterSpacing": "-0.005em"
       }
     }
   },
@@ -202,6 +226,15 @@
       "brand-subtle": {
         "$value": "{theme.accent.100}",
         "$description": "One step stronger than the default: the 50 tint sits on top of the warning amber fill, so brand badges would read as warnings."
+      },
+      "overlay": {
+        "$value": "oklch(0.32 0.04 52)",
+        "$description": "A warm espresso scrim in place of 20% of the foreground, which reads as a cool grey over white and cream. Darkens the page by about as much.",
+        "$extensions": {
+          "blocks": {
+            "alpha": 0.26
+          }
+        }
       },
       "tint": {
         "violet": {
@@ -223,8 +256,8 @@
       },
       "chart": {
         "4": {
-          "$value": "{color.violet.500}",
-          "$description": "Violet in place of amber: amber sits too close to the orange first series."
+          "$value": "oklch(0.58 0.15 340)",
+          "$description": "Plum in place of amber: amber sits too close to the orange first series, and the shared violet would read as the Blocks accent. A berry tone stays in Ember's warm, editorial palette and clear of the destructive red."
         }
       },
       "warning": {
@@ -263,8 +296,8 @@
       },
       "chart": {
         "4": {
-          "$value": "{color.violet.300}",
-          "$description": "Violet in place of amber: amber sits too close to the orange first series."
+          "$value": "oklch(0.74 0.12 340)",
+          "$description": "Plum in place of amber, lifted for the dark canvas: amber sits too close to the orange first series, and the shared violet would read as the Blocks accent."
         }
       },
       "warning": {
@@ -278,13 +311,6 @@
       "panel-warning": {
         "$value": "{color.gold.400}",
         "$description": "Warning on dark panels, in Ember's gold."
-      }
-    }
-  },
-  "component": {
-    "kern": {
-      "pull": {
-        "$value": "0.02em"
       }
     }
   }

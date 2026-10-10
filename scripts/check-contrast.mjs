@@ -10,10 +10,12 @@
  * alpha are composited over their surface, then WCAG 2 relative luminance
  * gives the ratio.
  *
- * Text pairs need 4.5:1; focus rings and chart series need 3:1 against the
- * canvas (and series against cards too). Prints a
- * table per theme (failures only, plus a summary, unless --all) and exits
- * with 1 when any pair fails.
+ * Text pairs need 4.5:1; focus rings need 3:1 against the canvas and the
+ * dark panels, and chart series 3:1 against the canvas and cards. Code blocks
+ * colour their syntax with dark-mode roles on the terminal surface in both
+ * modes, so those roles need 4.5:1 on the dark terminal. Prints a table per
+ * theme (failures only, plus a summary, unless --all) and exits with 1 when
+ * any pair fails.
  *
  * Borders are not gated. Blocks separates with hairlines on purpose: border,
  * border-strong and input are decoration around components that their label,
@@ -35,7 +37,7 @@ const showAll = process.argv.includes("--all")
 const TEXT = 4.5
 const UI = 3
 
-/** [foreground, background, minimum ratio, what it is] */
+/** [foreground, background, minimum ratio, what it is, only in this mode] */
 const pairs = []
 for (const fg of ["foreground", "copy", "muted-foreground"]) {
   for (const bg of ["background", "card", "subtle", "muted", "popover"]) pairs.push([fg, bg, TEXT, "text"])
@@ -53,11 +55,18 @@ for (const fg of ["panel-foreground", "panel-muted", "panel-brand"]) {
 for (const status of ["destructive", "success", "warning", "info"]) {
   pairs.push([status, "background", TEXT, "status"], [status, `${status}-subtle`, TEXT, "status"])
 }
-pairs.push(["ring", "background", UI, "focus"])
+// Focus rings show on the canvas and around controls on dark panels.
+for (const bg of ["background", "panel", "panel-raised"]) pairs.push(["ring", bg, UI, "focus"])
 // Chart series are graphical objects (WCAG 1.4.11): every bar, line and dot
 // must stand out from the card it is drawn on and from the canvas.
 for (let i = 1; i <= 5; i++) {
   for (const bg of ["card", "background"]) pairs.push([`chart-${i}`, bg, UI, "chart"])
+}
+// Code blocks (components/viewer/code-block.tsx) sit in a .dark scope on the
+// terminal surface: plain text, keywords (brand), tags (chart-2), strings
+// (chart-3), attributes and numbers (chart-4), comments (muted-foreground).
+for (const fg of ["terminal-foreground", "brand", "chart-2", "chart-3", "chart-4", "muted-foreground"]) {
+  pairs.push([fg, "terminal", TEXT, "code", "dark"])
 }
 
 /* ----------------------------------------------------------------- Colour */
@@ -134,8 +143,8 @@ const lines = []
 
 for (const theme of data.themes) {
   const modes = Object.keys(theme.modes)
-  const rows = pairs.map(([fg, bg, min, kind]) => {
-    const results = modes.map((mode) => {
+  const rows = pairs.map(([fg, bg, min, kind, only]) => {
+    const results = modes.filter((mode) => !only || mode === only).map((mode) => {
       const colors = theme.modes[mode]
       for (const n of [fg, bg]) if (!(n in colors)) throw new Error(`${theme.id} ${mode}: no semantic colour "${n}"`)
       const r = ratio(colors, fg, bg)
@@ -153,13 +162,16 @@ for (const theme of data.themes) {
     lines.push(`  ${pad("pair", 44)}${pad("min", 8)}${modes.map((m) => pad(m, 16)).join("")}`)
     for (const row of shown) {
       lines.push(
-        `  ${pad(`${row.fg} on ${row.bg}`, 44)}${pad(fmt(row.min), 8)}${row.results.map((r) => pad(`${fmt(r.r)} ${r.ok ? "ok" : "FAIL"}`, 16)).join("")}`
+        `  ${pad(`${row.fg} on ${row.bg}`, 44)}${pad(fmt(row.min), 8)}${modes
+          .map((m) => row.results.find((r) => r.mode === m))
+          .map((r) => pad(r ? `${fmt(r.r)} ${r.ok ? "ok" : "FAIL"}` : "·", 16))
+          .join("")}`
       )
     }
   }
 }
 
-console.log(`Contrast (WCAG AA): ${pairs.length} pairs × ${data.themes.length} themes × light and dark${lines.join("\n")}`)
+console.log(`Contrast (WCAG AA): ${pairs.length} pairs × ${data.themes.length} themes, in light and dark${lines.join("\n")}`)
 if (failures) {
   console.log(`\n${failures} of ${checked} checks fail. Fix the theme's tokens (design-system/themes/<id>.tokens.json) and run npm run tokens.`)
   process.exit(1)

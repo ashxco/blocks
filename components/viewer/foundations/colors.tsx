@@ -785,7 +785,7 @@ function FixedScales() {
             <SubHeading>Available scales</SubHeading>
             <p className="max-w-prose text-caption text-copy">
               Ready-made accents and neutrals that no preset points at yet. A theme can use one in place of its own
-              values by pointing each alias step at it, such as <Code>{"{color.blue.600}"}</Code>. Every step is listed
+              values by pointing each alias step at it, such as <Code>{`{color.${available[0].name}.600}`}</Code>. Every step is listed
               on the{" "}
               <Link
                 href="/foundations/tokens"

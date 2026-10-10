@@ -14,7 +14,7 @@ import { ByTheme } from "./by-theme"
  * The action at the top of a theme's section on the Themes page:
  *
  * - "Use this theme" saves the theme for this browser and applies it at once,
- *   in this tab and every other open one, viewer and templates alike.
+ *   in this tab and every other open one.
  * - "Current theme" stands in for it on the theme the site is on. Choosing a
  *   theme moves focus there and announces the change, so keyboard and screen
  *   reader users never lose their place.
@@ -58,7 +58,7 @@ export function ThemeActions({ theme, name }: { theme: ThemeId; name: string }) 
 
   const button = (
     <Button type="button" onClick={choose}>
-      Use this theme<span className="sr-only"> ({name})</span>
+      Use This Theme<span className="sr-only"> ({name})</span>
     </Button>
   )
   const status = (label: string) => (

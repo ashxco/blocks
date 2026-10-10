@@ -35,7 +35,7 @@
       "radius": {
         "$type": "dimension",
         "$value": "{radius.full}",
-        "$description": "Button corners: pills in Blocks, Ocean and Ember, rounded squares in Forest and Mono."
+        "$description": "Button corners: pills in Blocks and Ember, 8px rectangles in Ocean, 14px soft squares in Forest, 2px squares in Mono."
       },
       "radius-sm": {
         "$type": "dimension",
@@ -60,7 +60,7 @@
       "pull": {
         "$type": "dimension",
         "$value": "0.08em",
-        "$description": "How far Kern pulls a word-ending comma or full stop back in display headings. 0.08em suits Plus Jakarta Sans; tighter fonts need less.",
+        "$description": "How far Kern pulls a word-ending comma or full stop back in display headings. 0.08em suits Plus Jakarta Sans; each theme sets the pull for its own heading face (none for Fraunces, 0.17em for Geist Mono's full-width cells).",
         "$extensions": { "blocks": { "utility": "-ms" } }
       }
     },

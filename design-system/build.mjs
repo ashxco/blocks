@@ -6,10 +6,14 @@
  * presets. Style Dictionary parses the files and resolves references; this
  * script writes three outputs:
  *
- *   app/styles/tokens.css             Tailwind v4 @theme, :root, mode and theme scopes
+ *   app/styles/tokens.css             Tailwind v4 @theme, :root, mode and theme scopes,
+ *                                     and the fonts of the type roles
  *   design-system/generated/tokens.ts Typed token and theme list for the viewer
  *   design-system/generated/themes.json Every semantic colour resolved per theme
- *                                       and mode, for scripts/check-contrast.mjs
+ *                                       and mode, for scripts/check-contrast.mjs,
+ *                                       and each theme's identity (accent,
+ *                                       neutral, shapes, fonts) for
+ *                                       scripts/check-themes.mjs
  *
  * Run with `npm run tokens`. Never edit the generated files by hand.
  *
@@ -18,8 +22,13 @@
  *   theme.accent.* / theme.neutral.*   the alias scales semantic colours read
  *   radius.*                           the radius scale
  *   component.*                        component tokens, e.g. component.button.radius
- *   font.family.*                      font stacks (with $extensions.blocks.name)
- *   type.<role>                        letterSpacing only: { "$value": { "letterSpacing": "-0.03em" } }
+ *   font.family.*                      font stacks (with $extensions.blocks.name
+ *                                      and .genre, see FONT_GENRES): sans, mono,
+ *                                      and heading, the face of the display and
+ *                                      heading roles (it follows sans unless the
+ *                                      theme sets it)
+ *   type.<role>                        letterSpacing only: { "$value": { "letterSpacing": "-0.03em" } },
+ *                                      to tune a role's tracking for the theme's font
  *   light.color.* / dark.color.*       individual semantic colours in one mode
  *
  * plus its name, order and modes in $extensions.blocks.theme. The blocks theme
@@ -57,7 +66,8 @@
  *   }
  *
  * A plain token takes a plain value per breakpoint ("md": "3.5rem", or a
- * reference such as "md": "{radius.lg}"). A typography token takes the
+ * reference such as "md": "{radius.lg}"; a number token, such as
+ * grid.columns, takes a number: "md": 8). A typography token takes the
  * properties that change (fontSize, lineHeight, letterSpacing, and fontWeight
  * for roles that set a weight); the rest carry over from the base and any
  * smaller breakpoint. The base is written where the token always lives, and
@@ -67,6 +77,17 @@
  * values. tokens.ts lists each token's value per breakpoint (`breakpoints`)
  * and the CSS variables involved (`responsiveVars`), so device previews in
  * the viewer can apply them for the previewed width.
+ *
+ * Role fonts. Tailwind's text-<role> utility sets size, line height, tracking
+ * and weight, never a font. A role whose fontFamily references a family other
+ * than font.family.sans (hero … title read font.family.heading, code reads
+ * font.family.mono) gets a font-family too, written as an @utility that
+ * Tailwind merges into the same rule. It reads var(--bk-font-family, <font>):
+ * font-sans, font-heading and font-mono set --bk-font-family, a property that
+ * does not inherit, so a font utility on the same element wins over the role
+ * (font-mono text-h3) while a parent's never reaches it. The sans roles set
+ * no font and inherit as before; a heading element (h1 to h6, which take the
+ * heading face in globals.css) given one of them takes the sans font.
  *
  * Alpha. A colour can be another colour at reduced opacity:
  * "$value": "{theme.neutral.950}", "$extensions": { "blocks": { "alpha": 0.2 } }
@@ -167,6 +188,11 @@ function describe(t) {
         // Each named space has one intended axis.
         const axis = { gutter: "px", section: "py", "section-sm": "py", stack: "gap" }[join(rest)] ?? "p"
         return { tier: "layout", group: "spacing", cssVar: `--spacing-${join(rest)}`, scope: "theme", utility: `${axis}-${join(rest)}` }
+      }
+      if (head === "grid") {
+        // The system grid: columns and gutter change at md and lg, and the grid-system utility (globals.css) reads both.
+        const utility = { columns: "grid-system · var(--grid-columns)", gutter: "grid-system · gap-(--grid-gutter)" }[join(rest)]
+        return { tier: "layout", group: "grid", cssVar: `--grid-${join(rest)}`, scope: "root", utility }
       }
       if (head === "radius") return { tier: "layout", group: "radius", cssVar: `--radius-${join(rest)}`, scope: "theme", utility: `rounded-${join(rest)}` }
       if (head === "container") {
@@ -347,6 +373,9 @@ function breakpointValues(t) {
         return { ...b, css, value: current }
       }
       if (override === null || typeof override === "object") throw new Error(`${name}.${b.name}: give a single value`)
+      if (t.$type === "number" && !isReference(override) && (typeof override !== "number" || !Number.isFinite(override))) {
+        throw new Error(`${name}.${b.name}: a number token takes a number at each breakpoint`)
+      }
       const target = isReference(override) ? referenced(t, override) : null
       current = target ? target.$value : override
       return { ...b, css: [[t.meta.cssVar, target ? `var(${target.meta.cssVar})` : formatValue(t.$type, override)]], value: current }
@@ -394,6 +423,23 @@ const sharedJson = merge(
 
 const THEME_KEYS = new Set(["theme", "radius", "component", "font", "type", "light", "dark"])
 
+/**
+ * The kind of face a font family is ($extensions.blocks.genre), so the theme
+ * uniqueness gate (scripts/check-themes.mjs) can tell two different faces of
+ * one kind (two geometric sans) from two kinds of face (a geometric sans and
+ * a serif). Every font family that names a face gives one.
+ */
+const FONT_GENRES = ["geometric", "neo-grotesque", "grotesque", "humanist", "serif", "mono"]
+
+/** Throws unless a font family token names its face and its genre. */
+function checkFontFace(where, name, token) {
+  const blocks = token.$extensions?.blocks
+  if (!blocks?.name) throw new Error(`${where}: ${name} needs the font's name in $extensions.blocks.name`)
+  if (!FONT_GENRES.includes(blocks.genre)) {
+    throw new Error(`${where}: ${name} needs the font's genre in $extensions.blocks.genre: ${FONT_GENRES.join(", ")}`)
+  }
+}
+
 /** Reads and validates a theme file: its metadata, shared overrides and per-mode semantic overrides. */
 function parseTheme(id, json) {
   const where = `${themesDir}/${id}.tokens.json`
@@ -418,7 +464,7 @@ function parseTheme(id, json) {
       p[0] === "type"
     if (!allowed) throw new Error(`${where}: ${name} cannot be themed. Themes change the accent and neutral scales, radii, component tokens, font families, type tracking and semantic colours.`)
     if (!base) throw new Error(`${where}: ${name} is not a token. Themes only change existing tokens.`)
-    if (p[0] === "font" && !token.$extensions?.blocks?.name) throw new Error(`${where}: ${name} needs the font's name in $extensions.blocks.name`)
+    if (p[0] === "font") checkFontFace(where, name, token)
     if (p[0] === "type") {
       if (!isObject(token.$value) || Object.keys(token.$value).some((k) => k !== "letterSpacing")) throw new Error(`${where}: ${name} can only change letterSpacing`)
       if (Object.values(declaredBreakpoints(base) ?? {}).some((o) => o && "letterSpacing" in o)) throw new Error(`${where}: ${name}'s letterSpacing has breakpoint values, so a theme cannot change it`)
@@ -512,7 +558,6 @@ const rootDecls = { primitive: [], semantic: [], sources: [], layout: [], compon
 
 /** Variables Tailwind or Blocks define in terms of tokens: part of the graph so themes re-evaluate them. */
 const systemAliases = [
-  ["--font-heading", "var(--font-sans)"],
   ["--default-font-family", "var(--font-sans)"],
   ["--default-mono-font-family", "var(--font-mono)"],
 ]
@@ -611,6 +656,60 @@ for (const v of Object.keys(responsiveVars.base)) {
 }
 
 /* -------------------------------------------------------------------------- */
+/* Role fonts                                                                  */
+/* -------------------------------------------------------------------------- */
+
+const SANS_FAMILY = "font.family.sans"
+/** The variable font utilities set and font-setting roles read first; it does not inherit. */
+const ROLE_FONT_VAR = "--bk-font-family"
+
+const fontFamilies = all.filter((t) => t.meta.group === "font-family")
+const typeRoleTokens = all.filter((t) => t.meta.tier === "typography" && t.meta.group === "roles")
+
+/** Each type role and the font family token it uses: { role, family: "font.family.heading" }. */
+const roleFonts = typeRoleTokens.map((t) => {
+  const family = t.original.$value.fontFamily
+  const target = isReference(family) ? byPath.get(family.slice(1, -1)) : undefined
+  if (target?.meta.group !== "font-family") {
+    throw new Error(`type.${t.path[1]}: fontFamily must reference a font family token, such as {font.family.heading}`)
+  }
+  return { role: t.path[1], family: family.slice(1, -1), cssVar: target.meta.cssVar }
+})
+const fontRoles = roleFonts.filter((r) => r.family !== SANS_FAMILY)
+const sansRoles = roleFonts.filter((r) => r.family === SANS_FAMILY)
+
+const roleFontCss = `/* Role fonts. text-<role> sets size, line height, tracking and weight; the
+   roles below also set their font, so a heading role on any element (a div,
+   a span, a button) renders in the theme's heading face.
+   ${ROLE_FONT_VAR} lets a font utility on the same element win
+   (font-mono text-h3); it does not inherit, so a parent's font utility never
+   reaches a role. */
+@property ${ROLE_FONT_VAR} {
+  syntax: "*";
+  inherits: false;
+}
+
+${fontFamilies
+  .map((t) => `@utility ${t.meta.utility} {
+  ${ROLE_FONT_VAR}: var(${t.meta.cssVar});
+}`)
+  .join("\n\n")}
+
+${fontRoles
+  .map((r) => `@utility text-${r.role} {
+  font-family: var(${ROLE_FONT_VAR}, var(${r.cssVar}));
+}`)
+  .join("\n\n")}
+
+/* h1 to h6 take the heading face (globals.css). One given a role that sets no
+   font, such as text-label, takes the sans font like that role anywhere else. */
+@layer base {
+  :where(h1, h2, h3, h4, h5, h6):is(${sansRoles.map((r) => `.text-${r.role}`).join(", ")}) {
+    font-family: var(${byPath.get(SANS_FAMILY).meta.cssVar});
+  }
+}`
+
+/* -------------------------------------------------------------------------- */
 /* CSS                                                                         */
 /* -------------------------------------------------------------------------- */
 
@@ -672,6 +771,8 @@ ${themeLines.map((d) => decl(d)).join("\n")}
   --color-black: var(--bk-neutral-1000);
 ${semanticColors.map((v) => `  --color-${v.slice(2)}: var(${v});`).join("\n")}
 }
+
+${roleFontCss}
 
 :root {
   /* Primitives. --bk-accent-* and --bk-neutral-* are the theme's scales. */
@@ -804,6 +905,23 @@ const px = (v) => {
 }
 const radiusLabel = (v) => (px(v) >= 999 ? "pill" : `${round(px(v))}px`)
 
+/**
+ * A font family token's face in a theme: its name and genre
+ * ($extensions.blocks). A token that references another family (heading →
+ * sans, or Mono's heading → mono) takes that family's face unless it names
+ * its own.
+ */
+function fontFace(theme, name) {
+  const t = resolved[theme.id].light.get(name)
+  const own = t.$extensions?.blocks ?? t.original?.$extensions?.blocks
+  if (own?.name) {
+    if (!FONT_GENRES.includes(own.genre)) throw new Error(`${name}: give ${own.name} its genre in $extensions.blocks.genre: ${FONT_GENRES.join(", ")}`)
+    return { name: own.name, genre: own.genre }
+  }
+  if (isReference(t.original?.$value)) return fontFace(theme, t.original.$value.slice(1, -1))
+  throw new Error(`${name}: give the font family its name and genre in $extensions.blocks`)
+}
+
 const themeList = themes.map((theme) => {
   const get = (name, mode = "light") => resolvedValue(resolved[theme.id][mode].get(name))
   const swatches = Object.fromEntries(
@@ -823,12 +941,11 @@ const themeList = themes.map((theme) => {
     control: get("component.control.radius"),
     card: get("component.card.radius"),
     panel: get("component.panel.radius"),
+    dialog: get("component.dialog.radius"),
   }
   const buttons = px(radius.button) >= 999 ? "Pill buttons" : `${radiusLabel(radius.button)} buttons`
-  const fontName = (name) => {
-    const t = resolved[theme.id].light.get(name)
-    return t.$extensions?.blocks?.name ?? t.original?.$extensions?.blocks?.name ?? String(t.$value[0])
-  }
+  /** A font token's display name; a token that references another family (heading → sans) takes its name. */
+  const fontName = (name) => fontFace(theme, name).name
   return {
     id: theme.id,
     name: theme.name,
@@ -837,11 +954,24 @@ const themeList = themes.map((theme) => {
     modes: theme.modes,
     swatches,
     radius: { ...radius, summary: `${buttons}, ${radiusLabel(radius.control)} controls, ${radiusLabel(radius.card)} cards` },
-    fonts: { sans: fontName("font.family.sans"), mono: fontName("font.family.mono") },
+    fonts: { heading: fontName("font.family.heading"), sans: fontName("font.family.sans"), mono: fontName("font.family.mono") },
     overrides: [...new Set([...theme.overrides.shared, ...theme.overrides.light, ...theme.overrides.dark])],
     values: themeValues.get(theme.id),
   }
 })
+
+/** The system grid per breakpoint: { columns: { base: 4, md: 8, lg: 12 }, gutter: { … } }. */
+const gridSummary = Object.fromEntries(
+  ["columns", "gutter"].map((key) => {
+    const t = byPath.get(`grid.${key}`)
+    if (!t) throw new Error(`grid.${key} is missing from ${files.layout}: <Grid> and the grid-system utility read it`)
+    const steps = breakpointsByToken.get(`grid.${key}`) ?? []
+    return [key, { base: t.$value, ...Object.fromEntries(steps.map((step) => [step.name, step.value])) }]
+  })
+)
+if (typeof gridSummary.columns.base !== "number" || Object.values(gridSummary.columns).some((n) => !Number.isInteger(n) || n < 1 || n > 12)) {
+  throw new Error("grid.columns: give a whole number of columns from 1 to 12 at every breakpoint")
+}
 
 const ts = `// GENERATED by design-system/build.mjs. Do not edit.
 // Change tokens in design-system/tokens/*.tokens.json or design-system/themes/*.tokens.json,
@@ -897,6 +1027,16 @@ export const responsiveVars: {
   breakpoints: readonly { name: Breakpoint; min: string; vars: Record<string, string> }[]
 } = ${JSON.stringify(responsiveVars, null, 2)}
 
+/**
+ * The system grid (grid.* in layout.tokens.json) per breakpoint, mobile first:
+ * \`base\` is phones, each breakpoint listed holds from its min width up.
+ * <Grid> reads the column counts to keep spans inside the grid.
+ */
+export const grid: {
+  columns: { base: number } & Partial<Record<Breakpoint, number>>
+  gutter: { base: string } & Partial<Record<Breakpoint, string>>
+} = ${JSON.stringify(gridSummary, null, 2)}
+
 /** Type role names (text-<role> utilities). Used by cn() so roles merge as font sizes. */
 export const typeRoles = ${JSON.stringify(all.filter((t) => t.meta.tier === "typography" && t.meta.group === "roles").map((t) => t.path[1]))} as const
 
@@ -944,9 +1084,9 @@ export interface Theme {
   /** Resolved OKLCH colours per mode, for pickers and previews. */
   swatches: Record<ThemeMode, ThemeSwatches>
   /** Resolved component radii, plus a one-line summary such as "Pill buttons, 12px controls, 18px cards". */
-  radius: { button: string; control: string; card: string; panel: string; summary: string }
-  /** Font family names. */
-  fonts: { sans: string; mono: string }
+  radius: { button: string; control: string; card: string; panel: string; dialog: string; summary: string }
+  /** Font family names: heading (display and heading roles, h1 to h6), sans (UI and body) and mono. */
+  fonts: { heading: string; sans: string; mono: string }
   /** Token names the theme file sets. */
   overrides: readonly string[]
   /**
@@ -984,13 +1124,43 @@ async function sourcesHash() {
 }
 
 const semanticTokens = all.filter((t) => t.meta.tier === "semantic")
+
+/**
+ * What makes a theme recognisable, resolved, for scripts/check-themes.mjs: the
+ * accent people see (brand), its scale and the neutral scale at their middle
+ * steps, the component radii, and the font names and genres.
+ */
+function themeIdentity(theme) {
+  const get = (name, mode = "light") => resolvedValue(resolved[theme.id][mode].get(name))
+  const info = themeList.find((t) => t.id === theme.id)
+  return {
+    accent: { brand: Object.fromEntries(theme.modes.map((mode) => [mode, get("color.brand", mode)])), scale: get("theme.accent.600") },
+    neutral: { 500: get("theme.neutral.500"), 900: get("theme.neutral.900") },
+    radius: {
+      button: get("component.button.radius"),
+      "button-sm": get("component.button.radius-sm"),
+      "button-xs": get("component.button.radius-xs"),
+      control: get("component.control.radius"),
+      card: get("component.card.radius"),
+      panel: get("component.panel.radius"),
+      dialog: get("component.dialog.radius"),
+      overlay: get("component.overlay.radius"),
+      badge: get("component.badge.radius"),
+    },
+    fonts: info.fonts,
+    genres: Object.fromEntries(["heading", "sans", "mono"].map((kind) => [kind, fontFace(theme, `font.family.${kind}`).genre])),
+  }
+}
+
 const themesJson = `${JSON.stringify(
   {
-    $comment: "GENERATED by design-system/build.mjs. Do not edit. Every semantic colour, resolved per theme and mode.",
+    $comment:
+      "GENERATED by design-system/build.mjs. Do not edit. Every semantic colour, resolved per theme and mode (scripts/check-contrast.mjs), and each theme's identity (scripts/check-themes.mjs).",
     sources: await sourcesHash(),
     themes: themes.map((theme) => ({
       id: theme.id,
       name: theme.name,
+      identity: themeIdentity(theme),
       modes: Object.fromEntries(
         theme.modes.map((mode) => [
           mode,

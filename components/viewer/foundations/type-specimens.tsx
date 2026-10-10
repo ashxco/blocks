@@ -43,7 +43,7 @@ const kernedRoles = new Set(["hero", "display", "h1", "h2"])
 
 const defaultSample: Record<string, string> = {
   hero: "Work, sorted",
-  /* The Home template's hero headline: display is the hero role. */
+  /* Acme's pitch as a hero headline: display is the hero role. */
   display: "Plan it. Track it. Ship it together.",
   h1: "Every project, four views",
   h2: "Automations that clear the busywork",

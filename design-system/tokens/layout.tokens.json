@@ -11,6 +11,20 @@
     "section-sm": { "$value": "clamp(3rem, 2.2rem + 3vw, 4.5rem)", "$description": "Tighter section rhythm. Use py-section-sm." },
     "stack": { "$value": "1.5rem", "$description": "Default gap between stacked blocks inside a section." }
   },
+  "grid": {
+    "columns": {
+      "$type": "number",
+      "$value": 4,
+      "$description": "Columns of the system grid: 4 on phones, 8 from md, 12 from lg. Use grid-system, or <Grid>.",
+      "$extensions": { "blocks": { "breakpoints": { "md": 8, "lg": 12 } } }
+    },
+    "gutter": {
+      "$type": "dimension",
+      "$value": "1rem",
+      "$description": "Column and row gap of the system grid. Use grid-system, or gap-(--grid-gutter).",
+      "$extensions": { "blocks": { "breakpoints": { "md": "1.5rem", "lg": "2rem" } } }
+    }
+  },
   "radius": {
     "$type": "dimension",
     "xs": { "$value": "0.375rem", "$description": "Chips, kbd and tiny controls." },
@@ -21,7 +35,7 @@
     "2xl": { "$value": "1.75rem", "$description": "Panels and feature bands." },
     "3xl": { "$value": "2rem", "$description": "Hero media." },
     "4xl": { "$value": "2.5rem", "$description": "Oversized media frames." },
-    "full": { "$value": "9999px", "$description": "Avatars, dots and switches: shapes that stay round in every theme. Blocks, Ocean and Ember also point the button radius here." }
+    "full": { "$value": "9999px", "$description": "Avatars, dots and switches: shapes that stay round in every theme. Blocks and Ember also point the button radius here." }
   },
   "container": {
     "$type": "dimension",

@@ -132,7 +132,7 @@ const pairings: { name: string; spec: string; sample: React.ReactNode }[] = [
     sample: (
       <Button type="button">
         <PlusIcon data-icon="inline-start" />
-        New project
+        New Project
       </Button>
     ),
   },

@@ -1,6 +1,8 @@
 import * as React from "react"
 
-import { ThemeText } from "./by-theme"
+import type { ThemeId } from "@/lib/themes"
+
+import { ByTheme, ThemeText } from "./by-theme"
 import {
   breakpointValues,
   describeSize,
@@ -107,7 +109,7 @@ function withoutName(description: string | undefined) {
 }
 
 /** The family's name and its CSS stack in each theme. */
-function familyIn(t: DesignToken | undefined, kind: "sans" | "mono") {
+function familyIn(t: DesignToken | undefined, kind: "heading" | "sans" | "mono") {
   return {
     name: perTheme((theme) => themeById(theme).fonts[kind]),
     stack: perTheme((theme) => (t ? familyStack(valueIn(theme, t).value) : "")),
@@ -125,15 +127,70 @@ const metrics: [label: string, value: string][] = [
 const alphabet = ["ABCDEFGHIJKLM", "NOPQRSTUVWXYZ", "abcdefghijklm", "nopqrstuvwxyz"]
 const figures = "0123456789 & @ # % ( ) → ·"
 
+/** True when the theme gives headings their own face (Forest's Bricolage Grotesque, Ember's Fraunces, Mono's Geist Mono). */
+function ownHeading(theme: ThemeId) {
+  const { heading, sans } = themeById(theme).fonts
+  return heading !== sans
+}
+
+/**
+ * The heading face, in themes that give headings their own: it sets every
+ * display and heading role, h1 to h6 and font-heading, at 800 or 700. Spans
+ * both columns above the text and mono cards.
+ */
+function HeadingFamily({ theme, stack }: { theme: ThemeId; stack: string }) {
+  const { heading, sans } = themeById(theme).fonts
+  return (
+    <div className="grid gap-10 rounded-(--panel-radius) border bg-card p-(--panel-padding-sm) @narrow:col-span-2 @narrow:grid-cols-2">
+      <div className="flex flex-col gap-10">
+        <div className="grid gap-2">
+          <h3 className="text-h3 text-foreground">{heading}</h3>
+          <p className="text-caption text-copy">
+            The heading face: hero to h4 and title, h1 to h6 and anything set in font-heading, always at 800 or 700. Body
+            copy, labels and controls stay in {sans}.
+          </p>
+          <Code className="text-muted-foreground">font-heading</Code>
+        </div>
+        <p aria-hidden className="font-heading text-7xl leading-none font-extrabold text-foreground">
+          Aa
+        </p>
+        <Meta className="mt-auto [overflow-wrap:anywhere]">{stack}</Meta>
+      </div>
+      <div className="flex flex-col gap-10">
+        <div aria-label="Glyph sample" className="grid gap-1 font-heading text-xl font-bold text-foreground">
+          {alphabet.map((line) => (
+            <span key={line}>{line}</span>
+          ))}
+          <span className="tabular">{figures}</span>
+        </div>
+        {/* Heading over body, as the two faces meet on every page. */}
+        <div className="grid gap-2">
+          <p className="text-h4 text-foreground">Every project, four views</p>
+          <p className="text-body text-copy">
+            See the same work as a list, a board, a timeline or a calendar, and switch views without losing your place.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function Families() {
+  const heading = tokenByName("font.family.heading")
   const sans = tokenByName("font.family.sans")
   const mono = tokenByName("font.family.mono")
   const weights = tokensIn("primitive", "font-weight")
+  const headingFamily = familyIn(heading, "heading")
   const sansFamily = familyIn(sans, "sans")
   const monoFamily = familyIn(mono, "mono")
 
   return (
     <div className="grid gap-6 @narrow:grid-cols-2">
+      {/* Heading face: only in themes that give headings their own. */}
+      <ByTheme as="div" by={(id) => (ownHeading(id) ? id : "follows")}>
+        {(id) => (ownHeading(id) ? <HeadingFamily theme={id} stack={headingFamily.stack[id]} /> : null)}
+      </ByTheme>
+
       {/* Sans */}
       <div className="flex flex-col gap-10 rounded-(--panel-radius) border bg-card p-(--panel-padding-sm)">
         <div className="grid gap-2">
@@ -141,10 +198,14 @@ function Families() {
             <ThemeText value={sansFamily.name} />
           </h3>
           <p className="text-caption text-copy">{withoutName(sans?.description)}</p>
-          {/* font-heading is an alias of the sans stack that headings use. */}
-          <Code className="text-muted-foreground">{[sans?.utility ?? "font-sans", "font-heading"].join(" · ")}</Code>
+          {/* font-heading is its own token; it resolves to this stack unless the theme gives headings a face. */}
+          <Code className="text-muted-foreground">
+            <ThemeText
+              value={perTheme((id) => [sans?.utility ?? "font-sans", ...(ownHeading(id) ? [] : ["font-heading"])].join(" · "))}
+            />
+          </Code>
         </div>
-        <p aria-hidden className="text-7xl leading-none font-extrabold text-foreground">
+        <p aria-hidden className="font-sans text-7xl leading-none font-extrabold text-foreground">
           Aa
         </p>
         <div aria-label="Glyph sample" className="grid gap-1 font-sans text-xl text-foreground">
@@ -153,13 +214,27 @@ function Families() {
           ))}
           <span className="tabular">{figures}</span>
         </div>
-        {/* Heading and body together, as the family is used on every page. */}
-        <div className="grid gap-2">
-          <p className="text-h4 text-foreground">Every project, four views</p>
-          <p className="text-body text-copy">
-            See the same work as a list, a board, a timeline or a calendar, and switch views without losing your place.
-          </p>
-        </div>
+        {/* Heading and body together where the family sets both; a label and body where headings have their own face. */}
+        <ByTheme as="div" by={(id) => (ownHeading(id) ? "text" : "both")}>
+          {(id) =>
+            ownHeading(id) ? (
+              <div className="grid gap-2">
+                <p className="text-label text-foreground">Weekly summary email</p>
+                <p className="text-body text-copy">
+                  Every Monday at 9:00, what moved last week, what is due this week and which projects are at risk.
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-2">
+                <p className="text-h4 text-foreground">Every project, four views</p>
+                <p className="text-body text-copy">
+                  See the same work as a list, a board, a timeline or a calendar, and switch views without losing your
+                  place.
+                </p>
+              </div>
+            )
+          }
+        </ByTheme>
         <ul className="grid border-b">
           {weights.map((w) => (
             <li key={w.name} className="flex items-baseline justify-between gap-4 border-t py-3">
@@ -249,7 +324,7 @@ export function TypographyFoundation({ title, description }: { title: string; de
       <Section
         id="families"
         title="Families"
-        description="Two families, set by the theme, and five weights. Components only name font-sans, font-heading and font-mono, so a theme changes the type everywhere at once. There are no light weights and no slanted styles."
+        description="A text face and a mono face, set by the theme, plus a heading face in themes that give headings their own voice, and five weights. Components only name font-sans, font-heading and font-mono, so a theme changes the type everywhere at once. There are no light weights and no slanted styles."
       >
         <Families />
       </Section>

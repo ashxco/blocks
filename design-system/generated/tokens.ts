@@ -684,101 +684,101 @@ export const tokens: DesignToken[] = [
     "description": "Low-chroma dark fill: the quiet status surface in dark mode."
   },
   {
-    "name": "color.blue.50",
-    "cssVar": "--bk-blue-50",
+    "name": "color.cobalt.50",
+    "cssVar": "--bk-cobalt-50",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.965 0.017 258)"
+    "value": "oklch(0.97 0.014 252)"
   },
   {
-    "name": "color.blue.100",
-    "cssVar": "--bk-blue-100",
+    "name": "color.cobalt.100",
+    "cssVar": "--bk-cobalt-100",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.94 0.029 259)"
+    "value": "oklch(0.94 0.028 252)"
   },
   {
-    "name": "color.blue.200",
-    "cssVar": "--bk-blue-200",
+    "name": "color.cobalt.200",
+    "cssVar": "--bk-cobalt-200",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.885 0.056 260)"
+    "value": "oklch(0.885 0.055 253)"
   },
   {
-    "name": "color.blue.300",
-    "cssVar": "--bk-blue-300",
+    "name": "color.cobalt.300",
+    "cssVar": "--bk-cobalt-300",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.805 0.098 261)"
+    "value": "oklch(0.805 0.097 254)"
   },
   {
-    "name": "color.blue.400",
-    "cssVar": "--bk-blue-400",
+    "name": "color.cobalt.400",
+    "cssVar": "--bk-cobalt-400",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.71 0.151 262)"
+    "value": "oklch(0.71 0.15 255)"
   },
   {
-    "name": "color.blue.500",
-    "cssVar": "--bk-blue-500",
+    "name": "color.cobalt.500",
+    "cssVar": "--bk-cobalt-500",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.62 0.198 262)"
+    "value": "oklch(0.62 0.185 256)"
   },
   {
-    "name": "color.blue.600",
-    "cssVar": "--bk-blue-600",
+    "name": "color.cobalt.600",
+    "cssVar": "--bk-cobalt-600",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.54 0.195 263)"
+    "value": "oklch(0.54 0.188 257)"
   },
   {
-    "name": "color.blue.700",
-    "cssVar": "--bk-blue-700",
+    "name": "color.cobalt.700",
+    "cssVar": "--bk-cobalt-700",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.465 0.176 264)"
+    "value": "oklch(0.465 0.175 259)"
   },
   {
-    "name": "color.blue.800",
-    "cssVar": "--bk-blue-800",
+    "name": "color.cobalt.800",
+    "cssVar": "--bk-cobalt-800",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.39 0.15 265)"
+    "value": "oklch(0.39 0.152 261)"
   },
   {
-    "name": "color.blue.900",
-    "cssVar": "--bk-blue-900",
+    "name": "color.cobalt.900",
+    "cssVar": "--bk-cobalt-900",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.31 0.118 266)"
+    "value": "oklch(0.31 0.122 263)"
   },
   {
-    "name": "color.blue.950",
-    "cssVar": "--bk-blue-950",
+    "name": "color.cobalt.950",
+    "cssVar": "--bk-cobalt-950",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.235 0.088 267)"
+    "value": "oklch(0.235 0.092 265)"
   },
   {
-    "name": "color.blue.dim",
-    "cssVar": "--bk-blue-dim",
+    "name": "color.cobalt.dim",
+    "cssVar": "--bk-cobalt-dim",
     "tier": "primitive",
-    "group": "blue",
+    "group": "cobalt",
     "type": "color",
-    "value": "oklch(0.25 0.05 264)",
-    "description": "Low-chroma dark fill: quiet accent surfaces in dark mode."
+    "value": "oklch(0.27 0.075 259)",
+    "description": "Dark fill for quiet accent surfaces. It carries more chroma than the other accents' dim so cobalt brand chips still read blue beside Ocean's navy secondary chips."
   },
   {
     "name": "color.emerald.50",
@@ -1084,7 +1084,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.985 0.003 257)"
+    "value": "oklch(0.985 0.005 250)"
   },
   {
     "name": "color.slate.50",
@@ -1092,7 +1092,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.975 0.005 257)"
+    "value": "oklch(0.975 0.01 250)"
   },
   {
     "name": "color.slate.100",
@@ -1100,7 +1100,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.955 0.007 257)"
+    "value": "oklch(0.955 0.014 251)"
   },
   {
     "name": "color.slate.150",
@@ -1108,7 +1108,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.93 0.009 257)"
+    "value": "oklch(0.93 0.019 252)"
   },
   {
     "name": "color.slate.200",
@@ -1116,7 +1116,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.9 0.011 257)"
+    "value": "oklch(0.9 0.023 253)"
   },
   {
     "name": "color.slate.300",
@@ -1124,7 +1124,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.82 0.015 257)"
+    "value": "oklch(0.82 0.029 255)"
   },
   {
     "name": "color.slate.400",
@@ -1132,7 +1132,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.68 0.019 257)"
+    "value": "oklch(0.68 0.035 256)"
   },
   {
     "name": "color.slate.450",
@@ -1140,7 +1140,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.645 0.02 257)"
+    "value": "oklch(0.645 0.037 257)"
   },
   {
     "name": "color.slate.500",
@@ -1148,7 +1148,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.56 0.021 257)"
+    "value": "oklch(0.56 0.04 257)"
   },
   {
     "name": "color.slate.550",
@@ -1156,7 +1156,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.505 0.022 257)"
+    "value": "oklch(0.505 0.042 258)"
   },
   {
     "name": "color.slate.600",
@@ -1164,7 +1164,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.45 0.022 257)"
+    "value": "oklch(0.45 0.044 258)"
   },
   {
     "name": "color.slate.700",
@@ -1172,7 +1172,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.36 0.022 257)"
+    "value": "oklch(0.36 0.046 259)"
   },
   {
     "name": "color.slate.750",
@@ -1180,7 +1180,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.315 0.022 257)"
+    "value": "oklch(0.315 0.048 260)"
   },
   {
     "name": "color.slate.800",
@@ -1188,7 +1188,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.27 0.022 257)"
+    "value": "oklch(0.27 0.05 260)"
   },
   {
     "name": "color.slate.850",
@@ -1196,7 +1196,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.215 0.022 257)"
+    "value": "oklch(0.215 0.052 261)"
   },
   {
     "name": "color.slate.900",
@@ -1204,7 +1204,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.175 0.021 257)"
+    "value": "oklch(0.175 0.055 262)"
   },
   {
     "name": "color.slate.925",
@@ -1212,7 +1212,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.158 0.019 257)"
+    "value": "oklch(0.158 0.054 262)"
   },
   {
     "name": "color.slate.950",
@@ -1220,7 +1220,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.135 0.016 257)"
+    "value": "oklch(0.135 0.052 262)"
   },
   {
     "name": "color.slate.1000",
@@ -1228,7 +1228,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "slate",
     "type": "color",
-    "value": "oklch(0.1 0.012 257)"
+    "value": "oklch(0.1 0.046 262)"
   },
   {
     "name": "color.sage.0",
@@ -1404,7 +1404,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.985 0.004 70)"
+    "value": "oklch(0.985 0.006 80)"
   },
   {
     "name": "color.stone.50",
@@ -1412,7 +1412,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.975 0.006 70)"
+    "value": "oklch(0.975 0.01 78)"
   },
   {
     "name": "color.stone.100",
@@ -1420,7 +1420,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.955 0.008 69)"
+    "value": "oklch(0.955 0.013 76)"
   },
   {
     "name": "color.stone.150",
@@ -1428,7 +1428,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.93 0.009 68)"
+    "value": "oklch(0.93 0.015 74)"
   },
   {
     "name": "color.stone.200",
@@ -1436,7 +1436,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.9 0.011 67)"
+    "value": "oklch(0.9 0.017 72)"
   },
   {
     "name": "color.stone.300",
@@ -1444,7 +1444,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.82 0.012 66)"
+    "value": "oklch(0.82 0.019 68)"
   },
   {
     "name": "color.stone.400",
@@ -1452,7 +1452,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.68 0.014 65)"
+    "value": "oklch(0.68 0.021 64)"
   },
   {
     "name": "color.stone.450",
@@ -1460,7 +1460,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.645 0.014 64)"
+    "value": "oklch(0.645 0.021 62)"
   },
   {
     "name": "color.stone.500",
@@ -1468,7 +1468,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.56 0.014 63)"
+    "value": "oklch(0.56 0.021 60)"
   },
   {
     "name": "color.stone.550",
@@ -1476,7 +1476,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.505 0.014 62)"
+    "value": "oklch(0.505 0.02 58)"
   },
   {
     "name": "color.stone.600",
@@ -1484,7 +1484,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.45 0.013 61)"
+    "value": "oklch(0.45 0.019 56)"
   },
   {
     "name": "color.stone.700",
@@ -1492,7 +1492,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.36 0.012 60)"
+    "value": "oklch(0.36 0.02 54)"
   },
   {
     "name": "color.stone.750",
@@ -1500,7 +1500,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.315 0.011 60)"
+    "value": "oklch(0.315 0.021 53)"
   },
   {
     "name": "color.stone.800",
@@ -1508,7 +1508,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.27 0.01 60)"
+    "value": "oklch(0.27 0.022 52)"
   },
   {
     "name": "color.stone.850",
@@ -1516,7 +1516,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.215 0.01 60)"
+    "value": "oklch(0.215 0.021 52)"
   },
   {
     "name": "color.stone.900",
@@ -1524,7 +1524,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.175 0.009 60)"
+    "value": "oklch(0.175 0.02 50)"
   },
   {
     "name": "color.stone.925",
@@ -1532,7 +1532,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.158 0.008 60)"
+    "value": "oklch(0.158 0.019 50)"
   },
   {
     "name": "color.stone.950",
@@ -1540,7 +1540,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.135 0.007 60)"
+    "value": "oklch(0.135 0.018 50)"
   },
   {
     "name": "color.stone.1000",
@@ -1548,7 +1548,7 @@ export const tokens: DesignToken[] = [
     "tier": "primitive",
     "group": "stone",
     "type": "color",
-    "value": "oklch(0.1 0.005 60)"
+    "value": "oklch(0.1 0.015 50)"
   },
   {
     "name": "color.grey.0",
@@ -2184,6 +2184,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.71 0.113 235)",
       "ref": "color.sky.400"
     },
+    "themed": true,
     "utility": "text-info · bg-info",
     "description": "Informational states."
   },
@@ -2199,6 +2200,7 @@ export const tokens: DesignToken[] = [
       "value": "oklch(0.26 0.035 235)",
       "ref": "color.sky.dim"
     },
+    "themed": true,
     "utility": "bg-info-subtle",
     "description": "Quiet informational fill."
   },
@@ -3077,7 +3079,24 @@ export const tokens: DesignToken[] = [
     ],
     "themed": true,
     "utility": "font-sans",
-    "description": "Plus Jakarta Sans. Headings, UI and body copy."
+    "description": "Plus Jakarta Sans. UI and body copy, and headings unless the theme gives them their own face."
+  },
+  {
+    "name": "font.family.heading",
+    "cssVar": "--font-heading",
+    "tier": "primitive",
+    "group": "font-family",
+    "type": "fontFamily",
+    "value": [
+      "var(--font-jakarta)",
+      "ui-sans-serif",
+      "system-ui",
+      "sans-serif"
+    ],
+    "ref": "font.family.sans",
+    "themed": true,
+    "utility": "font-heading",
+    "description": "The heading face: every display and heading role (text-hero, text-display, text-h1 to text-h4, text-title), h1 to h6 and font-heading. Follows the sans font unless a theme sets its own."
   },
   {
     "name": "font.family.mono",
@@ -3093,7 +3112,7 @@ export const tokens: DesignToken[] = [
       "monospace"
     ],
     "utility": "font-mono",
-    "description": "Geist Mono. Code, commands, IDs and tabular data."
+    "description": "Geist Mono. Code, commands, IDs and tabular data, and the heading face in the Mono theme."
   },
   {
     "name": "font.weight.regular",
@@ -3733,6 +3752,34 @@ export const tokens: DesignToken[] = [
     "description": "Default gap between stacked blocks inside a section."
   },
   {
+    "name": "grid.columns",
+    "cssVar": "--grid-columns",
+    "tier": "layout",
+    "group": "grid",
+    "type": "number",
+    "value": 4,
+    "breakpoints": {
+      "md": 8,
+      "lg": 12
+    },
+    "utility": "grid-system · var(--grid-columns)",
+    "description": "Columns of the system grid: 4 on phones, 8 from md, 12 from lg. Use grid-system, or <Grid>."
+  },
+  {
+    "name": "grid.gutter",
+    "cssVar": "--grid-gutter",
+    "tier": "layout",
+    "group": "grid",
+    "type": "dimension",
+    "value": "1rem",
+    "breakpoints": {
+      "md": "1.5rem",
+      "lg": "2rem"
+    },
+    "utility": "grid-system · gap-(--grid-gutter)",
+    "description": "Column and row gap of the system grid. Use grid-system, or gap-(--grid-gutter)."
+  },
+  {
     "name": "radius.xs",
     "cssVar": "--radius-xs",
     "tier": "layout",
@@ -3828,7 +3875,7 @@ export const tokens: DesignToken[] = [
     "type": "dimension",
     "value": "9999px",
     "utility": "rounded-full",
-    "description": "Avatars, dots and switches: shapes that stay round in every theme. Blocks, Ocean and Ember also point the button radius here."
+    "description": "Avatars, dots and switches: shapes that stay round in every theme. Blocks and Ember also point the button radius here."
   },
   {
     "name": "container.prose",
@@ -4187,7 +4234,7 @@ export const tokens: DesignToken[] = [
     "ref": "radius.full",
     "themed": true,
     "utility": "rounded-(--button-radius)",
-    "description": "Button corners: pills in Blocks, Ocean and Ember, rounded squares in Forest and Mono."
+    "description": "Button corners: pills in Blocks and Ember, 8px rectangles in Ocean, 14px soft squares in Forest, 2px squares in Mono."
   },
   {
     "name": "component.button.radius-sm",
@@ -4233,7 +4280,7 @@ export const tokens: DesignToken[] = [
     "value": "0.08em",
     "themed": true,
     "utility": "-ms-(--kern-pull)",
-    "description": "How far Kern pulls a word-ending comma or full stop back in display headings. 0.08em suits Plus Jakarta Sans; tighter fonts need less."
+    "description": "How far Kern pulls a word-ending comma or full stop back in display headings. 0.08em suits Plus Jakarta Sans; each theme sets the pull for its own heading face (none for Fraunces, 0.17em for Geist Mono's full-width cells)."
   },
   {
     "name": "component.brand-mark.ring",
@@ -4793,7 +4840,9 @@ export const responsiveVars: {
 } = {
   "base": {
     "--text-control": "1rem",
-    "--text-control--line-height": "1.6"
+    "--text-control--line-height": "1.6",
+    "--grid-columns": "4",
+    "--grid-gutter": "1rem"
   },
   "breakpoints": [
     {
@@ -4801,10 +4850,41 @@ export const responsiveVars: {
       "min": "48rem",
       "vars": {
         "--text-control": "0.875rem",
-        "--text-control--line-height": "1.45"
+        "--text-control--line-height": "1.45",
+        "--grid-columns": "8",
+        "--grid-gutter": "1.5rem"
+      }
+    },
+    {
+      "name": "lg",
+      "min": "64rem",
+      "vars": {
+        "--grid-columns": "12",
+        "--grid-gutter": "2rem"
       }
     }
   ]
+}
+
+/**
+ * The system grid (grid.* in layout.tokens.json) per breakpoint, mobile first:
+ * `base` is phones, each breakpoint listed holds from its min width up.
+ * <Grid> reads the column counts to keep spans inside the grid.
+ */
+export const grid: {
+  columns: { base: number } & Partial<Record<Breakpoint, number>>
+  gutter: { base: string } & Partial<Record<Breakpoint, string>>
+} = {
+  "columns": {
+    "base": 4,
+    "md": 8,
+    "lg": 12
+  },
+  "gutter": {
+    "base": "1rem",
+    "md": "1.5rem",
+    "lg": "2rem"
+  }
 }
 
 /** Type role names (text-<role> utilities). Used by cn() so roles merge as font sizes. */
@@ -4854,9 +4934,9 @@ export interface Theme {
   /** Resolved OKLCH colours per mode, for pickers and previews. */
   swatches: Record<ThemeMode, ThemeSwatches>
   /** Resolved component radii, plus a one-line summary such as "Pill buttons, 12px controls, 18px cards". */
-  radius: { button: string; control: string; card: string; panel: string; summary: string }
-  /** Font family names. */
-  fonts: { sans: string; mono: string }
+  radius: { button: string; control: string; card: string; panel: string; dialog: string; summary: string }
+  /** Font family names: heading (display and heading roles, h1 to h6), sans (UI and body) and mono. */
+  fonts: { heading: string; sans: string; mono: string }
   /** Token names the theme file sets. */
   overrides: readonly string[]
   /**
@@ -4898,9 +4978,11 @@ export const themes: readonly Theme[] = [
       "control": "0.75rem",
       "card": "1.125rem",
       "panel": "1.75rem",
+      "dialog": "1.375rem",
       "summary": "Pill buttons, 12px controls, 18px cards"
     },
     "fonts": {
+      "heading": "Plus Jakarta Sans",
       "sans": "Plus Jakarta Sans",
       "mono": "Geist Mono"
     },
@@ -4910,7 +4992,7 @@ export const themes: readonly Theme[] = [
   {
     "id": "ocean",
     "name": "Ocean",
-    "description": "A confident blue accent on cool slate, pill buttons with crisp 8px controls and 14px cards, Inter Tight.",
+    "description": "A cobalt accent on a visibly blue slate with deep navy ink, panels and dark mode, 8px rectangular buttons and controls, crisp 12px cards, Inter Tight throughout at its own open spacing.",
     "default": false,
     "modes": [
       "light",
@@ -4918,28 +5000,30 @@ export const themes: readonly Theme[] = [
     ],
     "swatches": {
       "light": {
-        "accent": "oklch(0.54 0.195 263)",
-        "neutral": "oklch(0.505 0.022 257)",
+        "accent": "oklch(0.54 0.188 257)",
+        "neutral": "oklch(0.505 0.042 258)",
         "background": "oklch(1 0 0)",
-        "foreground": "oklch(0.135 0.016 257)",
-        "panel": "oklch(0.175 0.021 257)"
+        "foreground": "oklch(0.135 0.052 262)",
+        "panel": "oklch(0.175 0.055 262)"
       },
       "dark": {
-        "accent": "oklch(0.71 0.151 262)",
-        "neutral": "oklch(0.68 0.019 257)",
-        "background": "oklch(0.1 0.012 257)",
-        "foreground": "oklch(0.985 0.003 257)",
-        "panel": "oklch(0.27 0.022 257)"
+        "accent": "oklch(0.71 0.15 255)",
+        "neutral": "oklch(0.68 0.035 256)",
+        "background": "oklch(0.1 0.046 262)",
+        "foreground": "oklch(0.985 0.005 250)",
+        "panel": "oklch(0.27 0.05 260)"
       }
     },
     "radius": {
-      "button": "9999px",
+      "button": "0.5rem",
       "control": "0.5rem",
-      "card": "0.875rem",
-      "panel": "1.25rem",
-      "summary": "Pill buttons, 8px controls, 14px cards"
+      "card": "0.75rem",
+      "panel": "1rem",
+      "dialog": "0.875rem",
+      "summary": "8px buttons, 8px controls, 12px cards"
     },
     "fonts": {
+      "heading": "Inter Tight",
       "sans": "Inter Tight",
       "mono": "Geist Mono"
     },
@@ -4984,6 +5068,9 @@ export const themes: readonly Theme[] = [
       "radius.2xl",
       "radius.3xl",
       "radius.4xl",
+      "component.button.radius",
+      "component.button.radius-xs",
+      "component.badge.radius",
       "component.overlay.item-radius",
       "component.kern.pull",
       "font.family.sans",
@@ -4999,6 +5086,12 @@ export const themes: readonly Theme[] = [
       "type.label",
       "type.control",
       "type.caption",
+      "type.xs",
+      "type.sm",
+      "type.base",
+      "type.lg",
+      "type.xl",
+      "type.2xl",
       "type.3xl",
       "type.4xl",
       "type.5xl",
@@ -5006,46 +5099,51 @@ export const themes: readonly Theme[] = [
       "type.7xl",
       "color.tint.violet",
       "color.tint.sky",
-      "color.chart.2"
+      "color.chart.2",
+      "color.chart.3",
+      "color.info",
+      "color.info-subtle",
+      "color.brand-subtle",
+      "color.brand-subtle-foreground"
     ],
     "values": {
       "color.background": {
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.012 257)",
+          "value": "oklch(0.1 0.046 262)",
           "ref": "theme.neutral.1000"
         }
       },
       "color.foreground": {
-        "value": "oklch(0.135 0.016 257)",
+        "value": "oklch(0.135 0.052 262)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.003 257)",
+          "value": "oklch(0.985 0.005 250)",
           "ref": "theme.neutral.25"
         }
       },
       "color.copy": {
-        "value": "oklch(0.45 0.022 257)",
+        "value": "oklch(0.45 0.044 258)",
         "ref": "theme.neutral.600",
         "dark": {
-          "value": "oklch(0.82 0.015 257)",
+          "value": "oklch(0.82 0.029 255)",
           "ref": "theme.neutral.300"
         }
       },
       "color.muted-foreground": {
-        "value": "oklch(0.505 0.022 257)",
+        "value": "oklch(0.505 0.042 258)",
         "ref": "theme.neutral.550",
         "dark": {
-          "value": "oklch(0.68 0.019 257)",
+          "value": "oklch(0.68 0.035 256)",
           "ref": "theme.neutral.400"
         }
       },
       "color.subtle": {
-        "value": "oklch(0.975 0.005 257)",
+        "value": "oklch(0.975 0.01 250)",
         "ref": "theme.neutral.50",
         "dark": {
-          "value": "oklch(0.158 0.019 257)",
+          "value": "oklch(0.158 0.054 262)",
           "ref": "theme.neutral.925"
         }
       },
@@ -5053,15 +5151,15 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.135 0.016 257)",
+          "value": "oklch(0.135 0.052 262)",
           "ref": "theme.neutral.950"
         }
       },
       "color.card-foreground": {
-        "value": "oklch(0.135 0.016 257)",
+        "value": "oklch(0.135 0.052 262)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.003 257)",
+          "value": "oklch(0.985 0.005 250)",
           "ref": "theme.neutral.25"
         }
       },
@@ -5069,20 +5167,20 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.175 0.021 257)",
+          "value": "oklch(0.175 0.055 262)",
           "ref": "theme.neutral.900"
         }
       },
       "color.popover-foreground": {
-        "value": "oklch(0.135 0.016 257)",
+        "value": "oklch(0.135 0.052 262)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.003 257)",
+          "value": "oklch(0.985 0.005 250)",
           "ref": "theme.neutral.25"
         }
       },
       "color.primary": {
-        "value": "oklch(0.135 0.016 257)",
+        "value": "oklch(0.135 0.052 262)",
         "ref": "theme.neutral.950",
         "dark": {
           "value": "oklch(1 0 0)",
@@ -5093,55 +5191,55 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.135 0.016 257)",
+          "value": "oklch(0.135 0.052 262)",
           "ref": "theme.neutral.950"
         }
       },
       "color.secondary": {
-        "value": "oklch(0.955 0.007 257)",
+        "value": "oklch(0.955 0.014 251)",
         "ref": "theme.neutral.100",
         "dark": {
-          "value": "oklch(0.215 0.022 257)",
+          "value": "oklch(0.215 0.052 261)",
           "ref": "theme.neutral.850"
         }
       },
       "color.secondary-foreground": {
-        "value": "oklch(0.135 0.016 257)",
+        "value": "oklch(0.135 0.052 262)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.003 257)",
+          "value": "oklch(0.985 0.005 250)",
           "ref": "theme.neutral.25"
         }
       },
       "color.muted": {
-        "value": "oklch(0.975 0.005 257)",
+        "value": "oklch(0.975 0.01 250)",
         "ref": "theme.neutral.50",
         "dark": {
-          "value": "oklch(0.175 0.021 257)",
+          "value": "oklch(0.175 0.055 262)",
           "ref": "theme.neutral.900"
         }
       },
       "color.accent": {
-        "value": "oklch(0.955 0.007 257)",
+        "value": "oklch(0.955 0.014 251)",
         "ref": "theme.neutral.100",
         "dark": {
-          "value": "oklch(0.215 0.022 257)",
+          "value": "oklch(0.215 0.052 261)",
           "ref": "theme.neutral.850"
         }
       },
       "color.accent-foreground": {
-        "value": "oklch(0.135 0.016 257)",
+        "value": "oklch(0.135 0.052 262)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.003 257)",
+          "value": "oklch(0.985 0.005 250)",
           "ref": "theme.neutral.25"
         }
       },
       "color.brand": {
-        "value": "oklch(0.54 0.195 263)",
+        "value": "oklch(0.54 0.188 257)",
         "ref": "theme.accent.600",
         "dark": {
-          "value": "oklch(0.71 0.151 262)",
+          "value": "oklch(0.71 0.15 255)",
           "ref": "theme.accent.400"
         }
       },
@@ -5149,31 +5247,30 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.012 257)",
+          "value": "oklch(0.1 0.046 262)",
           "ref": "theme.neutral.1000"
         }
       },
       "color.brand-subtle": {
-        "value": "oklch(0.965 0.017 258)",
-        "ref": "theme.accent.50",
+        "value": "oklch(0.93 0.034 256)",
         "dark": {
-          "value": "oklch(0.25 0.05 264)",
+          "value": "oklch(0.27 0.075 259)",
           "ref": "theme.accent.dim"
         }
       },
       "color.brand-subtle-foreground": {
-        "value": "oklch(0.465 0.176 264)",
+        "value": "oklch(0.465 0.175 259)",
         "ref": "theme.accent.700",
         "dark": {
-          "value": "oklch(0.885 0.056 260)",
-          "ref": "theme.accent.200"
+          "value": "oklch(0.805 0.097 254)",
+          "ref": "theme.accent.300"
         }
       },
       "color.destructive-foreground": {
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.012 257)",
+          "value": "oklch(0.1 0.046 262)",
           "ref": "theme.neutral.1000"
         }
       },
@@ -5181,7 +5278,7 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.012 257)",
+          "value": "oklch(0.1 0.046 262)",
           "ref": "theme.neutral.1000"
         }
       },
@@ -5189,89 +5286,101 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.012 257)",
+          "value": "oklch(0.1 0.046 262)",
           "ref": "theme.neutral.1000"
         }
       },
+      "color.info": {
+        "value": "oklch(0.52 0.093 217)",
+        "dark": {
+          "value": "oklch(0.72 0.11 215)"
+        }
+      },
+      "color.info-subtle": {
+        "value": "oklch(0.97 0.022 215)",
+        "dark": {
+          "value": "oklch(0.26 0.035 215)"
+        }
+      },
       "color.border": {
-        "value": "oklch(0.93 0.009 257)",
+        "value": "oklch(0.93 0.019 252)",
         "ref": "theme.neutral.150",
         "dark": {
           "value": "oklch(1 0 0 / 0.09)"
         }
       },
       "color.border-strong": {
-        "value": "oklch(0.9 0.011 257)",
+        "value": "oklch(0.9 0.023 253)",
         "ref": "theme.neutral.200",
         "dark": {
           "value": "oklch(1 0 0 / 0.16)"
         }
       },
       "color.input": {
-        "value": "oklch(0.9 0.011 257)",
+        "value": "oklch(0.9 0.023 253)",
         "ref": "theme.neutral.200",
         "dark": {
           "value": "oklch(1 0 0 / 0.14)"
         }
       },
       "color.popover-border": {
-        "value": "oklch(0.9 0.011 257)",
+        "value": "oklch(0.9 0.023 253)",
         "ref": "theme.neutral.200",
         "dark": {
           "value": "oklch(1 0 0 / 0.14)"
         }
       },
       "color.ring": {
-        "value": "oklch(0.54 0.195 263)",
+        "value": "oklch(0.54 0.188 257)",
         "ref": "theme.accent.600",
         "dark": {
-          "value": "oklch(0.71 0.151 262)",
+          "value": "oklch(0.71 0.15 255)",
           "ref": "theme.accent.400"
         }
       },
       "color.overlay": {
-        "value": "oklch(0.135 0.016 257 / 0.2)",
+        "value": "oklch(0.135 0.052 262 / 0.2)",
         "ref": "theme.neutral.950",
         "dark": {
           "value": "oklch(0 0 0 / 0.6)"
         }
       },
       "color.panel": {
-        "value": "oklch(0.175 0.021 257)",
+        "value": "oklch(0.175 0.055 262)",
         "ref": "theme.neutral.900",
         "dark": {
-          "value": "oklch(0.27 0.022 257)",
+          "value": "oklch(0.27 0.05 260)",
           "ref": "theme.neutral.800"
         }
       },
       "color.panel-raised": {
-        "value": "oklch(0.215 0.022 257)",
+        "value": "oklch(0.215 0.052 261)",
         "ref": "theme.neutral.850",
         "dark": {
-          "value": "oklch(0.315 0.022 257)",
+          "value": "oklch(0.315 0.048 260)",
           "ref": "theme.neutral.750"
         }
       },
       "color.terminal": {
-        "value": "oklch(0.1 0.012 257)",
+        "value": "oklch(0.1 0.046 262)",
         "ref": "theme.neutral.1000",
         "dark": {
-          "value": "oklch(0.135 0.016 257)",
+          "value": "oklch(0.135 0.052 262)",
           "ref": "theme.neutral.950"
         }
       },
       "color.terminal-foreground": {
-        "value": "oklch(0.93 0.009 257)",
+        "value": "oklch(0.93 0.019 252)",
         "ref": "theme.neutral.150",
         "dark": {
-          "value": "oklch(0.93 0.009 257)",
+          "value": "oklch(0.93 0.019 252)",
           "ref": "theme.neutral.150"
         }
       },
       "color.tint.violet": {
-        "value": "oklch(0.935 0.031 260)",
+        "value": "oklch(0.935 0.028 255)",
         "dark": {
-          "value": "oklch(0.25 0.035 262)"
+          "value": "oklch(0.25 0.04 259)"
         }
       },
       "color.tint.sky": {
@@ -5281,45 +5390,51 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.chart.1": {
-        "value": "oklch(0.54 0.195 263)",
+        "value": "oklch(0.54 0.188 257)",
         "ref": "theme.accent.600",
         "dark": {
-          "value": "oklch(0.71 0.151 262)",
+          "value": "oklch(0.71 0.15 255)",
           "ref": "theme.accent.400"
         }
       },
       "color.chart.2": {
-        "value": "oklch(0.63 0.11 215)",
+        "value": "oklch(0.47 0.079 212)",
         "dark": {
-          "value": "oklch(0.8 0.1 212)"
+          "value": "oklch(0.8 0.115 198)"
+        }
+      },
+      "color.chart.3": {
+        "value": "oklch(0.64 0.16 138)",
+        "dark": {
+          "value": "oklch(0.66 0.16 138)"
         }
       },
       "color.chart.5": {
-        "value": "oklch(0.645 0.02 257)",
+        "value": "oklch(0.645 0.037 257)",
         "ref": "theme.neutral.450",
         "dark": {
-          "value": "oklch(0.56 0.021 257)",
+          "value": "oklch(0.56 0.04 257)",
           "ref": "theme.neutral.500"
         }
       },
       "color.sidebar.DEFAULT": {
-        "value": "oklch(0.985 0.003 257)",
+        "value": "oklch(0.985 0.005 250)",
         "ref": "theme.neutral.25",
         "dark": {
-          "value": "oklch(0.135 0.016 257)",
+          "value": "oklch(0.135 0.052 262)",
           "ref": "theme.neutral.950"
         }
       },
       "color.sidebar.foreground": {
-        "value": "oklch(0.135 0.016 257)",
+        "value": "oklch(0.135 0.052 262)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.003 257)",
+          "value": "oklch(0.985 0.005 250)",
           "ref": "theme.neutral.25"
         }
       },
       "color.sidebar.primary": {
-        "value": "oklch(0.135 0.016 257)",
+        "value": "oklch(0.135 0.052 262)",
         "ref": "theme.neutral.950",
         "dark": {
           "value": "oklch(1 0 0)",
@@ -5330,175 +5445,175 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.135 0.016 257)",
+          "value": "oklch(0.135 0.052 262)",
           "ref": "theme.neutral.950"
         }
       },
       "color.sidebar.accent": {
-        "value": "oklch(0.955 0.007 257)",
+        "value": "oklch(0.955 0.014 251)",
         "ref": "theme.neutral.100",
         "dark": {
-          "value": "oklch(0.215 0.022 257)",
+          "value": "oklch(0.215 0.052 261)",
           "ref": "theme.neutral.850"
         }
       },
       "color.sidebar.accent-foreground": {
-        "value": "oklch(0.135 0.016 257)",
+        "value": "oklch(0.135 0.052 262)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.003 257)",
+          "value": "oklch(0.985 0.005 250)",
           "ref": "theme.neutral.25"
         }
       },
       "color.sidebar.border": {
-        "value": "oklch(0.93 0.009 257)",
+        "value": "oklch(0.93 0.019 252)",
         "ref": "theme.neutral.150",
         "dark": {
           "value": "oklch(1 0 0 / 0.09)"
         }
       },
       "color.sidebar.ring": {
-        "value": "oklch(0.54 0.195 263)",
+        "value": "oklch(0.54 0.188 257)",
         "ref": "theme.accent.600",
         "dark": {
-          "value": "oklch(0.71 0.151 262)",
+          "value": "oklch(0.71 0.15 255)",
           "ref": "theme.accent.400"
         }
       },
       "color.panel-brand": {
-        "value": "oklch(0.71 0.151 262)",
+        "value": "oklch(0.71 0.15 255)",
         "ref": "theme.accent.400",
         "dark": {
-          "value": "oklch(0.71 0.151 262)",
+          "value": "oklch(0.71 0.15 255)",
           "ref": "theme.accent.400"
         }
       },
       "theme.accent.50": {
-        "value": "oklch(0.965 0.017 258)",
-        "ref": "color.blue.50"
+        "value": "oklch(0.97 0.014 252)",
+        "ref": "color.cobalt.50"
       },
       "theme.accent.100": {
-        "value": "oklch(0.94 0.029 259)",
-        "ref": "color.blue.100"
+        "value": "oklch(0.94 0.028 252)",
+        "ref": "color.cobalt.100"
       },
       "theme.accent.200": {
-        "value": "oklch(0.885 0.056 260)",
-        "ref": "color.blue.200"
+        "value": "oklch(0.885 0.055 253)",
+        "ref": "color.cobalt.200"
       },
       "theme.accent.300": {
-        "value": "oklch(0.805 0.098 261)",
-        "ref": "color.blue.300"
+        "value": "oklch(0.805 0.097 254)",
+        "ref": "color.cobalt.300"
       },
       "theme.accent.400": {
-        "value": "oklch(0.71 0.151 262)",
-        "ref": "color.blue.400"
+        "value": "oklch(0.71 0.15 255)",
+        "ref": "color.cobalt.400"
       },
       "theme.accent.500": {
-        "value": "oklch(0.62 0.198 262)",
-        "ref": "color.blue.500"
+        "value": "oklch(0.62 0.185 256)",
+        "ref": "color.cobalt.500"
       },
       "theme.accent.600": {
-        "value": "oklch(0.54 0.195 263)",
-        "ref": "color.blue.600"
+        "value": "oklch(0.54 0.188 257)",
+        "ref": "color.cobalt.600"
       },
       "theme.accent.700": {
-        "value": "oklch(0.465 0.176 264)",
-        "ref": "color.blue.700"
+        "value": "oklch(0.465 0.175 259)",
+        "ref": "color.cobalt.700"
       },
       "theme.accent.800": {
-        "value": "oklch(0.39 0.15 265)",
-        "ref": "color.blue.800"
+        "value": "oklch(0.39 0.152 261)",
+        "ref": "color.cobalt.800"
       },
       "theme.accent.900": {
-        "value": "oklch(0.31 0.118 266)",
-        "ref": "color.blue.900"
+        "value": "oklch(0.31 0.122 263)",
+        "ref": "color.cobalt.900"
       },
       "theme.accent.950": {
-        "value": "oklch(0.235 0.088 267)",
-        "ref": "color.blue.950"
+        "value": "oklch(0.235 0.092 265)",
+        "ref": "color.cobalt.950"
       },
       "theme.accent.dim": {
-        "value": "oklch(0.25 0.05 264)",
-        "ref": "color.blue.dim"
+        "value": "oklch(0.27 0.075 259)",
+        "ref": "color.cobalt.dim"
       },
       "theme.neutral.0": {
         "value": "oklch(1 0 0)",
         "ref": "color.slate.0"
       },
       "theme.neutral.25": {
-        "value": "oklch(0.985 0.003 257)",
+        "value": "oklch(0.985 0.005 250)",
         "ref": "color.slate.25"
       },
       "theme.neutral.50": {
-        "value": "oklch(0.975 0.005 257)",
+        "value": "oklch(0.975 0.01 250)",
         "ref": "color.slate.50"
       },
       "theme.neutral.100": {
-        "value": "oklch(0.955 0.007 257)",
+        "value": "oklch(0.955 0.014 251)",
         "ref": "color.slate.100"
       },
       "theme.neutral.150": {
-        "value": "oklch(0.93 0.009 257)",
+        "value": "oklch(0.93 0.019 252)",
         "ref": "color.slate.150"
       },
       "theme.neutral.200": {
-        "value": "oklch(0.9 0.011 257)",
+        "value": "oklch(0.9 0.023 253)",
         "ref": "color.slate.200"
       },
       "theme.neutral.300": {
-        "value": "oklch(0.82 0.015 257)",
+        "value": "oklch(0.82 0.029 255)",
         "ref": "color.slate.300"
       },
       "theme.neutral.400": {
-        "value": "oklch(0.68 0.019 257)",
+        "value": "oklch(0.68 0.035 256)",
         "ref": "color.slate.400"
       },
       "theme.neutral.450": {
-        "value": "oklch(0.645 0.02 257)",
+        "value": "oklch(0.645 0.037 257)",
         "ref": "color.slate.450"
       },
       "theme.neutral.500": {
-        "value": "oklch(0.56 0.021 257)",
+        "value": "oklch(0.56 0.04 257)",
         "ref": "color.slate.500"
       },
       "theme.neutral.550": {
-        "value": "oklch(0.505 0.022 257)",
+        "value": "oklch(0.505 0.042 258)",
         "ref": "color.slate.550"
       },
       "theme.neutral.600": {
-        "value": "oklch(0.45 0.022 257)",
+        "value": "oklch(0.45 0.044 258)",
         "ref": "color.slate.600"
       },
       "theme.neutral.700": {
-        "value": "oklch(0.36 0.022 257)",
+        "value": "oklch(0.36 0.046 259)",
         "ref": "color.slate.700"
       },
       "theme.neutral.750": {
-        "value": "oklch(0.315 0.022 257)",
+        "value": "oklch(0.315 0.048 260)",
         "ref": "color.slate.750"
       },
       "theme.neutral.800": {
-        "value": "oklch(0.27 0.022 257)",
+        "value": "oklch(0.27 0.05 260)",
         "ref": "color.slate.800"
       },
       "theme.neutral.850": {
-        "value": "oklch(0.215 0.022 257)",
+        "value": "oklch(0.215 0.052 261)",
         "ref": "color.slate.850"
       },
       "theme.neutral.900": {
-        "value": "oklch(0.175 0.021 257)",
+        "value": "oklch(0.175 0.055 262)",
         "ref": "color.slate.900"
       },
       "theme.neutral.925": {
-        "value": "oklch(0.158 0.019 257)",
+        "value": "oklch(0.158 0.054 262)",
         "ref": "color.slate.925"
       },
       "theme.neutral.950": {
-        "value": "oklch(0.135 0.016 257)",
+        "value": "oklch(0.135 0.052 262)",
         "ref": "color.slate.950"
       },
       "theme.neutral.1000": {
-        "value": "oklch(0.1 0.012 257)",
+        "value": "oklch(0.1 0.046 262)",
         "ref": "color.slate.1000"
       },
       "font.family.sans": {
@@ -5508,6 +5623,15 @@ export const themes: readonly Theme[] = [
           "system-ui",
           "sans-serif"
         ]
+      },
+      "font.family.heading": {
+        "value": [
+          "var(--font-inter-tight)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif"
+        ],
+        "ref": "font.family.sans"
       },
       "type.hero": {
         "value": {
@@ -5519,7 +5643,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "clamp(4rem, 1.5rem + 9vw, 10rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.02em",
+          "letterSpacing": "-0.015em",
           "lineHeight": "0.9"
         }
       },
@@ -5547,7 +5671,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "clamp(2.4rem, 1.65rem + 2.9vw, 3.9rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.02em",
+          "letterSpacing": "-0.012em",
           "lineHeight": "1.02"
         }
       },
@@ -5561,7 +5685,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "clamp(2rem, 1.5rem + 2vw, 3rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.018em",
+          "letterSpacing": "-0.012em",
           "lineHeight": "1.06"
         }
       },
@@ -5575,7 +5699,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "clamp(1.4rem, 1.2rem + 0.8vw, 1.75rem)",
           "fontWeight": 700,
-          "letterSpacing": "-0.014em",
+          "letterSpacing": "-0.01em",
           "lineHeight": "1.15"
         }
       },
@@ -5589,7 +5713,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "1.25rem",
           "fontWeight": 700,
-          "letterSpacing": "-0.01em",
+          "letterSpacing": "-0.007em",
           "lineHeight": "1.25"
         }
       },
@@ -5603,7 +5727,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "1.0625rem",
           "fontWeight": 700,
-          "letterSpacing": "-0.005em",
+          "letterSpacing": "-0.004em",
           "lineHeight": "1.35"
         }
       },
@@ -5617,7 +5741,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem)",
           "fontWeight": 400,
-          "letterSpacing": "0.002em",
+          "letterSpacing": "0.004em",
           "lineHeight": "1.6"
         }
       },
@@ -5631,7 +5755,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "1rem",
           "fontWeight": 400,
-          "letterSpacing": "0.005em",
+          "letterSpacing": "0.008em",
           "lineHeight": "1.65"
         }
       },
@@ -5645,7 +5769,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "0.875rem",
           "fontWeight": 600,
-          "letterSpacing": "0.004em",
+          "letterSpacing": "0.006em",
           "lineHeight": "1.4"
         }
       },
@@ -5659,7 +5783,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "1rem",
           "fontWeight": 400,
-          "letterSpacing": "0.005em",
+          "letterSpacing": "0.008em",
           "lineHeight": "1.6"
         }
       },
@@ -5673,7 +5797,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "0.8125rem",
           "fontWeight": 400,
-          "letterSpacing": "0.008em",
+          "letterSpacing": "0.012em",
           "lineHeight": "1.45"
         }
       },
@@ -5687,7 +5811,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "0.75rem",
           "fontWeight": 400,
-          "letterSpacing": "0em",
+          "letterSpacing": "0.012em",
           "lineHeight": "1.35"
         }
       },
@@ -5701,7 +5825,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "0.875rem",
           "fontWeight": 400,
-          "letterSpacing": "0em",
+          "letterSpacing": "0.006em",
           "lineHeight": "1.45"
         }
       },
@@ -5715,7 +5839,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "1rem",
           "fontWeight": 400,
-          "letterSpacing": "0em",
+          "letterSpacing": "0.006em",
           "lineHeight": "1.6"
         }
       },
@@ -5729,7 +5853,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "1.125rem",
           "fontWeight": 400,
-          "letterSpacing": "-0.005em",
+          "letterSpacing": "0.003em",
           "lineHeight": "1.55"
         }
       },
@@ -5743,7 +5867,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "1.25rem",
           "fontWeight": 400,
-          "letterSpacing": "-0.01em",
+          "letterSpacing": "0em",
           "lineHeight": "1.4"
         }
       },
@@ -5757,7 +5881,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "1.5rem",
           "fontWeight": 400,
-          "letterSpacing": "-0.02em",
+          "letterSpacing": "-0.006em",
           "lineHeight": "1.3"
         }
       },
@@ -5771,7 +5895,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "1.875rem",
           "fontWeight": 400,
-          "letterSpacing": "-0.018em",
+          "letterSpacing": "-0.01em",
           "lineHeight": "1.2"
         }
       },
@@ -5785,7 +5909,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "2.25rem",
           "fontWeight": 400,
-          "letterSpacing": "-0.02em",
+          "letterSpacing": "-0.012em",
           "lineHeight": "1.12"
         }
       },
@@ -5799,7 +5923,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "3rem",
           "fontWeight": 400,
-          "letterSpacing": "-0.024em",
+          "letterSpacing": "-0.014em",
           "lineHeight": "1.05"
         }
       },
@@ -5813,7 +5937,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "3.75rem",
           "fontWeight": 400,
-          "letterSpacing": "-0.027em",
+          "letterSpacing": "-0.015em",
           "lineHeight": "1"
         }
       },
@@ -5827,7 +5951,7 @@ export const themes: readonly Theme[] = [
           ],
           "fontSize": "4.5rem",
           "fontWeight": 400,
-          "letterSpacing": "-0.03em",
+          "letterSpacing": "-0.016em",
           "lineHeight": "1"
         }
       },
@@ -5841,19 +5965,31 @@ export const themes: readonly Theme[] = [
         "value": "0.5rem"
       },
       "radius.lg": {
-        "value": "0.875rem"
+        "value": "0.75rem"
       },
       "radius.xl": {
-        "value": "1.125rem"
+        "value": "0.875rem"
       },
       "radius.2xl": {
-        "value": "1.25rem"
+        "value": "1rem"
       },
       "radius.3xl": {
-        "value": "1.5rem"
+        "value": "1.25rem"
       },
       "radius.4xl": {
-        "value": "2rem"
+        "value": "1.5rem"
+      },
+      "component.button.radius": {
+        "value": "0.5rem",
+        "ref": "radius.md"
+      },
+      "component.button.radius-sm": {
+        "value": "0.5rem",
+        "ref": "component.button.radius"
+      },
+      "component.button.radius-xs": {
+        "value": "0.375rem",
+        "ref": "radius.sm"
       },
       "component.kern.pull": {
         "value": "0.025em"
@@ -5863,11 +5999,11 @@ export const themes: readonly Theme[] = [
         "ref": "radius.md"
       },
       "component.card.radius": {
-        "value": "0.875rem",
+        "value": "0.75rem",
         "ref": "radius.lg"
       },
       "component.panel.radius": {
-        "value": "1.25rem",
+        "value": "1rem",
         "ref": "radius.2xl"
       },
       "component.overlay.radius": {
@@ -5879,15 +6015,19 @@ export const themes: readonly Theme[] = [
         "ref": "radius.xs"
       },
       "component.dialog.radius": {
-        "value": "1.125rem",
+        "value": "0.875rem",
         "ref": "radius.xl"
+      },
+      "component.badge.radius": {
+        "value": "0.375rem",
+        "ref": "radius.sm"
       }
     }
   },
   {
     "id": "forest",
     "name": "Forest",
-    "description": "A deep emerald accent on soft green-grey, rounded-square buttons, medium radii, Manrope.",
+    "description": "A deep emerald accent on sage green-grey with mint-tinted fills, pine-black ink, pine primary buttons, panels and dialog scrim, and a forest-night dark mode; 14px soft-square buttons, 12px controls, 24px cards, 30px panels, Bricolage Grotesque headings over Manrope.",
     "default": false,
     "modes": [
       "light",
@@ -5898,25 +6038,27 @@ export const themes: readonly Theme[] = [
         "accent": "oklch(0.5 0.104 165)",
         "neutral": "oklch(0.505 0.02 160)",
         "background": "oklch(1 0 0)",
-        "foreground": "oklch(0.135 0.014 160)",
-        "panel": "oklch(0.175 0.018 160)"
+        "foreground": "oklch(0.17 0.032 165)",
+        "panel": "oklch(0.2 0.03 165)"
       },
       "dark": {
         "accent": "oklch(0.72 0.14 165)",
         "neutral": "oklch(0.68 0.018 160)",
-        "background": "oklch(0.1 0.011 160)",
+        "background": "oklch(0.15 0.016 160)",
         "foreground": "oklch(0.985 0.003 160)",
-        "panel": "oklch(0.26 0.021 160)"
+        "panel": "oklch(0.28 0.032 165)"
       }
     },
     "radius": {
-      "button": "0.625rem",
-      "control": "0.625rem",
-      "card": "0.875rem",
-      "panel": "1.25rem",
-      "summary": "10px buttons, 10px controls, 14px cards"
+      "button": "0.875rem",
+      "control": "0.75rem",
+      "card": "1.5rem",
+      "panel": "1.875rem",
+      "dialog": "1.625rem",
+      "summary": "14px buttons, 12px controls, 24px cards"
     },
     "fonts": {
+      "heading": "Bricolage Grotesque",
       "sans": "Manrope",
       "mono": "Geist Mono"
     },
@@ -5967,6 +6109,7 @@ export const themes: readonly Theme[] = [
       "component.badge.radius",
       "component.kern.pull",
       "font.family.sans",
+      "font.family.heading",
       "type.hero",
       "type.display",
       "type.h1",
@@ -5974,6 +6117,31 @@ export const themes: readonly Theme[] = [
       "type.h3",
       "type.h4",
       "type.title",
+      "color.foreground",
+      "color.card-foreground",
+      "color.popover-foreground",
+      "color.primary",
+      "color.secondary-foreground",
+      "color.accent-foreground",
+      "color.subtle",
+      "color.muted",
+      "color.secondary",
+      "color.accent",
+      "color.border",
+      "color.border-strong",
+      "color.input",
+      "color.popover-border",
+      "color.overlay",
+      "color.sidebar.DEFAULT",
+      "color.sidebar.foreground",
+      "color.sidebar.primary",
+      "color.sidebar.accent",
+      "color.sidebar.accent-foreground",
+      "color.sidebar.border",
+      "color.sidebar.ring",
+      "color.ring",
+      "color.panel",
+      "color.panel-raised",
       "color.success",
       "color.success-subtle",
       "color.panel-success",
@@ -5983,20 +6151,25 @@ export const themes: readonly Theme[] = [
       "color.tint.sky",
       "color.tint.rose",
       "color.chart.3",
-      "color.chart.4"
+      "color.chart.4",
+      "color.background",
+      "color.card",
+      "color.popover",
+      "color.primary-foreground",
+      "color.sidebar.primary-foreground",
+      "color.terminal",
+      "color.brand-subtle-foreground"
     ],
     "values": {
       "color.background": {
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.011 160)",
-          "ref": "theme.neutral.1000"
+          "value": "oklch(0.15 0.016 160)"
         }
       },
       "color.foreground": {
-        "value": "oklch(0.135 0.014 160)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.17 0.032 165)",
         "dark": {
           "value": "oklch(0.985 0.003 160)",
           "ref": "theme.neutral.25"
@@ -6019,24 +6192,20 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.subtle": {
-        "value": "oklch(0.975 0.006 160)",
-        "ref": "theme.neutral.50",
+        "value": "oklch(0.975 0.01 160)",
         "dark": {
-          "value": "oklch(0.158 0.016 160)",
-          "ref": "theme.neutral.925"
+          "value": "oklch(0.2 0.019 160)"
         }
       },
       "color.card": {
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.135 0.014 160)",
-          "ref": "theme.neutral.950"
+          "value": "oklch(0.185 0.018 160)"
         }
       },
       "color.card-foreground": {
-        "value": "oklch(0.135 0.014 160)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.17 0.032 165)",
         "dark": {
           "value": "oklch(0.985 0.003 160)",
           "ref": "theme.neutral.25"
@@ -6046,21 +6215,18 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.175 0.018 160)",
-          "ref": "theme.neutral.900"
+          "value": "oklch(0.215 0.02 160)"
         }
       },
       "color.popover-foreground": {
-        "value": "oklch(0.135 0.014 160)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.17 0.032 165)",
         "dark": {
           "value": "oklch(0.985 0.003 160)",
           "ref": "theme.neutral.25"
         }
       },
       "color.primary": {
-        "value": "oklch(0.135 0.014 160)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.26 0.05 165)",
         "dark": {
           "value": "oklch(1 0 0)",
           "ref": "theme.neutral.0"
@@ -6070,45 +6236,36 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.135 0.014 160)",
-          "ref": "theme.neutral.950"
+          "value": "oklch(0.2 0.035 165)"
         }
       },
       "color.secondary": {
-        "value": "oklch(0.955 0.008 160)",
-        "ref": "theme.neutral.100",
+        "value": "oklch(0.95 0.016 160)",
         "dark": {
-          "value": "oklch(0.215 0.019 160)",
-          "ref": "theme.neutral.850"
+          "value": "oklch(0.25 0.022 160)"
         }
       },
       "color.secondary-foreground": {
-        "value": "oklch(0.135 0.014 160)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.17 0.032 165)",
         "dark": {
           "value": "oklch(0.985 0.003 160)",
           "ref": "theme.neutral.25"
         }
       },
       "color.muted": {
-        "value": "oklch(0.975 0.006 160)",
-        "ref": "theme.neutral.50",
+        "value": "oklch(0.968 0.013 160)",
         "dark": {
-          "value": "oklch(0.175 0.018 160)",
-          "ref": "theme.neutral.900"
+          "value": "oklch(0.215 0.02 160)"
         }
       },
       "color.accent": {
-        "value": "oklch(0.955 0.008 160)",
-        "ref": "theme.neutral.100",
+        "value": "oklch(0.95 0.016 160)",
         "dark": {
-          "value": "oklch(0.215 0.019 160)",
-          "ref": "theme.neutral.850"
+          "value": "oklch(0.25 0.022 160)"
         }
       },
       "color.accent-foreground": {
-        "value": "oklch(0.135 0.014 160)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.17 0.032 165)",
         "dark": {
           "value": "oklch(0.985 0.003 160)",
           "ref": "theme.neutral.25"
@@ -6142,8 +6299,8 @@ export const themes: readonly Theme[] = [
         "value": "oklch(0.43 0.09 165)",
         "ref": "theme.accent.700",
         "dark": {
-          "value": "oklch(0.885 0.075 165)",
-          "ref": "theme.accent.200"
+          "value": "oklch(0.81 0.11 165)",
+          "ref": "theme.accent.300"
         }
       },
       "color.destructive-foreground": {
@@ -6155,9 +6312,9 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.success": {
-        "value": "oklch(0.52 0.155 140)",
+        "value": "oklch(0.515 0.14 140)",
         "dark": {
-          "value": "oklch(0.76 0.17 140)"
+          "value": "oklch(0.77 0.15 140)"
         }
       },
       "color.success-foreground": {
@@ -6183,70 +6340,59 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.border": {
-        "value": "oklch(0.93 0.01 160)",
-        "ref": "theme.neutral.150",
+        "value": "oklch(0.925 0.016 160)",
         "dark": {
           "value": "oklch(1 0 0 / 0.09)"
         }
       },
       "color.border-strong": {
-        "value": "oklch(0.9 0.012 160)",
-        "ref": "theme.neutral.200",
+        "value": "oklch(0.895 0.02 160)",
         "dark": {
           "value": "oklch(1 0 0 / 0.16)"
         }
       },
       "color.input": {
-        "value": "oklch(0.9 0.012 160)",
-        "ref": "theme.neutral.200",
+        "value": "oklch(0.895 0.02 160)",
         "dark": {
           "value": "oklch(1 0 0 / 0.14)"
         }
       },
       "color.popover-border": {
-        "value": "oklch(0.9 0.012 160)",
-        "ref": "theme.neutral.200",
+        "value": "oklch(0.895 0.02 160)",
         "dark": {
           "value": "oklch(1 0 0 / 0.14)"
         }
       },
       "color.ring": {
-        "value": "oklch(0.5 0.104 165)",
-        "ref": "theme.accent.600",
+        "value": "oklch(0.535 0.112 165)",
         "dark": {
           "value": "oklch(0.72 0.14 165)",
           "ref": "theme.accent.400"
         }
       },
       "color.overlay": {
-        "value": "oklch(0.135 0.014 160 / 0.2)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.28 0.04 165 / 0.26)",
         "dark": {
-          "value": "oklch(0 0 0 / 0.6)"
+          "value": "oklch(0.09 0.02 165 / 0.6)"
         }
       },
       "color.panel": {
-        "value": "oklch(0.175 0.018 160)",
-        "ref": "theme.neutral.900",
+        "value": "oklch(0.2 0.03 165)",
         "dark": {
-          "value": "oklch(0.26 0.021 160)",
-          "ref": "theme.neutral.800"
+          "value": "oklch(0.28 0.032 165)"
         }
       },
       "color.panel-raised": {
-        "value": "oklch(0.215 0.019 160)",
-        "ref": "theme.neutral.850",
+        "value": "oklch(0.24 0.034 165)",
         "dark": {
-          "value": "oklch(0.305 0.021 160)",
-          "ref": "theme.neutral.750"
+          "value": "oklch(0.32 0.034 165)"
         }
       },
       "color.terminal": {
         "value": "oklch(0.1 0.011 160)",
         "ref": "theme.neutral.1000",
         "dark": {
-          "value": "oklch(0.135 0.014 160)",
-          "ref": "theme.neutral.950"
+          "value": "oklch(0.185 0.018 160)"
         }
       },
       "color.terminal-foreground": {
@@ -6318,24 +6464,20 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.sidebar.DEFAULT": {
-        "value": "oklch(0.985 0.003 160)",
-        "ref": "theme.neutral.25",
+        "value": "oklch(0.982 0.007 160)",
         "dark": {
-          "value": "oklch(0.135 0.014 160)",
-          "ref": "theme.neutral.950"
+          "value": "oklch(0.185 0.018 160)"
         }
       },
       "color.sidebar.foreground": {
-        "value": "oklch(0.135 0.014 160)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.17 0.032 165)",
         "dark": {
           "value": "oklch(0.985 0.003 160)",
           "ref": "theme.neutral.25"
         }
       },
       "color.sidebar.primary": {
-        "value": "oklch(0.135 0.014 160)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.26 0.05 165)",
         "dark": {
           "value": "oklch(1 0 0)",
           "ref": "theme.neutral.0"
@@ -6345,36 +6487,30 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.135 0.014 160)",
-          "ref": "theme.neutral.950"
+          "value": "oklch(0.2 0.035 165)"
         }
       },
       "color.sidebar.accent": {
-        "value": "oklch(0.955 0.008 160)",
-        "ref": "theme.neutral.100",
+        "value": "oklch(0.95 0.016 160)",
         "dark": {
-          "value": "oklch(0.215 0.019 160)",
-          "ref": "theme.neutral.850"
+          "value": "oklch(0.25 0.022 160)"
         }
       },
       "color.sidebar.accent-foreground": {
-        "value": "oklch(0.135 0.014 160)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.17 0.032 165)",
         "dark": {
           "value": "oklch(0.985 0.003 160)",
           "ref": "theme.neutral.25"
         }
       },
       "color.sidebar.border": {
-        "value": "oklch(0.93 0.01 160)",
-        "ref": "theme.neutral.150",
+        "value": "oklch(0.925 0.016 160)",
         "dark": {
           "value": "oklch(1 0 0 / 0.09)"
         }
       },
       "color.sidebar.ring": {
-        "value": "oklch(0.5 0.104 165)",
-        "ref": "theme.accent.600",
+        "value": "oklch(0.535 0.112 165)",
         "dark": {
           "value": "oklch(0.72 0.14 165)",
           "ref": "theme.accent.400"
@@ -6389,9 +6525,9 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.panel-success": {
-        "value": "oklch(0.76 0.17 140)",
+        "value": "oklch(0.77 0.15 140)",
         "dark": {
-          "value": "oklch(0.76 0.17 140)"
+          "value": "oklch(0.77 0.15 140)"
         }
       },
       "theme.accent.50": {
@@ -6530,101 +6666,109 @@ export const themes: readonly Theme[] = [
           "sans-serif"
         ]
       },
+      "font.family.heading": {
+        "value": [
+          "var(--font-bricolage)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif"
+        ]
+      },
       "type.hero": {
         "value": {
           "fontFamily": [
-            "var(--font-manrope)",
+            "var(--font-bricolage)",
             "ui-sans-serif",
             "system-ui",
             "sans-serif"
           ],
           "fontSize": "clamp(4rem, 1.5rem + 9vw, 10rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.04em",
+          "letterSpacing": "-0.01em",
           "lineHeight": "0.9"
         }
       },
       "type.display": {
         "value": {
           "fontFamily": [
-            "var(--font-manrope)",
+            "var(--font-bricolage)",
             "ui-sans-serif",
             "system-ui",
             "sans-serif"
           ],
           "fontSize": "clamp(2.75rem, 1.55rem + 4.6vw, 5rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.038em",
+          "letterSpacing": "-0.01em",
           "lineHeight": "1"
         }
       },
       "type.h1": {
         "value": {
           "fontFamily": [
-            "var(--font-manrope)",
+            "var(--font-bricolage)",
             "ui-sans-serif",
             "system-ui",
             "sans-serif"
           ],
           "fontSize": "clamp(2.4rem, 1.65rem + 2.9vw, 3.9rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.036em",
+          "letterSpacing": "-0.012em",
           "lineHeight": "1.02"
         }
       },
       "type.h2": {
         "value": {
           "fontFamily": [
-            "var(--font-manrope)",
+            "var(--font-bricolage)",
             "ui-sans-serif",
             "system-ui",
             "sans-serif"
           ],
           "fontSize": "clamp(2rem, 1.5rem + 2vw, 3rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.034em",
+          "letterSpacing": "-0.014em",
           "lineHeight": "1.06"
         }
       },
       "type.h3": {
         "value": {
           "fontFamily": [
-            "var(--font-manrope)",
+            "var(--font-bricolage)",
             "ui-sans-serif",
             "system-ui",
             "sans-serif"
           ],
           "fontSize": "clamp(1.4rem, 1.2rem + 0.8vw, 1.75rem)",
           "fontWeight": 700,
-          "letterSpacing": "-0.026em",
+          "letterSpacing": "-0.014em",
           "lineHeight": "1.15"
         }
       },
       "type.h4": {
         "value": {
           "fontFamily": [
-            "var(--font-manrope)",
+            "var(--font-bricolage)",
             "ui-sans-serif",
             "system-ui",
             "sans-serif"
           ],
           "fontSize": "1.25rem",
           "fontWeight": 700,
-          "letterSpacing": "-0.02em",
+          "letterSpacing": "-0.01em",
           "lineHeight": "1.25"
         }
       },
       "type.title": {
         "value": {
           "fontFamily": [
-            "var(--font-manrope)",
+            "var(--font-bricolage)",
             "ui-sans-serif",
             "system-ui",
             "sans-serif"
           ],
           "fontSize": "1.0625rem",
           "fontWeight": 700,
-          "letterSpacing": "-0.012em",
+          "letterSpacing": "-0.005em",
           "lineHeight": "1.35"
         }
       },
@@ -6852,70 +6996,46 @@ export const themes: readonly Theme[] = [
           "lineHeight": "1"
         }
       },
-      "radius.xs": {
-        "value": "0.25rem"
-      },
-      "radius.sm": {
-        "value": "0.375rem"
-      },
-      "radius.md": {
-        "value": "0.625rem"
-      },
       "radius.lg": {
-        "value": "0.875rem"
-      },
-      "radius.xl": {
-        "value": "1rem"
-      },
-      "radius.2xl": {
-        "value": "1.25rem"
-      },
-      "radius.3xl": {
         "value": "1.5rem"
       },
+      "radius.xl": {
+        "value": "1.625rem"
+      },
+      "radius.2xl": {
+        "value": "1.875rem"
+      },
       "radius.4xl": {
-        "value": "1.75rem"
+        "value": "2.25rem"
       },
       "component.button.radius": {
-        "value": "0.625rem",
-        "ref": "radius.md"
+        "value": "0.875rem"
       },
       "component.button.radius-sm": {
-        "value": "0.5rem"
+        "value": "0.75rem",
+        "ref": "radius.md"
       },
       "component.button.radius-xs": {
-        "value": "0.375rem",
+        "value": "0.5rem",
         "ref": "radius.sm"
       },
       "component.kern.pull": {
         "value": "0.02em"
       },
-      "component.control.radius": {
-        "value": "0.625rem",
-        "ref": "radius.md"
-      },
       "component.card.radius": {
-        "value": "0.875rem",
+        "value": "1.5rem",
         "ref": "radius.lg"
       },
       "component.panel.radius": {
-        "value": "1.25rem",
+        "value": "1.875rem",
         "ref": "radius.2xl"
       },
-      "component.overlay.radius": {
-        "value": "0.625rem",
-        "ref": "radius.md"
-      },
-      "component.overlay.item-radius": {
-        "value": "0.375rem",
-        "ref": "radius.sm"
-      },
       "component.dialog.radius": {
-        "value": "1rem",
+        "value": "1.625rem",
         "ref": "radius.xl"
       },
       "component.badge.radius": {
-        "value": "0.375rem",
+        "value": "0.5rem",
         "ref": "radius.sm"
       }
     }
@@ -6923,7 +7043,7 @@ export const themes: readonly Theme[] = [
   {
     "id": "ember",
     "name": "Ember",
-    "description": "A warm orange accent on warm stone, soft and generous radii, pill buttons, DM Sans.",
+    "description": "A burnt-orange accent on warm paper-and-espresso stone, pill buttons and the softest radii (28px cards), Fraunces serif headings over DM Sans, and gold warnings.",
     "default": false,
     "modes": [
       "light",
@@ -6932,27 +7052,29 @@ export const themes: readonly Theme[] = [
     "swatches": {
       "light": {
         "accent": "oklch(0.565 0.167 43)",
-        "neutral": "oklch(0.505 0.014 62)",
+        "neutral": "oklch(0.505 0.02 58)",
         "background": "oklch(1 0 0)",
-        "foreground": "oklch(0.135 0.007 60)",
-        "panel": "oklch(0.175 0.009 60)"
+        "foreground": "oklch(0.135 0.018 50)",
+        "panel": "oklch(0.175 0.02 50)"
       },
       "dark": {
         "accent": "oklch(0.73 0.178 51)",
-        "neutral": "oklch(0.68 0.014 65)",
-        "background": "oklch(0.1 0.005 60)",
-        "foreground": "oklch(0.985 0.004 70)",
-        "panel": "oklch(0.27 0.01 60)"
+        "neutral": "oklch(0.68 0.021 64)",
+        "background": "oklch(0.1 0.015 50)",
+        "foreground": "oklch(0.985 0.006 80)",
+        "panel": "oklch(0.27 0.022 52)"
       }
     },
     "radius": {
       "button": "9999px",
       "control": "1rem",
-      "card": "1.5rem",
+      "card": "1.75rem",
       "panel": "2.25rem",
-      "summary": "Pill buttons, 16px controls, 24px cards"
+      "dialog": "2rem",
+      "summary": "Pill buttons, 16px controls, 28px cards"
     },
     "fonts": {
+      "heading": "Fraunces",
       "sans": "DM Sans",
       "mono": "Geist Mono"
     },
@@ -6997,7 +7119,9 @@ export const themes: readonly Theme[] = [
       "radius.2xl",
       "radius.3xl",
       "radius.4xl",
+      "component.kern.pull",
       "font.family.sans",
+      "font.family.heading",
       "type.hero",
       "type.display",
       "type.h1",
@@ -7005,8 +7129,8 @@ export const themes: readonly Theme[] = [
       "type.h3",
       "type.h4",
       "type.title",
-      "component.kern.pull",
       "color.brand-subtle",
+      "color.overlay",
       "color.tint.violet",
       "color.tint.sand",
       "color.tint.sky",
@@ -7022,39 +7146,39 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.005 60)",
+          "value": "oklch(0.1 0.015 50)",
           "ref": "theme.neutral.1000"
         }
       },
       "color.foreground": {
-        "value": "oklch(0.135 0.007 60)",
+        "value": "oklch(0.135 0.018 50)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.004 70)",
+          "value": "oklch(0.985 0.006 80)",
           "ref": "theme.neutral.25"
         }
       },
       "color.copy": {
-        "value": "oklch(0.45 0.013 61)",
+        "value": "oklch(0.45 0.019 56)",
         "ref": "theme.neutral.600",
         "dark": {
-          "value": "oklch(0.82 0.012 66)",
+          "value": "oklch(0.82 0.019 68)",
           "ref": "theme.neutral.300"
         }
       },
       "color.muted-foreground": {
-        "value": "oklch(0.505 0.014 62)",
+        "value": "oklch(0.505 0.02 58)",
         "ref": "theme.neutral.550",
         "dark": {
-          "value": "oklch(0.68 0.014 65)",
+          "value": "oklch(0.68 0.021 64)",
           "ref": "theme.neutral.400"
         }
       },
       "color.subtle": {
-        "value": "oklch(0.975 0.006 70)",
+        "value": "oklch(0.975 0.01 78)",
         "ref": "theme.neutral.50",
         "dark": {
-          "value": "oklch(0.158 0.008 60)",
+          "value": "oklch(0.158 0.019 50)",
           "ref": "theme.neutral.925"
         }
       },
@@ -7062,15 +7186,15 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.135 0.007 60)",
+          "value": "oklch(0.135 0.018 50)",
           "ref": "theme.neutral.950"
         }
       },
       "color.card-foreground": {
-        "value": "oklch(0.135 0.007 60)",
+        "value": "oklch(0.135 0.018 50)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.004 70)",
+          "value": "oklch(0.985 0.006 80)",
           "ref": "theme.neutral.25"
         }
       },
@@ -7078,20 +7202,20 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.175 0.009 60)",
+          "value": "oklch(0.175 0.02 50)",
           "ref": "theme.neutral.900"
         }
       },
       "color.popover-foreground": {
-        "value": "oklch(0.135 0.007 60)",
+        "value": "oklch(0.135 0.018 50)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.004 70)",
+          "value": "oklch(0.985 0.006 80)",
           "ref": "theme.neutral.25"
         }
       },
       "color.primary": {
-        "value": "oklch(0.135 0.007 60)",
+        "value": "oklch(0.135 0.018 50)",
         "ref": "theme.neutral.950",
         "dark": {
           "value": "oklch(1 0 0)",
@@ -7102,47 +7226,47 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.135 0.007 60)",
+          "value": "oklch(0.135 0.018 50)",
           "ref": "theme.neutral.950"
         }
       },
       "color.secondary": {
-        "value": "oklch(0.955 0.008 69)",
+        "value": "oklch(0.955 0.013 76)",
         "ref": "theme.neutral.100",
         "dark": {
-          "value": "oklch(0.215 0.01 60)",
+          "value": "oklch(0.215 0.021 52)",
           "ref": "theme.neutral.850"
         }
       },
       "color.secondary-foreground": {
-        "value": "oklch(0.135 0.007 60)",
+        "value": "oklch(0.135 0.018 50)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.004 70)",
+          "value": "oklch(0.985 0.006 80)",
           "ref": "theme.neutral.25"
         }
       },
       "color.muted": {
-        "value": "oklch(0.975 0.006 70)",
+        "value": "oklch(0.975 0.01 78)",
         "ref": "theme.neutral.50",
         "dark": {
-          "value": "oklch(0.175 0.009 60)",
+          "value": "oklch(0.175 0.02 50)",
           "ref": "theme.neutral.900"
         }
       },
       "color.accent": {
-        "value": "oklch(0.955 0.008 69)",
+        "value": "oklch(0.955 0.013 76)",
         "ref": "theme.neutral.100",
         "dark": {
-          "value": "oklch(0.215 0.01 60)",
+          "value": "oklch(0.215 0.021 52)",
           "ref": "theme.neutral.850"
         }
       },
       "color.accent-foreground": {
-        "value": "oklch(0.135 0.007 60)",
+        "value": "oklch(0.135 0.018 50)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.004 70)",
+          "value": "oklch(0.985 0.006 80)",
           "ref": "theme.neutral.25"
         }
       },
@@ -7158,7 +7282,7 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.005 60)",
+          "value": "oklch(0.1 0.015 50)",
           "ref": "theme.neutral.1000"
         }
       },
@@ -7182,7 +7306,7 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.005 60)",
+          "value": "oklch(0.1 0.015 50)",
           "ref": "theme.neutral.1000"
         }
       },
@@ -7190,7 +7314,7 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.005 60)",
+          "value": "oklch(0.1 0.015 50)",
           "ref": "theme.neutral.1000"
         }
       },
@@ -7206,7 +7330,7 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.1 0.005 60)",
+          "value": "oklch(0.1 0.015 50)",
           "ref": "theme.neutral.1000"
         }
       },
@@ -7219,28 +7343,28 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.border": {
-        "value": "oklch(0.93 0.009 68)",
+        "value": "oklch(0.93 0.015 74)",
         "ref": "theme.neutral.150",
         "dark": {
           "value": "oklch(1 0 0 / 0.09)"
         }
       },
       "color.border-strong": {
-        "value": "oklch(0.9 0.011 67)",
+        "value": "oklch(0.9 0.017 72)",
         "ref": "theme.neutral.200",
         "dark": {
           "value": "oklch(1 0 0 / 0.16)"
         }
       },
       "color.input": {
-        "value": "oklch(0.9 0.011 67)",
+        "value": "oklch(0.9 0.017 72)",
         "ref": "theme.neutral.200",
         "dark": {
           "value": "oklch(1 0 0 / 0.14)"
         }
       },
       "color.popover-border": {
-        "value": "oklch(0.9 0.011 67)",
+        "value": "oklch(0.9 0.017 72)",
         "ref": "theme.neutral.200",
         "dark": {
           "value": "oklch(1 0 0 / 0.14)"
@@ -7255,41 +7379,40 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.overlay": {
-        "value": "oklch(0.135 0.007 60 / 0.2)",
-        "ref": "theme.neutral.950",
+        "value": "oklch(0.32 0.04 52 / 0.26)",
         "dark": {
           "value": "oklch(0 0 0 / 0.6)"
         }
       },
       "color.panel": {
-        "value": "oklch(0.175 0.009 60)",
+        "value": "oklch(0.175 0.02 50)",
         "ref": "theme.neutral.900",
         "dark": {
-          "value": "oklch(0.27 0.01 60)",
+          "value": "oklch(0.27 0.022 52)",
           "ref": "theme.neutral.800"
         }
       },
       "color.panel-raised": {
-        "value": "oklch(0.215 0.01 60)",
+        "value": "oklch(0.215 0.021 52)",
         "ref": "theme.neutral.850",
         "dark": {
-          "value": "oklch(0.315 0.011 60)",
+          "value": "oklch(0.315 0.021 53)",
           "ref": "theme.neutral.750"
         }
       },
       "color.terminal": {
-        "value": "oklch(0.1 0.005 60)",
+        "value": "oklch(0.1 0.015 50)",
         "ref": "theme.neutral.1000",
         "dark": {
-          "value": "oklch(0.135 0.007 60)",
+          "value": "oklch(0.135 0.018 50)",
           "ref": "theme.neutral.950"
         }
       },
       "color.terminal-foreground": {
-        "value": "oklch(0.93 0.009 68)",
+        "value": "oklch(0.93 0.015 74)",
         "ref": "theme.neutral.150",
         "dark": {
-          "value": "oklch(0.93 0.009 68)",
+          "value": "oklch(0.93 0.015 74)",
           "ref": "theme.neutral.150"
         }
       },
@@ -7326,39 +7449,37 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.chart.4": {
-        "value": "oklch(0.62 0.209 283)",
-        "ref": "color.violet.500",
+        "value": "oklch(0.58 0.15 340)",
         "dark": {
-          "value": "oklch(0.805 0.146 283)",
-          "ref": "color.violet.300"
+          "value": "oklch(0.74 0.12 340)"
         }
       },
       "color.chart.5": {
-        "value": "oklch(0.645 0.014 64)",
+        "value": "oklch(0.645 0.021 62)",
         "ref": "theme.neutral.450",
         "dark": {
-          "value": "oklch(0.56 0.014 63)",
+          "value": "oklch(0.56 0.021 60)",
           "ref": "theme.neutral.500"
         }
       },
       "color.sidebar.DEFAULT": {
-        "value": "oklch(0.985 0.004 70)",
+        "value": "oklch(0.985 0.006 80)",
         "ref": "theme.neutral.25",
         "dark": {
-          "value": "oklch(0.135 0.007 60)",
+          "value": "oklch(0.135 0.018 50)",
           "ref": "theme.neutral.950"
         }
       },
       "color.sidebar.foreground": {
-        "value": "oklch(0.135 0.007 60)",
+        "value": "oklch(0.135 0.018 50)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.004 70)",
+          "value": "oklch(0.985 0.006 80)",
           "ref": "theme.neutral.25"
         }
       },
       "color.sidebar.primary": {
-        "value": "oklch(0.135 0.007 60)",
+        "value": "oklch(0.135 0.018 50)",
         "ref": "theme.neutral.950",
         "dark": {
           "value": "oklch(1 0 0)",
@@ -7369,28 +7490,28 @@ export const themes: readonly Theme[] = [
         "value": "oklch(1 0 0)",
         "ref": "theme.neutral.0",
         "dark": {
-          "value": "oklch(0.135 0.007 60)",
+          "value": "oklch(0.135 0.018 50)",
           "ref": "theme.neutral.950"
         }
       },
       "color.sidebar.accent": {
-        "value": "oklch(0.955 0.008 69)",
+        "value": "oklch(0.955 0.013 76)",
         "ref": "theme.neutral.100",
         "dark": {
-          "value": "oklch(0.215 0.01 60)",
+          "value": "oklch(0.215 0.021 52)",
           "ref": "theme.neutral.850"
         }
       },
       "color.sidebar.accent-foreground": {
-        "value": "oklch(0.135 0.007 60)",
+        "value": "oklch(0.135 0.018 50)",
         "ref": "theme.neutral.950",
         "dark": {
-          "value": "oklch(0.985 0.004 70)",
+          "value": "oklch(0.985 0.006 80)",
           "ref": "theme.neutral.25"
         }
       },
       "color.sidebar.border": {
-        "value": "oklch(0.93 0.009 68)",
+        "value": "oklch(0.93 0.015 74)",
         "ref": "theme.neutral.150",
         "dark": {
           "value": "oklch(1 0 0 / 0.09)"
@@ -7473,79 +7594,79 @@ export const themes: readonly Theme[] = [
         "ref": "color.stone.0"
       },
       "theme.neutral.25": {
-        "value": "oklch(0.985 0.004 70)",
+        "value": "oklch(0.985 0.006 80)",
         "ref": "color.stone.25"
       },
       "theme.neutral.50": {
-        "value": "oklch(0.975 0.006 70)",
+        "value": "oklch(0.975 0.01 78)",
         "ref": "color.stone.50"
       },
       "theme.neutral.100": {
-        "value": "oklch(0.955 0.008 69)",
+        "value": "oklch(0.955 0.013 76)",
         "ref": "color.stone.100"
       },
       "theme.neutral.150": {
-        "value": "oklch(0.93 0.009 68)",
+        "value": "oklch(0.93 0.015 74)",
         "ref": "color.stone.150"
       },
       "theme.neutral.200": {
-        "value": "oklch(0.9 0.011 67)",
+        "value": "oklch(0.9 0.017 72)",
         "ref": "color.stone.200"
       },
       "theme.neutral.300": {
-        "value": "oklch(0.82 0.012 66)",
+        "value": "oklch(0.82 0.019 68)",
         "ref": "color.stone.300"
       },
       "theme.neutral.400": {
-        "value": "oklch(0.68 0.014 65)",
+        "value": "oklch(0.68 0.021 64)",
         "ref": "color.stone.400"
       },
       "theme.neutral.450": {
-        "value": "oklch(0.645 0.014 64)",
+        "value": "oklch(0.645 0.021 62)",
         "ref": "color.stone.450"
       },
       "theme.neutral.500": {
-        "value": "oklch(0.56 0.014 63)",
+        "value": "oklch(0.56 0.021 60)",
         "ref": "color.stone.500"
       },
       "theme.neutral.550": {
-        "value": "oklch(0.505 0.014 62)",
+        "value": "oklch(0.505 0.02 58)",
         "ref": "color.stone.550"
       },
       "theme.neutral.600": {
-        "value": "oklch(0.45 0.013 61)",
+        "value": "oklch(0.45 0.019 56)",
         "ref": "color.stone.600"
       },
       "theme.neutral.700": {
-        "value": "oklch(0.36 0.012 60)",
+        "value": "oklch(0.36 0.02 54)",
         "ref": "color.stone.700"
       },
       "theme.neutral.750": {
-        "value": "oklch(0.315 0.011 60)",
+        "value": "oklch(0.315 0.021 53)",
         "ref": "color.stone.750"
       },
       "theme.neutral.800": {
-        "value": "oklch(0.27 0.01 60)",
+        "value": "oklch(0.27 0.022 52)",
         "ref": "color.stone.800"
       },
       "theme.neutral.850": {
-        "value": "oklch(0.215 0.01 60)",
+        "value": "oklch(0.215 0.021 52)",
         "ref": "color.stone.850"
       },
       "theme.neutral.900": {
-        "value": "oklch(0.175 0.009 60)",
+        "value": "oklch(0.175 0.02 50)",
         "ref": "color.stone.900"
       },
       "theme.neutral.925": {
-        "value": "oklch(0.158 0.008 60)",
+        "value": "oklch(0.158 0.019 50)",
         "ref": "color.stone.925"
       },
       "theme.neutral.950": {
-        "value": "oklch(0.135 0.007 60)",
+        "value": "oklch(0.135 0.018 50)",
         "ref": "color.stone.950"
       },
       "theme.neutral.1000": {
-        "value": "oklch(0.1 0.005 60)",
+        "value": "oklch(0.1 0.015 50)",
         "ref": "color.stone.1000"
       },
       "font.family.sans": {
@@ -7556,101 +7677,109 @@ export const themes: readonly Theme[] = [
           "sans-serif"
         ]
       },
+      "font.family.heading": {
+        "value": [
+          "var(--font-fraunces)",
+          "ui-serif",
+          "Georgia",
+          "serif"
+        ]
+      },
       "type.hero": {
         "value": {
           "fontFamily": [
-            "var(--font-dm-sans)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-fraunces)",
+            "ui-serif",
+            "Georgia",
+            "serif"
           ],
           "fontSize": "clamp(4rem, 1.5rem + 9vw, 10rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.032em",
+          "letterSpacing": "-0.024em",
           "lineHeight": "0.9"
         }
       },
       "type.display": {
         "value": {
           "fontFamily": [
-            "var(--font-dm-sans)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-fraunces)",
+            "ui-serif",
+            "Georgia",
+            "serif"
           ],
           "fontSize": "clamp(2.75rem, 1.55rem + 4.6vw, 5rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.024em",
+          "letterSpacing": "-0.022em",
           "lineHeight": "1"
         }
       },
       "type.h1": {
         "value": {
           "fontFamily": [
-            "var(--font-dm-sans)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-fraunces)",
+            "ui-serif",
+            "Georgia",
+            "serif"
           ],
           "fontSize": "clamp(2.4rem, 1.65rem + 2.9vw, 3.9rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.024em",
+          "letterSpacing": "-0.021em",
           "lineHeight": "1.02"
         }
       },
       "type.h2": {
         "value": {
           "fontFamily": [
-            "var(--font-dm-sans)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-fraunces)",
+            "ui-serif",
+            "Georgia",
+            "serif"
           ],
           "fontSize": "clamp(2rem, 1.5rem + 2vw, 3rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.022em",
+          "letterSpacing": "-0.02em",
           "lineHeight": "1.06"
         }
       },
       "type.h3": {
         "value": {
           "fontFamily": [
-            "var(--font-dm-sans)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-fraunces)",
+            "ui-serif",
+            "Georgia",
+            "serif"
           ],
           "fontSize": "clamp(1.4rem, 1.2rem + 0.8vw, 1.75rem)",
           "fontWeight": 700,
-          "letterSpacing": "-0.018em",
+          "letterSpacing": "-0.015em",
           "lineHeight": "1.15"
         }
       },
       "type.h4": {
         "value": {
           "fontFamily": [
-            "var(--font-dm-sans)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-fraunces)",
+            "ui-serif",
+            "Georgia",
+            "serif"
           ],
           "fontSize": "1.25rem",
           "fontWeight": 700,
-          "letterSpacing": "-0.014em",
+          "letterSpacing": "-0.01em",
           "lineHeight": "1.25"
         }
       },
       "type.title": {
         "value": {
           "fontFamily": [
-            "var(--font-dm-sans)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-fraunces)",
+            "ui-serif",
+            "Georgia",
+            "serif"
           ],
           "fontSize": "1.0625rem",
           "fontWeight": 700,
-          "letterSpacing": "-0.008em",
+          "letterSpacing": "-0.005em",
           "lineHeight": "1.35"
         }
       },
@@ -7885,7 +8014,7 @@ export const themes: readonly Theme[] = [
         "value": "1rem"
       },
       "radius.lg": {
-        "value": "1.5rem"
+        "value": "1.75rem"
       },
       "radius.xl": {
         "value": "2rem"
@@ -7900,14 +8029,14 @@ export const themes: readonly Theme[] = [
         "value": "3rem"
       },
       "component.kern.pull": {
-        "value": "0.02em"
+        "value": "0em"
       },
       "component.control.radius": {
         "value": "1rem",
         "ref": "radius.md"
       },
       "component.card.radius": {
-        "value": "1.5rem",
+        "value": "1.75rem",
         "ref": "radius.lg"
       },
       "component.panel.radius": {
@@ -7931,7 +8060,7 @@ export const themes: readonly Theme[] = [
   {
     "id": "mono",
     "name": "Mono",
-    "description": "No hue at all: ink accents on pure greys, a grey chart ramp, sharp 6px controls and buttons, 8px cards, Geist and Geist Mono.",
+    "description": "No hue at all: ink on pure greys, crisp ruled lines, square 2px buttons and controls, 4px cards, Geist Mono headings over Geist.",
     "default": false,
     "modes": [
       "light",
@@ -7954,13 +8083,15 @@ export const themes: readonly Theme[] = [
       }
     },
     "radius": {
-      "button": "0.375rem",
-      "control": "0.375rem",
-      "card": "0.5rem",
-      "panel": "0.75rem",
-      "summary": "6px buttons, 6px controls, 8px cards"
+      "button": "0.125rem",
+      "control": "0.125rem",
+      "card": "0.25rem",
+      "panel": "0.375rem",
+      "dialog": "0.375rem",
+      "summary": "2px buttons, 2px controls, 4px cards"
     },
     "fonts": {
+      "heading": "Geist Mono",
       "sans": "Geist",
       "mono": "Geist Mono"
     },
@@ -8011,6 +8142,7 @@ export const themes: readonly Theme[] = [
       "component.link.decoration-line",
       "component.brand-mark.ring",
       "font.family.sans",
+      "font.family.heading",
       "type.hero",
       "type.display",
       "type.h1",
@@ -8024,6 +8156,10 @@ export const themes: readonly Theme[] = [
       "color.brand-subtle-foreground",
       "color.ring",
       "color.panel-brand",
+      "color.border",
+      "color.border-strong",
+      "color.input",
+      "color.popover-border",
       "color.tint.violet",
       "color.tint.mint",
       "color.tint.sand",
@@ -8034,6 +8170,7 @@ export const themes: readonly Theme[] = [
       "color.chart.3",
       "color.chart.4",
       "color.chart.5",
+      "color.sidebar.border",
       "color.sidebar.ring"
     ],
     "values": {
@@ -8182,11 +8319,11 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.brand-subtle": {
-        "value": "oklch(0.93 0 0)",
-        "ref": "theme.neutral.150",
+        "value": "oklch(0.82 0 0)",
+        "ref": "theme.neutral.300",
         "dark": {
-          "value": "oklch(0.27 0 0)",
-          "ref": "theme.neutral.800"
+          "value": "oklch(0.36 0 0)",
+          "ref": "theme.neutral.700"
         }
       },
       "color.brand-subtle-foreground": {
@@ -8222,36 +8359,36 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.border": {
-        "value": "oklch(0.93 0 0)",
-        "ref": "theme.neutral.150",
+        "value": "oklch(0.9 0 0)",
+        "ref": "theme.neutral.200",
         "dark": {
-          "value": "oklch(1 0 0 / 0.09)"
+          "value": "oklch(1 0 0 / 0.13)"
         }
       },
       "color.border-strong": {
-        "value": "oklch(0.9 0 0)",
-        "ref": "theme.neutral.200",
+        "value": "oklch(0.82 0 0)",
+        "ref": "theme.neutral.300",
         "dark": {
-          "value": "oklch(1 0 0 / 0.16)"
+          "value": "oklch(1 0 0 / 0.24)"
         }
       },
       "color.input": {
-        "value": "oklch(0.9 0 0)",
-        "ref": "theme.neutral.200",
+        "value": "oklch(0.82 0 0)",
+        "ref": "theme.neutral.300",
         "dark": {
-          "value": "oklch(1 0 0 / 0.14)"
+          "value": "oklch(1 0 0 / 0.22)"
         }
       },
       "color.popover-border": {
-        "value": "oklch(0.9 0 0)",
-        "ref": "theme.neutral.200",
+        "value": "oklch(0.82 0 0)",
+        "ref": "theme.neutral.300",
         "dark": {
-          "value": "oklch(1 0 0 / 0.14)"
+          "value": "oklch(1 0 0 / 0.22)"
         }
       },
       "color.ring": {
-        "value": "oklch(0.505 0 0)",
-        "ref": "theme.neutral.550",
+        "value": "oklch(0.56 0 0)",
+        "ref": "theme.neutral.500",
         "dark": {
           "value": "oklch(0.985 0 0)",
           "ref": "theme.neutral.25"
@@ -8341,31 +8478,27 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.chart.2": {
-        "value": "oklch(0.315 0 0)",
-        "ref": "theme.neutral.750",
+        "value": "oklch(0.66 0 0)",
         "dark": {
-          "value": "oklch(0.86 0 0)"
+          "value": "oklch(0.58 0 0)"
         }
       },
       "color.chart.3": {
-        "value": "oklch(0.45 0 0)",
-        "ref": "theme.neutral.600",
+        "value": "oklch(0.44 0 0)",
         "dark": {
-          "value": "oklch(0.73 0 0)"
+          "value": "oklch(0.76 0 0)"
         }
       },
       "color.chart.4": {
-        "value": "oklch(0.56 0 0)",
-        "ref": "theme.neutral.500",
+        "value": "oklch(0.29 0 0)",
         "dark": {
-          "value": "oklch(0.48 0 0)"
+          "value": "oklch(0.87 0 0)"
         }
       },
       "color.chart.5": {
-        "value": "oklch(0.645 0 0)",
-        "ref": "theme.neutral.450",
+        "value": "oklch(0.55 0 0)",
         "dark": {
-          "value": "oklch(0.605 0 0)"
+          "value": "oklch(0.665 0 0)"
         }
       },
       "color.sidebar.DEFAULT": {
@@ -8417,15 +8550,15 @@ export const themes: readonly Theme[] = [
         }
       },
       "color.sidebar.border": {
-        "value": "oklch(0.93 0 0)",
-        "ref": "theme.neutral.150",
+        "value": "oklch(0.9 0 0)",
+        "ref": "theme.neutral.200",
         "dark": {
-          "value": "oklch(1 0 0 / 0.09)"
+          "value": "oklch(1 0 0 / 0.13)"
         }
       },
       "color.sidebar.ring": {
-        "value": "oklch(0.505 0 0)",
-        "ref": "theme.neutral.550",
+        "value": "oklch(0.56 0 0)",
+        "ref": "theme.neutral.500",
         "dark": {
           "value": "oklch(0.985 0 0)",
           "ref": "theme.neutral.25"
@@ -8575,69 +8708,84 @@ export const themes: readonly Theme[] = [
           "sans-serif"
         ]
       },
+      "font.family.heading": {
+        "value": [
+          "var(--font-geist-mono)",
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "monospace"
+        ],
+        "ref": "font.family.mono"
+      },
       "type.hero": {
         "value": {
           "fontFamily": [
-            "var(--font-geist)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-geist-mono)",
+            "ui-monospace",
+            "SFMono-Regular",
+            "Menlo",
+            "monospace"
           ],
           "fontSize": "clamp(4rem, 1.5rem + 9vw, 10rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.038em",
+          "letterSpacing": "-0.04em",
           "lineHeight": "0.9"
         }
       },
       "type.display": {
         "value": {
           "fontFamily": [
-            "var(--font-geist)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-geist-mono)",
+            "ui-monospace",
+            "SFMono-Regular",
+            "Menlo",
+            "monospace"
           ],
           "fontSize": "clamp(2.75rem, 1.55rem + 4.6vw, 5rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.03em",
+          "letterSpacing": "-0.036em",
           "lineHeight": "1"
         }
       },
       "type.h1": {
         "value": {
           "fontFamily": [
-            "var(--font-geist)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-geist-mono)",
+            "ui-monospace",
+            "SFMono-Regular",
+            "Menlo",
+            "monospace"
           ],
           "fontSize": "clamp(2.4rem, 1.65rem + 2.9vw, 3.9rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.028em",
+          "letterSpacing": "-0.032em",
           "lineHeight": "1.02"
         }
       },
       "type.h2": {
         "value": {
           "fontFamily": [
-            "var(--font-geist)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-geist-mono)",
+            "ui-monospace",
+            "SFMono-Regular",
+            "Menlo",
+            "monospace"
           ],
           "fontSize": "clamp(2rem, 1.5rem + 2vw, 3rem)",
           "fontWeight": 800,
-          "letterSpacing": "-0.026em",
+          "letterSpacing": "-0.03em",
           "lineHeight": "1.06"
         }
       },
       "type.h3": {
         "value": {
           "fontFamily": [
-            "var(--font-geist)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-geist-mono)",
+            "ui-monospace",
+            "SFMono-Regular",
+            "Menlo",
+            "monospace"
           ],
           "fontSize": "clamp(1.4rem, 1.2rem + 0.8vw, 1.75rem)",
           "fontWeight": 700,
@@ -8648,28 +8796,30 @@ export const themes: readonly Theme[] = [
       "type.h4": {
         "value": {
           "fontFamily": [
-            "var(--font-geist)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-geist-mono)",
+            "ui-monospace",
+            "SFMono-Regular",
+            "Menlo",
+            "monospace"
           ],
           "fontSize": "1.25rem",
           "fontWeight": 700,
-          "letterSpacing": "-0.016em",
+          "letterSpacing": "-0.015em",
           "lineHeight": "1.25"
         }
       },
       "type.title": {
         "value": {
           "fontFamily": [
-            "var(--font-geist)",
-            "ui-sans-serif",
-            "system-ui",
-            "sans-serif"
+            "var(--font-geist-mono)",
+            "ui-monospace",
+            "SFMono-Regular",
+            "Menlo",
+            "monospace"
           ],
           "fontSize": "1.0625rem",
           "fontWeight": 700,
-          "letterSpacing": "-0.01em",
+          "letterSpacing": "-0.008em",
           "lineHeight": "1.35"
         }
       },
@@ -8898,76 +9048,76 @@ export const themes: readonly Theme[] = [
         }
       },
       "radius.xs": {
-        "value": "0.1875rem"
+        "value": "0.125rem"
       },
       "radius.sm": {
-        "value": "0.25rem"
+        "value": "0.125rem"
       },
       "radius.md": {
-        "value": "0.375rem"
+        "value": "0.125rem"
       },
       "radius.lg": {
-        "value": "0.5rem"
+        "value": "0.25rem"
       },
       "radius.xl": {
-        "value": "0.625rem"
+        "value": "0.375rem"
       },
       "radius.2xl": {
-        "value": "0.75rem"
+        "value": "0.375rem"
       },
       "radius.3xl": {
-        "value": "0.875rem"
+        "value": "0.5rem"
       },
       "radius.4xl": {
-        "value": "1rem"
+        "value": "0.5rem"
       },
       "component.button.radius": {
-        "value": "0.375rem",
+        "value": "0.125rem",
         "ref": "radius.md"
       },
       "component.button.radius-sm": {
-        "value": "0.375rem",
+        "value": "0.125rem",
         "ref": "component.button.radius"
       },
       "component.button.radius-xs": {
-        "value": "0.375rem",
+        "value": "0.125rem",
         "ref": "component.button.radius"
       },
       "component.link.decoration-line": {
         "value": "underline"
       },
       "component.kern.pull": {
-        "value": "0em"
+        "value": "0.17em"
       },
       "component.brand-mark.ring": {
         "value": "1.25px"
       },
       "component.control.radius": {
-        "value": "0.375rem",
+        "value": "0.125rem",
         "ref": "radius.md"
       },
       "component.card.radius": {
-        "value": "0.5rem",
+        "value": "0.25rem",
         "ref": "radius.lg"
       },
       "component.panel.radius": {
-        "value": "0.75rem",
+        "value": "0.375rem",
         "ref": "radius.2xl"
       },
       "component.overlay.radius": {
-        "value": "0.375rem",
+        "value": "0.125rem",
         "ref": "radius.md"
       },
       "component.overlay.item-radius": {
-        "value": "0.25rem",
+        "value": "0.125rem",
         "ref": "radius.sm"
       },
       "component.dialog.radius": {
-        "value": "0.625rem",
+        "value": "0.375rem",
         "ref": "radius.xl"
       },
       "component.badge.radius": {
-        "value": "0.25rem",
+        "value": "0.125rem",
         "ref": "radius.sm"
       }
     }
