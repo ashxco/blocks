@@ -6,8 +6,8 @@ import { responsiveVars } from "@/design-system/generated/tokens"
 export type Device = "desktop" | "tablet" | "mobile"
 
 /**
- * Preview widths shared by the example canvas and the template viewer. The
- * previews render at exactly these widths and scale down when the stage is
+ * Preview widths of the example canvas's width switch. The previews
+ * render at exactly these widths and scale down when the stage is
  * narrower, so a "Mobile" preview always lays out like a 390px phone.
  */
 export const devices: Record<Device, { width: number; label: string; icon: LucideIcon }> = {
