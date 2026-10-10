@@ -11,7 +11,7 @@ export default function ButtonDocs() {
     <Examples>
       <Example
         title="Variants"
-        description="The ink family on the first row handles everyday actions. Brand and destructive mark the one action that matters most on a view. They share a row here only for comparison: in a product, use one of them at a time and never next to primary."
+        description="The ink family on the first row handles everyday actions. Brand and destructive mark the one action that matters most on a view. They share a row here only for comparison: in a product, use one of them at a time and never next to primary. In the mono theme the accent is ink, so brand looks the same as primary."
         code={`<Button>Invite members</Button>
 <Button variant="secondary">Cancel</Button>
 <Button variant="outline">Import tasks</Button>
@@ -125,7 +125,7 @@ export default function ButtonDocs() {
       <Example
         title="On a panel"
         surface="panel"
-        description="Inverse variants keep contrast on dark panels, in both themes."
+        description="Inverse variants keep contrast on dark panels, in light and dark."
         code={`<Button variant="inverse">
   Start free trial
   <ArrowRightIcon data-icon="inline-end" />

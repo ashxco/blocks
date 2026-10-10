@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { ScopedPortal } from "@/lib/portal-container"
 
 /**
- * Blocks navigation menu. Pill triggers in the label role; dropdown panels
+ * Blocks navigation menu. Triggers in the button radius and the label role; dropdown panels
  * on bg-popover with a hairline border, no shadow. The panel resizes and
  * slides between items as the pointer moves along the bar.
  *
@@ -84,7 +84,7 @@ function NavigationMenuItem({
 }
 
 const navigationMenuTriggerStyle = cva([
-  "group/navigation-menu-trigger inline-flex h-(--button-height-sm) w-max items-center justify-center gap-1 rounded-(--button-radius) px-(--button-padding-x-sm)",
+  "group/navigation-menu-trigger inline-flex h-(--button-height-sm) w-max items-center justify-center gap-1 rounded-(--button-radius-sm) px-(--button-padding-x-sm)",
   "text-label text-copy outline-none select-none",
   "transition-[background-color,color] duration-(--duration-fast) ease-standard",
   "hover:bg-accent hover:text-foreground focus-visible:focus-ring",

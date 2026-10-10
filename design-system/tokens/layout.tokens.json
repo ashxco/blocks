@@ -21,7 +21,7 @@
     "2xl": { "$value": "1.75rem", "$description": "Panels and feature bands." },
     "3xl": { "$value": "2rem", "$description": "Hero media." },
     "4xl": { "$value": "2.5rem", "$description": "Oversized media frames." },
-    "full": { "$value": "9999px", "$description": "Buttons, pills and avatars." }
+    "full": { "$value": "9999px", "$description": "Avatars, dots and switches: shapes that stay round in every theme. Blocks, Ocean and Ember also point the button radius here." }
   },
   "container": {
     "$type": "dimension",

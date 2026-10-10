@@ -188,7 +188,7 @@ export default function ProductTourDocs() {
         title="Screens"
         rows={[
           { prop: "ScreenFrame", type: "{ title?, view?, children, className? }", description: "Light app window with the Acme mark, a page name and a view label. Screens read their layout from it." },
-          { prop: "TimelineScreen", type: "{ weeks?, items?: TimelineItem[], today? }", description: "Bars across weeks, with milestones and a violet line for today. Rows share out spare height, so the chart fills a tall window." },
+          { prop: "TimelineScreen", type: "{ weeks?, items?: TimelineItem[], today? }", description: "Bars across weeks, with milestones and an accent line for today. Rows share out spare height, so the chart fills a tall window." },
           { prop: "TaskScreen", type: "{ className? }", description: "One task with its owner, due date, priority, subtasks and latest comment." },
           { prop: "BoardScreen", type: "{ columns?: BoardColumn[] }", description: "A board. The first of three columns steps aside in a narrow frame." },
           { prop: "ReportScreen", type: "{ scope?, period?, figures?: ReportFigure[], chart?, bars?, legend?, range? }", description: "Three headline figures, then a bar per day with the previous period as a dashed line. Defaults to all projects in Acme Inc. over the last 30 days." },

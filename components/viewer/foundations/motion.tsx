@@ -41,7 +41,7 @@ export function MotionFoundation({ title, description }: { title: string; descri
       <Section
         id="durations"
         title="Durations"
-        description="Five steps from instant press feedback to large reveals. Small, frequent changes are fast; big surfaces take longer so the eye can follow them."
+        description="Five steps from instant press feedback to large reveals. Small, frequent changes are fast; big surfaces take longer so the eye can follow them. Motion is the same in every theme."
       >
         <DurationDemos items={durationItems} easingVar={standard} />
       </Section>

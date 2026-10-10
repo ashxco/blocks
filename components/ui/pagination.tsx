@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
 /**
- * Blocks pagination. Round ghost page links; the current page is a solid
- * ink circle. Sizes come from the button tokens.
+ * Blocks pagination. Ghost page links shaped like buttons; the current page
+ * is solid ink. Sizes and radius come from the button tokens.
  */
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (

@@ -11,7 +11,7 @@ export default function ContactPanelDocs() {
       <Example
         title="Default"
         layout="full"
-        description="One card split in two: a dark panel with other ways to get in touch, and a form with pill topics. Sending shows a spinner, then an inline confirmation."
+        description="One card split in two: a dark panel with other ways to get in touch, and a form whose topics are radios shaped like buttons. Sending shows a spinner, then an inline confirmation."
         code={`<ContactPanel
   onSubmit={async (values) => {
     await fetch("/api/contact", { method: "POST", body: JSON.stringify(values) })
@@ -69,7 +69,7 @@ export default function ContactPanelDocs() {
           { prop: "description", type: "ReactNode", description: "Line under the panel heading." },
           { prop: "methods", type: "ContactMethod[]", default: "Sales, Support, Help center, Offices", description: "Icon, label, value and optional href for each channel." },
           { prop: "hours", type: "ReactNode | null", default: '"Support replies Monday to Friday, from San Francisco and London"', description: "Status line at the foot of the panel." },
-          { prop: "topics", type: "string[]", default: '["Sales", "Support", "Billing", "Partnerships"]', description: "Pill radios. The first is selected." },
+          { prop: "topics", type: "string[]", default: '["Sales", "Support", "Billing", "Partnerships"]', description: "Radios shaped like buttons. The first is selected." },
           { prop: "teamSizes", type: "string[]", description: "Options for the team size select." },
           { prop: "submitLabel", type: "string", default: '"Send message"', description: "Button label." },
           { prop: "successMessage", type: "ReactNode", description: "Shown beside the button after sending." },

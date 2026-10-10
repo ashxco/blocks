@@ -98,7 +98,7 @@ export default function PricingPlansDocs() {
         ]}
         dont={[
           "Don’t put a badge or label above the section heading.",
-          "Don’t use brand violet buttons on the cards; ink and inverse are enough.",
+          "Don’t use brand (accent) buttons on the cards; ink and inverse are enough.",
           "Don’t list more than six features per plan. Move the rest to the comparison table.",
         ]}
       />

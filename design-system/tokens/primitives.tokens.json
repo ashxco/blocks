@@ -26,6 +26,9 @@
       "400": {
         "$value": "oklch(0.68 0.01 286)"
       },
+      "450": {
+        "$value": "oklch(0.645 0.011 286)"
+      },
       "500": {
         "$value": "oklch(0.56 0.012 286)"
       },
@@ -59,7 +62,7 @@
       "1000": {
         "$value": "oklch(0.1 0.006 286)"
       },
-      "$description": "Neutral scale with a faint violet bias. Text, surfaces and borders."
+      "$description": "Default neutral (blocks theme): a faint violet bias. Text, surfaces and borders."
     },
     "violet": {
       "50": {
@@ -95,7 +98,11 @@
       "950": {
         "$value": "oklch(0.235 0.112 283)"
       },
-      "$description": "Brand accent. Links, focus, active states and one highlighted word per headline."
+      "dim": {
+        "$value": "oklch(0.25 0.05 283)",
+        "$description": "Low-chroma dark fill: quiet accent surfaces in dark mode."
+      },
+      "$description": "Default accent (blocks theme). Links, focus, active states and one highlighted word per headline."
     },
     "green": {
       "50": {
@@ -117,7 +124,7 @@
         "$value": "oklch(0.62 0.155 152)"
       },
       "600": {
-        "$value": "oklch(0.54 0.16 152)"
+        "$value": "oklch(0.52 0.16 152)"
       },
       "700": {
         "$value": "oklch(0.465 0.152 152)"
@@ -130,6 +137,10 @@
       },
       "950": {
         "$value": "oklch(0.235 0.083 152)"
+      },
+      "dim": {
+        "$value": "oklch(0.26 0.035 152)",
+        "$description": "Low-chroma dark fill: the quiet status surface in dark mode."
       },
       "$description": "Success and positive change."
     },
@@ -167,6 +178,10 @@
       "950": {
         "$value": "oklch(0.235 0.081 72)"
       },
+      "dim": {
+        "$value": "oklch(0.27 0.04 72)",
+        "$description": "Low-chroma dark fill: the quiet status surface in dark mode."
+      },
       "$description": "Warnings and pending states."
     },
     "red": {
@@ -203,6 +218,10 @@
       "950": {
         "$value": "oklch(0.235 0.107 25)"
       },
+      "dim": {
+        "$value": "oklch(0.26 0.045 25)",
+        "$description": "Low-chroma dark fill: the quiet status surface in dark mode."
+      },
       "$description": "Errors and destructive actions."
     },
     "sky": {
@@ -225,7 +244,7 @@
         "$value": "oklch(0.62 0.126 235)"
       },
       "600": {
-        "$value": "oklch(0.54 0.13 235)"
+        "$value": "oklch(0.53 0.13 235)"
       },
       "700": {
         "$value": "oklch(0.465 0.123 235)"
@@ -239,7 +258,489 @@
       "950": {
         "$value": "oklch(0.235 0.068 235)"
       },
+      "dim": {
+        "$value": "oklch(0.26 0.035 235)",
+        "$description": "Low-chroma dark fill: the quiet status surface in dark mode."
+      },
       "$description": "Information and secondary data series."
+    },
+    "blue": {
+      "50": {
+        "$value": "oklch(0.965 0.017 258)"
+      },
+      "100": {
+        "$value": "oklch(0.94 0.029 259)"
+      },
+      "200": {
+        "$value": "oklch(0.885 0.056 260)"
+      },
+      "300": {
+        "$value": "oklch(0.805 0.098 261)"
+      },
+      "400": {
+        "$value": "oklch(0.71 0.151 262)"
+      },
+      "500": {
+        "$value": "oklch(0.62 0.198 262)"
+      },
+      "600": {
+        "$value": "oklch(0.54 0.195 263)"
+      },
+      "700": {
+        "$value": "oklch(0.465 0.176 264)"
+      },
+      "800": {
+        "$value": "oklch(0.39 0.15 265)"
+      },
+      "900": {
+        "$value": "oklch(0.31 0.118 266)"
+      },
+      "950": {
+        "$value": "oklch(0.235 0.088 267)"
+      },
+      "dim": {
+        "$value": "oklch(0.25 0.05 264)",
+        "$description": "Low-chroma dark fill: quiet accent surfaces in dark mode."
+      },
+      "$description": "Ocean accent: cobalt blue. The hue drifts from 258 in the light steps to 267 in the dark ones so every step reads as the same blue (light blues at one fixed OKLCH hue turn lavender). The working steps (400 to 700) sit near 263, well clear of the info sky at 235, so a brand chip never reads as a status. Light steps sit at the edge of sRGB."
+    },
+    "emerald": {
+      "50": {
+        "$value": "oklch(0.97 0.02 165)"
+      },
+      "100": {
+        "$value": "oklch(0.94 0.042 165)"
+      },
+      "200": {
+        "$value": "oklch(0.885 0.075 165)"
+      },
+      "300": {
+        "$value": "oklch(0.81 0.11 165)"
+      },
+      "400": {
+        "$value": "oklch(0.72 0.14 165)"
+      },
+      "500": {
+        "$value": "oklch(0.615 0.127 165)"
+      },
+      "600": {
+        "$value": "oklch(0.5 0.104 165)"
+      },
+      "700": {
+        "$value": "oklch(0.43 0.09 165)"
+      },
+      "800": {
+        "$value": "oklch(0.36 0.075 165)"
+      },
+      "900": {
+        "$value": "oklch(0.29 0.06 165)"
+      },
+      "950": {
+        "$value": "oklch(0.22 0.046 165)"
+      },
+      "dim": {
+        "$value": "oklch(0.25 0.035 165)",
+        "$description": "Low-chroma dark fill: quiet accent surfaces in dark mode."
+      },
+      "$description": "Forest accent: deep emerald at hue 165. Steps 500 to 950 sit at the edge of sRGB and the light tints well inside it, so tints stay soft. The brand steps sit 25 degrees from the forest success green (hue 140) and at lower chroma, so a brand chip never reads as a status."
+    },
+    "orange": {
+      "50": {
+        "$value": "oklch(0.972 0.017 60)"
+      },
+      "100": {
+        "$value": "oklch(0.945 0.033 58)"
+      },
+      "200": {
+        "$value": "oklch(0.89 0.067 55)"
+      },
+      "300": {
+        "$value": "oklch(0.815 0.118 53)"
+      },
+      "400": {
+        "$value": "oklch(0.73 0.178 51)"
+      },
+      "500": {
+        "$value": "oklch(0.645 0.178 47)"
+      },
+      "600": {
+        "$value": "oklch(0.565 0.167 43)"
+      },
+      "700": {
+        "$value": "oklch(0.485 0.15 40)"
+      },
+      "800": {
+        "$value": "oklch(0.405 0.12 38)"
+      },
+      "900": {
+        "$value": "oklch(0.325 0.094 37)"
+      },
+      "950": {
+        "$value": "oklch(0.245 0.07 36)"
+      },
+      "dim": {
+        "$value": "oklch(0.26 0.056 46)",
+        "$description": "Low-chroma dark fill: quiet accent surfaces in dark mode."
+      },
+      "$description": "Ember accent: a warm orange. The hue drifts from apricot tints (60) through orange (51 to 43) to rust shades (36), the way a flame cools: tints stay clear of pink, and the brand steps stay clear of warning amber (72) and destructive red (25). Chroma sits at the sRGB edge from 50 to 600."
+    },
+    "slate": {
+      "0": {
+        "$value": "oklch(1 0 0)"
+      },
+      "25": {
+        "$value": "oklch(0.985 0.003 257)"
+      },
+      "50": {
+        "$value": "oklch(0.975 0.005 257)"
+      },
+      "100": {
+        "$value": "oklch(0.955 0.007 257)"
+      },
+      "150": {
+        "$value": "oklch(0.93 0.009 257)"
+      },
+      "200": {
+        "$value": "oklch(0.9 0.011 257)"
+      },
+      "300": {
+        "$value": "oklch(0.82 0.015 257)"
+      },
+      "400": {
+        "$value": "oklch(0.68 0.019 257)"
+      },
+      "450": {
+        "$value": "oklch(0.645 0.02 257)"
+      },
+      "500": {
+        "$value": "oklch(0.56 0.021 257)"
+      },
+      "550": {
+        "$value": "oklch(0.505 0.022 257)"
+      },
+      "600": {
+        "$value": "oklch(0.45 0.022 257)"
+      },
+      "700": {
+        "$value": "oklch(0.36 0.022 257)"
+      },
+      "750": {
+        "$value": "oklch(0.315 0.022 257)"
+      },
+      "800": {
+        "$value": "oklch(0.27 0.022 257)"
+      },
+      "850": {
+        "$value": "oklch(0.215 0.022 257)"
+      },
+      "900": {
+        "$value": "oklch(0.175 0.021 257)"
+      },
+      "925": {
+        "$value": "oklch(0.158 0.019 257)"
+      },
+      "950": {
+        "$value": "oklch(0.135 0.016 257)"
+      },
+      "1000": {
+        "$value": "oklch(0.1 0.012 257)"
+      },
+      "$description": "Ocean neutral: cool slate. The ink ladder at hue 257 with about 1.8 times its chroma, a clear hint of blue that deepens towards the dark end."
+    },
+    "sage": {
+      "0": {
+        "$value": "oklch(1 0 0)"
+      },
+      "25": {
+        "$value": "oklch(0.985 0.003 160)"
+      },
+      "50": {
+        "$value": "oklch(0.975 0.006 160)"
+      },
+      "100": {
+        "$value": "oklch(0.955 0.008 160)"
+      },
+      "150": {
+        "$value": "oklch(0.93 0.01 160)"
+      },
+      "200": {
+        "$value": "oklch(0.9 0.012 160)"
+      },
+      "300": {
+        "$value": "oklch(0.82 0.015 160)"
+      },
+      "400": {
+        "$value": "oklch(0.68 0.018 160)"
+      },
+      "450": {
+        "$value": "oklch(0.645 0.019 160)"
+      },
+      "500": {
+        "$value": "oklch(0.56 0.02 160)"
+      },
+      "550": {
+        "$value": "oklch(0.505 0.02 160)"
+      },
+      "600": {
+        "$value": "oklch(0.45 0.02 160)"
+      },
+      "700": {
+        "$value": "oklch(0.36 0.02 160)"
+      },
+      "750": {
+        "$value": "oklch(0.305 0.021 160)"
+      },
+      "800": {
+        "$value": "oklch(0.26 0.021 160)"
+      },
+      "850": {
+        "$value": "oklch(0.215 0.019 160)"
+      },
+      "900": {
+        "$value": "oklch(0.175 0.018 160)"
+      },
+      "925": {
+        "$value": "oklch(0.158 0.016 160)"
+      },
+      "950": {
+        "$value": "oklch(0.135 0.014 160)"
+      },
+      "1000": {
+        "$value": "oklch(0.1 0.011 160)"
+      },
+      "$description": "Forest neutral: sage, the ink lightness ladder at hue 160 with about 1.6 to 2 times its chroma, a soft green-grey. Chroma climbs evenly to 0.021 at 750 and 800 (the dark panel steps) and tapers towards the dark canvas."
+    },
+    "stone": {
+      "0": {
+        "$value": "oklch(1 0 0)"
+      },
+      "25": {
+        "$value": "oklch(0.985 0.004 70)"
+      },
+      "50": {
+        "$value": "oklch(0.975 0.006 70)"
+      },
+      "100": {
+        "$value": "oklch(0.955 0.008 69)"
+      },
+      "150": {
+        "$value": "oklch(0.93 0.009 68)"
+      },
+      "200": {
+        "$value": "oklch(0.9 0.011 67)"
+      },
+      "300": {
+        "$value": "oklch(0.82 0.012 66)"
+      },
+      "400": {
+        "$value": "oklch(0.68 0.014 65)"
+      },
+      "450": {
+        "$value": "oklch(0.645 0.014 64)"
+      },
+      "500": {
+        "$value": "oklch(0.56 0.014 63)"
+      },
+      "550": {
+        "$value": "oklch(0.505 0.014 62)"
+      },
+      "600": {
+        "$value": "oklch(0.45 0.013 61)"
+      },
+      "700": {
+        "$value": "oklch(0.36 0.012 60)"
+      },
+      "750": {
+        "$value": "oklch(0.315 0.011 60)"
+      },
+      "800": {
+        "$value": "oklch(0.27 0.01 60)"
+      },
+      "850": {
+        "$value": "oklch(0.215 0.01 60)"
+      },
+      "900": {
+        "$value": "oklch(0.175 0.009 60)"
+      },
+      "925": {
+        "$value": "oklch(0.158 0.008 60)"
+      },
+      "950": {
+        "$value": "oklch(0.135 0.007 60)"
+      },
+      "1000": {
+        "$value": "oklch(0.1 0.005 60)"
+      },
+      "$description": "Ember neutral: warm stone. Cream at the light end (hue 70), warm graphite at the dark end (hue 60) with chroma held at 0.010 or less, so dark mode reads warm without turning brown."
+    },
+    "grey": {
+      "0": {
+        "$value": "oklch(1 0 0)"
+      },
+      "25": {
+        "$value": "oklch(0.985 0 0)"
+      },
+      "50": {
+        "$value": "oklch(0.975 0 0)"
+      },
+      "100": {
+        "$value": "oklch(0.955 0 0)"
+      },
+      "150": {
+        "$value": "oklch(0.93 0 0)"
+      },
+      "200": {
+        "$value": "oklch(0.9 0 0)"
+      },
+      "300": {
+        "$value": "oklch(0.82 0 0)"
+      },
+      "400": {
+        "$value": "oklch(0.68 0 0)"
+      },
+      "450": {
+        "$value": "oklch(0.645 0 0)"
+      },
+      "500": {
+        "$value": "oklch(0.56 0 0)"
+      },
+      "550": {
+        "$value": "oklch(0.505 0 0)"
+      },
+      "600": {
+        "$value": "oklch(0.45 0 0)"
+      },
+      "700": {
+        "$value": "oklch(0.36 0 0)"
+      },
+      "750": {
+        "$value": "oklch(0.315 0 0)"
+      },
+      "800": {
+        "$value": "oklch(0.27 0 0)"
+      },
+      "850": {
+        "$value": "oklch(0.215 0 0)"
+      },
+      "900": {
+        "$value": "oklch(0.175 0 0)"
+      },
+      "925": {
+        "$value": "oklch(0.158 0 0)"
+      },
+      "950": {
+        "$value": "oklch(0.135 0 0)"
+      },
+      "1000": {
+        "$value": "oklch(0.1 0 0)"
+      },
+      "$description": "Mono neutral: pure greys with no chroma."
+    }
+  },
+  "theme": {
+    "$type": "color",
+    "$description": "Alias scales that themes re-point. CSS: --bk-accent-<step>, --bk-neutral-<step>.",
+    "accent": {
+      "50": {
+        "$value": "{color.violet.50}"
+      },
+      "100": {
+        "$value": "{color.violet.100}"
+      },
+      "200": {
+        "$value": "{color.violet.200}"
+      },
+      "300": {
+        "$value": "{color.violet.300}"
+      },
+      "400": {
+        "$value": "{color.violet.400}"
+      },
+      "500": {
+        "$value": "{color.violet.500}"
+      },
+      "600": {
+        "$value": "{color.violet.600}"
+      },
+      "700": {
+        "$value": "{color.violet.700}"
+      },
+      "800": {
+        "$value": "{color.violet.800}"
+      },
+      "900": {
+        "$value": "{color.violet.900}"
+      },
+      "950": {
+        "$value": "{color.violet.950}"
+      },
+      "dim": {
+        "$value": "{color.violet.dim}"
+      },
+      "$description": "The theme accent scale. Semantic colours reference these steps ({theme.accent.600}); the default theme points them at violet, other themes at their own scale."
+    },
+    "neutral": {
+      "0": {
+        "$value": "{color.ink.0}"
+      },
+      "25": {
+        "$value": "{color.ink.25}"
+      },
+      "50": {
+        "$value": "{color.ink.50}"
+      },
+      "100": {
+        "$value": "{color.ink.100}"
+      },
+      "150": {
+        "$value": "{color.ink.150}"
+      },
+      "200": {
+        "$value": "{color.ink.200}"
+      },
+      "300": {
+        "$value": "{color.ink.300}"
+      },
+      "400": {
+        "$value": "{color.ink.400}"
+      },
+      "450": {
+        "$value": "{color.ink.450}"
+      },
+      "500": {
+        "$value": "{color.ink.500}"
+      },
+      "550": {
+        "$value": "{color.ink.550}"
+      },
+      "600": {
+        "$value": "{color.ink.600}"
+      },
+      "700": {
+        "$value": "{color.ink.700}"
+      },
+      "750": {
+        "$value": "{color.ink.750}"
+      },
+      "800": {
+        "$value": "{color.ink.800}"
+      },
+      "850": {
+        "$value": "{color.ink.850}"
+      },
+      "900": {
+        "$value": "{color.ink.900}"
+      },
+      "925": {
+        "$value": "{color.ink.925}"
+      },
+      "950": {
+        "$value": "{color.ink.950}"
+      },
+      "1000": {
+        "$value": "{color.ink.1000}"
+      },
+      "$description": "The theme neutral scale. Semantic colours reference these steps ({theme.neutral.950}); the default theme points them at ink, other themes at their own neutral."
     }
   },
   "font": {
@@ -252,7 +753,12 @@
           "system-ui",
           "sans-serif"
         ],
-        "$description": "Plus Jakarta Sans. Headings, UI and body copy."
+        "$description": "Plus Jakarta Sans. Headings, UI and body copy.",
+        "$extensions": {
+          "blocks": {
+            "name": "Plus Jakarta Sans"
+          }
+        }
       },
       "mono": {
         "$value": [
@@ -262,7 +768,12 @@
           "Menlo",
           "monospace"
         ],
-        "$description": "Geist Mono. Code, commands, IDs and tabular data."
+        "$description": "Geist Mono. Code, commands, IDs and tabular data.",
+        "$extensions": {
+          "blocks": {
+            "name": "Geist Mono"
+          }
+        }
       }
     },
     "weight": {

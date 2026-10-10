@@ -10,7 +10,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { cn } from "@/lib/utils"
 
 const linkClass =
-  "rounded-xs font-semibold text-brand underline-offset-4 outline-none hover:underline focus-visible:focus-ring"
+  "rounded-xs font-semibold text-brand link-underline outline-none focus-visible:focus-ring"
 
 type Stage = HTMLDivElement | null
 
@@ -124,7 +124,7 @@ const projects = [
   { name: "Mobile app 2.0", status: "At risk", dot: "bg-warning", note: "2 tasks overdue · due Nov 20" },
 ]
 
-/** Links in a list stay ink, so a column of them doesn’t turn the page violet. */
+/** Links in a list stay ink, so a column of them doesn’t flood the page with the accent. */
 const listLinkClass =
   "rounded-xs font-semibold text-foreground underline decoration-border-strong underline-offset-4 outline-none hover:decoration-foreground focus-visible:focus-ring"
 

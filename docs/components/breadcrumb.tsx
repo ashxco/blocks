@@ -89,7 +89,7 @@ export default function BreadcrumbDocs() {
                     <button
                       type="button"
                       aria-label="Show hidden levels"
-                      className="rounded-full outline-none transition-colors duration-(--duration-fast) hover:bg-accent hover:text-foreground focus-visible:focus-ring data-popup-open:bg-accent"
+                      className="rounded-(--button-radius) outline-none transition-colors duration-(--duration-fast) hover:bg-accent hover:text-foreground focus-visible:focus-ring data-popup-open:bg-accent"
                     />
                   }
                 >

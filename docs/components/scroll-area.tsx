@@ -178,7 +178,7 @@ export default function ScrollAreaDocs() {
                     <span className={cn("truncate", row.done ? "text-muted-foreground" : "text-foreground")}>{row.task}</span>
                   </div>
                   <div className="relative col-span-31 h-10 border-b border-border">
-                    {/* Today, in brand violet: the one accent on the timeline. */}
+                    {/* Today, in the accent: its one use on the timeline. */}
                     <span
                       aria-hidden="true"
                       className="absolute inset-y-0 w-px bg-brand"

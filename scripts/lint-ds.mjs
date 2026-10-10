@@ -26,7 +26,12 @@ async function* walk(target) {
   const full = path.join(root, target)
   let s
   try { s = await stat(full) } catch { return }
-  if (s.isFile()) { yield full; return }
+  // Files named on the command line get the same filter as a directory walk,
+  // so a list of changed files can include token sources (*.tokens.json).
+  if (s.isFile()) {
+    if (exts.has(path.extname(full)) && !ignore.some((r) => r.test(full))) yield full
+    return
+  }
   for (const entry of await readdir(full, { withFileTypes: true })) {
     const p = path.join(full, entry.name)
     if (ignore.some((r) => r.test(p))) continue

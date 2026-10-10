@@ -241,7 +241,7 @@ export default function MessageDocs() {
           "Use the footer for status (Sent, Read) and quiet actions (copy, retry).",
         ]}
         dont={[
-          "Don’t give the assistant a coloured or violet bubble to make it stand out.",
+          "Don’t give the assistant a coloured or accent bubble to make it stand out.",
           "Don’t repeat the name and time on every bubble in a run.",
           "Don’t put primary buttons in the footer; reply actions belong in the composer.",
         ]}

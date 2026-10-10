@@ -1,5 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">
-  <!-- The Acme mark (BrandMark in components/blocks/wordmark.tsx), in the token colours. -->
+  <!-- The Acme mark (BrandMark in components/blocks/wordmark.tsx), in the default
+       (blocks) theme's token colours. A file icon cannot read the page's
+       data-theme, so the favicon stays in the blocks colours in every theme;
+       only light and dark follow the browser's colour scheme. -->
   <style>
     .tile { fill: oklch(0.135 0.008 286); }
     .stroke { stroke: oklch(1 0 0); }
@@ -12,5 +15,5 @@
   </style>
   <rect class="tile" width="28" height="28" rx="8" />
   <path class="stroke" d="M7.75 20.75 14 7.25l6.25 13.5" fill="none" stroke-width="3.25" stroke-linecap="round" stroke-linejoin="round" />
-  <circle class="dot" cx="14" cy="17.75" r="2.1" />
+  <circle class="dot stroke" cx="14" cy="17.75" r="2.1" stroke-width="1.25" paint-order="stroke" />
 </svg>

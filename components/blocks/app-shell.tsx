@@ -166,7 +166,7 @@ function UsagePanel() {
   // A quiet bordered card with an ink meter, not bg-panel: the dark panel stays
   // reserved for the one emphasis surface on each page.
   return (
-    <div className="grid gap-3 rounded-lg border border-sidebar-border bg-card p-(--card-padding-sm) text-card-foreground group-data-[collapsible=icon]:hidden">
+    <div className="grid gap-3 rounded-(--card-radius) border border-sidebar-border bg-card p-(--card-padding-sm) text-card-foreground group-data-[collapsible=icon]:hidden">
       <div className="flex items-baseline justify-between gap-2">
         <p className="truncate text-caption font-semibold text-foreground">
           Automation runs
@@ -215,7 +215,7 @@ function WorkspaceSwitcher() {
           >
             <span
               aria-hidden="true"
-              className="grid size-8 shrink-0 place-items-center rounded-sm bg-tint-violet text-xs font-extrabold text-foreground"
+              className="grid size-8 shrink-0 place-items-center rounded-sm bg-brand-subtle text-xs font-extrabold text-foreground"
             >
               {current.initial}
             </span>
@@ -243,7 +243,7 @@ function WorkspaceSwitcher() {
                 >
                   <span
                     aria-hidden="true"
-                    className="grid size-6 shrink-0 place-items-center rounded-xs bg-tint-violet text-xs font-extrabold text-foreground"
+                    className="grid size-6 shrink-0 place-items-center rounded-xs bg-brand-subtle text-xs font-extrabold text-foreground"
                   >
                     {workspace.initial}
                   </span>

@@ -271,7 +271,8 @@ export function SiteHeader({
                     onClick={() => setOpen(false)}
                     className={
                       active
-                        ? "block rounded-xs py-4 text-h2 text-brand outline-none focus-visible:focus-ring"
+                        ? // The theme's link cue marks the active link where brand is ink (Mono).
+                          "block rounded-xs py-4 text-h2 text-brand decoration-2 underline-offset-8 outline-none [text-decoration-line:var(--link-decoration-line)] focus-visible:focus-ring"
                         : "block rounded-xs py-4 text-h2 text-foreground outline-none transition-colors duration-(--duration-fast) hover:text-copy focus-visible:focus-ring"
                     }
                   >

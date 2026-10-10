@@ -430,8 +430,8 @@ function StackShape({ tone }: { tone: Tone }) {
         <span className={cn("h-1.5 w-3/4 rounded-full", tone.soft)} />
         <span className={cn("h-1.5 w-1/2 rounded-full", tone.soft)} />
         <div className="mt-2 flex gap-1.5">
-          <span className={cn("h-5 w-12 rounded-full", tone.ink)} />
-          <span className={cn("h-5 w-10 rounded-full border", tone.hair)} />
+          <span className={cn("h-5 w-12 rounded-(--button-radius)", tone.ink)} />
+          <span className={cn("h-5 w-10 rounded-(--button-radius) border", tone.hair)} />
         </div>
       </div>
     </>
@@ -477,7 +477,7 @@ function MenubarShape({ tone }: { tone: Tone }) {
         ))}
         <div className={cn("mx-2 my-1 border-t", tone.hair)} />
         <div className="flex items-center gap-2 px-2 py-1.5">
-          <span className={cn("h-5 w-16 rounded-full", tone.ink)} />
+          <span className={cn("h-5 w-16 rounded-(--button-radius)", tone.ink)} />
         </div>
       </div>
     </>

@@ -210,7 +210,7 @@ export default function TooltipDocs() {
       >
         <TooltipStage className="pb-10">
           {(container) => (
-            <div className="flex items-center gap-1 rounded-full border bg-background p-1">
+            <div className="flex items-center gap-1 rounded-(--button-radius) border bg-background p-1">
               {actions.slice(0, 3).map(({ label, icon: Icon }, index) => {
                 // The first action shows its tooltip on load; hover along the bar and it hands over.
                 const Root = index === 0 ? ShownTooltip : Tooltip

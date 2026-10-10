@@ -34,7 +34,7 @@ function SuggestedReplies() {
               render={<button type="button" />}
               aria-pressed={picked === s}
               onClick={() => setPicked(s)}
-              className="rounded-full px-4 py-1.5 aria-pressed:border-foreground!"
+              className="rounded-(--button-radius) px-4 py-1.5 aria-pressed:border-foreground!"
             >
               {s}
             </BubbleContent>
@@ -56,7 +56,7 @@ export default function BubbleDocs() {
       <Example
         title="Variants"
         layout="stack"
-        description="Ink for you, secondary for other people, ghost for the assistant. Keep tinted for rare emphasis; violet is the accent, not a voice."
+        description="Ink for you, secondary for other people, ghost for the assistant. Keep tinted for rare emphasis; the accent is not a voice."
         code={`<Bubble><BubbleContent>…</BubbleContent></Bubble>
 <Bubble variant="secondary">…</Bubble>
 <Bubble variant="muted">…</Bubble>
@@ -118,9 +118,9 @@ export default function BubbleDocs() {
       <Example
         title="Suggested replies"
         layout="stack"
-        description="Render BubbleContent as a button to make it clickable. Outline pills work well for suggestions under an assistant reply."
+        description="Render BubbleContent as a button to make it clickable. Outline bubbles shaped like buttons work well for suggestions under an assistant reply."
         code={`<Bubble variant="outline">
-  <BubbleContent render={<button type="button" />} onClick={send} className="rounded-full">
+  <BubbleContent render={<button type="button" />} onClick={send} className="rounded-(--button-radius)">
     Show the overdue tasks
   </BubbleContent>
 </Bubble>`}

@@ -19,20 +19,21 @@ export interface TemplateEntry extends RegistryEntry {
 }
 
 export const foundations: RegistryEntry[] = [
-  { slug: "colors", title: "Colour", group: "Foundations", description: "Primitive scales in OKLCH and the semantic roles that map them to light and dark themes." },
-  { slug: "typography", title: "Typography", group: "Foundations", description: "Plus Jakarta Sans and Geist Mono, type roles from display to caption, and the size scale." },
+  { slug: "themes", title: "Themes", group: "Foundations", description: "Presets that set the accent, neutrals, radii and fonts in light and dark, and how to make your own." },
+  { slug: "colors", title: "Colour", group: "Foundations", description: "The theme's accent and neutral scales, the fixed OKLCH scales behind them, and the semantic roles that map them to light and dark." },
+  { slug: "typography", title: "Typography", group: "Foundations", description: "The theme's sans and mono families, type roles from display to caption, and the size scale." },
   { slug: "spacing", title: "Spacing & layout", group: "Foundations", description: "The 4px spacing unit, page gutters, section rhythm, containers and breakpoints." },
-  { slug: "shape", title: "Shape", group: "Foundations", description: "Corner radius scale from chips to panels, and borders instead of shadows." },
+  { slug: "shape", title: "Shape", group: "Foundations", description: "The theme's radius scale and component radii, from chips to panels, and borders instead of shadows." },
   { slug: "motion", title: "Motion", group: "Foundations", description: "Durations and easing curves, with reduced-motion behaviour." },
   { slug: "iconography", title: "Iconography", group: "Foundations", description: "Lucide icons: sizes, stroke and how they pair with text." },
-  { slug: "tokens", title: "All tokens", group: "Foundations", description: "Every design token with its CSS variable, Tailwind utility and value in both themes." },
+  { slug: "tokens", title: "All tokens", group: "Foundations", description: "Every design token with its CSS variable, Tailwind utility and value in light and dark, for any theme." },
 ]
 
 export const componentGroups = ["Actions", "Forms", "Overlays", "Navigation", "Data display", "Feedback", "Conversation"] as const
 
 export const components: RegistryEntry[] = [
   // Actions
-  { slug: "button", title: "Button", group: "Actions", description: "Pill-shaped actions in primary, secondary, outline, ghost, link, brand, inverse and destructive variants." },
+  { slug: "button", title: "Button", group: "Actions", description: "Actions in primary, secondary, outline, ghost, link, brand, inverse and destructive variants, shaped by the theme's button radius." },
   { slug: "button-group", title: "Button group", group: "Actions", description: "Related buttons joined into one control." },
   { slug: "toggle", title: "Toggle", group: "Actions", description: "A button that stays pressed or unpressed, for formatting and view options in toolbars." },
   { slug: "toggle-group", title: "Toggle group", group: "Actions", description: "A set of toggles where one or many can be on." },

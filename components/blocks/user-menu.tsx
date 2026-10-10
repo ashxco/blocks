@@ -100,8 +100,9 @@ function UserAvatar({
 }
 
 /**
- * The signed-in person's menu: account links, a theme switch and sign out.
- * The theme switch uses next-themes, so it needs the app's ThemeProvider.
+ * The signed-in person's menu: account links, an Appearance switch (light,
+ * dark or system) and sign out. The switch uses next-themes, so it needs the
+ * app's ThemeProvider.
  */
 export function UserMenu({
   user = defaultUser,
@@ -113,7 +114,7 @@ export function UserMenu({
   container,
   className,
 }: UserMenuProps) {
-  // A page can force a theme (?theme=dark in previews); the radio shows the one on screen.
+  // A page can force the mode (?mode=dark in previews); the radio shows the one on screen.
   const { theme, forcedTheme, setTheme } = useTheme()
 
   const trigger =
@@ -198,7 +199,7 @@ export function UserMenu({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Theme</DropdownMenuLabel>
+          <DropdownMenuLabel>Appearance</DropdownMenuLabel>
           <DropdownMenuRadioGroup
             value={forcedTheme ?? theme ?? "system"}
             onValueChange={(value) => setTheme(String(value))}

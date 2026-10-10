@@ -1,22 +1,35 @@
 import * as React from "react"
 import { EllipsisIcon, PlusIcon } from "lucide-react"
 
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
+import { ByTheme, ThemeText } from "./by-theme"
 import {
+  colorAlias,
   describeSize,
   leafName,
+  perTheme,
   refLabel,
   tokenByName,
   tokenByVar,
   tokens,
   tokensIn,
+  valueIn,
   type DesignToken,
+  type ThemeId,
 } from "./data"
 import { Code, FoundationPage, Meta, Section, SubHeading } from "./layout"
 
-function usedBy(t: DesignToken) {
-  return tokens.filter((c) => c.tier === "component" && c.ref === t.name).map((c) => c.cssVar)
+/** Component tokens that point at a radius step in a theme (themes can re-point them). */
+function usedBy(t: DesignToken, theme: ThemeId) {
+  return tokens.filter((c) => c.tier === "component" && valueIn(theme, c).ref === t.name).map((c) => c.cssVar)
+}
+
+/** A radius as a theme sizes it: "12px", or "Pill" where it is fully round. */
+function radiusIn(t: DesignToken, theme: ThemeId, pill = "Fully round") {
+  const size = describeSize(valueIn(theme, t).value)
+  return size === "Fully round" ? pill : size
 }
 
 /* ------------------------------------------------------------------------ */
@@ -98,24 +111,38 @@ const radiusDemo: Record<string, { label: string; demo: React.ReactNode; stage?:
   "3xl": { label: "Hero media", demo: <span className={`${cropped} rounded-3xl bg-tint-sky`} /> },
   "4xl": { label: "Large media frames", demo: <span className={`${cropped} rounded-4xl bg-tint-violet`} /> },
   full: {
-    label: "Buttons and avatars",
+    label: "Avatars, dots and switches",
     demo: (
       <span className="flex items-center gap-3">
-        <Button type="button" tabIndex={-1}>
-          <PlusIcon data-icon="inline-start" />
-          New task
-        </Button>
         <span className="grid size-(--avatar-size-md) place-items-center rounded-full bg-tint-mint text-caption font-semibold text-foreground">
           MP
+        </span>
+        <span className="flex h-(--switch-height) w-(--switch-width) items-center justify-end rounded-full bg-primary p-0.5">
+          <span className="aspect-square h-full rounded-full bg-primary-foreground" />
+        </span>
+        <span className="flex items-center gap-1.5 text-caption text-foreground">
+          <span className="size-2 rounded-full bg-success" />
+          Online
         </span>
       </span>
     ),
   },
 }
 
+/* The scale step's own description, except where a theme makes it wrong: full is never a button. */
+const radiusUse: Record<string, React.ReactNode> = {
+  full: (
+    <>
+      Avatars, status dots, switches and other shapes that stay round in every theme. Buttons never use it
+      directly: they read <code className="font-mono text-xs whitespace-nowrap text-foreground">--button-radius</code>,
+      which a theme may point here.
+    </>
+  ),
+}
+
 function RadiusTile({ token }: { token: DesignToken }) {
   const name = leafName(token.name)
-  const users = usedBy(token)
+  const users = perTheme((theme) => usedBy(token, theme))
   const demo = radiusDemo[name]
   return (
     // Two across below @narrow, so the last of an odd count spans the row rather than leaving half of it empty.
@@ -129,22 +156,160 @@ function RadiusTile({ token }: { token: DesignToken }) {
       <div className="grid gap-1.5">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
           <h3 className="text-title text-foreground">{name}</h3>
-          <Meta>{describeSize(token.value)}</Meta>
+          <Meta>
+            <ThemeText value={perTheme((theme) => radiusIn(token, theme))} />
+          </Meta>
         </div>
         <Code className="text-muted-foreground">{token.utility ?? `rounded-${name}`}</Code>
-        <p className="text-caption text-copy">{token.description ?? demo?.label}</p>
-        {users.length ? (
-          <p className="flex flex-wrap items-baseline gap-x-1.5 text-caption text-muted-foreground">
-            Used by
-            {users.map((u) => (
-              <code key={u} className="font-mono text-xs whitespace-nowrap text-foreground">
-                {u}
-              </code>
-            ))}
-          </p>
-        ) : null}
+        <p className="text-caption text-copy">{radiusUse[name] ?? token.description ?? demo?.label}</p>
+        <ByTheme as="div" by={(theme) => users[theme].join(" ")}>
+          {(theme) =>
+            users[theme].length ? (
+              <p className="flex flex-wrap items-baseline gap-x-1.5 text-caption text-muted-foreground">
+                Used by
+                {users[theme].map((u) => (
+                  <code key={u} className="font-mono text-xs whitespace-nowrap text-foreground">
+                    {u}
+                  </code>
+                ))}
+              </p>
+            ) : null
+          }
+        </ByTheme>
       </div>
     </li>
+  )
+}
+
+/* ------------------------------------------------------------------------ */
+/* Component radii: what themes change most                                  */
+/* ------------------------------------------------------------------------ */
+
+const croppedSmall = "absolute inset-x-4 top-4 h-40 @prose:inset-x-6 @prose:top-6"
+
+/* Each component radius on its component. Literal class names so Tailwind generates them. */
+const componentDemo: Record<string, { label: string; demo: React.ReactNode; stage?: string }> = {
+  "--button-radius": {
+    label: "Every button size and variant.",
+    /* Small sizes so the pair fits a two-up tile on phones; the icon button wraps under on the narrowest. */
+    demo: (
+      <span className="flex flex-wrap items-center justify-center gap-2">
+        <Button type="button" size="sm" tabIndex={-1} aria-hidden>
+          <PlusIcon data-icon="inline-start" />
+          New task
+        </Button>
+        <Button type="button" variant="outline" size="icon-sm" tabIndex={-1} aria-hidden>
+          <EllipsisIcon />
+        </Button>
+      </span>
+    ),
+  },
+  "--control-radius": {
+    label: "Inputs, selects, textareas and comboboxes.",
+    stage: "bg-card",
+    demo: (
+      <span className="flex h-(--control-height-md) w-full max-w-56 items-center rounded-(--control-radius) border border-input bg-muted px-(--control-padding-x) text-body text-muted-foreground">
+        Q4 planning
+      </span>
+    ),
+  },
+  "--badge-radius": {
+    label: "Status and count badges.",
+    stage: "bg-card",
+    demo: (
+      <span className="flex flex-wrap items-center justify-center gap-2">
+        <Badge variant="success">On track</Badge>
+        <Badge variant="secondary">In review</Badge>
+      </span>
+    ),
+  },
+  "--card-radius": {
+    label: "Cards, tiles and table frames.",
+    stage: "bg-muted",
+    demo: (
+      <span className="grid w-full max-w-60 gap-0.5 rounded-(--card-radius) border bg-card p-4">
+        <span className="text-title text-foreground">Q4 planning</span>
+        <span className="text-caption text-muted-foreground">12 open tasks</span>
+      </span>
+    ),
+  },
+  "--overlay-radius": {
+    label: "Menus, popovers, selects and hover cards.",
+    demo: (
+      <span className="grid w-full max-w-(--menu-min-width) rounded-(--overlay-radius) border border-popover-border bg-popover p-(--overlay-padding)">
+        <span className="flex h-(--overlay-item-height) items-center px-3 text-label text-popover-foreground">Edit task</span>
+        <span className="flex h-(--overlay-item-height) items-center px-3 text-label text-popover-foreground">Copy link</span>
+      </span>
+    ),
+  },
+  "--overlay-item-radius": {
+    label: "The highlight on a menu item.",
+    demo: (
+      <span className="grid w-full max-w-(--menu-min-width) rounded-(--overlay-radius) border border-popover-border bg-popover p-(--overlay-padding)">
+        <span className="flex h-(--overlay-item-height) items-center rounded-(--overlay-item-radius) bg-accent px-3 text-label text-accent-foreground">
+          Edit task
+        </span>
+        <span className="flex h-(--overlay-item-height) items-center px-3 text-label text-popover-foreground">Copy link</span>
+      </span>
+    ),
+  },
+  "--dialog-radius": {
+    label: "Dialogs and alert dialogs.",
+    demo: (
+      <span className={`${croppedSmall} grid content-start gap-1 rounded-(--dialog-radius) border bg-popover p-4 @prose:p-5`}>
+        <span className="text-label text-popover-foreground @prose:text-title">Delete project?</span>
+        <span className="text-caption text-muted-foreground">This removes 32 tasks.</span>
+      </span>
+    ),
+  },
+  "--panel-radius": {
+    label: "Dark panels and feature bands.",
+    demo: (
+      <span className={`${croppedSmall} grid content-start rounded-(--panel-radius) bg-panel p-4 @prose:p-6`}>
+        <span className="text-label text-panel-foreground @prose:text-h4">Work in one place</span>
+      </span>
+    ),
+  },
+}
+
+function ComponentRadii() {
+  const radii = Object.keys(componentDemo).flatMap((cssVar) => {
+    const t = tokenByVar(cssVar)
+    return t ? [t] : []
+  })
+  return (
+    <ul className="grid grid-cols-2 gap-x-4 gap-y-10 @prose:gap-x-6 @prose:gap-y-12 @narrow:grid-cols-4">
+      {radii.map((t) => {
+        const demo = componentDemo[t.cssVar]
+        const from = perTheme((theme) => {
+          const ref = valueIn(theme, t).ref
+          return ref ? `From ${refLabel(ref)}` : "Its own value"
+        })
+        return (
+          <li key={t.cssVar} className="grid content-start gap-4">
+            <div
+              aria-hidden
+              className={`relative grid h-32 place-items-center overflow-hidden rounded-(--card-radius) border p-4 @prose:h-36 @prose:p-6 ${demo?.stage ?? "bg-muted"}`}
+            >
+              {demo?.demo}
+            </div>
+            <div className="grid gap-1.5">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+                <h3 className="text-title text-foreground">{t.cssVar.slice(2).replace(/-radius$/, "")}</h3>
+                <Meta>
+                  <ThemeText value={perTheme((theme) => radiusIn(t, theme, "Pill"))} />
+                </Meta>
+              </div>
+              <Code className="text-muted-foreground">{t.utility ?? `rounded-(${t.cssVar})`}</Code>
+              <p className="text-caption text-copy">{demo?.label ?? t.description}</p>
+              <Meta>
+                <ThemeText value={from} />
+              </Meta>
+            </div>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 
@@ -194,7 +359,7 @@ function BorderWidths() {
 /*
  * Each line colour drawn on the element it is made for. The page lines run
  * three across; the two edges of floating and dark surfaces share the second
- * row. The card sits on muted, which stands clear of bg-card in both themes.
+ * row. The card sits on muted, which stands clear of bg-card in both modes.
  */
 const lineDemos: { cssVar: string; demo: React.ReactNode; stage?: string; span?: string }[] = [
   {
@@ -323,14 +488,20 @@ function Focus() {
           {
             label: "Colour",
             token: ring,
-            value: [refLabel(ring?.ref), refLabel(ring?.dark?.ref)].filter(Boolean).join(" · "),
+            value: perTheme((theme) => {
+              if (!ring) return ""
+              const v = valueIn(theme, ring)
+              const light = colorAlias(String(v.value), v.ref, theme)
+              const dark = v.dark ? colorAlias(String(v.dark.value), v.dark.ref, theme) : light
+              return [light && `${light} light`, dark && `${dark} dark`].filter(Boolean).join(" · ")
+            }),
           },
         ].map((row) => (
           <div key={row.label} className="grid grid-cols-[6rem_minmax(0,1fr)] items-baseline gap-4 border-t py-4">
             <dt className="text-label text-foreground">{row.label}</dt>
             <dd className="grid gap-0.5">
               <Code>{row.token?.cssVar}</Code>
-              <Meta>{row.value}</Meta>
+              <Meta>{typeof row.value === "string" ? row.value : <ThemeText value={row.value} />}</Meta>
             </dd>
           </div>
         ))}
@@ -396,7 +567,7 @@ const week = [62, 78, 54, 91, 70, 38, 84]
 
 function DepthScene() {
   return (
-    /* Muted, so the card on it stands clear in both themes. */
+    /* Muted, so the card on it stands clear in both modes. */
     <div aria-hidden className="grid gap-6 rounded-(--panel-radius) border bg-muted p-(--panel-padding-sm) @narrow:grid-cols-2">
       {/* Card with an open menu on top of it */}
       <div className="relative grid content-start gap-4 rounded-(--card-radius) border bg-card p-(--card-padding)">
@@ -501,13 +672,21 @@ export function ShapeFoundation({ title, description }: { title: string; descrip
       <Section
         id="radius"
         title="Corner radius"
-        description="Small things get small corners, large surfaces get generous ones. Buttons, badges and avatars are fully round. Components read radius through their own tokens, so a card can change shape without touching the scale."
+        description="Small things get small corners, large surfaces get generous ones. Each theme sets its own scale, from Mono's sharp corners to Ember's soft ones; the sizes shown are the theme you are on. Only full is the same everywhere."
       >
         <ul className="grid grid-cols-2 gap-x-4 gap-y-10 @prose:gap-x-6 @prose:gap-y-12 @narrow:grid-cols-3">
           {radii.map((t) => (
             <RadiusTile key={t.name} token={t} />
           ))}
         </ul>
+      </Section>
+
+      <Section
+        id="component-radii"
+        title="Component radii"
+        description="Components read their corners through their own tokens, never a scale step by name, so a theme can make buttons pills in one theme and rounded squares in another without touching component code. Most point at a step of the scale; a theme can re-point them."
+      >
+        <ComponentRadii />
       </Section>
 
       <Section
@@ -530,7 +709,7 @@ export function ShapeFoundation({ title, description }: { title: string; descrip
       <Section
         id="focus"
         title="Focus"
-        description="One outline for every focusable element: solid brand violet, offset from the edge so it never hides the control."
+        description="One outline for every focusable element: solid, in the theme's accent (ink in Mono), offset from the edge so it never hides the control."
       >
         <Focus />
       </Section>

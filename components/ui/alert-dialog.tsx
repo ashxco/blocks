@@ -167,7 +167,7 @@ function AlertDialogDescription({
       data-slot="alert-dialog-description"
       className={cn(
         "text-body text-copy",
-        "*:[a]:font-semibold *:[a]:text-brand *:[a]:underline-offset-4 *:[a]:hover:underline",
+        "*:[a]:font-semibold *:[a]:text-brand *:[a]:link-underline",
         "*:[strong]:font-semibold *:[strong]:text-foreground",
         className
       )}

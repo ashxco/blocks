@@ -14,7 +14,8 @@
     "predev": "npm run tokens",
     "prebuild": "npm run tokens",
     "lint:ds": "node scripts/lint-ds.mjs",
-    "check": "npm run tokens && tsc --noEmit --incremental false && npm run lint:ds"
+    "contrast": "node scripts/check-contrast.mjs",
+    "check": "npm run tokens && npm run contrast && tsc --noEmit --incremental false && npm run lint:ds"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

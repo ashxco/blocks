@@ -76,7 +76,7 @@ export default function ChartCardDocs() {
 
       <Example
         title="Bars"
-        description="For counts per day, such as tasks created. Bars cap at 24px wide and grow from one baseline. A single series next to the page’s main chart draws in neutral grey (color “ink”, the muted-foreground colour), so violet stays on the one chart that matters most."
+        description="For counts per day, such as tasks created. Bars cap at 24px wide and grow from one baseline. A single series next to the page’s main chart draws in neutral grey (color “ink”, the muted-foreground colour), so the accent stays on the one chart that matters most."
         layout="full"
         surface="subtle"
         code={`<ChartCard
@@ -147,7 +147,7 @@ export default function ChartCardDocs() {
         do={[
           "Plot one measure per card. Two measures with different scales need two cards.",
           "Give every day a point, oldest first, and at least as many days as the longest period.",
-          "Keep violet (chart-1) for the page’s main chart and draw other single series in neutral grey (color “ink”). Save chart-2 to chart-4 for charts with several series.",
+          "Keep the accent (chart-1) for the page’s main chart and draw other single series in neutral grey (color “ink”). Save chart-2 to chart-4 for charts with several series.",
         ]}
         dont={[
           "Don’t add a second y-axis.",

@@ -11,7 +11,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 /**
  * Blocks carousel, on Embla. Slides sit edge to edge with a 16px gap; the
- * previous and next controls are outline pill icon buttons and CarouselDots
+ * previous and next controls are outline icon buttons and CarouselDots
  * shows where you are, with the current slide drawn as a short ink pill.
  *
  * Controls hang outside the slides by default. To place them elsewhere (for

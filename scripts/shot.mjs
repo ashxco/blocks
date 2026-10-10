@@ -2,11 +2,18 @@
  * Screenshot a page with headless Chrome, in real time over the DevTools
  * protocol.
  *
- *   node scripts/shot.mjs <url> <out.png> [width=1440] [height=2400] [theme=light|dark] [wait=15000]
+ *   node scripts/shot.mjs <url> <out.png> [width=1440] [height=2400] [mode=light|dark] [wait=15000] [theme]
  *
- * width × height is the viewport that gets captured. theme adds ?theme=dark
- * or ?theme=light, which forces that theme without saving it; any other value
+ * width × height is the viewport that gets captured. mode adds &mode=dark or
+ * &mode=light, which forces that mode without saving it; any other value
  * leaves the URL alone.
+ *
+ * theme is a theme preset id (blocks, ocean, forest, ember, mono). It adds
+ * ?theme=<id>, which forces that theme without saving it. SHOT_THEME sets it
+ * too, and a ?theme=<id> already in the URL works the same way:
+ *
+ *   node scripts/shot.mjs http://localhost:3210/live out.png 1440 2400 dark 15000 ocean
+ *   SHOT_THEME=mono node scripts/shot.mjs http://localhost:3210/live out.png 1440 2400 light
  *
  * wait is the most time, in milliseconds, to wait for the page to settle
  * before capturing. The script captures as soon as the page has loaded,
@@ -26,9 +33,14 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import os from "node:os"
 import path from "node:path"
 
-const [url, out, w = "1440", h = "2400", theme = "light", waitArg] = process.argv.slice(2)
+const [url, out, w = "1440", h = "2400", mode = "light", waitArg, themeArg] = process.argv.slice(2)
 if (!url || !out) {
-  console.error("Usage: node scripts/shot.mjs <url> <out.png> [width] [height] [light|dark] [wait ms]")
+  console.error("Usage: node scripts/shot.mjs <url> <out.png> [width] [height] [light|dark] [wait ms] [theme]")
+  process.exit(1)
+}
+const theme = themeArg || process.env.SHOT_THEME || undefined
+if (theme !== undefined && !/^[a-z][a-z0-9-]*$/.test(theme)) {
+  console.error(`theme must be a theme id such as ocean, not "${theme}"`)
   process.exit(1)
 }
 
@@ -46,7 +58,12 @@ const SETTLE_MS = 1200
 
 const chromePath = process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 const target = new URL(url)
-if (theme === "dark" || theme === "light") target.searchParams.set("theme", theme)
+if (mode === "dark" || mode === "light") {
+  target.searchParams.set("mode", mode)
+  // An old-style ?theme=dark|light in the URL would only repeat the mode.
+  if (["dark", "light"].includes(target.searchParams.get("theme"))) target.searchParams.delete("theme")
+}
+if (theme) target.searchParams.set("theme", theme)
 const outPath = path.resolve(out)
 mkdirSync(path.dirname(outPath), { recursive: true })
 
@@ -223,7 +240,8 @@ try {
 
   finished = true
   clearTimeout(hardStop)
-  console.log(`Saved ${out} (${width}×${height}, ${theme})`)
+  const look = [target.searchParams.get("theme"), target.searchParams.get("mode")].filter(Boolean).join(", ")
+  console.log(`Saved ${out} (${width}×${height}${look ? `, ${look}` : ""})`)
   // Chrome often exits before it answers Browser.close, which would leave
   // this promise unsettled forever, so the close only gets a moment.
   const exited = new Promise((resolve) => chrome.once("exit", resolve))

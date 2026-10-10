@@ -77,7 +77,7 @@ export default function TabsDocs() {
 
       <Example
         title="Segmented"
-        description="A pill track for switching views of the same data, such as a time range or a layout. The active tab turns ink."
+        description="A segmented track for switching views of the same data, such as a time range or a layout. The active tab turns ink."
         code={`<Tabs defaultValue="7d">
   <TabsList variant="segmented">
     <TabsTrigger value="24h">24 hours</TabsTrigger>
@@ -331,7 +331,7 @@ export default function TabsDocs() {
         dont={[
           "Don’t use tabs for steps in a flow. People expect to move between tabs in any order.",
           "Don’t put more than about six tabs in a row. Move rarer views into a menu.",
-          "Don’t colour the indicator with brand violet. Ink marks the active tab; violet is for focus.",
+          "Don’t colour the indicator in the accent. Ink marks the active tab; the accent is for focus.",
           "Don’t nest one set of tabs inside another.",
         ]}
       />
@@ -341,7 +341,7 @@ export default function TabsDocs() {
           { prop: "defaultValue", type: "any", default: "0", description: "Tabs: the tab that is active on first render, when uncontrolled." },
           { prop: "value / onValueChange", type: "any / (value) => void", description: "Tabs: control the active tab." },
           { prop: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Tabs: lays the list out in a row or a column. The indicator follows." },
-          { prop: "variant", type: '"default" | "line" | "segmented"', default: '"default"', description: "TabsList: underline on a hairline, underline without the hairline, or a pill track." },
+          { prop: "variant", type: '"default" | "line" | "segmented"', default: '"default"', description: "TabsList: underline on a hairline, underline without the hairline, or a segmented track." },
           { prop: "size", type: '"default" | "sm"', default: '"default"', description: "TabsList: height from --tabs-height or --control-height-sm." },
           { prop: "activateOnFocus", type: "boolean", default: "false", description: "TabsList: switch tabs as arrow keys move focus, not only on Enter or Space." },
           { prop: "value", type: "any", description: "TabsTrigger and TabsContent: pairs a tab with its panel." },

@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
  * - Paragraphs and lists read at the lead size for a comfortable measure.
  * - h2 uses the h3 role, h3 the h4 role, both in full ink.
  * - Headings leave room for the sticky site header when linked to.
- * - Links are brand violet; inline code sits on a muted chip.
+ * - Links are in the accent (text-brand); inline code sits on a muted chip.
  */
 const proseClasses = [
   "text-lead text-copy",

@@ -121,7 +121,7 @@ export default function ToggleGroupDocs() {
     <Examples>
       <Example
         title="Segmented"
-        description="The default look: pill items in a muted track, with the selected item in ink. One item is on at a time."
+        description="The default look: items in a muted track, with the selected item in ink. One item is on at a time."
         code={`<ToggleGroup defaultValue={["board"]} aria-label="Project view">
   <ToggleGroupItem value="list">List</ToggleGroupItem>
   <ToggleGroupItem value="board">Board</ToggleGroupItem>
@@ -139,13 +139,13 @@ export default function ToggleGroupDocs() {
 
       <Example
         title="Icons"
-        description="Icon-only items become circles. Label each one."
+        description="Icon-only items are square, like icon buttons. Label each one."
         code={`<ToggleGroup defaultValue={["list"]} aria-label="Layout">
   <ToggleGroupItem value="list" aria-label="List view"><ListIcon /></ToggleGroupItem>
   <ToggleGroupItem value="grid" aria-label="Grid view"><LayoutGridIcon /></ToggleGroupItem>
 </ToggleGroup>
 
-<ToggleGroup defaultValue={["system"]} aria-label="Theme">
+<ToggleGroup defaultValue={["system"]} aria-label="Appearance">
   <ToggleGroupItem value="light">
     <SunIcon data-icon="inline-start" />
     Light
@@ -168,7 +168,7 @@ export default function ToggleGroupDocs() {
             <LayoutGridIcon />
           </ToggleGroupItem>
         </ToggleGroup>
-        <ToggleGroup defaultValue={["system"]} aria-label="Theme">
+        <ToggleGroup defaultValue={["system"]} aria-label="Appearance">
           <ToggleGroupItem value="light">
             <SunIcon data-icon="inline-start" />
             Light
@@ -240,7 +240,7 @@ export default function ToggleGroupDocs() {
 
       <Example
         title="Joined"
-        description="Set spacing to 0 on an outline group to join the items into one pill with shared hairlines."
+        description="Set spacing to 0 on an outline group to join the items into one shape with shared hairlines."
         code={`<ToggleGroup variant="outline" spacing={0} defaultValue={["left"]} aria-label="Text alignment">
   <ToggleGroupItem value="left" aria-label="Align left"><AlignLeftIcon /></ToggleGroupItem>
   <ToggleGroupItem value="center" aria-label="Align center"><AlignCenterIcon /></ToggleGroupItem>
@@ -343,7 +343,7 @@ export default function ToggleGroupDocs() {
 
       <ApiTable
         rows={[
-          { prop: "variant", type: '"default" | "outline"', default: '"default"', description: "Segmented track, or separate outline pills." },
+          { prop: "variant", type: '"default" | "outline"', default: '"default"', description: "Segmented track, or separate outline items." },
           { prop: "size", type: '"sm" | "default" | "lg"', default: '"default"', description: "Applies to every item. The track matches --button-height-*." },
           { prop: "spacing", type: "number", default: "1 (track), 2 (outline)", description: "Gap between items in spacing units. 0 joins outline items." },
           { prop: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Layout and arrow-key direction." },

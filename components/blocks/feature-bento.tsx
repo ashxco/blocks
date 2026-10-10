@@ -112,7 +112,7 @@ const tileTone = {
     body: "mt-2 text-body text-panel-muted",
   },
   tint: {
-    // A flat decorative tint, not brand violet: the page keeps violet for its one highlighted word.
+    // A flat decorative tint, not the accent: the page keeps the accent for its one highlighted word.
     tile: "border-transparent bg-tint-sky",
     icon: "border-transparent bg-background text-foreground",
     title: "text-h4 text-foreground",

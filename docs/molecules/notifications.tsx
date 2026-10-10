@@ -52,7 +52,7 @@ export default function NotificationsDocs() {
     <Examples>
       <Example
         title="Default"
-        description="The bell shows how many notifications are unread, and each unread one has a violet dot. Opening one marks it as read; Mark all as read clears the count. Shown open; click the bell to close it."
+        description="The bell shows how many notifications are unread, and each unread one has an accent dot. Opening one marks it as read; Mark all as read clears the count. Shown open; click the bell to close it."
         code={`<Notifications
   items={[
     {

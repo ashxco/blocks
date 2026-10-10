@@ -216,7 +216,7 @@ export function IconographyFoundation({ title, description }: { title: string; d
       <Section
         id="sizes"
         title="Sizes"
-        description="Four sizes, all on the spacing scale. Set size with a size utility, never with font size, so icons stay crisp and square."
+        description="Four sizes, all on the spacing scale and the same in every theme. Set size with a size utility, never with font size, so icons stay crisp and square."
       >
         <Sizes />
       </Section>
@@ -232,7 +232,7 @@ export function IconographyFoundation({ title, description }: { title: string; d
       <Section
         id="with-text"
         title="Icon and text"
-        description="Centre icons on the text with items-center and let them inherit the text colour. The violet ticks mark the shared centre line."
+        description="Centre icons on the text with items-center and let them inherit the text colour. The accent-coloured ticks mark the shared centre line."
       >
         <Pairings />
       </Section>

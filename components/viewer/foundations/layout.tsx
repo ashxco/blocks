@@ -4,10 +4,16 @@
 import * as React from "react"
 import { CheckIcon, XIcon } from "lucide-react"
 
+import { themeScopeProps, type ThemeId } from "@/lib/themes"
 import { cn } from "@/lib/utils"
 import { DocHeader } from "@/components/viewer/doc-header"
 
-/** Page frame: doc header, then sections with generous rhythm. */
+import { ByThemeStyles } from "./by-theme"
+
+/**
+ * Page frame: doc header, then sections with generous rhythm. It carries the
+ * stylesheet that prints per-theme values for the active theme (by-theme.tsx).
+ */
 export function FoundationPage({
   title,
   description,
@@ -19,6 +25,7 @@ export function FoundationPage({
 }) {
   return (
     <article className="@container grid min-w-0 gap-section-sm [&>header+[data-slot=foundation-section]]:border-t-0 [&>header+[data-slot=foundation-section]]:pt-0">
+      <ByThemeStyles />
       <DocHeader section="Foundations" title={title} description={description} />
       {children}
     </article>
@@ -151,24 +158,28 @@ export function Meta({ children, className }: { children: React.ReactNode; class
 }
 
 /**
- * A small chip of a semantic colour as one theme resolves it. The hairline
- * comes from the page's own theme, so the chip stays visible whatever its
- * value: a dark value on a dark page, a white value on a white page.
+ * A small chip of a semantic colour as one mode resolves it, in the page's
+ * theme. The hairline comes from the page's own mode, so the chip stays
+ * visible whatever its value: a dark value on a dark page, a white value on a
+ * white page.
  */
 export function ScopedChip({
   cssVar,
+  mode,
   theme,
   base = "background",
   className,
 }: {
   cssVar: string
-  theme: "light" | "dark"
+  mode: "light" | "dark"
+  /** Resolve it in this theme instead of the page's. */
+  theme?: ThemeId
   base?: "background" | "panel"
   className?: string
 }) {
   return (
     <span aria-hidden className={cn("block size-5 shrink-0 overflow-hidden rounded-xs border border-border-strong", className)}>
-      <span className={cn(theme, "block size-full", base === "panel" ? "bg-panel" : "bg-background")}>
+      <span {...themeScopeProps(theme, mode, cn("block size-full", base === "panel" ? "bg-panel" : "bg-background"))}>
         <span className="block size-full" style={{ backgroundColor: `var(${cssVar})` }} />
       </span>
     </span>

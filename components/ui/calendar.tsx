@@ -15,9 +15,10 @@ import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react
 /**
  * Blocks calendar, on react-day-picker.
  *
- * A clean grid of round day cells. The month title is bold and sits on the
- * left, the arrows on the right. Selected days fill with ink, ranges run as
- * an accent band between two ink ends, and today carries a small brand dot.
+ * A clean grid of day cells in the button radius (round in the default
+ * theme). The month title is bold and sits on the left, the arrows on the
+ * right. Selected days fill with ink, ranges run as an accent band between
+ * two ink ends, and today carries a small brand dot.
  * Cell size comes from the --calendar-cell-size token. Set it on the
  * calendar or an ancestor to change it: "[--calendar-cell-size:--spacing(9)]".
  *
@@ -124,18 +125,18 @@ function Calendar({
         day: cn(
           "group/day relative aspect-square h-full w-full p-0 text-center select-none",
           props.showWeekNumber
-            ? "[&:nth-child(2)[data-selected=true]]:rounded-s-full"
-            : "[&:first-child[data-selected=true]]:rounded-s-full",
-          "[&:last-child[data-selected=true]]:rounded-e-full",
+            ? "[&:nth-child(2)[data-selected=true]]:rounded-s-(--button-radius)"
+            : "[&:first-child[data-selected=true]]:rounded-s-(--button-radius)",
+          "[&:last-child[data-selected=true]]:rounded-e-(--button-radius)",
           // Outside days stay plain with several months, so close the band
           // on the last and first in-month days next to them.
           multiMonth &&
-            "data-[outside=true]:bg-transparent [&:has(+[data-outside=true])]:rounded-e-full [[data-outside=true]+&]:rounded-s-full",
+            "data-[outside=true]:bg-transparent [&:has(+[data-outside=true])]:rounded-e-(--button-radius) [[data-outside=true]+&]:rounded-s-(--button-radius)",
           defaultClassNames.day
         ),
-        range_start: cn("rounded-s-full bg-accent", defaultClassNames.range_start),
+        range_start: cn("rounded-s-(--button-radius) bg-accent", defaultClassNames.range_start),
         range_middle: cn("rounded-none bg-accent", defaultClassNames.range_middle),
-        range_end: cn("rounded-e-full bg-accent", defaultClassNames.range_end),
+        range_end: cn("rounded-e-(--button-radius) bg-accent", defaultClassNames.range_end),
         today: cn(defaultClassNames.today),
         outside: cn(defaultClassNames.outside),
         disabled: cn(defaultClassNames.disabled),
@@ -234,14 +235,16 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col items-center justify-center gap-0.5 rounded-full border-0 text-sm leading-none font-medium text-foreground tabular outline-none select-none",
+        "relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col items-center justify-center gap-0.5 rounded-(--button-radius) border-0 text-sm leading-none font-medium text-foreground tabular outline-none select-none",
         "transition-[background-color,color] duration-(--duration-fast) ease-standard",
         "hover:bg-accent focus-visible:z-20 focus-visible:focus-ring",
         "group-data-[outside=true]/day:text-muted-foreground",
         "disabled:cursor-not-allowed disabled:text-muted-foreground disabled:opacity-40 disabled:hover:bg-transparent",
-        // Today: bold figure and a brand dot under it.
+        // Today: bold figure and a brand dot under it. On an ink fill the dot
+        // flips to the fill's foreground, so it still shows where brand is ink.
         "data-[today=true]:font-bold",
         "after:pointer-events-none after:absolute after:bottom-1.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-brand after:opacity-0 data-[today=true]:after:opacity-100",
+        "data-[selected-single=true]:after:bg-primary-foreground data-[range-start=true]:after:bg-primary-foreground data-[range-end=true]:after:bg-primary-foreground",
         // Selection: ink fill for single days and range ends.
         "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[selected-single=true]:hover:bg-primary/85",
         "data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-start=true]:hover:bg-primary/85",

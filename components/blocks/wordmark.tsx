@@ -14,11 +14,13 @@ export interface WordmarkProps {
 
 /**
  * The Acme mark: a rounded ink tile cut by a geometric peak, the letter A
- * reduced to two strokes, with a violet point where its crossbar would sit.
+ * reduced to two strokes, with an accent point where its crossbar would sit.
  * The tile is ink (panel-foreground on panels), the peak is cut out in the
- * canvas colour and the point is brand violet, so it reads on the canvas and
- * on dark panels in both themes. Use it alone where the name is already on screen, such as a
- * favicon-sized tile.
+ * canvas colour and the point is the theme's accent (brand, panel-brand on
+ * panels). Where the accent is ink like the tile (Mono), the theme sets
+ * --brand-mark-ring and the point gets a cut-out ring in the canvas colour,
+ * so it still shows; other themes keep a plain point. Use it alone where the
+ * name is already on screen, such as a favicon-sized tile.
  */
 export function BrandMark({
   tone = "default",
@@ -46,7 +48,16 @@ export function BrandMark({
         strokeLinejoin="round"
         className={panel ? "stroke-panel" : "stroke-background"}
       />
-      <circle cx="14" cy="17.75" r="2.1" className={panel ? "fill-panel-brand" : "fill-brand"} />
+      <circle
+        cx="14"
+        cy="17.75"
+        r="2.1"
+        paintOrder="stroke"
+        className={cn(
+          "stroke-(length:--brand-mark-ring)",
+          panel ? "fill-panel-brand stroke-panel" : "fill-brand stroke-background"
+        )}
+      />
     </svg>
   )
 }

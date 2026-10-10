@@ -140,7 +140,7 @@ function AskAcme() {
         </MessageScroller>
 
         <form onSubmit={send} className="shrink-0 border-t border-border p-3">
-          <div className="flex items-center gap-2 rounded-full border border-input bg-muted py-1.5 pr-1.5 pl-4 transition-colors duration-(--duration-fast) ease-standard focus-within:border-ring focus-within:bg-background has-[input:focus-visible]:focus-ring">
+          <div className="flex items-center gap-2 rounded-(--button-radius) border border-input bg-muted py-1.5 pr-1.5 pl-4 transition-colors duration-(--duration-fast) ease-standard focus-within:border-ring focus-within:bg-background has-[input:focus-visible]:focus-ring">
             <label htmlFor="ask-acme-scroller" className="sr-only">
               Ask Acme
             </label>
@@ -178,7 +178,7 @@ function ScrollerFrame({ className, children }: { className: string; children: R
 
 /**
  * Opens at the top of the thread, so the newest message is out of view and the
- * pill shows. The pill sits in the footer row rather than over the thread, so
+ * jump button shows. The button sits in the footer row rather than over the thread, so
  * it never covers a message: it can live anywhere inside the provider, and
  * bottom-4 centres it in the h-16 row.
  */
@@ -272,7 +272,7 @@ export default function MessageScrollerDocs() {
       <Example
         title="Ask Acme"
         layout="stack"
-        description="Send a question. The conversation follows new messages to the bottom; scroll up and it stays put, and a pill button appears to jump back to the latest message."
+        description="Send a question. The conversation follows new messages to the bottom; scroll up and it stays put, and a button appears to jump back to the latest message."
         code={`<MessageScrollerProvider autoScroll defaultScrollPosition="end">
   <MessageScroller className="h-[34rem]">
     <MessageScrollerViewport aria-label="Conversation with Acme">
@@ -362,7 +362,7 @@ export default function MessageScrollerDocs() {
           { prop: "scrollAnchor", type: "boolean", default: "false", description: "MessageScrollerItem: scroll this item to the top when it arrives, for question-and-answer layouts." },
           { prop: "preserveScrollOnPrepend", type: "boolean", default: "true", description: "MessageScrollerViewport: keep the reading position when older messages load above." },
           { prop: "direction", type: '"start" | "end"', default: '"end"', description: "MessageScrollerButton: which end to jump to. It fades in only when that end is out of view." },
-          { prop: "variant / size", type: "Button props", default: '"outline" / "icon-sm"', description: "MessageScrollerButton renders a pill icon Button." },
+          { prop: "variant / size", type: "Button props", default: '"outline" / "icon-sm"', description: "MessageScrollerButton renders an icon Button." },
           { prop: "useMessageScroller()", type: "hook", description: "scrollToEnd, scrollToStart and scrollToMessage(id)." },
         ]}
       />

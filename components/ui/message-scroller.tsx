@@ -15,7 +15,7 @@ import { ArrowDownIcon } from "lucide-react"
 /**
  * Blocks message scroller. A conversation viewport that stays pinned to the
  * newest message while new ones arrive, and lets people scroll back without
- * being pulled down. A pill button fades in to jump back to the latest
+ * being pulled down. An icon button fades in to jump back to the latest
  * message. Wrap it in MessageScrollerProvider, and give it a height.
  */
 function MessageScrollerProvider(

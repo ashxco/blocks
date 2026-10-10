@@ -99,7 +99,7 @@ function BubbleContent({
 }
 
 const bubbleReactionsVariants = cva(
-  "absolute z-10 flex w-fit shrink-0 items-center justify-center gap-1 rounded-full border border-border bg-background px-2 py-0.5 text-xs font-semibold text-foreground tabular-nums outline-2 outline-background has-[button]:p-0.5 [&_svg:not([class*='size-'])]:size-3",
+  "absolute z-10 flex w-fit shrink-0 items-center justify-center gap-1 rounded-(--badge-radius) border border-border bg-background px-2 py-0.5 text-xs font-semibold text-foreground tabular-nums outline-2 outline-background has-[button]:p-0.5 [&_svg:not([class*='size-'])]:size-3",
   {
     variants: {
       side: {

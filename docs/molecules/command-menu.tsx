@@ -48,7 +48,7 @@ export default function CommandMenuDocs() {
     <Examples>
       <Example
         title="Open"
-        description="What the trigger opens: one search field over three groups, Navigation, Actions and Theme. Arrow keys move, Enter runs the item, Esc closes. Shown inline here with CommandMenuPanel, which renders the palette on a bordered surface as wide as a dialog, without a trigger or the dialog. In the app it opens in a dialog in the upper third of the screen."
+        description="What the trigger opens: one search field over three groups, Navigation, Actions and Appearance. Arrow keys move, Enter runs the item, Esc closes. Shown inline here with CommandMenuPanel, which renders the palette on a bordered surface as wide as a dialog, without a trigger or the dialog. In the app it opens in a dialog in the upper third of the screen."
         layout="full"
         surface="subtle"
         code={`// The open state on its own surface, for previews or a page that keeps search open
@@ -116,7 +116,7 @@ export default function CommandMenuDocs() {
         ]}
         dont={[
           "Don’t put destructive actions in the palette without a confirmation step.",
-          "Don’t list every page of a large app; navigation, frequent actions and theme are enough.",
+          "Don’t list every page of a large app; navigation, frequent actions and appearance are enough.",
           "Don’t show a shortcut the app doesn’t support.",
         ]}
       />

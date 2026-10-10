@@ -6,7 +6,7 @@ import { CheckIcon, MinusIcon } from "lucide-react"
 
 /**
  * Blocks checkbox. A hairline square on the canvas that fills with ink when
- * checked or indeterminate. Violet appears only as the focus outline.
+ * checked or indeterminate. The accent appears only as the focus outline.
  *
  * Label it with <Label htmlFor> or <FieldLabel>, or wrap it in a label.
  * The hit area extends past the box so it is easy to tap.

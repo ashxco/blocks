@@ -35,7 +35,41 @@
       "radius": {
         "$type": "dimension",
         "$value": "{radius.full}",
-        "$description": "Buttons are pills."
+        "$description": "Button corners: pills in Blocks, Ocean and Ember, rounded squares in Forest and Mono."
+      },
+      "radius-sm": {
+        "$type": "dimension",
+        "$value": "{component.button.radius}",
+        "$description": "Corners of sm and icon-sm buttons. Follows the button radius unless a theme with square buttons tightens it."
+      },
+      "radius-xs": {
+        "$type": "dimension",
+        "$value": "{component.button.radius}",
+        "$description": "Corners of xs and icon-xs buttons. Follows the button radius unless a theme with square buttons tightens it."
+      }
+    },
+    "link": {
+      "decoration-line": {
+        "$type": "other",
+        "$value": "none",
+        "$description": "Underline on text links and active items at rest: none where the accent's hue sets them apart, underline where the accent is ink (Mono). Hover always underlines.",
+        "$extensions": { "blocks": { "utilityClass": "link-underline" } }
+      }
+    },
+    "kern": {
+      "pull": {
+        "$type": "dimension",
+        "$value": "0.08em",
+        "$description": "How far Kern pulls a word-ending comma or full stop back in display headings. 0.08em suits Plus Jakarta Sans; tighter fonts need less.",
+        "$extensions": { "blocks": { "utility": "-ms" } }
+      }
+    },
+    "brand-mark": {
+      "ring": {
+        "$type": "dimension",
+        "$value": "0px",
+        "$description": "Canvas-coloured ring around the logo's accent point, in SVG units. None by default; Mono, whose accent is ink like the tile, sets one so the point still shows.",
+        "$extensions": { "blocks": { "utilityClass": "stroke-(length:--brand-mark-ring)" } }
       }
     },
     "control": {

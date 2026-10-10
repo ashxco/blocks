@@ -68,7 +68,7 @@ export default function PostCardDocs() {
       <Example
         title="Post grid with filters"
         layout="full"
-        description="A grid of cards with category pills built from the posts. One column on phones, two from 42rem, three from 52rem."
+        description="A grid of cards with category filters built from the posts. One column on phones, two from 42rem, three from 52rem."
         code={`<PostGrid />`}
       >
         <PostGrid />
@@ -178,8 +178,8 @@ export default function PostCardDocs() {
           { prop: "posts", type: "Post[]", default: "Six Acme posts", description: "Posts in display order." },
           { prop: "title", type: "ReactNode", description: "Optional heading above the grid." },
           { prop: "viewAll", type: "{ label: string; href: string } | null", description: "Link beside the heading." },
-          { prop: "filter", type: "boolean", default: "true", description: "Category pills built from the posts’ categories." },
-          { prop: "allLabel", type: "string", default: '"All"', description: "Label of the pill that shows every post." },
+          { prop: "filter", type: "boolean", default: "true", description: "Category filters built from the posts’ categories." },
+          { prop: "allLabel", type: "string", default: '"All"', description: "Label of the filter that shows every post." },
           { prop: "contained", type: "boolean", default: "true", description: "Render the page container and section padding." },
         ]}
       />

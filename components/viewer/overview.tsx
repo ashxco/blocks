@@ -1,6 +1,7 @@
 /**
  * Pieces of the viewer overview: the entry tiles and the live miniatures
  * inside them, and the project card used for the light and dark comparison.
+ * They render in the site's theme; the row of themes is ThemeShowcase.
  * Every miniature is made of real Blocks components or token swatches. The
  * sample content is Acme Inc., the placeholder company of the templates.
  */
@@ -25,6 +26,7 @@ import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
+import { PageThemeText } from "@/components/viewer/theme-picker"
 
 /* -------------------------------------------------------------------------- */
 /* Entry tile                                                                  */
@@ -87,7 +89,7 @@ export function EntryTile({
         </div>
         <span
           className={cn(
-            "grid size-11 shrink-0 place-items-center rounded-full border transition-colors duration-(--duration-base) ease-standard",
+            "grid size-11 shrink-0 place-items-center rounded-(--button-radius) border transition-colors duration-(--duration-base) ease-standard",
             panel
               ? "border-panel-border text-panel-foreground group-hover/tile:border-panel-foreground group-hover/tile:bg-panel-foreground group-hover/tile:text-panel"
               : "text-foreground group-hover/tile:border-foreground group-hover/tile:bg-foreground group-hover/tile:text-background"
@@ -126,7 +128,10 @@ export function FoundationsMiniature() {
         <div className="flex items-end justify-between gap-6">
           <div className="grid gap-1">
             <span className="text-6xl font-extrabold text-foreground @sm:text-7xl">Aa</span>
-            <span className="text-caption text-muted-foreground">Plus Jakarta Sans, 800</span>
+            {/* The page theme's own font. */}
+            <span className="text-caption text-muted-foreground">
+              <PageThemeText field="sans" />, 800
+            </span>
           </div>
           <div className="grid grid-cols-4 gap-2">
             {swatches.map((s) => (

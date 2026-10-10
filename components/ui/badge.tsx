@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils"
  *
  * Height and radius come from --badge-height and --badge-radius. Status
  * variants use the -subtle fills with the matching status colour for text.
- * Single characters render as a circle, so counts line up.
+ * Single characters render as wide as the badge is tall, so counts line up.
  */
 const badgeVariants = cva(
   [
@@ -42,7 +42,7 @@ const badgeVariants = cva(
           "bg-brand-subtle text-brand-subtle-foreground [a&]:hover:border-brand/30",
         ghost:
           "bg-transparent text-muted-foreground [a&]:hover:bg-accent [a&]:hover:text-foreground",
-        link: "h-auto min-w-0 rounded-none px-0 text-brand underline-offset-4 [a&]:hover:underline",
+        link: "h-auto min-w-0 rounded-none px-0 text-brand [a&]:link-underline",
       },
     },
     defaultVariants: {

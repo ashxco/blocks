@@ -634,7 +634,7 @@ function SidebarMenuBadge({
       data-slot="sidebar-menu-badge"
       data-sidebar="menu-badge"
       className={cn(
-        "pointer-events-none absolute top-1/2 right-2 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-full bg-sidebar-accent px-1.5 text-xs font-semibold text-sidebar-foreground tabular select-none",
+        "pointer-events-none absolute top-1/2 right-2 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-(--badge-radius) bg-sidebar-accent px-1.5 text-xs font-semibold text-sidebar-foreground tabular select-none",
         "group-data-[collapsible=icon]:hidden group-has-data-[sidebar=menu-action]/menu-item:right-9",
         "peer-hover/menu-button:bg-sidebar peer-data-active/menu-button:bg-sidebar-primary-foreground/15 peer-data-active/menu-button:text-sidebar-primary-foreground",
         className

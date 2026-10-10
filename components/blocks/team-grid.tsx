@@ -95,7 +95,7 @@ export function TeamGrid({
               >
                 {/* Same frame as a portrait, with the arrow where the initials sit. */}
                 <span className="flex aspect-4/5 items-end rounded-(--card-radius) border bg-subtle p-5 transition-colors duration-(--duration-fast) group-hover:border-border-strong">
-                  <span className="grid size-12 place-items-center rounded-full bg-primary text-primary-foreground transition-transform duration-(--duration-base) ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                  <span className="grid size-12 place-items-center rounded-(--button-radius) bg-primary text-primary-foreground transition-transform duration-(--duration-base) ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
                     <ArrowUpRightIcon className="size-5" aria-hidden="true" />
                   </span>
                 </span>

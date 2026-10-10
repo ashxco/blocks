@@ -183,7 +183,7 @@ export default function CarouselDocs() {
     <Examples>
       <Example
         title="Basic"
-        description="One slide at a time. The pill controls hang outside the slides, so leave room on both sides. Arrow keys move between slides when the carousel has focus."
+        description="One slide at a time. The controls hang outside the slides, so leave room on both sides. Arrow keys move between slides when the carousel has focus."
         code={`<Carousel className="w-full max-w-md">
   <CarouselContent>
     {screens.map((screen) => (

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * Blocks radio group. Items are hairline circles that fill with ink and show
- * a canvas-coloured dot when selected. Violet appears only as the focus
+ * a canvas-coloured dot when selected. The accent appears only as the focus
  * outline. Lay items out with `className` (a column by default); wrap items
  * in <FieldLabel> around a <Field> for choice cards.
  */

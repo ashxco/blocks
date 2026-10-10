@@ -63,7 +63,7 @@ const timeline = lanes.flatMap((lane) => {
 
 const needsAttention = timeline.filter((lane) => lane.status !== "on-track").length
 
-/** The start of each month in hairlines and today in violet, positioned across the window. */
+/** The start of each month in hairlines and today in the accent, positioned across the window. */
 function GuideLines() {
   return (
     <>
@@ -82,7 +82,7 @@ function GuideLines() {
 /**
  * The dark emphasis panel at the top of the dashboard: which projects need
  * attention, four facts about this week, and a timeline of the projects due
- * around now, with today marked in violet.
+ * around now, with today marked in the accent.
  *
  * Status colours use the panel tokens (bg-panel-warning,
  * bg-panel-destructive), which read on the dark panel in both themes.
@@ -116,7 +116,7 @@ export function OverviewPanel() {
         </Button>
       </div>
 
-      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-panel-border bg-panel-border @min-[56rem]/overview:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-(--card-radius) border border-panel-border bg-panel-border @min-[56rem]/overview:grid-cols-4">
         {facts.map((fact) => (
           <div key={fact.label} className="grid content-start gap-2 bg-panel p-4 @min-[40rem]/overview:p-5">
             <dt className="text-caption text-panel-muted">{fact.label}</dt>

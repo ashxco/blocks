@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 
 /**
- * Blocks button group. Joins related buttons into one pill.
+ * Blocks button group. Joins related buttons into one shape.
  *
  * Only the inner corners are squared, so the ends keep each child's own
- * radius (pill for buttons, control radius for inputs). Neighbours overlap
+ * radius (button radius for buttons, control radius for inputs). Neighbours overlap
  * by one pixel so outline buttons share a single hairline, and the hovered
  * or focused child is lifted above its neighbours so its full border shows.
  * Separators sit between filled buttons without overlapping them.

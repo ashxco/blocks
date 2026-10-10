@@ -30,7 +30,7 @@ function MissingPageTask() {
           <p className="text-caption text-panel-muted">acme.com · Task</p>
           <p className="text-h4 text-panel-foreground">Find the page you were looking for</p>
         </div>
-        <span className="mt-1 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-panel-border px-2.5 py-0.5 text-caption font-semibold text-panel-foreground">
+        <span className="mt-1 inline-flex shrink-0 items-center gap-1.5 rounded-(--badge-radius) border border-panel-border px-2.5 py-0.5 text-caption font-semibold text-panel-foreground">
           <span className="size-1.5 rounded-full bg-panel-warning" />
           Not found
         </span>

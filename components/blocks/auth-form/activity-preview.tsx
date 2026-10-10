@@ -73,7 +73,7 @@ export function ActivityPreview({ className }: { className?: string }) {
           <p className="truncate text-label text-panel-foreground">Website relaunch</p>
           <p className="truncate text-caption text-panel-muted">Marketing · Due Nov 14</p>
         </div>
-        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-panel-border px-2.5 py-1 text-caption font-semibold text-panel-foreground">
+        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-(--badge-radius) border border-panel-border px-2.5 py-1 text-caption font-semibold text-panel-foreground">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-panel-success" />
           On track
         </span>

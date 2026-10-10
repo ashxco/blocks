@@ -6,8 +6,8 @@ import * as ResizablePrimitive from "react-resizable-panels"
 /**
  * Blocks resizable panels, on react-resizable-panels. Panels are divided by a
  * 1px hairline with a wider invisible hit area. The line darkens on hover,
- * turns violet while dragging or focused, and withHandle adds a small pill
- * grip in the middle. Drag, or focus the handle and use the arrow keys.
+ * turns to the accent while dragging or focused, and withHandle adds a small
+ * rounded grip in the middle. Drag, or focus the handle and use the arrow keys.
  */
 function ResizablePanelGroup({
   className,

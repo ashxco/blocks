@@ -3,8 +3,9 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 /**
- * Blocks button. Pill-shaped, flat, no shadow. Sizes and radius come from
- * component tokens (--button-*), colours from semantic tokens.
+ * Blocks button. Flat, no shadow, in the theme's button shape (a pill in the
+ * default theme). Sizes and radius come from component tokens (--button-*),
+ * colours from semantic tokens.
  *
  * Render as a link:
  *   <Button nativeButton={false} render={<Link href="/pricing" />}>Pricing</Button>
@@ -30,7 +31,7 @@ const buttonVariants = cva(
           "border-border-strong bg-background text-foreground hover:border-foreground aria-expanded:border-foreground",
         ghost:
           "text-foreground hover:bg-accent hover:text-accent-foreground aria-expanded:bg-accent",
-        link: "h-auto! rounded-none px-0! text-brand underline-offset-4 hover:underline",
+        link: "h-auto! rounded-none! px-0! text-brand link-underline",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/88",
         inverse:
@@ -41,14 +42,14 @@ const buttonVariants = cva(
       size: {
         default:
           "h-(--button-height-md) px-(--button-padding-x-md) has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
-        xs: "h-(--button-height-xs) gap-1 px-(--button-padding-x-xs) text-caption font-semibold [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-(--button-height-sm) gap-1.5 px-(--button-padding-x-sm) has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3 [&_svg:not([class*='size-'])]:size-3.5",
+        xs: "h-(--button-height-xs) gap-1 rounded-(--button-radius-xs) px-(--button-padding-x-xs) text-caption font-semibold [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-(--button-height-sm) gap-1.5 rounded-(--button-radius-sm) px-(--button-padding-x-sm) has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-(--button-height-lg) px-(--button-padding-x-lg) has-data-[icon=inline-end]:pr-5 has-data-[icon=inline-start]:pl-5",
         icon: "size-(--button-height-md)",
         "icon-xs":
-          "size-(--button-height-xs) [&_svg:not([class*='size-'])]:size-3",
+          "size-(--button-height-xs) rounded-(--button-radius-xs) [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
-          "size-(--button-height-sm) [&_svg:not([class*='size-'])]:size-3.5",
+          "size-(--button-height-sm) rounded-(--button-radius-sm) [&_svg:not([class*='size-'])]:size-3.5",
         "icon-lg": "size-(--button-height-lg)",
       },
     },

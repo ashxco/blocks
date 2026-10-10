@@ -6,9 +6,9 @@ import { RotateCwIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
-import { useSiteTheme } from "@/components/viewer/site-theme"
-
-type Theme = "light" | "dark"
+import { defaultThemeId, THEME_ATTRIBUTE, withLook, type ThemeId, type ThemeMode } from "@/lib/themes"
+import { useSiteLook } from "@/components/viewer/site-theme"
+import { loadThemeFonts } from "@/components/viewer/theme-fonts"
 
 /**
  * Measures an element and keeps the size up to date. Reads the content box
@@ -54,27 +54,38 @@ export function hideDevIndicator(frame: HTMLIFrameElement) {
   }
 }
 
-/** Adds ?theme= to a frame's address when the viewer's theme is forced. */
-export function withTheme(src: string, theme: string | undefined) {
-  if (theme !== "dark" && theme !== "light") return src
-  return `${src}${src.includes("?") ? "&" : "?"}theme=${theme}`
+/** The theme and mode a preview frame shows. */
+export interface FrameLook {
+  theme: ThemeId
+  mode: ThemeMode
+}
+
+/** A frame's address with ?theme=<id>&mode=<mode>, so the page paints in that look from its first frame. */
+export function withFrameLook(src: string, look: Partial<FrameLook> | undefined) {
+  return withLook(src, { theme: look?.theme, mode: look?.mode })
 }
 
 /* -------------------------------------------------------------------------- */
-/* Frame theme                                                                 */
+/* Frame look                                                                  */
 /* -------------------------------------------------------------------------- */
 
+/** What <html> carries for a theme: no attribute for the default theme. */
+const themeAttribute = (theme: ThemeId) => (theme === defaultThemeId ? null : theme)
+
 /**
- * Puts a same-origin document on one theme, the way next-themes does it: the
- * theme class on <html> and a matching color-scheme. Transitions are paused
- * for the switch so every surface changes in the same frame.
+ * Puts a same-origin document on one look, the way the site itself does it:
+ * the mode class on <html> with a matching color-scheme (as next-themes
+ * does), and data-theme for the theme. Transitions are paused for the switch
+ * so every surface changes in the same frame.
  */
-function applyDocumentTheme(doc: Document, theme: Theme, pauseTransitions: boolean) {
+function applyDocumentLook(doc: Document, look: FrameLook, pauseTransitions: boolean) {
   const root = doc.documentElement
-  const other = theme === "dark" ? "light" : "dark"
-  const classOk = root.classList.contains(theme) && !root.classList.contains(other)
-  const schemeOk = root.style.colorScheme === theme
-  if (classOk && schemeOk) return
+  const { mode, theme } = look
+  const other = mode === "dark" ? "light" : "dark"
+  const classOk = root.classList.contains(mode) && !root.classList.contains(other)
+  const schemeOk = root.style.colorScheme === mode
+  const themeOk = root.getAttribute(THEME_ATTRIBUTE) === themeAttribute(theme)
+  if (classOk && schemeOk && themeOk) return
 
   let pause: HTMLStyleElement | null = null
   if (pauseTransitions && doc.head) {
@@ -84,9 +95,14 @@ function applyDocumentTheme(doc: Document, theme: Theme, pauseTransitions: boole
   }
   if (!classOk) {
     root.classList.remove(other)
-    root.classList.add(theme)
+    root.classList.add(mode)
   }
-  if (!schemeOk) root.style.colorScheme = theme
+  if (!schemeOk) root.style.colorScheme = mode
+  if (!themeOk) {
+    const value = themeAttribute(theme)
+    if (value) root.setAttribute(THEME_ATTRIBUTE, value)
+    else root.removeAttribute(THEME_ATTRIBUTE)
+  }
   if (pause) {
     // Force a style recalc, then let transitions run again.
     void doc.defaultView?.getComputedStyle(doc.body ?? root).opacity
@@ -95,41 +111,60 @@ function applyDocumentTheme(doc: Document, theme: Theme, pauseTransitions: boole
   }
 }
 
-/** True when a same-origin frame's document is already on the theme. */
-export function frameHasTheme(frame: HTMLIFrameElement | null, theme: Theme) {
+/** True when a same-origin frame's document is already on the look. */
+export function frameHasLook(frame: HTMLIFrameElement | null, look: FrameLook) {
   try {
-    return Boolean(frame?.contentDocument?.documentElement.classList.contains(theme))
+    const root = frame?.contentDocument?.documentElement
+    if (!root) return false
+    return root.classList.contains(look.mode) && root.getAttribute(THEME_ATTRIBUTE) === themeAttribute(look.theme)
   } catch {
     return true
   }
 }
 
 /**
- * Keeps a same-origin preview frame on the viewer's chosen theme, in place.
+ * Keeps a same-origin preview frame on the viewer's chosen look (theme and
+ * mode), in place.
  *
- * The page inside reads ?theme= only once it hydrates, and before that it
- * paints whatever theme the visitor saved. So the viewer applies the theme to
- * the frame's document itself as soon as it loads, re-applies it whenever the
- * page tries to change it (hydration, a saved-theme sync from another tab),
- * and switches it without reloading when the viewer's choice changes.
+ * The frame's address carries the look it starts with (withFrameLook), and
+ * the page applies it before its first paint. After that the viewer applies
+ * the look to the frame's document itself: as soon as it loads, again
+ * whenever the page tries to change it (hydration, a saved theme or mode
+ * synced from another tab), and whenever the viewer's choice changes, without
+ * reloading. A new theme waits for its fonts in the frame first (at most a
+ * moment), so the preview never flashes a fallback font.
  *
  * Returns a callback for the frame's onLoad.
  */
-export function useFrameTheme(theme: Theme | undefined) {
-  const themeRef = React.useRef(theme)
+export function useFrameLook(look: FrameLook | undefined) {
+  const mode = look?.mode
+  const theme = look?.theme
+  const lookRef = React.useRef(look)
   const frameRef = React.useRef<HTMLIFrameElement | null>(null)
   const observerRef = React.useRef<MutationObserver | null>(null)
 
   React.useEffect(() => {
-    themeRef.current = theme
-    if (!theme) return
+    const current = mode && theme ? { mode, theme } : undefined
+    lookRef.current = current
+    if (!current) return
+    let doc: Document | null | undefined
     try {
-      const doc = frameRef.current?.contentDocument
-      if (doc?.documentElement) applyDocumentTheme(doc, theme, true)
+      doc = frameRef.current?.contentDocument
     } catch {
-      // Cross-origin: nothing to do.
+      return
     }
-  }, [theme])
+    if (!doc?.documentElement) return
+    const target = doc
+    const themeChanges = target.documentElement.getAttribute(THEME_ATTRIBUTE) !== themeAttribute(current.theme)
+    if (!themeChanges) {
+      applyDocumentLook(target, current, true)
+      return
+    }
+    void loadThemeFonts(current.theme, target).then(() => {
+      const wanted = lookRef.current
+      if (wanted && wanted.theme === current.theme && target.documentElement) applyDocumentLook(target, wanted, true)
+    })
+  }, [mode, theme])
 
   React.useEffect(() => () => observerRef.current?.disconnect(), [])
 
@@ -144,14 +179,14 @@ export function useFrameTheme(theme: Theme | undefined) {
       return
     }
     if (!doc?.documentElement) return
-    const current = themeRef.current
-    if (current) applyDocumentTheme(doc, current, false)
+    const current = lookRef.current
+    if (current) applyDocumentLook(doc, current, false)
     const target = doc
     const observer = new MutationObserver(() => {
-      const wanted = themeRef.current
-      if (wanted) applyDocumentTheme(target, wanted, false)
+      const wanted = lookRef.current
+      if (wanted) applyDocumentLook(target, wanted, false)
     })
-    observer.observe(target.documentElement, { attributes: true, attributeFilter: ["class", "style"] })
+    observer.observe(target.documentElement, { attributes: true, attributeFilter: ["class", "style", THEME_ATTRIBUTE] })
     observerRef.current = observer
   }, [])
 }
@@ -225,8 +260,9 @@ export function frameRendered(frame: HTMLIFrameElement) {
 /**
  * A live, non-interactive thumbnail of a page: the page renders in an iframe
  * at a desktop viewport width, scaled down to fit the frame, in the viewer's
- * theme. The frame only starts loading when it comes within a screen of the
- * viewport, a few at a time; until then it shows the placeholder.
+ * theme and mode. The frame only starts loading when it comes within a
+ * screen of the viewport, a few at a time; until then it shows the
+ * placeholder.
  *
  * The iframe is a real viewport of viewportWidth, so vw units, media queries
  * and tokens with breakpoint values all follow that width on their own. Only
@@ -249,17 +285,24 @@ export function ScaledFrame({
   className?: string
 }) {
   const [ref, size] = useElementSize<HTMLDivElement>()
-  const theme = useSiteTheme()
+  const site = useSiteLook()
+  const look = site.mode && site.theme ? { mode: site.mode, theme: site.theme } : undefined
+  // Read when the frame starts, so a look change while it waits for a slot keeps its place in the queue.
+  const lookRef = React.useRef(look)
+  React.useEffect(() => {
+    lookRef.current = look
+  })
   const [phase, setPhase] = React.useState<"idle" | "loading" | "loaded" | "error">("idle")
-  // The address is fixed once the frame starts: theme changes are applied in place.
+  // The address is fixed once the frame starts: look changes are applied in place.
   const [frameSrc, setFrameSrc] = React.useState<string | null>(null)
   const releaseRef = React.useRef<(() => void) | null>(null)
-  const syncTheme = useFrameTheme(theme)
+  const syncLook = useFrameLook(look)
   const scale = size ? size.width / viewportWidth : 0
+  const hasLook = look !== undefined
 
   React.useEffect(() => {
     const el = ref.current
-    if (!el || !theme || frameSrc) return
+    if (!el || !hasLook || frameSrc) return
     let release: (() => void) | null = null
     let granted = false
     const observer = new IntersectionObserver(
@@ -269,7 +312,7 @@ export function ScaledFrame({
         release = requestLoadSlot(() => {
           granted = true
           if (release) releaseRef.current = release
-          setFrameSrc(withTheme(src, theme))
+          setFrameSrc(withFrameLook(src, lookRef.current))
           setPhase("loading")
         })
         if (granted) releaseRef.current = release
@@ -282,7 +325,7 @@ export function ScaledFrame({
       // Still waiting for a slot: give up the place in the queue.
       if (!granted) release?.()
     }
-  }, [ref, src, theme, frameSrc])
+  }, [ref, src, hasLook, frameSrc])
 
   // Free the slot and say so if the page never loads, and free it when the
   // card goes away. A page that loads late still replaces the message.
@@ -329,7 +372,7 @@ export function ScaledFrame({
               return
             }
             hideDevIndicator(el)
-            syncTheme(el)
+            syncLook(el)
             setPhase("loaded")
           }}
           className={cn(

@@ -43,8 +43,10 @@ const defaultSuccess = (email: string) => (
 )
 
 /**
- * Inline email capture: one pill-shaped field with the button inside, and an
- * inline confirmation that replaces the field once subscribed.
+ * Inline email capture: one field in the button shape with the button inside,
+ * and an inline confirmation that replaces the field once subscribed. The
+ * inner button's corners are the field's minus its padding, so the two shapes
+ * stay concentric in themes with rounded-square buttons.
  */
 export function NewsletterForm({
   label = "Email address",
@@ -183,7 +185,7 @@ export function NewsletterForm({
           size="sm"
           variant={panel ? "inverse" : "default"}
           disabled={status === "submitting"}
-          className="shrink-0"
+          className="shrink-0 rounded-[max(0px,calc(var(--button-radius)-0.375rem))]"
         >
           {status === "submitting" ? <Spinner data-icon="inline-start" aria-label="Subscribing" /> : null}
           {buttonLabel}

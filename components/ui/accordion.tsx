@@ -72,13 +72,17 @@ function AccordionTrigger({
           data-slot="accordion-trigger-icon"
           aria-hidden="true"
           className={cn(
-            "pointer-events-none ml-auto grid size-7 shrink-0 place-items-center rounded-full border border-border-strong text-foreground",
-            "transition-[background-color,border-color,color,rotate] duration-(--duration-base) ease-out",
+            "pointer-events-none ml-auto grid size-7 shrink-0 place-items-center rounded-(--button-radius-xs) border border-border-strong text-foreground",
+            "transition-[background-color,border-color,color] duration-(--duration-base) ease-out",
             "group-hover/accordion-trigger:border-foreground",
-            "group-data-panel-open/accordion-trigger:rotate-45 group-data-panel-open/accordion-trigger:border-primary group-data-panel-open/accordion-trigger:bg-primary group-data-panel-open/accordion-trigger:text-primary-foreground"
+            "group-data-panel-open/accordion-trigger:border-primary group-data-panel-open/accordion-trigger:bg-primary group-data-panel-open/accordion-trigger:text-primary-foreground"
           )}
         >
-          <PlusIcon className="size-3.5" strokeWidth={2.25} />
+          {/* Only the plus turns into a cross, so the shape keeps its corners in every theme. */}
+          <PlusIcon
+            className="size-3.5 transition-[rotate] duration-(--duration-base) ease-out group-data-panel-open/accordion-trigger:rotate-45"
+            strokeWidth={2.25}
+          />
         </span>
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
