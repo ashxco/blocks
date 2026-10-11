@@ -12,7 +12,10 @@ function wait(ms: number) {
 
 type ToastOptions = Parameters<typeof toast.add>[0]
 
-const types: (ToastOptions & { label: string; type?: "success" | "info" | "warning" | "error" })[] = [
+const types: (ToastOptions & {
+  label: string
+  type?: "success" | "info" | "warning" | "error"
+})[] = [
   {
     label: "Success",
     title: "Invite sent",
@@ -45,7 +48,13 @@ const types: (ToastOptions & { label: string; type?: "success" | "info" | "warni
  * A toast example: the toasts drawn in place, as they look in the corner of
  * the screen, and below them the buttons that show them for real.
  */
-function ToastDemo({ children, actions }: { children: React.ReactNode; actions: React.ReactNode }) {
+function ToastDemo({
+  children,
+  actions,
+}: {
+  children: React.ReactNode
+  actions: React.ReactNode
+}) {
   return (
     <div className="grid w-full justify-items-center gap-8">
       <div className="grid w-full max-w-96 gap-2.5">{children}</div>
@@ -55,7 +64,9 @@ function ToastDemo({ children, actions }: { children: React.ReactNode; actions: 
 }
 
 /** A drawn toast that its close button removes, like a live one. */
-function StaticToast(props: Omit<React.ComponentProps<typeof ToastCard>, "onClose">) {
+function StaticToast(
+  props: Omit<React.ComponentProps<typeof ToastCard>, "onClose">
+) {
   const [open, setOpen] = React.useState(true)
   return open ? <ToastCard {...props} onClose={() => setOpen(false)} /> : null
 }
@@ -64,20 +75,32 @@ function TypesDemo() {
   return (
     <ToastDemo
       actions={types.map(({ label, ...options }) => (
-        <Button key={label} variant="outline" size="sm" onClick={() => toast.add(options)}>
+        <Button
+          key={label}
+          variant="outline"
+          size="sm"
+          onClick={() => toast.add(options)}
+        >
           {label}
         </Button>
       ))}
     >
       {types.map((item) => (
-        <StaticToast key={item.label} type={item.type} title={item.title} description={item.description} />
+        <StaticToast
+          key={item.label}
+          type={item.type}
+          title={item.title}
+          description={item.description}
+        />
       ))}
     </ToastDemo>
   )
 }
 
 function ActionDemo() {
-  const [state, setState] = React.useState<"archived" | "restored" | "closed">("archived")
+  const [state, setState] = React.useState<"archived" | "restored" | "closed">(
+    "archived"
+  )
   return (
     <ToastDemo
       actions={
@@ -92,7 +115,10 @@ function ActionDemo() {
                 children: "Undo",
                 onClick: () => {
                   toast.close(id)
-                  toast.add({ title: "Onboarding redesign restored", type: "success" })
+                  toast.add({
+                    title: "Onboarding redesign restored",
+                    type: "success",
+                  })
                 },
               },
             })
@@ -107,7 +133,11 @@ function ActionDemo() {
           title="Project archived"
           description="Onboarding redesign moved to the archive."
           action={
-            <Button variant="outline" size="xs" onClick={() => setState("restored")}>
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={() => setState("restored")}
+            >
               Undo
             </Button>
           }
@@ -115,7 +145,11 @@ function ActionDemo() {
         />
       ) : null}
       {state === "restored" ? (
-        <ToastCard type="success" title="Onboarding redesign restored" onClose={() => setState("closed")} />
+        <ToastCard
+          type="success"
+          title="Onboarding redesign restored"
+          onClose={() => setState("closed")}
+        />
       ) : null}
     </ToastDemo>
   )
@@ -129,9 +163,18 @@ function PromiseDemo() {
           <Button
             onClick={() =>
               toast.promise(wait(2400), {
-                loading: { title: "Exporting the workload report", description: "October, all projects" },
-                success: { title: "Report ready", description: "We emailed the CSV file to maya@acme.com." },
-                error: { title: "Export failed", description: "Try again in a minute." },
+                loading: {
+                  title: "Exporting the workload report",
+                  description: "October, all projects",
+                },
+                success: {
+                  title: "Report ready",
+                  description: "We emailed the CSV file to maya@acme.com.",
+                },
+                error: {
+                  title: "Export failed",
+                  description: "Try again in a minute.",
+                },
               })
             }
           >
@@ -150,7 +193,8 @@ function PromiseDemo() {
                     success: { title: "API key rotated" },
                     error: {
                       title: "Could not rotate the key",
-                      description: "The request timed out. Try again in a minute.",
+                      description:
+                        "The request timed out. Try again in a minute.",
                     },
                   }
                 )
@@ -162,8 +206,16 @@ function PromiseDemo() {
         </>
       }
     >
-      <StaticToast type="loading" title="Exporting the workload report" description="October, all projects" />
-      <StaticToast type="success" title="Report ready" description="We emailed the CSV file to maya@acme.com." />
+      <StaticToast
+        type="loading"
+        title="Exporting the workload report"
+        description="October, all projects"
+      />
+      <StaticToast
+        type="success"
+        title="Report ready"
+        description="We emailed the CSV file to maya@acme.com."
+      />
       <StaticToast
         type="error"
         title="Could not rotate the key"
@@ -201,7 +253,11 @@ function UpdateDemo() {
         </Button>
       }
     >
-      <StaticToast type="loading" title="Uploading 24 files" description="18 of 24 files uploaded" />
+      <StaticToast
+        type="loading"
+        title="Uploading 24 files"
+        description="18 of 24 files uploaded"
+      />
     </ToastDemo>
   )
 }
@@ -279,34 +335,105 @@ toast.update(id, { title: "Upload complete", type: "success", timeout: 4000 })`}
       <ApiTable
         title="toast.add options"
         rows={[
-          { prop: "title", type: "ReactNode", description: "The outcome, in a few words." },
-          { prop: "description", type: "ReactNode", description: "Optional detail under the title." },
-          { prop: "type", type: '"success" | "info" | "warning" | "error" | "loading"', description: "Sets the icon and its colour. Leave out for a plain toast." },
-          { prop: "timeout", type: "number", default: "5000", description: "Milliseconds before it closes. 0 keeps it open." },
-          { prop: "priority", type: '"low" | "high"', default: '"low"', description: "How urgently assistive technology announces it." },
-          { prop: "actionProps", type: "ButtonHTMLAttributes", description: "Props for the action button, including children and onClick." },
-          { prop: "onClose", type: "() => void", description: "Called when the toast starts to close." },
+          {
+            prop: "title",
+            type: "ReactNode",
+            description: "The outcome, in a few words.",
+          },
+          {
+            prop: "description",
+            type: "ReactNode",
+            description: "Optional detail under the title.",
+          },
+          {
+            prop: "type",
+            type: '"success" | "info" | "warning" | "error" | "loading"',
+            description:
+              "Sets the icon and its colour. Leave out for a plain toast.",
+          },
+          {
+            prop: "timeout",
+            type: "number",
+            default: "5000",
+            description: "Milliseconds before it closes. 0 keeps it open.",
+          },
+          {
+            prop: "priority",
+            type: '"low" | "high"',
+            default: '"low"',
+            description: "How urgently assistive technology announces it.",
+          },
+          {
+            prop: "actionProps",
+            type: "ButtonHTMLAttributes",
+            description:
+              "Props for the action button, including children and onClick.",
+          },
+          {
+            prop: "onClose",
+            type: "() => void",
+            description: "Called when the toast starts to close.",
+          },
         ]}
       />
 
       <ApiTable
         title="Toast manager"
         rows={[
-          { prop: "toast.add(options)", type: "string", description: "Shows a toast and returns its id." },
-          { prop: "toast.update(id, options)", type: "void", description: "Changes an open toast in place." },
-          { prop: "toast.close(id?)", type: "void", description: "Closes one toast, or all of them without an id." },
-          { prop: "toast.promise(promise, options)", type: "Promise", description: "Shows loading, then success or error when the promise settles." },
+          {
+            prop: "toast.add(options)",
+            type: "string",
+            description: "Shows a toast and returns its id.",
+          },
+          {
+            prop: "toast.update(id, options)",
+            type: "void",
+            description: "Changes an open toast in place.",
+          },
+          {
+            prop: "toast.close(id?)",
+            type: "void",
+            description: "Closes one toast, or all of them without an id.",
+          },
+          {
+            prop: "toast.promise(promise, options)",
+            type: "Promise",
+            description:
+              "Shows loading, then success or error when the promise settles.",
+          },
         ]}
       />
 
       <ApiTable
         title="ToastCard"
         rows={[
-          { prop: "ToastCard", type: "component", description: "A toast drawn in place, outside the manager, for docs, design reviews and empty states. Same card and icons as a live toast." },
-          { prop: "type", type: '"success" | "info" | "warning" | "error" | "loading"', description: "Sets the icon and its colour, as in toast.add." },
-          { prop: "title / description", type: "ReactNode", description: "The same text a live toast shows." },
-          { prop: "action", type: "ReactNode", description: "One short action, such as an outline xs Button." },
-          { prop: "onClose", type: "() => void", description: "Shows the dismiss button and is called when it is pressed." },
+          {
+            prop: "ToastCard",
+            type: "component",
+            description:
+              "A toast drawn in place, outside the manager, for docs, design reviews and empty states. Same card and icons as a live toast.",
+          },
+          {
+            prop: "type",
+            type: '"success" | "info" | "warning" | "error" | "loading"',
+            description: "Sets the icon and its colour, as in toast.add.",
+          },
+          {
+            prop: "title / description",
+            type: "ReactNode",
+            description: "The same text a live toast shows.",
+          },
+          {
+            prop: "action",
+            type: "ReactNode",
+            description: "One short action, such as an outline xs Button.",
+          },
+          {
+            prop: "onClose",
+            type: "() => void",
+            description:
+              "Shows the dismiss button and is called when it is pressed.",
+          },
         ]}
       />
     </Examples>

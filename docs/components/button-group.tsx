@@ -20,7 +20,12 @@ import {
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   ButtonGroup,
   ButtonGroupSeparator,
@@ -76,7 +81,11 @@ function MoreActionsMenu({
 }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="outline" size={size} aria-label="More actions" />}>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="outline" size={size} aria-label="More actions" />
+        }
+      >
         <MoreHorizontalIcon />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -168,7 +177,11 @@ export default function ButtonGroupDocs() {
           <Button>Create Task</Button>
           <ButtonGroupSeparator />
           <DropdownMenu>
-            <DropdownMenuTrigger render={<Button size="icon" aria-label="More ways to create a task" />}>
+            <DropdownMenuTrigger
+              render={
+                <Button size="icon" aria-label="More ways to create a task" />
+              }
+            >
               <ChevronDownIcon />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -192,7 +205,13 @@ export default function ButtonGroupDocs() {
           <ButtonGroupSeparator />
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button variant="secondary" size="icon" aria-label="More save options" />}
+              render={
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  aria-label="More save options"
+                />
+              }
             >
               <ChevronDownIcon />
             </DropdownMenuTrigger>
@@ -233,7 +252,10 @@ export default function ButtonGroupDocs() {
 </ButtonGroup>`}
       >
         {(["sm", "default", "lg"] as const).map((size) => (
-          <ButtonGroup key={size} aria-label={`Invite actions, ${size === "default" ? "medium" : size === "sm" ? "small" : "large"}`}>
+          <ButtonGroup
+            key={size}
+            aria-label={`Invite actions, ${size === "default" ? "medium" : size === "sm" ? "small" : "large"}`}
+          >
             <Button variant="outline" size={size}>
               Edit
             </Button>
@@ -320,14 +342,22 @@ export default function ButtonGroupDocs() {
   </ButtonGroup>
 </Card>`}
       >
-        <Card size="sm" className="w-full max-w-2xl flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4">
+        <Card
+          size="sm"
+          className="w-full max-w-2xl flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4"
+        >
           <CardHeader className="min-w-48 flex-1 gap-1">
             <CardTitle>Website relaunch</CardTitle>
             <CardDescription>On track · 32 open tasks</CardDescription>
           </CardHeader>
           <ButtonGroup aria-label="Project toolbar" className="flex-wrap">
             <ButtonGroup>
-              <Button variant="outline" size="sm" nativeButton={false} render={<a href="#board" />}>
+              <Button
+                variant="outline"
+                size="sm"
+                nativeButton={false}
+                render={<a href="#board" />}
+              >
                 <SquareKanbanIcon data-icon="inline-start" />
                 Open Board
               </Button>
@@ -362,10 +392,29 @@ export default function ButtonGroupDocs() {
 
       <ApiTable
         rows={[
-          { prop: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Joins children side by side or stacked." },
-          { prop: "ButtonGroupText", type: "component", description: "Static text or an icon inside the group. Accepts render to change the element." },
-          { prop: "ButtonGroupSeparator", type: "component", description: "A hairline between filled buttons. Vertical by default." },
-          { prop: "buttonGroupVariants", type: "cva", description: "The group’s class recipe, for custom wrappers." },
+          {
+            prop: "orientation",
+            type: '"horizontal" | "vertical"',
+            default: '"horizontal"',
+            description: "Joins children side by side or stacked.",
+          },
+          {
+            prop: "ButtonGroupText",
+            type: "component",
+            description:
+              "Static text or an icon inside the group. Accepts render to change the element.",
+          },
+          {
+            prop: "ButtonGroupSeparator",
+            type: "component",
+            description:
+              "A hairline between filled buttons. Vertical by default.",
+          },
+          {
+            prop: "buttonGroupVariants",
+            type: "cva",
+            description: "The group’s class recipe, for custom wrappers.",
+          },
         ]}
       />
     </Examples>

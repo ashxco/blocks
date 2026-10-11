@@ -18,7 +18,15 @@ import { Slider } from "@/components/ui/slider"
 
 const formatRuns = (runs: number) => `${runs.toLocaleString("en-US")} runs`
 
-function SliderHeader({ id, label, value }: { id: string; label: string; value: string }) {
+function SliderHeader({
+  id,
+  label,
+  value,
+}: {
+  id: string
+  label: string
+  value: string
+}) {
   return (
     <div className="flex items-baseline justify-between gap-4">
       <Label id={id}>{label}</Label>
@@ -35,7 +43,10 @@ function SliderHeader({ id, label, value }: { id: string; label: string; value: 
 /** The ends of the track, in muted caption type under it. */
 function SliderScale({ min, max }: { min: string; max: string }) {
   return (
-    <div aria-hidden="true" className="-mt-1.5 flex justify-between text-caption text-muted-foreground tabular">
+    <div
+      aria-hidden="true"
+      className="-mt-1.5 flex justify-between text-caption text-muted-foreground tabular"
+    >
       <span>{min}</span>
       <span>{max}</span>
     </div>
@@ -48,7 +59,11 @@ function WorkInProgressLimit() {
   const [value, setValue] = React.useState(4)
   return (
     <div className="grid w-full max-w-sm gap-3">
-      <SliderHeader id="sl-wip" label="In progress limit" value={tasks(value)} />
+      <SliderHeader
+        id="sl-wip"
+        label="In progress limit"
+        value={tasks(value)}
+      />
       <Slider
         aria-labelledby="sl-wip"
         min={1}
@@ -73,23 +88,38 @@ function WorkloadAlerts() {
     Object.fromEntries(teams.map((t) => [t.id, t.value]))
   )
   return (
-    <div role="group" aria-labelledby="sl-workload" className="grid justify-items-start gap-5">
+    <div
+      role="group"
+      aria-labelledby="sl-workload"
+      className="grid justify-items-start gap-5"
+    >
       <Label id="sl-workload">Workload alerts</Label>
       <div className="flex gap-10">
         {teams.map((t) => (
-          <div key={t.id} className="grid h-56 grid-rows-[minmax(0,1fr)_auto] justify-items-center gap-3">
+          <div
+            key={t.id}
+            className="grid h-56 grid-rows-[minmax(0,1fr)_auto] justify-items-center gap-3"
+          >
             <Slider
               orientation="vertical"
               aria-labelledby={`sl-${t.id}`}
               value={values[t.id]}
-              onValueChange={(v) => setValues((current) => ({ ...current, [t.id]: v as number }))}
+              onValueChange={(v) =>
+                setValues((current) => ({ ...current, [t.id]: v as number }))
+              }
               getAriaValueText={(_, v) => `Alert above ${v}% booked`}
             />
             <div className="grid justify-items-center">
-              <span id={`sl-${t.id}`} className="text-caption text-muted-foreground">
+              <span
+                id={`sl-${t.id}`}
+                className="text-caption text-muted-foreground"
+              >
                 {t.label}
               </span>
-              <output aria-hidden="true" className="text-label text-foreground tabular">
+              <output
+                aria-hidden="true"
+                className="text-label text-foreground tabular"
+              >
                 {values[t.id]}%
               </output>
             </div>
@@ -100,13 +130,22 @@ function WorkloadAlerts() {
   )
 }
 
-const days = (n: number) => (n === 0 ? "today" : `${n} ${n === 1 ? "day" : "days"}`)
+const days = (n: number) =>
+  n === 0 ? "today" : `${n} ${n === 1 ? "day" : "days"}`
 
 function DueWindow() {
   const [range, setRange] = React.useState<number[]>([2, 8])
   return (
     <div className="grid w-full max-w-sm gap-3">
-      <SliderHeader id="sl-due" label="Due within" value={range[0] === 0 ? `Today–${days(range[1])}` : `${range[0]}–${range[1]} days`} />
+      <SliderHeader
+        id="sl-due"
+        label="Due within"
+        value={
+          range[0] === 0
+            ? `Today–${days(range[1])}`
+            : `${range[0]}–${range[1]} days`
+        }
+      />
       <Slider
         aria-labelledby="sl-due"
         min={0}
@@ -114,12 +153,18 @@ function DueWindow() {
         minStepsBetweenValues={1}
         value={range}
         onValueChange={(v) => setRange([...(v as readonly number[])])}
-        getAriaLabel={(index) => (index === 0 ? "Earliest due date" : "Latest due date")}
-        getAriaValueText={(_, v) => (v === 0 ? "Today" : `${days(v)} from today`)}
+        getAriaLabel={(index) =>
+          index === 0 ? "Earliest due date" : "Latest due date"
+        }
+        getAriaValueText={(_, v) =>
+          v === 0 ? "Today" : `${days(v)} from today`
+        }
       />
       <SliderScale min="Today" max="30 days" />
       <p className="text-caption text-pretty text-muted-foreground">
-        Shows tasks due {range[0] === 0 ? "from today" : `${days(range[0])} from now`} up to {days(range[1])} from now.
+        Shows tasks due{" "}
+        {range[0] === 0 ? "from today" : `${days(range[0])} from now`} up to{" "}
+        {days(range[1])} from now.
       </p>
     </div>
   )
@@ -128,19 +173,27 @@ function DueWindow() {
 function AutomationBudget() {
   const [runs, setRuns] = React.useState(2500)
   const [alertAt, setAlertAt] = React.useState(80)
-  const [status, setStatus] = React.useState<"clean" | "dirty" | "saved">("clean")
+  const [status, setStatus] = React.useState<"clean" | "dirty" | "saved">(
+    "clean"
+  )
 
   return (
     <Card className="@container/budget w-full max-w-md">
       <CardHeader>
         <CardTitle>Automation budget</CardTitle>
         <CardDescription className="text-pretty">
-          Caps the runs that rules in <span className="whitespace-nowrap">Website relaunch</span> can use each month.
+          Caps the runs that rules in{" "}
+          <span className="whitespace-nowrap">Website relaunch</span> can use
+          each month.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-8">
         <Field>
-          <SliderHeader id="sl-runs" label="Monthly runs" value={formatRuns(runs)} />
+          <SliderHeader
+            id="sl-runs"
+            label="Monthly runs"
+            value={formatRuns(runs)}
+          />
           <Slider
             aria-labelledby="sl-runs"
             min={250}
@@ -154,11 +207,16 @@ function AutomationBudget() {
             getAriaValueText={(_, v) => formatRuns(v)}
           />
           <FieldDescription>
-            250 to 10,000 runs. Your Pro plan includes 10,000 a month across every project.
+            250 to 10,000 runs. Your Pro plan includes 10,000 a month across
+            every project.
           </FieldDescription>
         </Field>
         <Field>
-          <SliderHeader id="sl-alert" label="Email the owner at" value={`${alertAt}%`} />
+          <SliderHeader
+            id="sl-alert"
+            label="Email the owner at"
+            value={`${alertAt}%`}
+          />
           <Slider
             aria-labelledby="sl-alert"
             min={50}
@@ -171,7 +229,9 @@ function AutomationBudget() {
             }}
             getAriaValueText={(_, v) => `${v}% of the budget`}
           />
-          <FieldDescription>50 to 100% of the budget. Rules pause when the project runs out.</FieldDescription>
+          <FieldDescription>
+            50 to 100% of the budget. Rules pause when the project runs out.
+          </FieldDescription>
         </Field>
       </CardContent>
       <CardFooter className="flex-col-reverse items-stretch gap-3 @sm/budget:flex-row @sm/budget:items-center @sm/budget:justify-between">
@@ -179,9 +239,16 @@ function AutomationBudget() {
           className="text-center text-caption text-muted-foreground @sm/budget:text-start"
           aria-live="polite"
         >
-          {status === "saved" ? "Saved. Applies from today." : status === "dirty" ? "Unsaved changes" : "No unsaved changes"}
+          {status === "saved"
+            ? "Saved. Applies from today."
+            : status === "dirty"
+              ? "Unsaved changes"
+              : "No unsaved changes"}
         </p>
-        <Button disabled={status !== "dirty"} onClick={() => setStatus("saved")}>
+        <Button
+          disabled={status !== "dirty"}
+          onClick={() => setStatus("saved")}
+        >
           Save Changes
         </Button>
       </CardFooter>
@@ -278,9 +345,21 @@ export default function SliderDocs() {
         <div className="grid w-full max-w-sm gap-10">
           <WorkloadAlerts />
           <Field data-disabled="true" className="border-t pt-8">
-            <SliderHeader id="sl-disabled" label="Attachment size limit" value="25 MB" />
-            <Slider aria-labelledby="sl-disabled" disabled defaultValue={10} getAriaValueText={() => "25 MB"} />
-            <FieldDescription>0 to 250&nbsp;MB. Set by a workspace admin. Ask Hana Kim to change it.</FieldDescription>
+            <SliderHeader
+              id="sl-disabled"
+              label="Attachment size limit"
+              value="25 MB"
+            />
+            <Slider
+              aria-labelledby="sl-disabled"
+              disabled
+              defaultValue={10}
+              getAriaValueText={() => "25 MB"}
+            />
+            <FieldDescription>
+              0 to 250&nbsp;MB. Set by a workspace admin. Ask Hana Kim to change
+              it.
+            </FieldDescription>
           </Field>
         </div>
       </Example>
@@ -324,16 +403,63 @@ export default function SliderDocs() {
 
       <ApiTable
         rows={[
-          { prop: "value / defaultValue", type: "number | number[]", description: "One number for a single thumb, an array for a range." },
-          { prop: "onValueChange", type: "(value: number | number[]) => void", description: "Called while the thumb moves." },
-          { prop: "onValueCommitted", type: "(value: number | number[]) => void", description: "Called when the person releases the thumb." },
-          { prop: "min / max", type: "number", default: "0 / 100", description: "The ends of the track." },
-          { prop: "step", type: "number", default: "1", description: "The increment for dragging and arrow keys." },
-          { prop: "minStepsBetweenValues", type: "number", default: "0", description: "Minimum gap between range thumbs, in steps." },
-          { prop: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Vertical sliders fill their container’s height." },
-          { prop: "getAriaLabel", type: "(index: number) => string", description: "Accessible name for each thumb. Or point aria-labelledby at a Label." },
-          { prop: "getAriaValueText", type: "(formatted, value, index) => string", description: "Readable value for screen readers, such as “2,500 runs”." },
-          { prop: "disabled", type: "boolean", default: "false", description: "Dims the slider and blocks input." },
+          {
+            prop: "value / defaultValue",
+            type: "number | number[]",
+            description: "One number for a single thumb, an array for a range.",
+          },
+          {
+            prop: "onValueChange",
+            type: "(value: number | number[]) => void",
+            description: "Called while the thumb moves.",
+          },
+          {
+            prop: "onValueCommitted",
+            type: "(value: number | number[]) => void",
+            description: "Called when the person releases the thumb.",
+          },
+          {
+            prop: "min / max",
+            type: "number",
+            default: "0 / 100",
+            description: "The ends of the track.",
+          },
+          {
+            prop: "step",
+            type: "number",
+            default: "1",
+            description: "The increment for dragging and arrow keys.",
+          },
+          {
+            prop: "minStepsBetweenValues",
+            type: "number",
+            default: "0",
+            description: "Minimum gap between range thumbs, in steps.",
+          },
+          {
+            prop: "orientation",
+            type: '"horizontal" | "vertical"',
+            default: '"horizontal"',
+            description: "Vertical sliders fill their container’s height.",
+          },
+          {
+            prop: "getAriaLabel",
+            type: "(index: number) => string",
+            description:
+              "Accessible name for each thumb. Or point aria-labelledby at a Label.",
+          },
+          {
+            prop: "getAriaValueText",
+            type: "(formatted, value, index) => string",
+            description:
+              "Readable value for screen readers, such as “2,500 runs”.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description: "Dims the slider and blocks input.",
+          },
         ]}
       />
     </Examples>

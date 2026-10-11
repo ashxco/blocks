@@ -21,5 +21,12 @@ export function ThemeScope({
   ...props
 }: React.ComponentProps<"div"> & { theme?: ThemeId; mode?: ThemeMode }) {
   const scope = themeScopeProps(theme, mode)
-  return <div data-slot="theme-scope" {...props} {...scope} className={cn(scope.className, className)} />
+  return (
+    <div
+      data-slot="theme-scope"
+      {...props}
+      {...scope}
+      className={cn(scope.className, className)}
+    />
+  )
 }

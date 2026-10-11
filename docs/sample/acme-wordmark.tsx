@@ -49,14 +49,25 @@ export function AcmeMark({
  * mark, then the name in the heading face, extra-bold with tight tracking.
  * With an href it is a link; without one it is plain text.
  */
-export function AcmeWordmark({ href, className }: { href?: string; className?: string }) {
+export function AcmeWordmark({
+  href,
+  className,
+}: {
+  href?: string
+  className?: string
+}) {
   const content = (
     <>
       <AcmeMark />
-      <span className="font-heading text-xl font-extrabold tracking-tight">Acme</span>
+      <span className="font-heading text-xl font-extrabold tracking-tight">
+        Acme
+      </span>
     </>
   )
-  const classes = cn("inline-flex w-fit shrink-0 items-center gap-2.5 text-foreground", className)
+  const classes = cn(
+    "inline-flex w-fit shrink-0 items-center gap-2.5 text-foreground",
+    className
+  )
 
   if (!href) {
     return (
@@ -67,7 +78,14 @@ export function AcmeWordmark({ href, className }: { href?: string; className?: s
   }
 
   return (
-    <Link href={href} data-slot="wordmark" className={cn("rounded-xs outline-none focus-visible:focus-ring", classes)}>
+    <Link
+      href={href}
+      data-slot="wordmark"
+      className={cn(
+        "rounded-xs outline-none focus-visible:focus-ring",
+        classes
+      )}
+    >
       {content}
     </Link>
   )

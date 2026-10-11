@@ -23,9 +23,12 @@ function ImportProgress() {
   const [value, setValue] = React.useState<number | null>(100)
   const timer = React.useRef<ReturnType<typeof setInterval> | null>(null)
 
-  React.useEffect(() => () => {
-    if (timer.current) clearInterval(timer.current)
-  }, [])
+  React.useEffect(
+    () => () => {
+      if (timer.current) clearInterval(timer.current)
+    },
+    []
+  )
 
   function start() {
     if (timer.current) clearInterval(timer.current)
@@ -39,7 +42,10 @@ function ImportProgress() {
     }, 180)
   }
 
-  const step = value === null ? null : steps.find((s) => value < s.until) ?? steps[steps.length - 1]
+  const step =
+    value === null
+      ? null
+      : (steps.find((s) => value < s.until) ?? steps[steps.length - 1])
   const done = value === 100
 
   return (
@@ -61,7 +67,9 @@ function ImportProgress() {
         </Button>
       </div>
       <Progress value={value ?? 0} aria-label="Import progress">
-        <ProgressLabel>{value === null ? "Not started" : done ? "Done" : "Importing"}</ProgressLabel>
+        <ProgressLabel>
+          {value === null ? "Not started" : done ? "Done" : "Importing"}
+        </ProgressLabel>
         <ProgressValue />
       </Progress>
     </div>
@@ -148,14 +156,18 @@ export default function ProgressDocs() {
         <div className="grid gap-6 rounded-(--card-radius) border bg-card p-(--card-padding)">
           <div className="grid gap-1">
             <h3 className="text-h4 text-foreground">Usage this month</h3>
-            <p className="text-sm text-muted-foreground">Pro plan · resets on Nov 1</p>
+            <p className="text-sm text-muted-foreground">
+              Pro plan · resets on Nov 1
+            </p>
           </div>
           <div className="grid gap-6">
             {usage.map((u) => (
               <Progress key={u.label} value={u.used} max={u.limit}>
                 <ProgressLabel>{u.label}</ProgressLabel>
                 <ProgressValue>
-                  {() => `${u.used.toLocaleString("en-US")} of ${u.limit.toLocaleString("en-US")} ${u.unit}`}
+                  {() =>
+                    `${u.used.toLocaleString("en-US")} of ${u.limit.toLocaleString("en-US")} ${u.unit}`
+                  }
                 </ProgressValue>
               </Progress>
             ))}
@@ -178,12 +190,38 @@ export default function ProgressDocs() {
 
       <ApiTable
         rows={[
-          { prop: "value", type: "number | null", description: "Current value. null shows the indeterminate sweep." },
-          { prop: "min", type: "number", default: "0", description: "Lowest value." },
-          { prop: "max", type: "number", default: "100", description: "Highest value." },
-          { prop: "format", type: "Intl.NumberFormatOptions", description: "How ProgressValue formats the value." },
-          { prop: "getAriaValueText", type: "(formatted, value) => string", description: "Text read by screen readers." },
-          { prop: "ProgressValue children", type: "(formatted, value) => ReactNode", description: "Render the value yourself, for units such as GB." },
+          {
+            prop: "value",
+            type: "number | null",
+            description: "Current value. null shows the indeterminate sweep.",
+          },
+          {
+            prop: "min",
+            type: "number",
+            default: "0",
+            description: "Lowest value.",
+          },
+          {
+            prop: "max",
+            type: "number",
+            default: "100",
+            description: "Highest value.",
+          },
+          {
+            prop: "format",
+            type: "Intl.NumberFormatOptions",
+            description: "How ProgressValue formats the value.",
+          },
+          {
+            prop: "getAriaValueText",
+            type: "(formatted, value) => string",
+            description: "Text read by screen readers.",
+          },
+          {
+            prop: "ProgressValue children",
+            type: "(formatted, value) => ReactNode",
+            description: "Render the value yourself, for units such as GB.",
+          },
         ]}
       />
     </Examples>

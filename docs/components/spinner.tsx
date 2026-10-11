@@ -14,11 +14,19 @@ const colours = [
 ]
 
 /** One spinner with the class that draws it, so each specimen says what it is. */
-function Specimen({ caption, children }: { caption: string; children: React.ReactNode }) {
+function Specimen({
+  caption,
+  children,
+}: {
+  caption: string
+  children: React.ReactNode
+}) {
   return (
     <figure className="grid min-w-20 justify-items-center gap-3">
       <span className="grid h-8 place-items-center">{children}</span>
-      <figcaption className="font-mono text-code text-muted-foreground">{caption}</figcaption>
+      <figcaption className="font-mono text-code text-muted-foreground">
+        {caption}
+      </figcaption>
     </figure>
   )
 }
@@ -59,7 +67,11 @@ export default function SpinnerDocs() {
         </div>
       </Example>
 
-      <Example title="On a panel" surface="panel" description="On dark panels it inherits the panel text colour.">
+      <Example
+        title="On a panel"
+        surface="panel"
+        description="On dark panels it inherits the panel text colour."
+      >
         <span className="inline-flex items-center gap-3 text-sm font-semibold text-panel-foreground">
           <Spinner />
           Importing 284 tasks
@@ -97,16 +109,26 @@ export default function SpinnerDocs() {
           <li className="flex items-center justify-between gap-4 px-5 py-4">
             <div className="grid gap-0.5">
               <p className="text-title text-foreground">Google Drive</p>
-              <p className="text-sm text-muted-foreground">Syncing 2 shared folders</p>
+              <p className="text-sm text-muted-foreground">
+                Syncing 2 shared folders
+              </p>
             </div>
-            <Spinner className="text-muted-foreground" aria-label="Syncing Google Drive" />
+            <Spinner
+              className="text-muted-foreground"
+              aria-label="Syncing Google Drive"
+            />
           </li>
           <li className="flex items-center justify-between gap-4 px-5 py-4">
             <div className="grid gap-0.5">
               <p className="text-title text-foreground">Slack</p>
-              <p className="text-sm text-muted-foreground">Waiting for a Slack admin to approve the app</p>
+              <p className="text-sm text-muted-foreground">
+                Waiting for a Slack admin to approve the app
+              </p>
             </div>
-            <Spinner className="text-muted-foreground" aria-label="Waiting for Slack approval" />
+            <Spinner
+              className="text-muted-foreground"
+              aria-label="Waiting for Slack approval"
+            />
           </li>
         </ul>
       </Example>
@@ -126,9 +148,23 @@ export default function SpinnerDocs() {
 
       <ApiTable
         rows={[
-          { prop: "className", type: "string", default: '"size-4"', description: "Size with size-*, colour with text-*." },
-          { prop: "aria-label", type: "string", default: '"Loading"', description: "What is loading. The spinner has role=\"status\"." },
-          { prop: "...props", type: "SVGProps", description: "Any SVG attribute." },
+          {
+            prop: "className",
+            type: "string",
+            default: '"size-4"',
+            description: "Size with size-*, colour with text-*.",
+          },
+          {
+            prop: "aria-label",
+            type: "string",
+            default: '"Loading"',
+            description: 'What is loading. The spinner has role="status".',
+          },
+          {
+            prop: "...props",
+            type: "SVGProps",
+            description: "Any SVG attribute.",
+          },
         ]}
       />
     </Examples>

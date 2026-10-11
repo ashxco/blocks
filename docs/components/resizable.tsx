@@ -23,21 +23,60 @@ const docs = [
 ]
 
 const linkedTasks = [
-  { title: "Write the homepage hero copy", owner: "PR", due: "Oct 6", status: "Done" },
+  {
+    title: "Write the homepage hero copy",
+    owner: "PR",
+    due: "Oct 6",
+    status: "Done",
+  },
   { title: "Choose the hero image", owner: "SA", due: "Oct 8", status: "Done" },
-  { title: "Get Hana’s sign-off on the copy", owner: "PR", due: "Oct 12", status: "In progress" },
-  { title: "Write the launch announcement", owner: "PR", due: "Oct 14", status: "In review" },
-  { title: "Fix the pricing table on mobile", owner: "JL", due: "Oct 15", status: "Blocked" },
-  { title: "Set up the pricing page", owner: "JL", due: "Oct 20", status: "In progress" },
+  {
+    title: "Get Hana’s sign-off on the copy",
+    owner: "PR",
+    due: "Oct 12",
+    status: "In progress",
+  },
+  {
+    title: "Write the launch announcement",
+    owner: "PR",
+    due: "Oct 14",
+    status: "In review",
+  },
+  {
+    title: "Fix the pricing table on mobile",
+    owner: "JL",
+    due: "Oct 15",
+    status: "Blocked",
+  },
+  {
+    title: "Set up the pricing page",
+    owner: "JL",
+    due: "Oct 20",
+    status: "In progress",
+  },
 ]
 
 const comments = [
-  { who: "Hana Kim", text: "Can the headline name the three things teams replace?" },
-  { who: "Priya Raman", text: "Trying a version with planning, tasks and docs." },
-  { who: "Sofia Alvarez", text: "The hero image is final. Shared it in Figma." },
+  {
+    who: "Hana Kim",
+    text: "Can the headline name the three things teams replace?",
+  },
+  {
+    who: "Priya Raman",
+    text: "Trying a version with planning, tasks and docs.",
+  },
+  {
+    who: "Sofia Alvarez",
+    text: "The hero image is final. Shared it in Figma.",
+  },
 ]
 
-const projectNames = ["Website relaunch", "Mobile app 2.0", "Q4 planning", "Brand refresh"]
+const projectNames = [
+  "Website relaunch",
+  "Mobile app 2.0",
+  "Q4 planning",
+  "Brand refresh",
+]
 
 const tasks = [
   { title: "Write the hero copy", status: "Done" },
@@ -45,14 +84,29 @@ const tasks = [
   { title: "Fix the pricing table", status: "Blocked" },
 ]
 
-const activity = ["Sofia completed a task", "Priya left a comment", "Jordan took a task", "Hana commented on the copy"]
+const activity = [
+  "Sofia completed a task",
+  "Priya left a comment",
+  "Jordan took a task",
+  "Hana commented on the copy",
+]
 
 /** The bar along the top of a pane: what it shows, and an optional readout on the right. */
-function PaneHeader({ title, meta }: { title: React.ReactNode; meta?: React.ReactNode }) {
+function PaneHeader({
+  title,
+  meta,
+}: {
+  title: React.ReactNode
+  meta?: React.ReactNode
+}) {
   return (
     <div className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-border px-4">
       <p className="truncate text-label text-foreground">{title}</p>
-      {meta !== undefined ? <p className="shrink-0 text-caption text-muted-foreground tabular-nums">{meta}</p> : null}
+      {meta !== undefined ? (
+        <p className="shrink-0 text-caption text-muted-foreground tabular-nums">
+          {meta}
+        </p>
+      ) : null}
     </div>
   )
 }
@@ -72,9 +126,15 @@ function DocTree() {
           }
         >
           {f.folder ? (
-            <FolderIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+            <FolderIcon
+              aria-hidden="true"
+              className="size-4 shrink-0 text-muted-foreground"
+            />
           ) : (
-            <FileTextIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+            <FileTextIcon
+              aria-hidden="true"
+              className="size-4 shrink-0 text-muted-foreground"
+            />
           )}
           <span className="truncate">{f.name}</span>
         </div>
@@ -89,8 +149,8 @@ function DocBody() {
     <div className="grid min-h-0 flex-1 content-start gap-3 overflow-auto p-4 text-sm text-copy">
       <p className="text-title text-foreground">Homepage brief</p>
       <p>
-        Say what Acme does in one sentence, then show the product. Every section leads to one action: start a free
-        trial.
+        Say what Acme does in one sentence, then show the product. Every section
+        leads to one action: start a free trial.
       </p>
       <ul className="grid list-disc gap-1 pl-5">
         <li>Headline: plan, track and ship your team’s work in one place</li>
@@ -117,7 +177,12 @@ function LiveSizes() {
     <div className="relative w-full max-w-2xl overflow-x-auto overscroll-x-contain rounded-(--card-radius) border border-border bg-card">
       <div className="h-80 min-w-md">
         <ResizablePanelGroup orientation="horizontal">
-          <ResizablePanel defaultSize="35%" minSize="20%" onResize={(size) => setLeft(size.asPercentage)} className="bg-sidebar">
+          <ResizablePanel
+            defaultSize="35%"
+            minSize="20%"
+            onResize={(size) => setLeft(size.asPercentage)}
+            className="bg-sidebar"
+          >
             <div className="flex h-full flex-col">
               <PaneHeader title="Docs" meta={`${Math.round(left)}%`} />
               <div className="min-h-0 flex-1 overflow-auto">
@@ -126,9 +191,16 @@ function LiveSizes() {
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel defaultSize="65%" minSize="30%" onResize={(size) => setRight(size.asPercentage)}>
+          <ResizablePanel
+            defaultSize="65%"
+            minSize="30%"
+            onResize={(size) => setRight(size.asPercentage)}
+          >
             <div className="flex h-full flex-col">
-              <PaneHeader title="Website relaunch" meta={`${Math.round(right)}%`} />
+              <PaneHeader
+                title="Website relaunch"
+                meta={`${Math.round(right)}%`}
+              />
               <DocBody />
             </div>
           </ResizablePanel>
@@ -177,7 +249,10 @@ export default function ResizableDocs() {
                 <ol className="min-h-0 flex-1 overflow-auto px-4 py-2 text-sm">
                   {comments.map((c) => (
                     <li key={c.who} className="truncate py-1 text-copy">
-                      <span className="font-semibold text-foreground">{c.who}</span> {c.text}
+                      <span className="font-semibold text-foreground">
+                        {c.who}
+                      </span>{" "}
+                      {c.text}
                     </li>
                   ))}
                 </ol>
@@ -201,7 +276,10 @@ export default function ResizableDocs() {
                   <PaneHeader title="Projects" />
                   <ul className="min-h-0 flex-1 overflow-auto px-4 py-2">
                     {projectNames.map((name) => (
-                      <li key={name} className="truncate py-1.5 text-sm text-foreground">
+                      <li
+                        key={name}
+                        className="truncate py-1.5 text-sm text-foreground"
+                      >
                         {name}
                       </li>
                     ))}
@@ -214,8 +292,14 @@ export default function ResizableDocs() {
                   <PaneHeader title="Tasks" />
                   <ul className="min-h-0 flex-1 overflow-auto px-4 py-2">
                     {tasks.map((t) => (
-                      <li key={t.title} className="flex items-center gap-2 py-1.5 text-sm text-copy">
-                        <span aria-hidden="true" className={`size-1.5 shrink-0 rounded-full ${statusDot[t.status]}`} />
+                      <li
+                        key={t.title}
+                        className="flex items-center gap-2 py-1.5 text-sm text-copy"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={`size-1.5 shrink-0 rounded-full ${statusDot[t.status]}`}
+                        />
                         <span className="truncate">{t.title}</span>
                         <span className="sr-only">{t.status}</span>
                       </li>
@@ -229,7 +313,10 @@ export default function ResizableDocs() {
                   <PaneHeader title="Activity" meta="Today" />
                   <ul className="min-h-0 flex-1 overflow-auto px-4 py-2">
                     {activity.map((line) => (
-                      <li key={line} className="truncate py-1.5 text-sm text-copy">
+                      <li
+                        key={line}
+                        className="truncate py-1.5 text-sm text-copy"
+                      >
                         {line}
                       </li>
                     ))}
@@ -250,9 +337,16 @@ export default function ResizableDocs() {
         <div className="relative w-full overflow-x-auto overscroll-x-contain rounded-(--card-radius) border border-border bg-card">
           <div className="h-[36rem] min-w-(--container-prose)">
             <ResizablePanelGroup orientation="horizontal">
-              <ResizablePanel defaultSize="26%" minSize="18%" maxSize="40%" className="bg-sidebar">
+              <ResizablePanel
+                defaultSize="26%"
+                minSize="18%"
+                maxSize="40%"
+                className="bg-sidebar"
+              >
                 <div className="grid p-1">
-                  <p className="px-3 pt-3 pb-1 text-caption font-semibold text-muted-foreground">Acme Inc.</p>
+                  <p className="px-3 pt-3 pb-1 text-caption font-semibold text-muted-foreground">
+                    Acme Inc.
+                  </p>
                   <DocTree />
                 </div>
               </ResizablePanel>
@@ -263,8 +357,13 @@ export default function ResizableDocs() {
                     <div className="flex h-full flex-col">
                       <div className="flex h-11 shrink-0 items-center gap-1.5 border-b border-border px-4 text-caption text-muted-foreground">
                         Website relaunch
-                        <ChevronRightIcon aria-hidden="true" className="size-3.5" />
-                        <span className="font-semibold text-foreground">Homepage brief</span>
+                        <ChevronRightIcon
+                          aria-hidden="true"
+                          className="size-3.5"
+                        />
+                        <span className="font-semibold text-foreground">
+                          Homepage brief
+                        </span>
                       </div>
                       <DocBody />
                     </div>
@@ -273,21 +372,45 @@ export default function ResizableDocs() {
                   <ResizablePanel defaultSize="58%" minSize="20%">
                     <div className="flex h-full flex-col">
                       <div className="flex h-11 shrink-0 items-center justify-between border-b border-border px-4">
-                        <p className="text-label text-foreground">Linked tasks</p>
-                        <p className="text-caption text-muted-foreground tabular-nums">2 of {linkedTasks.length} done</p>
+                        <p className="text-label text-foreground">
+                          Linked tasks
+                        </p>
+                        <p className="text-caption text-muted-foreground tabular-nums">
+                          2 of {linkedTasks.length} done
+                        </p>
                       </div>
                       <ul className="min-h-0 flex-1 divide-y divide-border overflow-auto">
                         {linkedTasks.map((t) => (
-                          <li key={t.title} className="grid grid-cols-[auto_1fr_2rem_3.5rem] items-center gap-3 px-4 py-2 text-sm">
-                            <span aria-hidden="true" className={`size-1.5 rounded-full ${statusDot[t.status]}`} />
-                            <span className={t.status === "Done" ? "truncate text-muted-foreground" : "truncate text-foreground"}>
+                          <li
+                            key={t.title}
+                            className="grid grid-cols-[auto_1fr_2rem_3.5rem] items-center gap-3 px-4 py-2 text-sm"
+                          >
+                            <span
+                              aria-hidden="true"
+                              className={`size-1.5 rounded-full ${statusDot[t.status]}`}
+                            />
+                            <span
+                              className={
+                                t.status === "Done"
+                                  ? "truncate text-muted-foreground"
+                                  : "truncate text-foreground"
+                              }
+                            >
                               {t.title}
                               <span className="sr-only">, {t.status}</span>
                             </span>
                             <Avatar size="sm">
-                              <AvatarFallback tone={initialsTone(t.owner)}>{t.owner}</AvatarFallback>
+                              <AvatarFallback tone={initialsTone(t.owner)}>
+                                {t.owner}
+                              </AvatarFallback>
                             </Avatar>
-                            <span className={t.status === "Blocked" ? "text-right text-caption text-destructive tabular-nums" : "text-right text-caption text-muted-foreground tabular-nums"}>
+                            <span
+                              className={
+                                t.status === "Blocked"
+                                  ? "text-right text-caption text-destructive tabular-nums"
+                                  : "text-right text-caption text-muted-foreground tabular-nums"
+                              }
+                            >
                               {t.due}
                             </span>
                           </li>
@@ -309,7 +432,7 @@ export default function ResizableDocs() {
           "Give the group a height; panels fill it.",
         ]}
         dont={[
-          "Don’t pass plain numbers for percentages; numbers are pixels, so write \"30%\".",
+          'Don’t pass plain numbers for percentages; numbers are pixels, so write "30%".',
           "Don’t put resizable panels in layouts that reflow on small screens; stack them instead.",
           "Don’t thicken or colour the hairline to make it obvious; add the grip.",
         ]}
@@ -317,13 +440,50 @@ export default function ResizableDocs() {
 
       <ApiTable
         rows={[
-          { prop: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "ResizablePanelGroup: the direction panels are laid out and resized." },
-          { prop: "defaultSize", type: "number | string", description: "ResizablePanel: starting size. \"30%\" is a percentage, 240 is pixels." },
-          { prop: "minSize / maxSize", type: "number | string", description: "ResizablePanel: limits while resizing." },
-          { prop: "collapsible", type: "boolean", default: "false", description: "ResizablePanel: collapse to collapsedSize when dragged below minSize." },
-          { prop: "onResize", type: "(size: PanelSize) => void", description: "ResizablePanel: called with asPercentage and inPixels as it resizes." },
-          { prop: "withHandle", type: "boolean", default: "false", description: "ResizableHandle: show the small grip on the hairline." },
-          { prop: "disabled", type: "boolean", default: "false", description: "ResizableHandle: stop this handle from resizing." },
+          {
+            prop: "orientation",
+            type: '"horizontal" | "vertical"',
+            default: '"horizontal"',
+            description:
+              "ResizablePanelGroup: the direction panels are laid out and resized.",
+          },
+          {
+            prop: "defaultSize",
+            type: "number | string",
+            description:
+              'ResizablePanel: starting size. "30%" is a percentage, 240 is pixels.',
+          },
+          {
+            prop: "minSize / maxSize",
+            type: "number | string",
+            description: "ResizablePanel: limits while resizing.",
+          },
+          {
+            prop: "collapsible",
+            type: "boolean",
+            default: "false",
+            description:
+              "ResizablePanel: collapse to collapsedSize when dragged below minSize.",
+          },
+          {
+            prop: "onResize",
+            type: "(size: PanelSize) => void",
+            description:
+              "ResizablePanel: called with asPercentage and inPixels as it resizes.",
+          },
+          {
+            prop: "withHandle",
+            type: "boolean",
+            default: "false",
+            description:
+              "ResizableHandle: show the small grip on the hairline.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description: "ResizableHandle: stop this handle from resizing.",
+          },
         ]}
       />
     </Examples>
