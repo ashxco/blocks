@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 
 import { DocHeader } from "@/components/viewer/doc-header"
 import { DocPager } from "@/components/viewer/doc-pager"
+import { InstallCommand } from "@/components/viewer/install-command"
 import { pagerFor } from "@/components/viewer/nav"
 import { ViewerPage } from "@/components/viewer/viewer-page"
 import { componentDocs } from "@/docs"
@@ -38,12 +39,15 @@ export default async function Page({
   return (
     <ViewerPage>
       <article className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-14 sm:gap-16">
-        <DocHeader
-          section="Components"
-          group={entry.group}
-          title={entry.title}
-          description={entry.description}
-        />
+        <div className="grid gap-8">
+          <DocHeader
+            section="Components"
+            group={entry.group}
+            title={entry.title}
+            description={entry.description}
+          />
+          <InstallCommand slug={slug} />
+        </div>
         <Docs />
       </article>
       <DocPager prev={prev} next={next} />

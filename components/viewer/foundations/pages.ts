@@ -2,6 +2,7 @@
 import type { ComponentType } from "react"
 
 import { ColorsFoundation } from "./colors"
+import { GetStartedFoundation } from "./get-started"
 import { IconographyFoundation } from "./iconography"
 import type { FoundationPageProps } from "./layout"
 import { MotionFoundation } from "./motion"
@@ -15,6 +16,7 @@ export const foundationPages: Record<
   string,
   ComponentType<FoundationPageProps>
 > = {
+  "get-started": GetStartedFoundation,
   themes: ThemesFoundation,
   colors: ColorsFoundation,
   typography: TypographyFoundation,

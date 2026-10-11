@@ -1,6 +1,6 @@
 {
   "name": "blocks",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "private": true,
   "engines": {
@@ -14,12 +14,14 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
     "tokens": "node design-system/build.mjs",
-    "predev": "npm run tokens",
-    "prebuild": "npm run tokens",
+    "registry": "node scripts/build-registry.mjs",
+    "og": "node scripts/og.mjs",
+    "predev": "npm run tokens && npm run registry",
+    "prebuild": "npm run tokens && npm run registry",
     "lint:ds": "node scripts/lint-ds.mjs",
     "contrast": "node scripts/check-contrast.mjs",
     "themes": "node scripts/check-themes.mjs",
-    "check": "npm run tokens && npm run contrast && npm run themes && tsc --noEmit --incremental false && npm run lint:ds",
+    "check": "npm run tokens && npm run registry && npm run contrast && npm run themes && tsc --noEmit --incremental false && npm run lint:ds",
     "verify": "npm run check && npm run lint && npm run build"
   },
   "dependencies": {

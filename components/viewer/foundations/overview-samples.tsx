@@ -8,6 +8,7 @@ import {
   ZapIcon,
 } from "lucide-react"
 
+import { installCommand } from "@/lib/site"
 import { themeScopeProps } from "@/lib/themes"
 import { cn } from "@/lib/utils"
 
@@ -300,10 +301,24 @@ function TokensSample() {
   )
 }
 
+/** The install command on a muted row, as it appears on the Get started page. */
+function GetStartedSample() {
+  return (
+    <div aria-hidden className="grid size-full items-center p-5">
+      <div className="flex min-w-0 items-center rounded-(--control-radius) border bg-muted px-4 py-2.5">
+        <code className="min-w-0 flex-1 truncate font-mono text-code text-foreground">
+          {installCommand}
+        </code>
+      </div>
+    </div>
+  )
+}
+
 export const samples: Record<
   string,
   { sample: React.ReactNode; span?: string }
 > = {
+  "get-started": { sample: <GetStartedSample /> },
   themes: {
     sample: <ThemesSample />,
     span: "@prose:col-span-2 @narrow:col-span-3",
