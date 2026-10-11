@@ -99,7 +99,9 @@ function Carousel({
         : "0:0:0:0",
     () => "0:0:0:0"
   )
-  const [prevFlag, nextFlag, selectedIndex, snapCount] = snapshot.split(":").map(Number)
+  const [prevFlag, nextFlag, selectedIndex, snapCount] = snapshot
+    .split(":")
+    .map(Number)
   const canScrollPrev = prevFlag === 1
   const canScrollNext = nextFlag === 1
 
@@ -134,18 +136,16 @@ function Carousel({
   )
 
   React.useEffect(() => {
-    if (!api || !setApi) return
-    setApi(api)
+    if (api && setApi) setApi(api)
   }, [api, setApi])
 
   return (
     <CarouselContext.Provider
       value={{
         carouselRef,
-        api: api,
+        api,
         opts,
-        orientation:
-          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+        orientation,
         scrollPrev,
         scrollNext,
         scrollTo,
@@ -209,64 +209,62 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function CarouselPrevious({
+const controls = {
+  previous: {
+    icon: ChevronLeftIcon,
+    label: "Previous Slide",
+    horizontal: "inset-y-0 -left-12 my-auto",
+    vertical: "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+  },
+  next: {
+    icon: ChevronRightIcon,
+    label: "Next Slide",
+    horizontal: "inset-y-0 -right-12 my-auto",
+    vertical: "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
+  },
+} as const
+
+/** The previous or next button: an outline icon button outside the slides. */
+function CarouselControl({
+  direction,
   className,
   variant = "outline",
   size = "icon-sm",
   ...props
-}: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollPrev, canScrollPrev } = useCarousel()
+}: React.ComponentProps<typeof Button> & {
+  direction: keyof typeof controls
+}) {
+  const { orientation, scrollPrev, scrollNext, canScrollPrev, canScrollNext } =
+    useCarousel()
+  const { icon: Icon, label, horizontal, vertical } = controls[direction]
+  const previous = direction === "previous"
 
   return (
     <Button
-      data-slot="carousel-previous"
+      data-slot={`carousel-${direction}`}
       variant={variant}
       size={size}
       className={cn(
         "absolute touch-manipulation disabled:opacity-35",
-        orientation === "horizontal"
-          ? "inset-y-0 -left-12 my-auto"
-          : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+        orientation === "horizontal" ? horizontal : vertical,
         className
       )}
-      disabled={!canScrollPrev}
-      onClick={scrollPrev}
+      disabled={previous ? !canScrollPrev : !canScrollNext}
+      onClick={previous ? scrollPrev : scrollNext}
       {...props}
     >
-      <ChevronLeftIcon />
-      <span className="sr-only">Previous Slide</span>
+      <Icon />
+      <span className="sr-only">{label}</span>
     </Button>
   )
 }
 
-function CarouselNext({
-  className,
-  variant = "outline",
-  size = "icon-sm",
-  ...props
-}: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollNext, canScrollNext } = useCarousel()
+function CarouselPrevious(props: React.ComponentProps<typeof Button>) {
+  return <CarouselControl direction="previous" {...props} />
+}
 
-  return (
-    <Button
-      data-slot="carousel-next"
-      variant={variant}
-      size={size}
-      className={cn(
-        "absolute touch-manipulation disabled:opacity-35",
-        orientation === "horizontal"
-          ? "inset-y-0 -right-12 my-auto"
-          : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
-        className
-      )}
-      disabled={!canScrollNext}
-      onClick={scrollNext}
-      {...props}
-    >
-      <ChevronRightIcon />
-      <span className="sr-only">Next Slide</span>
-    </Button>
-  )
+function CarouselNext(props: React.ComponentProps<typeof Button>) {
+  return <CarouselControl direction="next" {...props} />
 }
 
 /**
@@ -300,9 +298,7 @@ function CarouselDots({
             aria-label={`Go to slide ${index + 1} of ${snapCount}`}
             aria-current={selected ? "true" : undefined}
             onClick={() => scrollTo(index)}
-            className={cn(
-              "group/dot grid h-6 min-w-4 place-items-center rounded-full outline-none focus-visible:focus-ring"
-            )}
+            className="group/dot grid h-6 min-w-4 place-items-center rounded-full outline-none focus-visible:focus-ring"
           >
             <span
               aria-hidden="true"

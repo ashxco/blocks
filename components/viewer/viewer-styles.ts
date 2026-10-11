@@ -22,7 +22,12 @@
  *   (`[data-theme-check]`), keyed on <html> like the text above, so the
  *   selection is right on first paint. Colours come from the card's own scope.
  */
-import { defaultThemeId, themeIds, tokens } from "@/design-system/generated/tokens"
+import {
+  defaultThemeId,
+  themeIds,
+  tokens,
+} from "@/design-system/generated/tokens"
+import { toVirtualVw } from "@/components/viewer/devices"
 
 /** The CSS value of a token: its own value, or its font size for type roles. */
 function cssValue(value: unknown): string | undefined {
@@ -36,18 +41,26 @@ function cssValue(value: unknown): string | undefined {
 
 const fluidTokens = tokens
   .map((t) => ({ cssVar: t.cssVar, value: cssValue(t.value) }))
-  .filter((t): t is { cssVar: string; value: string } => Boolean(t.value?.includes("vw")))
-  .map((t) => `${t.cssVar}:${t.value.replace(/(\d*\.?\d+)vw/g, "calc($1 * var(--bk-vw))")};`)
+  .filter((t): t is { cssVar: string; value: string } =>
+    Boolean(t.value?.includes("vw"))
+  )
+  .map((t) => `${t.cssVar}:${toVirtualVw(t.value)};`)
   .join("")
 
 /** The selector for the page's own theme: <html data-theme="<id>">, or no attribute for the default. */
 const pageTheme = (id: string) =>
-  id === defaultThemeId ? `:root:not([data-theme]),:root[data-theme="${id}"]` : `:root[data-theme="${id}"]`
+  id === defaultThemeId
+    ? `:root:not([data-theme]),:root[data-theme="${id}"]`
+    : `:root[data-theme="${id}"]`
 
 /** Each page-theme root paired with that theme's element: `:root[data-theme="ocean"] [data-theme-card="ocean"]`. */
 const onPageTheme = (attribute: string, suffix = "") =>
   themeIds
-    .flatMap((id) => pageTheme(id).split(",").map((root) => `${root} [${attribute}="${id}"]${suffix}`))
+    .flatMap((id) =>
+      pageTheme(id)
+        .split(",")
+        .map((root) => `${root} [${attribute}="${id}"]${suffix}`)
+    )
     .join(",")
 
 const themeTextCss = [

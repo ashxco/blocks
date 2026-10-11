@@ -5,6 +5,15 @@ import { KeyRoundIcon, LogOutIcon, Trash2Icon, ZapIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import {
+  PreviewStage,
+  StageDetails,
+  StagePage,
+  StageSwitcher,
+  dialogInStage,
+  type Stage,
+  type StageDetail,
+} from "@/docs/stage"
+import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -20,15 +29,6 @@ import { Dialog } from "@/components/ui/dialog"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-
-type Stage = HTMLDivElement | null
-
-/**
- * Inside a stage, the dialog fits the stage rather than the viewport, and the
- * wheel carries on to the page once the dialog has nothing left to scroll.
- */
-const inStage = "max-h-[calc(100%-2rem)] overscroll-auto"
 
 /**
  * The previews show each alert dialog already open, in place on the page.
@@ -46,17 +46,18 @@ function PreviewRoot({
   children: React.ReactNode
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} modal={false} disablePointerDismissal>
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      modal={false}
+      disablePointerDismissal
+    >
       {children}
     </Dialog>
   )
 }
 
-/**
- * The stage the dialog opens into. contain-layout makes it the containing
- * block for the fixed overlay and popup; isolate keeps them under the site header.
- * The overlay tints and blurs the page behind it, as it does over a real page.
- */
+/** The stage the dialog opens into, on the page it sits on. */
 function DialogStage({
   title,
   meta,
@@ -65,32 +66,17 @@ function DialogStage({
 }: {
   title: string
   meta: string
-  rows: { label: string; value: string; mono?: boolean }[]
+  rows: StageDetail[]
   children: (container: Stage) => React.ReactNode
 }) {
-  const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className="relative isolate h-full min-h-128 w-full overflow-hidden contain-layout">
-      <div className="grid content-start gap-8 p-6 sm:p-12">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="grid gap-1">
-            <p className="text-h3 text-foreground">{title}</p>
-            <p className="text-caption text-muted-foreground">{meta}</p>
-          </div>
-          {children(container)}
-        </div>
-        <dl className="grid divide-y border-y">
-          {rows.map((row) => (
-            <div key={row.label} className="flex items-center justify-between gap-6 py-4">
-              <dt className="text-sm text-muted-foreground">{row.label}</dt>
-              <dd className={row.mono ? "font-mono text-code text-foreground" : "text-sm font-medium text-foreground"}>
-                {row.value}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </div>
+    <PreviewStage kind="overlay" className="min-h-128">
+      {(container) => (
+        <StagePage title={title} meta={meta} action={children(container)}>
+          <StageDetails rows={rows} />
+        </StagePage>
+      )}
+    </PreviewStage>
   )
 }
 
@@ -138,17 +124,19 @@ function RunRuleDialog({ container }: { container: Stage }) {
         <ZapIcon data-icon="inline-start" />
         Run on Existing Tasks
       </AlertDialogTrigger>
-      <AlertDialogContent container={container} initialFocus={false} className={inStage}>
+      <AlertDialogContent {...dialogInStage(container)}>
         <AlertDialogHeader>
           <AlertDialogTitle>Run this rule on 38 tasks?</AlertDialogTitle>
           <AlertDialogDescription>
-            Each of the 38 tasks already in Done notifies its owner. This uses 38 of the 2,760 runs left this
-            month.
+            Each of the 38 tasks already in Done notifies its owner. This uses
+            38 of the 2,760 runs left this month.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => setOpen(false)}>Run Rule</AlertDialogAction>
+          <AlertDialogAction onClick={() => setOpen(false)}>
+            Run Rule
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </PreviewRoot>
@@ -160,21 +148,27 @@ function DeleteTaskDialog({ container }: { container: Stage }) {
 
   return (
     <PreviewRoot open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger render={<Button variant="outline" />}>Delete Task</AlertDialogTrigger>
-      <AlertDialogContent container={container} initialFocus={false} className={inStage}>
+      <AlertDialogTrigger render={<Button variant="outline" />}>
+        Delete Task
+      </AlertDialogTrigger>
+      <AlertDialogContent {...dialogInStage(container)}>
         <AlertDialogHeader>
           <AlertDialogMedia variant="destructive">
             <Trash2Icon />
           </AlertDialogMedia>
           <AlertDialogTitle>Delete this task?</AlertDialogTitle>
           <AlertDialogDescription>
-            <strong>Write the launch announcement</strong>, its 4 subtasks and 3 comments are removed for everyone.
-            Files linked from Google Drive stay where they are.
+            <strong>Write the launch announcement</strong>, its 4 subtasks and 3
+            comments are removed for everyone. Files linked from Google Drive
+            stay where they are.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={() => setOpen(false)}>
+          <AlertDialogAction
+            variant="destructive"
+            onClick={() => setOpen(false)}
+          >
             Delete Task
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -192,17 +186,21 @@ function SignOutDialog({ container }: { container: Stage }) {
         <LogOutIcon data-icon="inline-start" />
         Sign Out Everywhere
       </AlertDialogTrigger>
-      <AlertDialogContent size="sm" container={container} initialFocus={false} className={inStage}>
+      <AlertDialogContent size="sm" {...dialogInStage(container)}>
         <AlertDialogHeader>
           <AlertDialogMedia>
             <LogOutIcon />
           </AlertDialogMedia>
           <AlertDialogTitle>Sign out of all devices?</AlertDialogTitle>
-          <AlertDialogDescription>You’ll need to sign in again on 4 devices, including this one.</AlertDialogDescription>
+          <AlertDialogDescription>
+            You’ll need to sign in again on 4 devices, including this one.
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => setOpen(false)}>Sign Out</AlertDialogAction>
+          <AlertDialogAction onClick={() => setOpen(false)}>
+            Sign Out
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </PreviewRoot>
@@ -213,6 +211,11 @@ function SignOutDialog({ container }: { container: Stage }) {
  * The pending state, shown in place. The bar above the stage switches the
  * dialog between ready and pending; Rotate key runs the request for real.
  */
+const dialogStates = [
+  { value: "ready", label: "Ready" },
+  { value: "pending", label: "Pending" },
+]
+
 function PendingDemo() {
   const [open, setOpen] = React.useState(true)
   const [pending, setPending] = React.useState(true)
@@ -228,8 +231,7 @@ function PendingDemo() {
     }, 1400)
   }
 
-  function showState(next: string | undefined) {
-    if (!next) return
+  function showState(next: string) {
     window.clearTimeout(timer.current)
     setPending(next === "pending")
     setOpen(true)
@@ -237,31 +239,34 @@ function PendingDemo() {
 
   return (
     <div className="grid">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b px-6 py-3 sm:px-12">
-        <p className="text-caption text-muted-foreground">Dialog state</p>
-        <ToggleGroup
-          size="sm"
-          aria-label="Dialog state"
-          value={[pending ? "pending" : "ready"]}
-          onValueChange={(value) => showState(value[0])}
-        >
-          <ToggleGroupItem value="ready">Ready</ToggleGroupItem>
-          <ToggleGroupItem value="pending">Pending</ToggleGroupItem>
-        </ToggleGroup>
-      </div>
+      <StageSwitcher
+        label={
+          <p className="text-caption text-muted-foreground">Dialog state</p>
+        }
+        aria-label="Dialog state"
+        value={pending ? "pending" : "ready"}
+        options={dialogStates}
+        onValueChange={showState}
+      />
       <DialogStage title="API keys" meta="Acme Inc. · Settings" rows={keyRows}>
         {(container) => (
-          <PreviewRoot open={open} onOpenChange={(next) => !pending && setOpen(next)}>
+          <PreviewRoot
+            open={open}
+            onOpenChange={(next) => !pending && setOpen(next)}
+          >
             <AlertDialogTrigger render={<Button variant="outline" />}>
               <KeyRoundIcon data-icon="inline-start" />
               Rotate API Key
             </AlertDialogTrigger>
-            <AlertDialogContent container={container} initialFocus={false} className={inStage}>
+            <AlertDialogContent {...dialogInStage(container)}>
               <AlertDialogHeader>
-                <AlertDialogTitle>Rotate the HubSpot sync key?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  Rotate the HubSpot sync key?
+                </AlertDialogTitle>
                 <AlertDialogDescription>
-                  The current key stops working in 10 minutes. Paste the new key into the HubSpot integration before
-                  then, or tasks stop syncing.
+                  The current key stops working in 10 minutes. Paste the new key
+                  into the HubSpot integration before then, or tasks stop
+                  syncing.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -293,22 +298,27 @@ function TypeToConfirmDialog({ container }: { container: Stage }) {
         if (!next) setValue("")
       }}
     >
-      <AlertDialogTrigger render={<Button variant="destructive" />}>Delete Project</AlertDialogTrigger>
-      <AlertDialogContent container={container} initialFocus={false} className={inStage}>
+      <AlertDialogTrigger render={<Button variant="destructive" />}>
+        Delete Project
+      </AlertDialogTrigger>
+      <AlertDialogContent {...dialogInStage(container)}>
         <AlertDialogHeader>
           <AlertDialogMedia variant="destructive">
             <Trash2Icon />
           </AlertDialogMedia>
           <AlertDialogTitle>Delete {project}?</AlertDialogTitle>
           <AlertDialogDescription>
-            This removes the project, its 30 tasks, 12 docs and 3 automations for everyone in Acme Inc. You can’t
-            undo this. Archive the project instead to keep its history.
+            This removes the project, its 30 tasks, 12 docs and 3 automations
+            for everyone in Acme Inc. You can’t undo this. Archive the project
+            instead to keep its history.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Field>
           <FieldLabel htmlFor="alert-confirm">
             <span>
-              Type <span className="font-semibold text-foreground">{project}</span> to confirm
+              Type{" "}
+              <span className="font-semibold text-foreground">{project}</span>{" "}
+              to confirm
             </span>
           </FieldLabel>
           <Input
@@ -321,7 +331,11 @@ function TypeToConfirmDialog({ container }: { container: Stage }) {
         </Field>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" disabled={!matches} onClick={() => setOpen(false)}>
+          <AlertDialogAction
+            variant="destructive"
+            disabled={!matches}
+            onClick={() => setOpen(false)}
+          >
             Delete Project
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -357,7 +371,11 @@ export default function AlertDialogDocs() {
   </AlertDialogContent>
 </AlertDialog>`}
       >
-        <DialogStage title="Notify owner on Done" meta="Automation · Website relaunch" rows={ruleRows}>
+        <DialogStage
+          title="Notify owner on Done"
+          meta="Automation · Website relaunch"
+          rows={ruleRows}
+        >
           {(container) => <RunRuleDialog container={container} />}
         </DialogStage>
       </Example>
@@ -380,7 +398,11 @@ export default function AlertDialogDocs() {
   </AlertDialogFooter>
 </AlertDialogContent>`}
       >
-        <DialogStage title="Write the launch announcement" meta="Task · Website relaunch" rows={taskRows}>
+        <DialogStage
+          title="Write the launch announcement"
+          meta="Task · Website relaunch"
+          rows={taskRows}
+        >
           {(container) => <DeleteTaskDialog container={container} />}
         </DialogStage>
       </Example>
@@ -391,7 +413,11 @@ export default function AlertDialogDocs() {
         description={`size="sm" narrows the dialog to --dialog-width-sm, centres a short question and gives both answers equal width. Good for sign-out and leave prompts.`}
         code={`<AlertDialogContent size="sm">…</AlertDialogContent>`}
       >
-        <DialogStage title="Sessions" meta="4 devices signed in" rows={sessionRows}>
+        <DialogStage
+          title="Sessions"
+          meta="4 devices signed in"
+          rows={sessionRows}
+        >
           {(container) => <SignOutDialog container={container} />}
         </DialogStage>
       </Example>
@@ -441,7 +467,11 @@ const matches = value.trim() === "Help center"
   </AlertDialogFooter>
 </AlertDialogContent>`}
       >
-        <DialogStage title="Help center" meta="Paused · Settings · Danger zone" rows={projectRows}>
+        <DialogStage
+          title="Help center"
+          meta="Paused · Settings · Danger zone"
+          rows={projectRows}
+        >
           {(container) => <TypeToConfirmDialog container={container} />}
         </DialogStage>
       </Example>
@@ -462,13 +492,51 @@ const matches = value.trim() === "Help center"
 
       <ApiTable
         rows={[
-          { prop: "open", type: "boolean", description: "Controlled open state. Pair with onOpenChange." },
-          { prop: "onOpenChange", type: "(open: boolean) => void", description: "Called when the dialog opens or closes. Ignore it while a request is pending." },
-          { prop: "size", type: '"default" | "sm"', default: '"default"', description: "On AlertDialogContent. Maximum width: --dialog-width, or --dialog-width-sm for sm, which also centres the content and puts both buttons side by side." },
-          { prop: "variant", type: "Button variant", default: '"default"', description: "On AlertDialogAction, a Button that does not close the dialog by itself. Use \"destructive\" for actions that delete data." },
-          { prop: "variant (cancel)", type: "Button variant", default: '"outline"', description: "On AlertDialogCancel, which always closes the dialog." },
-          { prop: "variant (media)", type: '"default" | "destructive"', default: '"default"', description: "On AlertDialogMedia. The default tile is bg-muted with a hairline border; destructive tints it with bg-destructive-subtle and drops the border." },
-          { prop: "render", type: "ReactElement", description: "On AlertDialogTrigger. Render as a Button: render={<Button variant=\"outline\" />}." },
+          {
+            prop: "open",
+            type: "boolean",
+            description: "Controlled open state. Pair with onOpenChange.",
+          },
+          {
+            prop: "onOpenChange",
+            type: "(open: boolean) => void",
+            description:
+              "Called when the dialog opens or closes. Ignore it while a request is pending.",
+          },
+          {
+            prop: "size",
+            type: '"default" | "sm"',
+            default: '"default"',
+            description:
+              "On AlertDialogContent. Maximum width: --dialog-width, or --dialog-width-sm for sm, which also centres the content and puts both buttons side by side.",
+          },
+          {
+            prop: "variant",
+            type: "Button variant",
+            default: '"default"',
+            description:
+              'On AlertDialogAction, a Button that does not close the dialog by itself. Use "destructive" for actions that delete data.',
+          },
+          {
+            prop: "variant (cancel)",
+            type: "Button variant",
+            default: '"outline"',
+            description:
+              "On AlertDialogCancel, which always closes the dialog.",
+          },
+          {
+            prop: "variant (media)",
+            type: '"default" | "destructive"',
+            default: '"default"',
+            description:
+              "On AlertDialogMedia. The default tile is bg-muted with a hairline border; destructive tints it with bg-destructive-subtle and drops the border.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description:
+              'On AlertDialogTrigger. Render as a Button: render={<Button variant="outline" />}.',
+          },
         ]}
       />
     </Examples>

@@ -5,7 +5,13 @@ import { usePathname } from "next/navigation"
 import { MenuIcon, XIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { SidebarPanel } from "@/components/viewer/sidebar-panel"
 
 /**
@@ -48,7 +54,10 @@ export function MobileMenu() {
         <SidebarPanel
           onNavigate={close}
           end={
-            <SheetClose render={<Button variant="ghost" size="icon-sm" />} aria-label="Close navigation">
+            <SheetClose
+              render={<Button variant="ghost" size="icon-sm" />}
+              aria-label="Close navigation"
+            >
               <XIcon aria-hidden="true" />
             </SheetClose>
           }

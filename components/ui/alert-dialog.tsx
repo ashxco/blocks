@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { ScopedPortal } from "@/lib/portal-container"
 
 import { Button } from "@/components/ui/button"
+import { dialogStyles } from "@/components/ui/dialog"
 
 /**
  * Blocks alert dialog. Same surface as Dialog (bg-popover, hairline border,
@@ -13,19 +14,23 @@ import { Button } from "@/components/ui/button"
  * it with Cancel or the action. Use size="sm" for a short, centred question.
  */
 
-function AlertDialog({ ...props }: AlertDialogPrimitive.Root.Props) {
+function AlertDialog(props: AlertDialogPrimitive.Root.Props) {
   return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />
 }
 
-function AlertDialogTrigger({ ...props }: AlertDialogPrimitive.Trigger.Props) {
+function AlertDialogTrigger(props: AlertDialogPrimitive.Trigger.Props) {
   return (
     <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />
   )
 }
 
-function AlertDialogPortal({ ...props }: AlertDialogPrimitive.Portal.Props) {
+function AlertDialogPortal(props: AlertDialogPrimitive.Portal.Props) {
   return (
-    <ScopedPortal portal={AlertDialogPrimitive.Portal} data-slot="alert-dialog-portal" {...props} />
+    <ScopedPortal
+      portal={AlertDialogPrimitive.Portal}
+      data-slot="alert-dialog-portal"
+      {...props}
+    />
   )
 }
 
@@ -36,13 +41,7 @@ function AlertDialogOverlay({
   return (
     <AlertDialogPrimitive.Backdrop
       data-slot="alert-dialog-overlay"
-      className={cn(
-        "fixed inset-0 isolate z-(--z-overlay) bg-overlay backdrop-blur-glass",
-        "transition-opacity duration-(--duration-base) ease-out",
-        "data-starting-style:opacity-0",
-        "data-ending-style:opacity-0 data-ending-style:duration-(--duration-fast) data-ending-style:ease-in",
-        className
-      )}
+      className={cn(dialogStyles.overlay, className)}
       {...props}
     />
   )
@@ -65,13 +64,9 @@ function AlertDialogContent({
         data-slot="alert-dialog-content"
         data-size={size}
         className={cn(
-          "group/alert-dialog-content fixed top-1/2 left-1/2 z-(--z-overlay) grid w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6",
-          "max-h-[calc(100dvh-2rem)] max-w-(--dialog-width) overflow-y-auto overscroll-contain",
+          "group/alert-dialog-content",
+          dialogStyles.popup,
           "data-[size=sm]:max-w-(--dialog-width-sm)",
-          "rounded-(--dialog-radius) border bg-popover p-(--dialog-padding) text-body text-popover-foreground outline-none",
-          "transition-[opacity,scale] duration-(--duration-base) ease-out",
-          "data-starting-style:scale-98 data-starting-style:opacity-0",
-          "data-ending-style:scale-98 data-ending-style:opacity-0 data-ending-style:duration-(--duration-fast) data-ending-style:ease-in",
           className
         )}
         {...props}
@@ -129,7 +124,9 @@ function AlertDialogMedia({
   className,
   variant = "default",
   ...props
-}: React.ComponentProps<"div"> & { variant?: keyof typeof alertDialogMediaVariants }) {
+}: React.ComponentProps<"div"> & {
+  variant?: keyof typeof alertDialogMediaVariants
+}) {
   return (
     <div
       data-slot="alert-dialog-media"
@@ -181,11 +178,7 @@ function AlertDialogAction({
   ...props
 }: React.ComponentProps<typeof Button>) {
   return (
-    <Button
-      data-slot="alert-dialog-action"
-      className={cn(className)}
-      {...props}
-    />
+    <Button data-slot="alert-dialog-action" className={className} {...props} />
   )
 }
 
@@ -199,7 +192,7 @@ function AlertDialogCancel({
   return (
     <AlertDialogPrimitive.Close
       data-slot="alert-dialog-cancel"
-      className={cn(className)}
+      className={className}
       render={<Button variant={variant} size={size} />}
       {...props}
     />

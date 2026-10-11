@@ -7,9 +7,13 @@ import { cn } from "@/lib/utils"
  * accent is ink like the others (Mono), --brand-mark-ring insets that block
  * with a canvas-coloured edge, so it still stands apart.
  */
-export function BlocksMark({ className }: { className?: string }) {
+function BlocksMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" className={cn("size-5 shrink-0", className)}>
+    <svg
+      viewBox="0 0 20 20"
+      aria-hidden="true"
+      className={cn("size-5 shrink-0", className)}
+    >
       <rect x="0" y="0" width="9" height="9" rx="2" className="fill-current" />
       <rect x="11" y="0" width="9" height="9" rx="2" className="fill-current" />
       <rect x="0" y="11" width="9" height="9" rx="2" className="fill-current" />
@@ -25,7 +29,13 @@ export function BlocksMark({ className }: { className?: string }) {
   )
 }
 
-export function Wordmark({ className, onClick }: { className?: string; onClick?: () => void }) {
+export function Wordmark({
+  className,
+  onClick,
+}: {
+  className?: string
+  onClick?: () => void
+}) {
   return (
     <Link
       href="/"

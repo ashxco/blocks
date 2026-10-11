@@ -29,13 +29,23 @@
  * when it is done, so parallel runs never share or leave behind a browser.
  */
 import { spawn } from "node:child_process"
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs"
 import os from "node:os"
 import path from "node:path"
 
-const [url, out, w = "1440", h = "2400", mode = "light", waitArg, themeArg] = process.argv.slice(2)
+const [url, out, w = "1440", h = "2400", mode = "light", waitArg, themeArg] =
+  process.argv.slice(2)
 if (!url || !out) {
-  console.error("Usage: node scripts/shot.mjs <url> <out.png> [width] [height] [light|dark] [wait ms] [theme]")
+  console.error(
+    "Usage: node scripts/shot.mjs <url> <out.png> [width] [height] [light|dark] [wait ms] [theme]"
+  )
   process.exit(1)
 }
 const theme = themeArg || process.env.SHOT_THEME || undefined
@@ -56,12 +66,15 @@ if (![width, height, wait].every((n) => Number.isFinite(n) && n > 0)) {
 const IDLE_MS = 500
 const SETTLE_MS = 1200
 
-const chromePath = process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+const chromePath =
+  process.env.CHROME_PATH ??
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 const target = new URL(url)
 if (mode === "dark" || mode === "light") {
   target.searchParams.set("mode", mode)
   // An old-style ?theme=dark|light in the URL would only repeat the mode.
-  if (["dark", "light"].includes(target.searchParams.get("theme"))) target.searchParams.delete("theme")
+  if (["dark", "light"].includes(target.searchParams.get("theme")))
+    target.searchParams.delete("theme")
 }
 if (theme) target.searchParams.set("theme", theme)
 const outPath = path.resolve(out)
@@ -105,7 +118,10 @@ function fail(message) {
   process.exit(2)
 }
 // A hard stop, so a stuck Chrome can never hang the caller.
-const hardStop = setTimeout(() => fail(`timed out after ${wait + 20000}ms`), wait + 20000)
+const hardStop = setTimeout(
+  () => fail(`timed out after ${wait + 20000}ms`),
+  wait + 20000
+)
 chrome.on("exit", (code) => {
   if (!finished) fail(`Chrome exited early with code ${code}`)
 })
@@ -129,7 +145,9 @@ async function devtoolsPort() {
 async function pageSocketUrl(port) {
   for (let i = 0; i < 50; i++) {
     try {
-      const list = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()
+      const list = await (
+        await fetch(`http://127.0.0.1:${port}/json/list`)
+      ).json()
       const page = list.find((t) => t.type === "page")
       if (page) return page.webSocketDebuggerUrl
     } catch {}
@@ -149,13 +167,16 @@ function connect(socketUrl) {
       if (msg.id && pending.has(msg.id)) {
         const { resolve, reject } = pending.get(msg.id)
         pending.delete(msg.id)
-        if (msg.error) reject(new Error(`${msg.error.message} (${msg.error.code})`))
+        if (msg.error)
+          reject(new Error(`${msg.error.message} (${msg.error.code})`))
         else resolve(msg.result)
       } else if (msg.method) {
         for (const listener of listeners) listener(msg.method, msg.params)
       }
     })
-    ws.addEventListener("error", () => reject(new Error("DevTools socket error")))
+    ws.addEventListener("error", () =>
+      reject(new Error("DevTools socket error"))
+    )
     ws.addEventListener("open", () =>
       resolve({
         send(method, params = {}) {
@@ -189,7 +210,10 @@ try {
     else if (method === "Network.requestWillBeSent") {
       inflight.add(params.requestId)
       lastNetwork = Date.now()
-    } else if (method === "Network.loadingFinished" || method === "Network.loadingFailed") {
+    } else if (
+      method === "Network.loadingFinished" ||
+      method === "Network.loadingFailed"
+    ) {
       inflight.delete(params.requestId)
       lastNetwork = Date.now()
     }
@@ -208,7 +232,13 @@ try {
   const started = Date.now()
   const remaining = () => wait - (Date.now() - started)
   const evaluate = async (expression) =>
-    (await cdp.send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true })).result?.value
+    (
+      await cdp.send("Runtime.evaluate", {
+        expression,
+        returnByValue: true,
+        awaitPromise: true,
+      })
+    ).result?.value
 
   await cdp.send("Page.navigate", { url: target.toString() })
 
@@ -226,7 +256,11 @@ try {
   }
 
   // 3. The network is quiet (lazy chunks, fonts, preview iframes).
-  while (remaining() > 0 && (inflight.size > 0 || Date.now() - lastNetwork < IDLE_MS)) await sleep(50)
+  while (
+    remaining() > 0 &&
+    (inflight.size > 0 || Date.now() - lastNetwork < IDLE_MS)
+  )
+    await sleep(50)
 
   // 4. Every font face the page uses has loaded. Theme fonts that are not
   //    preloaded (Inter Tight, Manrope, Bricolage Grotesque, DM Sans,
@@ -253,16 +287,28 @@ try {
 
   const shot = await cdp.send("Page.captureScreenshot", { format: "png" })
   writeFileSync(outPath, Buffer.from(shot.data, "base64"))
-  if (remaining() <= 0) console.warn(`shot.mjs: the page was still busy after ${wait}ms; captured anyway`)
+  if (remaining() <= 0)
+    console.warn(
+      `shot.mjs: the page was still busy after ${wait}ms; captured anyway`
+    )
 
   finished = true
   clearTimeout(hardStop)
-  const look = [target.searchParams.get("theme"), target.searchParams.get("mode")].filter(Boolean).join(", ")
+  const look = [
+    target.searchParams.get("theme"),
+    target.searchParams.get("mode"),
+  ]
+    .filter(Boolean)
+    .join(", ")
   console.log(`Saved ${out} (${width}×${height}${look ? `, ${look}` : ""})`)
   // Chrome often exits before it answers Browser.close, which would leave
   // this promise unsettled forever, so the close only gets a moment.
   const exited = new Promise((resolve) => chrome.once("exit", resolve))
-  await Promise.race([cdp.send("Browser.close").catch(() => {}), exited, sleep(1000)])
+  await Promise.race([
+    cdp.send("Browser.close").catch(() => {}),
+    exited,
+    sleep(1000),
+  ])
   cdp.close()
   await Promise.race([exited, sleep(2000)])
   cleanup()

@@ -38,58 +38,152 @@ type Span = Count | "full"
 
 const gridColumns: Record<Tier, Record<Count, string>> = {
   base: {
-    1: "grid-cols-1", 2: "grid-cols-2", 3: "grid-cols-3", 4: "grid-cols-4", 5: "grid-cols-5", 6: "grid-cols-6",
-    7: "grid-cols-7", 8: "grid-cols-8", 9: "grid-cols-9", 10: "grid-cols-10", 11: "grid-cols-11", 12: "grid-cols-12",
+    1: "grid-cols-1",
+    2: "grid-cols-2",
+    3: "grid-cols-3",
+    4: "grid-cols-4",
+    5: "grid-cols-5",
+    6: "grid-cols-6",
+    7: "grid-cols-7",
+    8: "grid-cols-8",
+    9: "grid-cols-9",
+    10: "grid-cols-10",
+    11: "grid-cols-11",
+    12: "grid-cols-12",
   },
   md: {
-    1: "md:grid-cols-1", 2: "md:grid-cols-2", 3: "md:grid-cols-3", 4: "md:grid-cols-4", 5: "md:grid-cols-5", 6: "md:grid-cols-6",
-    7: "md:grid-cols-7", 8: "md:grid-cols-8", 9: "md:grid-cols-9", 10: "md:grid-cols-10", 11: "md:grid-cols-11", 12: "md:grid-cols-12",
+    1: "md:grid-cols-1",
+    2: "md:grid-cols-2",
+    3: "md:grid-cols-3",
+    4: "md:grid-cols-4",
+    5: "md:grid-cols-5",
+    6: "md:grid-cols-6",
+    7: "md:grid-cols-7",
+    8: "md:grid-cols-8",
+    9: "md:grid-cols-9",
+    10: "md:grid-cols-10",
+    11: "md:grid-cols-11",
+    12: "md:grid-cols-12",
   },
   lg: {
-    1: "lg:grid-cols-1", 2: "lg:grid-cols-2", 3: "lg:grid-cols-3", 4: "lg:grid-cols-4", 5: "lg:grid-cols-5", 6: "lg:grid-cols-6",
-    7: "lg:grid-cols-7", 8: "lg:grid-cols-8", 9: "lg:grid-cols-9", 10: "lg:grid-cols-10", 11: "lg:grid-cols-11", 12: "lg:grid-cols-12",
+    1: "lg:grid-cols-1",
+    2: "lg:grid-cols-2",
+    3: "lg:grid-cols-3",
+    4: "lg:grid-cols-4",
+    5: "lg:grid-cols-5",
+    6: "lg:grid-cols-6",
+    7: "lg:grid-cols-7",
+    8: "lg:grid-cols-8",
+    9: "lg:grid-cols-9",
+    10: "lg:grid-cols-10",
+    11: "lg:grid-cols-11",
+    12: "lg:grid-cols-12",
   },
 }
 
 const spanClasses: Record<Tier, Record<Span, string>> = {
   base: {
-    1: "col-span-1", 2: "col-span-2", 3: "col-span-3", 4: "col-span-4", 5: "col-span-5", 6: "col-span-6",
-    7: "col-span-7", 8: "col-span-8", 9: "col-span-9", 10: "col-span-10", 11: "col-span-11", 12: "col-span-12",
+    1: "col-span-1",
+    2: "col-span-2",
+    3: "col-span-3",
+    4: "col-span-4",
+    5: "col-span-5",
+    6: "col-span-6",
+    7: "col-span-7",
+    8: "col-span-8",
+    9: "col-span-9",
+    10: "col-span-10",
+    11: "col-span-11",
+    12: "col-span-12",
     full: "col-span-full",
   },
   md: {
-    1: "md:col-span-1", 2: "md:col-span-2", 3: "md:col-span-3", 4: "md:col-span-4", 5: "md:col-span-5", 6: "md:col-span-6",
-    7: "md:col-span-7", 8: "md:col-span-8", 9: "md:col-span-9", 10: "md:col-span-10", 11: "md:col-span-11", 12: "md:col-span-12",
+    1: "md:col-span-1",
+    2: "md:col-span-2",
+    3: "md:col-span-3",
+    4: "md:col-span-4",
+    5: "md:col-span-5",
+    6: "md:col-span-6",
+    7: "md:col-span-7",
+    8: "md:col-span-8",
+    9: "md:col-span-9",
+    10: "md:col-span-10",
+    11: "md:col-span-11",
+    12: "md:col-span-12",
     full: "md:col-span-full",
   },
   lg: {
-    1: "lg:col-span-1", 2: "lg:col-span-2", 3: "lg:col-span-3", 4: "lg:col-span-4", 5: "lg:col-span-5", 6: "lg:col-span-6",
-    7: "lg:col-span-7", 8: "lg:col-span-8", 9: "lg:col-span-9", 10: "lg:col-span-10", 11: "lg:col-span-11", 12: "lg:col-span-12",
+    1: "lg:col-span-1",
+    2: "lg:col-span-2",
+    3: "lg:col-span-3",
+    4: "lg:col-span-4",
+    5: "lg:col-span-5",
+    6: "lg:col-span-6",
+    7: "lg:col-span-7",
+    8: "lg:col-span-8",
+    9: "lg:col-span-9",
+    10: "lg:col-span-10",
+    11: "lg:col-span-11",
+    12: "lg:col-span-12",
     full: "lg:col-span-full",
   },
 }
 
 const startClasses: Record<Tier, Record<Count, string>> = {
   base: {
-    1: "col-start-1", 2: "col-start-2", 3: "col-start-3", 4: "col-start-4", 5: "col-start-5", 6: "col-start-6",
-    7: "col-start-7", 8: "col-start-8", 9: "col-start-9", 10: "col-start-10", 11: "col-start-11", 12: "col-start-12",
+    1: "col-start-1",
+    2: "col-start-2",
+    3: "col-start-3",
+    4: "col-start-4",
+    5: "col-start-5",
+    6: "col-start-6",
+    7: "col-start-7",
+    8: "col-start-8",
+    9: "col-start-9",
+    10: "col-start-10",
+    11: "col-start-11",
+    12: "col-start-12",
   },
   md: {
-    1: "md:col-start-1", 2: "md:col-start-2", 3: "md:col-start-3", 4: "md:col-start-4", 5: "md:col-start-5", 6: "md:col-start-6",
-    7: "md:col-start-7", 8: "md:col-start-8", 9: "md:col-start-9", 10: "md:col-start-10", 11: "md:col-start-11", 12: "md:col-start-12",
+    1: "md:col-start-1",
+    2: "md:col-start-2",
+    3: "md:col-start-3",
+    4: "md:col-start-4",
+    5: "md:col-start-5",
+    6: "md:col-start-6",
+    7: "md:col-start-7",
+    8: "md:col-start-8",
+    9: "md:col-start-9",
+    10: "md:col-start-10",
+    11: "md:col-start-11",
+    12: "md:col-start-12",
   },
   lg: {
-    1: "lg:col-start-1", 2: "lg:col-start-2", 3: "lg:col-start-3", 4: "lg:col-start-4", 5: "lg:col-start-5", 6: "lg:col-start-6",
-    7: "lg:col-start-7", 8: "lg:col-start-8", 9: "lg:col-start-9", 10: "lg:col-start-10", 11: "lg:col-start-11", 12: "lg:col-start-12",
+    1: "lg:col-start-1",
+    2: "lg:col-start-2",
+    3: "lg:col-start-3",
+    4: "lg:col-start-4",
+    5: "lg:col-start-5",
+    6: "lg:col-start-6",
+    7: "lg:col-start-7",
+    8: "lg:col-start-8",
+    9: "lg:col-start-9",
+    10: "lg:col-start-10",
+    11: "lg:col-start-11",
+    12: "lg:col-start-12",
   },
 }
 
 /** A value per tier, each tier keeping the one below it when it is left out. */
 function perTier<T>(value: Responsive<T> | undefined, base: T): Record<Tier, T>
-function perTier<T>(value: Responsive<T> | undefined): Record<Tier, T | undefined>
+function perTier<T>(
+  value: Responsive<T> | undefined
+): Record<Tier, T | undefined>
 function perTier<T>(value: Responsive<T> | undefined, base?: T) {
   const given: Partial<Record<Tier, T>> =
-    value !== null && typeof value === "object" ? (value as Partial<Record<Tier, T>>) : { base: value as T | undefined }
+    value !== null && typeof value === "object"
+      ? (value as Partial<Record<Tier, T>>)
+      : { base: value as T | undefined }
   let current = given.base ?? base
   return Object.fromEntries(
     tiers.map((tier) => {
@@ -101,12 +195,17 @@ function perTier<T>(value: Responsive<T> | undefined, base?: T) {
 
 /** The system grid's columns per tier, from the grid.columns token. */
 const systemColumns = perTier(
-  { base: grid.columns.base as Count, md: grid.columns.md as Count | undefined, lg: grid.columns.lg as Count | undefined },
+  {
+    base: grid.columns.base as Count,
+    md: grid.columns.md as Count | undefined,
+    lg: grid.columns.lg as Count | undefined,
+  },
   grid.columns.base as Count
 )
 
 /** Columns of the nearest Grid at each tier, so items keep their spans inside it. */
-const GridColumnsContext = React.createContext<Record<Tier, Count>>(systemColumns)
+const GridColumnsContext =
+  React.createContext<Record<Tier, Count>>(systemColumns)
 
 function Grid({
   className,
@@ -126,16 +225,34 @@ function Grid({
         className: cn(
           system
             ? "grid-system"
-            : cn("grid gap-(--grid-gutter)", tiers.map((tier, i) => (i === 0 || counts[tier] !== counts[tiers[i - 1]] ? gridColumns[tier][counts[tier]] : null))),
+            : [
+                "grid gap-(--grid-gutter)",
+                tiers.map((tier, i) =>
+                  i === 0 || counts[tier] !== counts[tiers[i - 1]]
+                    ? gridColumns[tier][counts[tier]]
+                    : null
+                ),
+              ],
           className
         ),
       },
       props
     ),
     render,
-    state: { slot: "grid", columns: system ? "system" : typeof columns === "number" ? String(columns) : "responsive" },
+    state: {
+      slot: "grid",
+      columns: system
+        ? "system"
+        : typeof columns === "number"
+          ? String(columns)
+          : "responsive",
+    },
   })
-  return <GridColumnsContext.Provider value={counts}>{element}</GridColumnsContext.Provider>
+  return (
+    <GridColumnsContext.Provider value={counts}>
+      {element}
+    </GridColumnsContext.Provider>
+  )
 }
 
 function GridItem({
@@ -160,15 +277,20 @@ function GridItem({
     const cols = columns[tier]
     const s = spans[tier]
     // A span wider than the grid at this tier fills it instead.
-    const width = s === undefined ? 1 : s === "full" ? cols : (Math.min(s, cols) as Count)
+    const width =
+      s === undefined ? 1 : s === "full" ? cols : (Math.min(s, cols) as Count)
     const full = s === "full" || width === cols
     // A start that would push the item past the last column moves back.
-    const from = starts[tier] === undefined || full ? undefined : (Math.min(starts[tier]!, cols - width + 1) as Count)
+    const from =
+      starts[tier] === undefined || full
+        ? undefined
+        : (Math.min(starts[tier]!, cols - width + 1) as Count)
     const signature = `${s === undefined ? "" : full ? "full" : width}:${from ?? ""}`
     // col-span-* sets the grid-column shorthand, which resets the start, so a
     // tier that changes either writes both again.
     if (signature !== previous) {
-      if (s !== undefined) classes.push(spanClasses[tier][full ? "full" : width])
+      if (s !== undefined)
+        classes.push(spanClasses[tier][full ? "full" : width])
       if (from !== undefined) classes.push(startClasses[tier][from])
       previous = signature
     }
@@ -176,7 +298,10 @@ function GridItem({
 
   return useRender({
     defaultTagName: "div",
-    props: mergeProps<"div">({ className: cn("min-w-0", classes, className) }, props),
+    props: mergeProps<"div">(
+      { className: cn("min-w-0", classes, className) },
+      props
+    ),
     render,
     state: { slot: "grid-item" },
   })

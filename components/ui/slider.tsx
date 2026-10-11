@@ -33,7 +33,11 @@ function Slider({
   /** Accessible name for each thumb, by index. */
   getAriaLabel?: (index: number) => string
   /** Readable value for each thumb, such as "1,024 MB". */
-  getAriaValueText?: (formattedValue: string, value: number, index: number) => string
+  getAriaValueText?: (
+    formattedValue: string,
+    value: number,
+    index: number
+  ) => string
 }) {
   const values = toValues(value) ?? toValues(defaultValue) ?? [min]
 

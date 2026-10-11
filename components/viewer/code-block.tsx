@@ -17,7 +17,15 @@ import { cn } from "@/lib/utils"
  *   comment and punctuation   --muted-foreground
  */
 
-type Kind = "plain" | "keyword" | "tag" | "attr" | "string" | "number" | "comment" | "punct"
+type Kind =
+  | "plain"
+  | "keyword"
+  | "tag"
+  | "attr"
+  | "string"
+  | "number"
+  | "comment"
+  | "punct"
 
 const kindClass: Record<Kind, string | undefined> = {
   plain: undefined,
@@ -75,7 +83,8 @@ function tokenize(code: string): Token[] {
   }
 
   const comment = /\{\/\*[\s\S]*?\*\/\}|\/\*[\s\S]*?\*\/|\/\/[^\n]*/y
-  const string = /`(?:\\[\s\S]|[^`\\])*`|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/y
+  const string =
+    /`(?:\\[\s\S]|[^`\\])*`|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/y
   const tagOpen = /<\/?(?=[A-Za-z])/y
   const tagName = /[A-Za-z][\w.:-]*/y
   const attrName = /[A-Za-z_$][\w$:-]*/y
@@ -107,15 +116,22 @@ function tokenize(code: string): Token[] {
         i += 1
         continue
       }
-      if ((m = match(space)) || (m = match(comment))) push(m[0].trim() ? "comment" : "plain", m[0])
+      if ((m = match(space)) || (m = match(comment)))
+        push(m[0].trim() ? "comment" : "plain", m[0])
       else if ((m = match(string))) push("string", m[0])
       else if (tag.braces === 0 && (m = match(attrName))) push("attr", m[0])
-      else if (tag.braces > 0 && (m = match(word))) push(keywords.has(m[0]) ? "keyword" : "plain", m[0])
+      else if (tag.braces > 0 && (m = match(word)))
+        push(keywords.has(m[0]) ? "keyword" : "plain", m[0])
       else {
         const ch = code[i]
         if (ch === "{") tag.braces += 1
         if (ch === "}") tag.braces = Math.max(0, tag.braces - 1)
-        push(tag.braces === 0 && (ch === "=" || ch === "{" || ch === "}") ? "punct" : "plain", ch)
+        push(
+          tag.braces === 0 && (ch === "=" || ch === "{" || ch === "}")
+            ? "punct"
+            : "plain",
+          ch
+        )
         i += 1
         continue
       }
@@ -158,7 +174,8 @@ function tokenize(code: string): Token[] {
     if ((m = match(space))) push("plain", m[0])
     else if ((m = match(comment))) push("comment", m[0])
     else if ((m = match(string))) push("string", m[0])
-    else if ((m = match(word))) push(keywords.has(m[0]) ? "keyword" : "plain", m[0])
+    else if ((m = match(word)))
+      push(keywords.has(m[0]) ? "keyword" : "plain", m[0])
     else if ((m = match(number))) push("number", m[0])
     else {
       const ch = code[i]
@@ -200,14 +217,23 @@ function toLines(tokens: Token[]): Token[][] {
  * A highlighted, line-numbered code listing on the terminal surface. Line
  * numbers are generated content, so copying the code never picks them up.
  */
-export function CodeBlock({ code, className }: { code: string; className?: string }) {
-  const lines = React.useMemo(() => toLines(tokenize(code.replace(/\n$/, ""))), [code])
+export function CodeBlock({
+  code,
+  className,
+}: {
+  code: string
+  className?: string
+}) {
+  const lines = React.useMemo(
+    () => toLines(tokenize(code.replace(/\n$/, ""))),
+    [code]
+  )
   const gutter = String(lines.length).length
 
   return (
     <pre
       className={cn(
-        "dark overflow-auto bg-terminal py-5 font-mono text-code text-terminal-foreground [scrollbar-width:thin] sm:py-6",
+        "dark [scrollbar-width:thin] overflow-auto bg-terminal py-5 font-mono text-code text-terminal-foreground sm:py-6",
         className
       )}
       style={{ "--bk-gutter": `${gutter}ch` } as React.CSSProperties}

@@ -1,11 +1,20 @@
 "use client"
 
 import * as React from "react"
-import { addDays, differenceInCalendarDays, format, isSameDay, startOfMonth, subDays } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import type { DateRange } from "react-day-picker"
 
 import { ApiTable, Example, Examples, Guidelines, tokenPx } from "@/docs/kit"
+import {
+  addDays,
+  differenceInCalendarDays,
+  formatMonthDay,
+  formatMonthDayYear,
+  formatWeekdayMonthDay,
+  isSameDay,
+  startOfMonth,
+  subDays,
+} from "@/docs/sample/dates"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -75,7 +84,7 @@ function DueDate() {
       />
       <p className="text-caption text-muted-foreground" aria-live="polite">
         {date
-          ? `Due ${format(date, "EEEE, MMMM d")}. Jordan Lee gets a reminder the day before.`
+          ? `Due ${formatWeekdayMonthDay(date)}. Jordan Lee gets a reminder the day before.`
           : "Pick a weekday from tomorrow on."}
       </p>
     </div>
@@ -92,9 +101,9 @@ const presets = [
 function formatRange(range: DateRange | undefined) {
   if (!range?.from) return "Pick a date range"
   if (!range.to || differenceInCalendarDays(range.to, range.from) === 0) {
-    return format(range.from, "MMM d, yyyy")
+    return formatMonthDayYear(range.from)
   }
-  return `${format(range.from, "MMM d")} – ${format(range.to, "MMM d, yyyy")}`
+  return `${formatMonthDay(range.from)} – ${formatMonthDayYear(range.to)}`
 }
 
 /**

@@ -69,15 +69,21 @@ const menuStyles = {
  */
 const submenuOffsets = { sideOffset: 10, alignOffset: -7 } as const
 
-function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
+function DropdownMenu(props: MenuPrimitive.Root.Props) {
   return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />
 }
 
-function DropdownMenuPortal({ ...props }: MenuPrimitive.Portal.Props) {
-  return <ScopedPortal portal={MenuPrimitive.Portal} data-slot="dropdown-menu-portal" {...props} />
+function DropdownMenuPortal(props: MenuPrimitive.Portal.Props) {
+  return (
+    <ScopedPortal
+      portal={MenuPrimitive.Portal}
+      data-slot="dropdown-menu-portal"
+      {...props}
+    />
+  )
 }
 
-function DropdownMenuTrigger({ ...props }: MenuPrimitive.Trigger.Props) {
+function DropdownMenuTrigger(props: MenuPrimitive.Trigger.Props) {
   return <MenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />
 }
 
@@ -94,7 +100,12 @@ function DropdownMenuContent({
 }: MenuPrimitive.Popup.Props &
   Pick<
     MenuPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset" | "collisionAvoidance" | "collisionBoundary"
+    | "align"
+    | "alignOffset"
+    | "side"
+    | "sideOffset"
+    | "collisionAvoidance"
+    | "collisionBoundary"
   > & {
     /** Element to portal into instead of <body>, e.g. a preview stage. */
     container?: MenuPrimitive.Portal.Props["container"]
@@ -120,7 +131,7 @@ function DropdownMenuContent({
   )
 }
 
-function DropdownMenuGroup({ ...props }: MenuPrimitive.Group.Props) {
+function DropdownMenuGroup(props: MenuPrimitive.Group.Props) {
   return <MenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
 }
 
@@ -161,7 +172,7 @@ function DropdownMenuItem({
   )
 }
 
-function DropdownMenuSub({ ...props }: MenuPrimitive.SubmenuRoot.Props) {
+function DropdownMenuSub(props: MenuPrimitive.SubmenuRoot.Props) {
   return <MenuPrimitive.SubmenuRoot data-slot="dropdown-menu-sub" {...props} />
 }
 
@@ -210,7 +221,6 @@ function DropdownMenuSubContent({
 function DropdownMenuCheckboxItem({
   className,
   children,
-  checked,
   inset,
   ...props
 }: MenuPrimitive.CheckboxItem.Props & {
@@ -221,7 +231,6 @@ function DropdownMenuCheckboxItem({
       data-slot="dropdown-menu-checkbox-item"
       data-inset={inset || undefined}
       className={cn(menuStyles.checkableItem, className)}
-      checked={checked}
       {...props}
     >
       <span
@@ -237,7 +246,7 @@ function DropdownMenuCheckboxItem({
   )
 }
 
-function DropdownMenuRadioGroup({ ...props }: MenuPrimitive.RadioGroup.Props) {
+function DropdownMenuRadioGroup(props: MenuPrimitive.RadioGroup.Props) {
   return (
     <MenuPrimitive.RadioGroup
       data-slot="dropdown-menu-radio-group"

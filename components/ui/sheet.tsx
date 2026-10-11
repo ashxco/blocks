@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { ScopedPortal } from "@/lib/portal-container"
 
 import { Button } from "@/components/ui/button"
+import { dialogStyles } from "@/components/ui/dialog"
 
 /**
  * Blocks sheet. A dialog that slides in from an edge: bg-popover with a
@@ -44,20 +45,26 @@ const sideSize: Record<SheetSide, string> = {
     "max-h-[calc(100dvh-4rem)] data-starting-style:translate-y-[calc(100%+0.75rem)] data-ending-style:translate-y-[calc(100%+0.75rem)]",
 }
 
-function Sheet({ ...props }: SheetPrimitive.Root.Props) {
+function Sheet(props: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
 }
 
-function SheetTrigger({ ...props }: SheetPrimitive.Trigger.Props) {
+function SheetTrigger(props: SheetPrimitive.Trigger.Props) {
   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />
 }
 
-function SheetClose({ ...props }: SheetPrimitive.Close.Props) {
+function SheetClose(props: SheetPrimitive.Close.Props) {
   return <SheetPrimitive.Close data-slot="sheet-close" {...props} />
 }
 
-function SheetPortal({ ...props }: SheetPrimitive.Portal.Props) {
-  return <ScopedPortal portal={SheetPrimitive.Portal} data-slot="sheet-portal" {...props} />
+function SheetPortal(props: SheetPrimitive.Portal.Props) {
+  return (
+    <ScopedPortal
+      portal={SheetPrimitive.Portal}
+      data-slot="sheet-portal"
+      {...props}
+    />
+  )
 }
 
 function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
@@ -113,7 +120,6 @@ function SheetContent({
         {...props}
       >
         {children}
-        {/* Centred on the first line of the text-h4 title. */}
         {showCloseButton && (
           <SheetPrimitive.Close
             data-slot="sheet-close"
@@ -121,7 +127,7 @@ function SheetContent({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                className="absolute top-[calc(var(--dialog-padding)+var(--text-h4)*var(--text-h4--line-height)/2-var(--button-height-sm)/2)] right-[calc(var(--dialog-padding)+var(--text-h4)*var(--text-h4--line-height)/2-var(--button-height-sm)/2)] text-muted-foreground hover:text-foreground"
+                className={dialogStyles.close}
               />
             }
           >

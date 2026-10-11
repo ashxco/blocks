@@ -6,14 +6,15 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Segmented } from "@/components/viewer/segmented"
-import { useHydrated, useSiteMode } from "@/components/viewer/site-theme"
+import { useHydrated } from "@/components/viewer/hooks"
+import { useSiteMode } from "@/components/viewer/site-theme"
 import { themeFontsLabel } from "@/components/viewer/theme-picker"
 import { ThemeScope } from "@/lib/theme-scope"
 import type { ThemeMode } from "@/lib/themes"
 import { cn } from "@/lib/utils"
 
 import { OnlyInTheme } from "./by-theme"
-import { themes, type Theme } from "./data"
+import { modes, themes, type Theme } from "./data"
 
 /*
  * The Themes page's comparison strip: the same small composition five
@@ -27,11 +28,6 @@ import { themes, type Theme } from "./data"
  * above it; that choice applies to the strip only and is not saved. Below
  * @5xl the strip scrolls sideways, one column at a time.
  */
-
-const modeOptions: { value: ThemeMode; label: string }[] = [
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-]
 
 /* Tasks completed per day over a week, for the chart in every column. */
 const week = [46, 58, 52, 71, 64, 83, 77]
@@ -51,7 +47,7 @@ export function ThemeCompare() {
         {/* Invisible until hydrated, so it never shows the wrong mode as chosen. */}
         <Segmented
           label="Mode of the comparison"
-          options={modeOptions}
+          options={modes}
           value={chosen ?? site ?? "light"}
           onValueChange={setChosen}
           className={cn(!hydrated && "invisible")}
@@ -60,13 +56,16 @@ export function ThemeCompare() {
       <ul
         aria-label="Themes side by side"
         className={cn(
-          "-mx-gutter grid snap-x snap-mandatory scroll-px-gutter auto-cols-[15rem] grid-flow-col gap-x-4 overflow-x-auto px-gutter pt-1 pb-3 [scrollbar-width:thin]",
+          "-mx-gutter grid snap-x snap-mandatory scroll-px-gutter [scrollbar-width:thin] auto-cols-[15rem] grid-flow-col gap-x-4 overflow-x-auto px-gutter pt-1 pb-3",
           "@5xl:mx-0 @5xl:grid-flow-row @5xl:grid-cols-5 @5xl:overflow-visible @5xl:px-0 @5xl:pt-0 @5xl:pb-0",
           ROWS
         )}
       >
         {themes.map((theme) => (
-          <li key={theme.id} className="row-span-8 grid min-w-0 snap-start grid-rows-subgrid">
+          <li
+            key={theme.id}
+            className="row-span-8 grid min-w-0 snap-start grid-rows-subgrid"
+          >
             <CompareColumn theme={theme} mode={chosen} />
           </li>
         ))}
@@ -75,9 +74,18 @@ export function ThemeCompare() {
   )
 }
 
-function CompareColumn({ theme, mode }: { theme: Theme; mode: ThemeMode | undefined }) {
+function CompareColumn({
+  theme,
+  mode,
+}: {
+  theme: Theme
+  mode: ThemeMode | undefined
+}) {
   return (
-    <ThemeScope theme={theme.id} className="row-span-8 grid min-w-0 grid-rows-subgrid gap-y-0 text-copy">
+    <ThemeScope
+      theme={theme.id}
+      className="row-span-8 grid min-w-0 grid-rows-subgrid gap-y-0 text-copy"
+    >
       <div className="flex items-baseline justify-between gap-3 pb-3">
         <a
           href={`#${theme.id}`}
@@ -102,7 +110,9 @@ function CompareColumn({ theme, mode }: { theme: Theme; mode: ThemeMode | undefi
         <p className="text-h3 font-extrabold text-balance text-foreground">
           Ship it <span className="text-brand">together</span>.
         </p>
-        <p className="text-caption text-copy">Plan, track and ship your team&apos;s work in one place.</p>
+        <p className="text-caption text-copy">
+          Plan, track and ship your team&apos;s work in one place.
+        </p>
         <div className="flex flex-wrap content-start gap-2">
           <Button size="sm" tabIndex={-1}>
             Publish
@@ -111,7 +121,12 @@ function CompareColumn({ theme, mode }: { theme: Theme; mode: ThemeMode | undefi
             Preview
           </Button>
         </div>
-        <Input tabIndex={-1} defaultValue="Website relaunch" aria-label="Project" size="sm" />
+        <Input
+          tabIndex={-1}
+          defaultValue="Website relaunch"
+          aria-label="Project"
+          size="sm"
+        />
         <div className="grid content-start gap-3 rounded-(--card-radius) border bg-card p-3.5">
           <div className="flex items-center justify-between gap-2">
             <span className="text-label text-foreground">Tasks done</span>
@@ -121,7 +136,10 @@ function CompareColumn({ theme, mode }: { theme: Theme; mode: ThemeMode | undefi
             {week.map((value, i) => (
               <span
                 key={i}
-                className={cn("block flex-1 rounded-t-xs", i === week.length - 1 ? "bg-chart-1" : "bg-chart-1/45")}
+                className={cn(
+                  "block flex-1 rounded-t-xs",
+                  i === week.length - 1 ? "bg-chart-1" : "bg-chart-1/45"
+                )}
                 style={{ height: `${(value / weekMax) * 100}%` }}
               />
             ))}
@@ -130,12 +148,17 @@ function CompareColumn({ theme, mode }: { theme: Theme; mode: ThemeMode | undefi
         <div className="grid content-start gap-1 rounded-(--panel-radius) bg-panel p-4 text-panel-foreground">
           <span className="text-h4 text-panel-foreground tabular">92%</span>
           <span className="text-caption text-panel-muted">
-            On-time delivery, <span className="font-semibold whitespace-nowrap text-panel-brand">+4 pts</span>
+            On-time delivery,{" "}
+            <span className="font-semibold whitespace-nowrap text-panel-brand">
+              +4 pts
+            </span>
           </span>
         </div>
       </ThemeScope>
 
-      <p className="pt-3 text-caption text-muted-foreground">{themeFontsLabel(theme)}</p>
+      <p className="pt-3 text-caption text-muted-foreground">
+        {themeFontsLabel(theme)}
+      </p>
     </ThemeScope>
   )
 }

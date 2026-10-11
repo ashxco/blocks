@@ -19,19 +19,19 @@ const buttonGroupVariants = cva(
     "flex w-fit items-stretch",
     "*:hover:z-10 *:focus-visible:z-20",
     "has-[>[data-slot=button-group]]:gap-2",
-    "[&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>[data-slot=input]]:flex-1 [&>input]:flex-1",
+    "[&>[data-slot=input]]:flex-1 [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
   ],
   {
     variants: {
       orientation: {
         horizontal: [
           "[&>[data-slot]:has(~[data-slot])]:rounded-r-none [&>[data-slot]~[data-slot]]:rounded-l-none",
-          "[&>[data-slot]~[data-slot]:not([data-slot=button-group-separator])]:-ml-px [&>[data-slot=button-group-separator]+[data-slot]]:ml-0!",
+          "[&>[data-slot=button-group-separator]+[data-slot]]:ml-0! [&>[data-slot]~[data-slot]:not([data-slot=button-group-separator])]:-ml-px",
         ],
         vertical: [
           "flex-col",
           "[&>[data-slot]:has(~[data-slot])]:rounded-b-none [&>[data-slot]~[data-slot]]:rounded-t-none",
-          "[&>[data-slot]~[data-slot]:not([data-slot=button-group-separator])]:-mt-px [&>[data-slot=button-group-separator]+[data-slot]]:mt-0!",
+          "[&>[data-slot=button-group-separator]+[data-slot]]:mt-0! [&>[data-slot]~[data-slot]:not([data-slot=button-group-separator])]:-mt-px",
         ],
       },
     },

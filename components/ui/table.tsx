@@ -38,9 +38,15 @@ function Table({
       data-variant={variant}
       data-overflow-start={overflow.start || undefined}
       data-overflow-end={overflow.end || undefined}
-      style={overflow.width ? ({ "--table-visible-width": `${overflow.width}px` } as React.CSSProperties) : undefined}
+      style={
+        overflow.width
+          ? ({
+              "--table-visible-width": `${overflow.width}px`,
+            } as React.CSSProperties)
+          : undefined
+      }
       className={cn(
-        "relative w-full overflow-x-auto overscroll-x-contain [scrollbar-color:var(--border-strong)_transparent] [scrollbar-width:thin]",
+        "relative w-full [scrollbar-width:thin] [scrollbar-color:var(--border-strong)_transparent] overflow-x-auto overscroll-x-contain",
         variant === "card"
           ? "rounded-(--card-radius) border border-border bg-card"
           : "border-border data-overflow-end:border-r data-overflow-start:border-l"
@@ -62,7 +68,11 @@ function Table({
 
 /** Whether a horizontal scroller has more content before or after what it shows, and how wide it is. */
 function useScrollEdges(ref: React.RefObject<HTMLElement | null>) {
-  const [edges, setEdges] = React.useState({ start: false, end: false, width: 0 })
+  const [edges, setEdges] = React.useState({
+    start: false,
+    end: false,
+    width: 0,
+  })
 
   React.useEffect(() => {
     const element = ref.current
@@ -73,7 +83,9 @@ function useScrollEdges(ref: React.RefObject<HTMLElement | null>) {
       const end = element.scrollWidth - element.clientWidth - scrolled > 1
       const width = element.clientWidth
       setEdges((prev) =>
-        prev.start === start && prev.end === end && prev.width === width ? prev : { start, end, width }
+        prev.start === start && prev.end === end && prev.width === width
+          ? prev
+          : { start, end, width }
       )
     }
     update()
@@ -135,7 +147,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
         "border-b border-border transition-colors duration-(--duration-fast) ease-standard",
         // Only body rows react to the pointer.
         "in-data-[slot=table-body]:hover:bg-subtle in-data-[slot=table-body]:has-aria-expanded:bg-subtle",
-        "data-[state=selected]:bg-accent aria-selected:bg-accent",
+        "aria-selected:bg-accent data-[state=selected]:bg-accent",
         className
       )}
       {...props}

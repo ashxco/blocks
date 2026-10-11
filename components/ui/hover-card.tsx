@@ -11,11 +11,11 @@ import { ScopedPortal } from "@/lib/portal-container"
  * touch screens can't hover.
  */
 
-function HoverCard({ ...props }: PreviewCardPrimitive.Root.Props) {
+function HoverCard(props: PreviewCardPrimitive.Root.Props) {
   return <PreviewCardPrimitive.Root data-slot="hover-card" {...props} />
 }
 
-function HoverCardTrigger({ ...props }: PreviewCardPrimitive.Trigger.Props) {
+function HoverCardTrigger(props: PreviewCardPrimitive.Trigger.Props) {
   return (
     <PreviewCardPrimitive.Trigger data-slot="hover-card-trigger" {...props} />
   )
@@ -34,13 +34,22 @@ function HoverCardContent({
 }: PreviewCardPrimitive.Popup.Props &
   Pick<
     PreviewCardPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset" | "collisionAvoidance" | "collisionBoundary"
+    | "align"
+    | "alignOffset"
+    | "side"
+    | "sideOffset"
+    | "collisionAvoidance"
+    | "collisionBoundary"
   > & {
     /** Element to portal into instead of <body>, e.g. a preview stage. */
     container?: PreviewCardPrimitive.Portal.Props["container"]
   }) {
   return (
-    <ScopedPortal portal={PreviewCardPrimitive.Portal} data-slot="hover-card-portal" container={container}>
+    <ScopedPortal
+      portal={PreviewCardPrimitive.Portal}
+      data-slot="hover-card-portal"
+      container={container}
+    >
       <PreviewCardPrimitive.Positioner
         align={align}
         alignOffset={alignOffset}

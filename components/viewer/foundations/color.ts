@@ -15,7 +15,7 @@ export interface Oklch {
 }
 
 /** Gamma-encoded sRGB channels in 0..1, plus alpha. */
-export interface Rgb {
+interface Rgb {
   r: number
   g: number
   b: number
@@ -50,10 +50,12 @@ function encodeChannel(linear: number) {
 }
 
 function decodeChannel(encoded: number) {
-  return encoded <= 0.04045 ? encoded / 12.92 : Math.pow((encoded + 0.055) / 1.055, 2.4)
+  return encoded <= 0.04045
+    ? encoded / 12.92
+    : Math.pow((encoded + 0.055) / 1.055, 2.4)
 }
 
-export function oklchToRgb({ l, c, h, alpha }: Oklch): Rgb {
+function oklchToRgb({ l, c, h, alpha }: Oklch): Rgb {
   const hue = (h * Math.PI) / 180
   const a = c * Math.cos(hue)
   const b = c * Math.sin(hue)
@@ -75,25 +77,34 @@ export function oklchToRgb({ l, c, h, alpha }: Oklch): Rgb {
 }
 
 /** Source-over compositing in gamma-encoded sRGB, as browsers paint. */
-export function composite(top: Rgb, bottom: Rgb): Rgb {
+function composite(top: Rgb, bottom: Rgb): Rgb {
   const a = top.alpha
   const mix = (t: number, u: number) => t * a + u * (1 - a)
-  return { r: mix(top.r, bottom.r), g: mix(top.g, bottom.g), b: mix(top.b, bottom.b), alpha: 1 }
+  return {
+    r: mix(top.r, bottom.r),
+    g: mix(top.g, bottom.g),
+    b: mix(top.b, bottom.b),
+    alpha: 1,
+  }
 }
 
 /** WCAG 2 relative luminance of an opaque colour. */
-export function luminance({ r, g, b }: Rgb) {
-  return 0.2126 * decodeChannel(r) + 0.7152 * decodeChannel(g) + 0.0722 * decodeChannel(b)
+function luminance({ r, g, b }: Rgb) {
+  return (
+    0.2126 * decodeChannel(r) +
+    0.7152 * decodeChannel(g) +
+    0.0722 * decodeChannel(b)
+  )
 }
 
-export function contrastRatio(a: Rgb, b: Rgb) {
+function contrastRatio(a: Rgb, b: Rgb) {
   const la = luminance(a)
   const lb = luminance(b)
   const [hi, lo] = la > lb ? [la, lb] : [lb, la]
   return (hi + 0.05) / (lo + 0.05)
 }
 
-export type WcagLevel = "AAA" | "AA" | "AA Large" | "Fail"
+type WcagLevel = "AAA" | "AA" | "AA Large" | "Fail"
 
 export function wcagLevel(ratio: number): WcagLevel {
   if (ratio >= 7) return "AAA"

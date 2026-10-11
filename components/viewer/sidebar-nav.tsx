@@ -13,6 +13,12 @@ import {
   type NavGroup,
 } from "@/components/viewer/nav"
 
+/* A collapsible panel's height and fade, shared by sections and groups. */
+const panelClass = cn(
+  "h-(--collapsible-panel-height) overflow-hidden transition-[height,opacity] duration-(--duration-base) ease-out",
+  "data-[ending-style]:h-0 data-[ending-style]:opacity-0 data-[starting-style]:h-0 data-[starting-style]:opacity-0"
+)
+
 /**
  * The viewer's navigation tree: Foundations and Components with collapsible
  * groups. Search lives above it, in the sidebar panel.
@@ -73,12 +79,7 @@ export function SidebarNav({
                 className="size-4 -rotate-90 text-muted-foreground transition-transform duration-(--duration-base) ease-out group-data-[panel-open]/section:rotate-0"
               />
             </Collapsible.Trigger>
-            <Collapsible.Panel
-              className={cn(
-                "h-(--collapsible-panel-height) overflow-hidden transition-[height,opacity] duration-(--duration-base) ease-out",
-                "data-[ending-style]:h-0 data-[ending-style]:opacity-0 data-[starting-style]:h-0 data-[starting-style]:opacity-0"
-              )}
-            >
+            <Collapsible.Panel className={panelClass}>
               <div className="grid gap-3 pt-1 pb-4">
                 {section.groups.map((group, index) => (
                   <SidebarGroup
@@ -162,14 +163,7 @@ function SidebarGroup({
         />
         {group.title}
       </Collapsible.Trigger>
-      <Collapsible.Panel
-        className={cn(
-          "h-(--collapsible-panel-height) overflow-hidden transition-[height,opacity] duration-(--duration-base) ease-out",
-          "data-[ending-style]:h-0 data-[ending-style]:opacity-0 data-[starting-style]:h-0 data-[starting-style]:opacity-0"
-        )}
-      >
-        {links}
-      </Collapsible.Panel>
+      <Collapsible.Panel className={panelClass}>{links}</Collapsible.Panel>
     </Collapsible.Root>
   )
 }

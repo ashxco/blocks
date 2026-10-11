@@ -1,9 +1,7 @@
-import * as React from "react"
-
-import { FoundationPage } from "./layout"
+import { FoundationPage, type FoundationPageProps } from "./layout"
 import { TokenExplorer } from "./token-explorer"
 
-export function TokensFoundation({ title, description }: { title: string; description: string }) {
+export function TokensFoundation({ title, description }: FoundationPageProps) {
   return (
     <FoundationPage title={title} description={description}>
       <TokenExplorer />

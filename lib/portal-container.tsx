@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils"
  * Menus, popovers, selects, tooltips, dialogs, sheets and drawers render
  * through a Base UI Portal, by default into <body>. That keeps them clear of
  * overflow and transforms, but it also takes them out of any mode or theme
- * scope (`.dark` / `.light`, `data-theme`) around their trigger. Every overlay wrapper in
- * components/ui resolves its portal container with usePortalContainer, so:
+ * scope (`.dark` / `.light`, `data-theme`) around their trigger. Every overlay
+ * wrapper in components/ui renders its portal through ScopedPortal, so:
  *
  *   1. a `container` prop on the overlay wins (e.g. a preview stage);
  *   2. otherwise the nearest <PortalScope> or <PortalContainerProvider>;
@@ -35,7 +35,9 @@ export type PortalContainer =
   | null
   | React.RefObject<HTMLElement | ShadowRoot | null>
 
-const PortalContainerContext = React.createContext<PortalContainer | undefined>(undefined)
+const PortalContainerContext = React.createContext<PortalContainer | undefined>(
+  undefined
+)
 
 /**
  * Overlays rendered inside portal into `container`. `null` makes them wait
@@ -48,33 +50,20 @@ export function PortalContainerProvider({
   container: PortalContainer | undefined
   children: React.ReactNode
 }) {
-  return <PortalContainerContext.Provider value={container}>{children}</PortalContainerContext.Provider>
-}
-
-/**
- * For overlay wrappers: the container to pass to a Base UI Portal. Returns the
- * explicit container when there is one, else the nearest provider's.
- */
-export function usePortalContainer(container?: PortalContainer): PortalContainer | undefined {
-  const fromContext = React.useContext(PortalContainerContext)
-  return container !== undefined ? container : fromContext
-}
-
-/**
- * For overlay wrappers: wrap the children of a Base UI Portal in this, so
- * overlays nested inside fall back to Base UI's default (the parent's portal
- * node) instead of the outer container.
- */
-export function PortalContainerReset({ children }: { children?: React.ReactNode }) {
-  return <PortalContainerContext.Provider value={undefined}>{children}</PortalContainerContext.Provider>
+  return (
+    <PortalContainerContext.Provider value={container}>
+      {children}
+    </PortalContainerContext.Provider>
+  )
 }
 
 type PortalProps = { container?: PortalContainer; children?: React.ReactNode }
 
 /**
- * For overlay wrappers: renders a Base UI Portal (`portal`) with its
- * container resolved by usePortalContainer, and resets the context inside so
- * nested overlays follow their parent. Other props go to the Portal.
+ * For overlay wrappers: renders a Base UI Portal (`portal`) into `container`,
+ * else the nearest provider's container, and resets the context inside so
+ * nested overlays fall back to Base UI's default (the parent's portal node)
+ * instead of the outer container. Other props go to the Portal.
  *
  *   <ScopedPortal portal={PopoverPrimitive.Portal} container={container}>…</ScopedPortal>
  */
@@ -84,11 +73,16 @@ export function ScopedPortal<P extends PortalProps>({
   children,
   ...props
 }: P & { portal: React.ComponentType<P> }) {
-  const resolved = usePortalContainer(container)
-  const portalProps = { ...props, container: resolved } as unknown as P
+  const fromContext = React.useContext(PortalContainerContext)
+  const portalProps = {
+    ...props,
+    container: container !== undefined ? container : fromContext,
+  } as unknown as P
   return (
     <Portal {...portalProps}>
-      <PortalContainerReset>{children}</PortalContainerReset>
+      <PortalContainerContext.Provider value={undefined}>
+        {children}
+      </PortalContainerContext.Provider>
     </Portal>
   )
 }
@@ -129,7 +123,12 @@ export function PortalScope({
       {children}
       {hydrated && scoped
         ? createPortal(
-            <div ref={setNode} data-slot="portal-scope" data-theme={theme} className={cn(className, "text-copy")} />,
+            <div
+              ref={setNode}
+              data-slot="portal-scope"
+              data-theme={theme}
+              className={cn(className, "text-copy")}
+            />,
             document.body
           )
         : null}

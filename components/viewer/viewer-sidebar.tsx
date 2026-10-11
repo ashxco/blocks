@@ -21,16 +21,24 @@ export function ViewerSidebar() {
     const active = container?.querySelector<HTMLElement>("[data-active]")
     if (!container || !active) return
     const offsetOf = (el: Element) =>
-      el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop
+      el.getBoundingClientRect().top -
+      container.getBoundingClientRect().top +
+      container.scrollTop
     const padding = parseFloat(getComputedStyle(container).paddingTop) || 0
     // Room left under the last row, so the link never sits on the bottom edge.
     const room = container.clientHeight - 48
     const bottom = offsetOf(active) + active.offsetHeight
-    if (offsetOf(active) >= container.scrollTop && bottom <= container.scrollTop + room) return
-
-    const rows = Array.from(container.querySelectorAll<HTMLElement>("a, button, [data-slot=input-group]")).filter(
-      (el) => el.offsetHeight > 0
+    if (
+      offsetOf(active) >= container.scrollTop &&
+      bottom <= container.scrollTop + room
     )
+      return
+
+    const rows = Array.from(
+      container.querySelectorAll<HTMLElement>(
+        "a, button, [data-slot=input-group]"
+      )
+    ).filter((el) => el.offsetHeight > 0)
     const scrollFor = (anchor: Element) => {
       const top = offsetOf(anchor)
       // Bottom of the last row that ends above the anchor.
@@ -45,7 +53,8 @@ export function ViewerSidebar() {
       active.closest("[data-nav-group]")?.firstElementChild,
       active,
     ].filter((el): el is Element => Boolean(el))
-    const anchor = candidates.find((el) => bottom - scrollFor(el) <= room) ?? active
+    const anchor =
+      candidates.find((el) => bottom - scrollFor(el) <= room) ?? active
     container.scrollTop = scrollFor(anchor)
     // Only on mount: later navigations happen from the sidebar itself.
   }, [])

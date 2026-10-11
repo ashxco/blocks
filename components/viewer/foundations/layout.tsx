@@ -4,11 +4,17 @@
 import * as React from "react"
 import { CheckIcon, XIcon } from "lucide-react"
 
-import { themeScopeProps, type ThemeId } from "@/lib/themes"
+import { themeScopeProps, type ThemeId, type ThemeMode } from "@/lib/themes"
 import { cn } from "@/lib/utils"
 import { DocHeader } from "@/components/viewer/doc-header"
 
 import { ByThemeStyles } from "./by-theme"
+
+/** What the route hands every Foundations page, from lib/registry.ts. */
+export interface FoundationPageProps {
+  title: string
+  description: string
+}
 
 /**
  * Page frame: doc header, then sections with generous rhythm. It carries the
@@ -18,15 +24,15 @@ export function FoundationPage({
   title,
   description,
   children,
-}: {
-  title: string
-  description: string
-  children: React.ReactNode
-}) {
+}: FoundationPageProps & { children: React.ReactNode }) {
   return (
     <article className="@container grid min-w-0 gap-section-sm [&>header+[data-slot=foundation-section]]:border-t-0 [&>header+[data-slot=foundation-section]]:pt-0">
       <ByThemeStyles />
-      <DocHeader section="Foundations" title={title} description={description} />
+      <DocHeader
+        section="Foundations"
+        title={title}
+        description={description}
+      />
       {children}
     </article>
   )
@@ -57,7 +63,10 @@ export function Section({
       id={id}
       data-slot="foundation-section"
       aria-labelledby={headingId}
-      className={cn("grid min-w-0 scroll-mt-24 gap-10 border-t pt-10", className)}
+      className={cn(
+        "grid min-w-0 scroll-mt-24 gap-10 border-t pt-10",
+        className
+      )}
     >
       <header className="grid gap-4 @narrow:grid-cols-2 @narrow:items-start @narrow:gap-10">
         <h2 id={headingId} className="text-h2 text-foreground">
@@ -65,7 +74,9 @@ export function Section({
         </h2>
         {description || actions ? (
           <div className="grid gap-5 @narrow:justify-items-start">
-            {description ? <p className="max-w-prose text-body text-copy">{description}</p> : null}
+            {description ? (
+              <p className="max-w-prose text-body text-copy">{description}</p>
+            ) : null}
             {actions}
           </div>
         ) : null}
@@ -80,7 +91,13 @@ export function Section({
  * above the text-title item titles under it, so groups stay distinct on long
  * pages.
  */
-export function SubHeading({ children, id }: { children: React.ReactNode; id?: string }) {
+export function SubHeading({
+  children,
+  id,
+}: {
+  children: React.ReactNode
+  id?: string
+}) {
   return (
     <h3 id={id} className="text-h3 text-foreground">
       {children}
@@ -101,7 +118,15 @@ export function DoDont({ do: dos, dont }: { do: string[]; dont: string[] }) {
   )
 }
 
-function RuleList({ tone, title, items }: { tone: "do" | "dont"; title: string; items: string[] }) {
+function RuleList({
+  tone,
+  title,
+  items,
+}: {
+  tone: "do" | "dont"
+  title: string
+  items: string[]
+}) {
   const Icon = tone === "do" ? CheckIcon : XIcon
   const color = tone === "do" ? "text-success" : "text-destructive"
   return (
@@ -121,8 +146,15 @@ function RuleList({ tone, title, items }: { tone: "do" | "dont"; title: string; 
       </h3>
       <ul className="mt-3 grid divide-y">
         {items.map((item) => (
-          <li key={item} className="flex gap-3 py-4 text-body text-copy last:pb-0">
-            <Icon aria-hidden className={cn("mt-1.5 size-3.5 shrink-0", color)} strokeWidth={2.5} />
+          <li
+            key={item}
+            className="flex gap-3 py-4 text-body text-copy last:pb-0"
+          >
+            <Icon
+              aria-hidden
+              className={cn("mt-1.5 size-3.5 shrink-0", color)}
+              strokeWidth={2.5}
+            />
             <span>{item}</span>
           </li>
         ))}
@@ -132,19 +164,38 @@ function RuleList({ tone, title, items }: { tone: "do" | "dont"; title: string; 
 }
 
 /** Inline code-ish label for utilities and variables. */
-export function Code({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <code className={cn("font-mono text-code text-foreground", className)}>{children}</code>
+export function Code({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <code className={cn("font-mono text-code text-foreground", className)}>
+      {children}
+    </code>
+  )
 }
 
 /**
  * A " · "-separated list of utilities or variables. Wraps between entries
  * only, never inside one.
  */
-export function CodeList({ value, className }: { value: string; className?: string }) {
+export function CodeList({
+  value,
+  className,
+}: {
+  value: string
+  className?: string
+}) {
   return (
     <span className="flex flex-wrap gap-x-3 gap-y-0.5">
       {value.split(" · ").map((item) => (
-        <code key={item} className={cn("font-mono text-code whitespace-nowrap", className)}>
+        <code
+          key={item}
+          className={cn("font-mono text-code whitespace-nowrap", className)}
+        >
           {item}
         </code>
       ))}
@@ -153,8 +204,23 @@ export function CodeList({ value, className }: { value: string; className?: stri
 }
 
 /** Meta text in mono, for values such as 16px or oklch numbers. */
-export function Meta({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <span className={cn("font-mono text-xs text-muted-foreground tabular", className)}>{children}</span>
+export function Meta({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <span
+      className={cn(
+        "font-mono text-xs text-muted-foreground tabular",
+        className
+      )}
+    >
+      {children}
+    </span>
+  )
 }
 
 /**
@@ -171,16 +237,31 @@ export function ScopedChip({
   className,
 }: {
   cssVar: string
-  mode: "light" | "dark"
+  mode: ThemeMode
   /** Resolve it in this theme instead of the page's. */
   theme?: ThemeId
   base?: "background" | "panel"
   className?: string
 }) {
   return (
-    <span aria-hidden className={cn("block size-5 shrink-0 overflow-hidden rounded-xs border border-border-strong", className)}>
-      <span {...themeScopeProps(theme, mode, cn("block size-full", base === "panel" ? "bg-panel" : "bg-background"))}>
-        <span className="block size-full" style={{ backgroundColor: `var(${cssVar})` }} />
+    <span
+      aria-hidden
+      className={cn(
+        "block size-5 shrink-0 overflow-hidden rounded-xs border border-border-strong",
+        className
+      )}
+    >
+      <span
+        {...themeScopeProps(
+          theme,
+          mode,
+          cn("block size-full", base === "panel" ? "bg-panel" : "bg-background")
+        )}
+      >
+        <span
+          className="block size-full"
+          style={{ backgroundColor: `var(${cssVar})` }}
+        />
       </span>
     </span>
   )

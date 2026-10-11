@@ -1,5 +1,9 @@
 import * as React from "react"
-import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizontalIcon,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -33,7 +37,7 @@ function PaginationContent({
   )
 }
 
-function PaginationItem({ ...props }: React.ComponentProps<"li">) {
+function PaginationItem(props: React.ComponentProps<"li">) {
   return <li data-slot="pagination-item" {...props} />
 }
 
@@ -82,7 +86,9 @@ function PaginationPrevious({
       size={size}
       className={cn(
         "max-sm:px-0!",
-        size === "sm" ? "max-sm:w-(--button-height-sm)" : "max-sm:w-(--button-height-md)",
+        size === "sm"
+          ? "max-sm:w-(--button-height-sm)"
+          : "max-sm:w-(--button-height-md)",
         className
       )}
       {...props}
@@ -105,7 +111,9 @@ function PaginationNext({
       size={size}
       className={cn(
         "max-sm:px-0!",
-        size === "sm" ? "max-sm:w-(--button-height-sm)" : "max-sm:w-(--button-height-md)",
+        size === "sm"
+          ? "max-sm:w-(--button-height-sm)"
+          : "max-sm:w-(--button-height-md)",
         className
       )}
       {...props}

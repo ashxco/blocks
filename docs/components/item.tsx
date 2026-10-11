@@ -12,6 +12,7 @@ import {
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { statusVariant } from "@/docs/sample/status"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { initialsTone } from "@/docs/sample/people"
 import { Badge } from "@/components/ui/badge"
@@ -29,19 +30,43 @@ import {
 } from "@/components/ui/item"
 
 const projects = [
-  { slug: "website-relaunch", name: "Website relaunch", note: "Led by Priya Raman · Due Nov 14", status: "On track", variant: "success" },
-  { slug: "mobile-app-2", name: "Mobile app 2.0", note: "Led by Jordan Lee · 2 tasks overdue", status: "At risk", variant: "warning" },
-  { slug: "help-center", name: "Help center", note: "Paused by Sam Okafor on Sep 30", status: "Paused", variant: "secondary" },
+  {
+    slug: "website-relaunch",
+    name: "Website relaunch",
+    note: "Led by Priya Raman · Due Nov 14",
+    status: "On track",
+  },
+  {
+    slug: "mobile-app-2",
+    name: "Mobile app 2.0",
+    note: "Led by Jordan Lee · 2 tasks overdue",
+    status: "At risk",
+  },
+  {
+    slug: "help-center",
+    name: "Help center",
+    note: "Paused by Sam Okafor on Sep 30",
+    status: "Paused",
+  },
 ] as const
 
 const members = [
   { name: "Maya Patel", email: "maya@acme.com", role: "Owner", initials: "MP" },
   { name: "Hana Kim", email: "hana@acme.com", role: "Admin", initials: "HK" },
-  { name: "Jordan Lee", email: "jordan@acme.com", role: "Member", initials: "JL" },
+  {
+    name: "Jordan Lee",
+    email: "jordan@acme.com",
+    role: "Member",
+    initials: "JL",
+  },
 ]
 
 const sizeRows = [
-  { size: "default", task: "Launch announcement", meta: "Due Oct 14 · Priya Raman" },
+  {
+    size: "default",
+    task: "Launch announcement",
+    meta: "Due Oct 14 · Priya Raman",
+  },
   { size: "sm", task: "Mobile pricing table", meta: "Due Oct 15 · Jordan Lee" },
   { size: "xs", task: "Q3 workload report", meta: "Due Oct 20 · Lucas Moreau" },
 ] as const
@@ -129,7 +154,9 @@ export default function ItemDocs() {
                   <ItemDescription>{row.meta}</ItemDescription>
                 </ItemContent>
               </Item>
-              <p className="font-mono text-xs text-muted-foreground">size=&quot;{row.size}&quot;</p>
+              <p className="font-mono text-xs text-muted-foreground">
+                size=&quot;{row.size}&quot;
+              </p>
             </div>
           ))}
         </div>
@@ -149,7 +176,9 @@ export default function ItemDocs() {
             <Item key={m.email} role="listitem" size="sm">
               <ItemMedia>
                 <Avatar>
-                  <AvatarFallback tone={initialsTone(m.initials)}>{m.initials}</AvatarFallback>
+                  <AvatarFallback tone={initialsTone(m.initials)}>
+                    {m.initials}
+                  </AvatarFallback>
                 </Avatar>
               </ItemMedia>
               <ItemContent>
@@ -157,8 +186,14 @@ export default function ItemDocs() {
                 <ItemDescription>{m.email}</ItemDescription>
               </ItemContent>
               <ItemActions>
-                <span className="text-caption text-muted-foreground">{m.role}</span>
-                <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${m.name}`}>
+                <span className="text-caption text-muted-foreground">
+                  {m.role}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={`Actions for ${m.name}`}
+                >
                   <MoreHorizontalIcon />
                 </Button>
               </ItemActions>
@@ -185,7 +220,11 @@ export default function ItemDocs() {
       >
         <ItemGroup variant="contained" className="max-w-prose">
           {projects.map((d) => (
-            <Item key={d.slug} role="listitem" render={<a href={`#${d.slug}`} />}>
+            <Item
+              key={d.slug}
+              role="listitem"
+              render={<a href={`#${d.slug}`} />}
+            >
               <ItemMedia variant="icon">
                 <FolderKanbanIcon />
               </ItemMedia>
@@ -193,12 +232,15 @@ export default function ItemDocs() {
                 {/* The status rides on the title line and wraps under the name when the row is narrow. */}
                 <ItemTitle className="flex-wrap gap-y-1">
                   <span>{d.name}</span>
-                  <Badge variant={d.variant}>{d.status}</Badge>
+                  <Badge variant={statusVariant[d.status]}>{d.status}</Badge>
                 </ItemTitle>
                 <ItemDescription>{d.note}</ItemDescription>
               </ItemContent>
               <ItemActions>
-                <ChevronRightIcon aria-hidden="true" className="size-4 text-muted-foreground" />
+                <ChevronRightIcon
+                  aria-hidden="true"
+                  className="size-4 text-muted-foreground"
+                />
               </ItemActions>
             </Item>
           ))}
@@ -243,7 +285,9 @@ export default function ItemDocs() {
               </Button>
             </ItemActions>
             <ItemFooter className="pl-14">
-              <span className="text-destructive">Last run failed · Slack is disconnected</span>
+              <span className="text-destructive">
+                Last run failed · Slack is disconnected
+              </span>
             </ItemFooter>
           </Item>
         </ItemGroup>
@@ -264,11 +308,38 @@ export default function ItemDocs() {
 
       <ApiTable
         rows={[
-          { prop: "Item variant", type: '"default" | "outline" | "muted"', default: '"default"', description: "Borderless, hairline outline, or tinted fill." },
-          { prop: "size", type: '"default" | "sm" | "xs"', default: '"default"', description: "Item: padding, gap, title role and media size." },
-          { prop: "render", type: "ReactElement", description: "Item: render as a link or button. Interactive rows get a hover fill." },
-          { prop: "ItemGroup variant", type: '"default" | "divided" | "contained"', default: '"default"', description: "Stacked rows, hairline rows, or rows in a bordered list." },
-          { prop: "ItemMedia variant", type: '"default" | "icon" | "image"', default: '"default"', description: "A bare icon, an icon in a muted tile, or a cropped image." },
+          {
+            prop: "Item variant",
+            type: '"default" | "outline" | "muted"',
+            default: '"default"',
+            description: "Borderless, hairline outline, or tinted fill.",
+          },
+          {
+            prop: "size",
+            type: '"default" | "sm" | "xs"',
+            default: '"default"',
+            description: "Item: padding, gap, title role and media size.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description:
+              "Item: render as a link or button. Interactive rows get a hover fill.",
+          },
+          {
+            prop: "ItemGroup variant",
+            type: '"default" | "divided" | "contained"',
+            default: '"default"',
+            description:
+              "Stacked rows, hairline rows, or rows in a bordered list.",
+          },
+          {
+            prop: "ItemMedia variant",
+            type: '"default" | "icon" | "image"',
+            default: '"default"',
+            description:
+              "A bare icon, an icon in a muted tile, or a cropped image.",
+          },
         ]}
       />
     </Examples>

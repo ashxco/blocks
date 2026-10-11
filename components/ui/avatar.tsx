@@ -25,7 +25,7 @@ function Avatar({
       data-size={size}
       className={cn(
         "group/avatar relative flex size-(--avatar-size-md) shrink-0 rounded-full select-none",
-        "data-[size=sm]:size-(--avatar-size-sm) data-[size=lg]:size-(--avatar-size-lg) data-[size=xl]:size-(--avatar-size-xl)",
+        "data-[size=lg]:size-(--avatar-size-lg) data-[size=sm]:size-(--avatar-size-sm) data-[size=xl]:size-(--avatar-size-xl)",
         "after:pointer-events-none after:absolute after:inset-0 after:rounded-full after:border after:border-foreground/8",
         className
       )}
@@ -85,7 +85,7 @@ function AvatarFallback({
       className={cn(
         // Tight, relative to the theme's own text-sm tracking (-0.025em where it has none).
         "flex size-full items-center justify-center rounded-full text-sm font-bold tracking-[calc(var(--text-sm--letter-spacing)-0.025em)] text-foreground uppercase",
-        "group-data-[size=sm]/avatar:text-xs group-data-[size=lg]/avatar:text-base group-data-[size=xl]/avatar:text-2xl",
+        "group-data-[size=lg]/avatar:text-base group-data-[size=sm]/avatar:text-xs group-data-[size=xl]/avatar:text-2xl",
         "[&>svg]:size-[45%] [&>svg]:text-muted-foreground",
         toneClasses[resolvedTone],
         className
@@ -126,7 +126,7 @@ function AvatarGroup({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="avatar-group"
       className={cn(
         "group/avatar-group flex items-center -space-x-1",
-        "has-data-[size=sm]:-space-x-0.5 has-data-[size=lg]:-space-x-1.5 has-data-[size=xl]:-space-x-3",
+        "has-data-[size=lg]:-space-x-1.5 has-data-[size=sm]:-space-x-0.5 has-data-[size=xl]:-space-x-3",
         "*:data-[slot=avatar]:outline-2 *:data-[slot=avatar]:outline-background",
         className
       )}
@@ -148,7 +148,7 @@ function AvatarGroupCount({
         "group-has-data-[size=sm]/avatar-group:size-(--avatar-size-sm)",
         "group-has-data-[size=lg]/avatar-group:size-(--avatar-size-lg) group-has-data-[size=lg]/avatar-group:text-sm",
         "group-has-data-[size=xl]/avatar-group:size-(--avatar-size-xl) group-has-data-[size=xl]/avatar-group:text-lg",
-        "[&>svg]:size-4 group-has-data-[size=sm]/avatar-group:[&>svg]:size-3 group-has-data-[size=lg]/avatar-group:[&>svg]:size-5",
+        "[&>svg]:size-4 group-has-data-[size=lg]/avatar-group:[&>svg]:size-5 group-has-data-[size=sm]/avatar-group:[&>svg]:size-3",
         className
       )}
       {...props}

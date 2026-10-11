@@ -24,7 +24,12 @@ import {
   comboboxStyles,
   useComboboxAnchor,
 } from "@/components/ui/combobox"
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field"
 import { cn } from "@/lib/utils"
 
 const labels = [
@@ -86,13 +91,25 @@ type ZoneGroup = (typeof zoneGroups)[number]
 type Zone = ZoneGroup["items"][number]
 
 const projects = [
-  { label: "Website relaunch", value: "website-relaunch", tint: "bg-tint-violet" },
+  {
+    label: "Website relaunch",
+    value: "website-relaunch",
+    tint: "bg-tint-violet",
+  },
   { label: "Mobile app 2.0", value: "mobile-app", tint: "bg-tint-sky" },
   { label: "Q4 planning", value: "q4-planning", tint: "bg-tint-mint" },
   { label: "Customer portal", value: "customer-portal", tint: "bg-tint-sand" },
-  { label: "Onboarding redesign", value: "onboarding-redesign", tint: "bg-tint-rose" },
+  {
+    label: "Onboarding redesign",
+    value: "onboarding-redesign",
+    tint: "bg-tint-rose",
+  },
   { label: "Brand refresh", value: "brand-refresh", tint: "bg-tint-sky" },
-  { label: "Billing migration", value: "billing-migration", tint: "bg-tint-mint" },
+  {
+    label: "Billing migration",
+    value: "billing-migration",
+    tint: "bg-tint-mint",
+  },
   { label: "Help center", value: "help-center", tint: "bg-tint-sand" },
 ]
 
@@ -109,13 +126,52 @@ function ProjectMark({ project }: { project: Project }) {
   )
 }
 
+/** One ComboboxItem for a plain string option. */
+function textItem(item: string) {
+  return (
+    <ComboboxItem key={item} value={item}>
+      {item}
+    </ComboboxItem>
+  )
+}
+
+/**
+ * An item in a picture of the open popup, drawn with the combobox's own
+ * recipes, with a check on the selected one.
+ */
+function OpenListItem({
+  selected,
+  children,
+}: {
+  selected: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <div
+      className={comboboxStyles.item}
+      data-selected={selected ? "" : undefined}
+    >
+      {children}
+      {selected ? (
+        <span className={comboboxStyles.itemIndicator}>
+          <CheckIcon className="size-4 text-foreground" strokeWidth={2.5} />
+        </span>
+      ) : null}
+    </div>
+  )
+}
+
 function FollowerPicker() {
   const anchor = useComboboxAnchor()
 
   return (
     <Field className="w-full max-w-sm">
       <FieldLabel htmlFor="task-followers">Followers</FieldLabel>
-      <Combobox items={members} multiple defaultValue={["Maya Patel", "Priya Raman"]}>
+      <Combobox
+        items={members}
+        multiple
+        defaultValue={["Maya Patel", "Priya Raman"]}
+      >
         <ComboboxChips ref={anchor}>
           <ComboboxValue>
             {(values: string[]) => (
@@ -132,17 +188,16 @@ function FollowerPicker() {
           </ComboboxValue>
         </ComboboxChips>
         <ComboboxContent anchor={anchor}>
-          <ComboboxEmpty>No members match. Invite them from Members settings.</ComboboxEmpty>
-          <ComboboxList>
-            {(item: string) => (
-              <ComboboxItem key={item} value={item}>
-                {item}
-              </ComboboxItem>
-            )}
-          </ComboboxList>
+          <ComboboxEmpty>
+            No members match. Invite them from Members settings.
+          </ComboboxEmpty>
+          <ComboboxList>{textItem}</ComboboxList>
         </ComboboxContent>
       </Combobox>
-      <FieldDescription>They get an email and a Slack message when the status or due date changes.</FieldDescription>
+      <FieldDescription>
+        They get an email and a Slack message when the status or due date
+        changes.
+      </FieldDescription>
     </Field>
   )
 }
@@ -164,7 +219,9 @@ function ProjectSwitcher() {
         onOpenChange={setOpen}
       >
         <ComboboxTrigger
-          render={<Button variant="outline" className="w-64 justify-between ps-3" />}
+          render={
+            <Button variant="outline" className="w-64 justify-between ps-3" />
+          }
           aria-label="Switch project"
         >
           <ComboboxValue>
@@ -181,8 +238,14 @@ function ProjectSwitcher() {
           </ComboboxValue>
         </ComboboxTrigger>
         <ComboboxContent>
-          <ComboboxInput showTrigger={false} placeholder="Find a project" aria-label="Find a project" />
-          <ComboboxEmpty>No projects match. Search by name, like Brand refresh.</ComboboxEmpty>
+          <ComboboxInput
+            showTrigger={false}
+            placeholder="Find a project"
+            aria-label="Find a project"
+          />
+          <ComboboxEmpty>
+            No projects match. Search by name, like Brand refresh.
+          </ComboboxEmpty>
           <ComboboxList>
             {(project: Project) => (
               <ComboboxItem key={project.value} value={project}>
@@ -193,26 +256,34 @@ function ProjectSwitcher() {
           </ComboboxList>
         </ComboboxContent>
       </Combobox>
-      <div aria-hidden="true" inert className={cn(comboboxStyles.popup, "flex flex-col overflow-hidden", open && "invisible")}>
-        <div className={cn(comboboxStyles.search, "text-control text-muted-foreground")}>
+      <div
+        aria-hidden="true"
+        inert
+        className={cn(
+          comboboxStyles.popup,
+          "flex flex-col overflow-hidden",
+          open && "invisible"
+        )}
+      >
+        <div
+          className={cn(
+            comboboxStyles.search,
+            "text-control text-muted-foreground"
+          )}
+        >
           <SearchIcon className="size-4 shrink-0" />
           Find a project
         </div>
         <div className={cn(comboboxStyles.list, "max-h-none")}>
-          {projects.map((project) => {
-            const selected = project.value === value?.value
-            return (
-              <div key={project.value} className={comboboxStyles.item} data-selected={selected ? "" : undefined}>
-                <ProjectMark project={project} />
-                {project.label}
-                {selected ? (
-                  <span className={comboboxStyles.itemIndicator}>
-                    <CheckIcon className="size-4 text-foreground" strokeWidth={2.5} />
-                  </span>
-                ) : null}
-              </div>
-            )
-          })}
+          {projects.map((project) => (
+            <OpenListItem
+              key={project.value}
+              selected={project.value === value?.value}
+            >
+              <ProjectMark project={project} />
+              {project.label}
+            </OpenListItem>
+          ))}
         </div>
       </div>
     </div>
@@ -239,9 +310,14 @@ function TimeZonePicker() {
           onValueChange={(next) => setValue(next as Zone | null)}
           onOpenChange={setOpen}
         >
-          <ComboboxInput id="combobox-time-zone" placeholder="Search time zones" />
+          <ComboboxInput
+            id="combobox-time-zone"
+            placeholder="Search time zones"
+          />
           <ComboboxContent>
-            <ComboboxEmpty>No time zones match. Try a city, like Lisbon.</ComboboxEmpty>
+            <ComboboxEmpty>
+              No time zones match. Try a city, like Lisbon.
+            </ComboboxEmpty>
             <ComboboxList className="max-h-96">
               {(group: ZoneGroup, index: number) => (
                 <ComboboxGroup key={group.value} items={group.items}>
@@ -260,25 +336,24 @@ function TimeZonePicker() {
           </ComboboxContent>
         </Combobox>
       </Field>
-      <div aria-hidden="true" inert className={cn(comboboxStyles.popup, open && "invisible")}>
+      <div
+        aria-hidden="true"
+        inert
+        className={cn(comboboxStyles.popup, open && "invisible")}
+      >
         <div className={cn(comboboxStyles.list, "max-h-none")}>
           {zoneGroups.map((group, index) => (
             <div key={group.value}>
               {index > 0 ? <div className={comboboxStyles.separator} /> : null}
               <div className={comboboxStyles.label}>{group.value}</div>
-              {group.items.map((zone) => {
-                const selected = zone.value === value?.value
-                return (
-                  <div key={zone.value} className={comboboxStyles.item} data-selected={selected ? "" : undefined}>
-                    {zone.label}
-                    {selected ? (
-                      <span className={comboboxStyles.itemIndicator}>
-                        <CheckIcon className="size-4 text-foreground" strokeWidth={2.5} />
-                      </span>
-                    ) : null}
-                  </div>
-                )
-              })}
+              {group.items.map((zone) => (
+                <OpenListItem
+                  key={zone.value}
+                  selected={zone.value === value?.value}
+                >
+                  {zone.label}
+                </OpenListItem>
+              ))}
             </div>
           ))}
         </div>
@@ -316,14 +391,10 @@ export default function ComboboxDocs() {
           <Combobox items={labels}>
             <ComboboxInput id="combobox-label" placeholder="Search labels" />
             <ComboboxContent>
-              <ComboboxEmpty>No labels match. Try Bug, Design or Content.</ComboboxEmpty>
-              <ComboboxList>
-                {(item: string) => (
-                  <ComboboxItem key={item} value={item}>
-                    {item}
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
+              <ComboboxEmpty>
+                No labels match. Try Bug, Design or Content.
+              </ComboboxEmpty>
+              <ComboboxList>{textItem}</ComboboxList>
             </ComboboxContent>
           </Combobox>
         </Field>
@@ -355,18 +426,18 @@ export default function ComboboxDocs() {
         <Field className="max-w-sm">
           <FieldLabel htmlFor="combobox-assignee">Assignee</FieldLabel>
           <Combobox items={members} defaultValue="Jordan Lee">
-            <ComboboxInput id="combobox-assignee" showClear placeholder="Search members">
+            <ComboboxInput
+              id="combobox-assignee"
+              showClear
+              placeholder="Search members"
+            >
               <UserRoundIcon className="order-first me-1.5" />
             </ComboboxInput>
             <ComboboxContent>
-              <ComboboxEmpty>No members match. Invite them from Members settings.</ComboboxEmpty>
-              <ComboboxList>
-                {(item: string) => (
-                  <ComboboxItem key={item} value={item}>
-                    {item}
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
+              <ComboboxEmpty>
+                No members match. Invite them from Members settings.
+              </ComboboxEmpty>
+              <ComboboxList>{textItem}</ComboboxList>
             </ComboboxContent>
           </Combobox>
         </Field>
@@ -495,30 +566,26 @@ export default function ComboboxDocs() {
             <Combobox items={labels} defaultValue="Design" disabled>
               <ComboboxInput id="combobox-disabled" disabled />
               <ComboboxContent>
-                <ComboboxList>
-                  {(item: string) => (
-                    <ComboboxItem key={item} value={item}>
-                      {item}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
+                <ComboboxList>{textItem}</ComboboxList>
               </ComboboxContent>
             </Combobox>
-            <FieldDescription>Set by the Design requests form.</FieldDescription>
+            <FieldDescription>
+              Set by the Design requests form.
+            </FieldDescription>
           </Field>
           <Field data-invalid="true">
             <FieldLabel htmlFor="combobox-invalid">Assignee</FieldLabel>
             <Combobox items={members}>
-              <ComboboxInput id="combobox-invalid" placeholder="Search members" aria-invalid="true" />
+              <ComboboxInput
+                id="combobox-invalid"
+                placeholder="Search members"
+                aria-invalid="true"
+              />
               <ComboboxContent>
-                <ComboboxEmpty>No members match. Invite them from Members settings.</ComboboxEmpty>
-                <ComboboxList>
-                  {(item: string) => (
-                    <ComboboxItem key={item} value={item}>
-                      {item}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
+                <ComboboxEmpty>
+                  No members match. Invite them from Members settings.
+                </ComboboxEmpty>
+                <ComboboxList>{textItem}</ComboboxList>
               </ComboboxContent>
             </Combobox>
             <FieldError>Choose who owns this task.</FieldError>
@@ -542,17 +609,72 @@ export default function ComboboxDocs() {
 
       <ApiTable
         rows={[
-          { prop: "items", type: "Item[] | { value, items }[]", description: "Options on Combobox, flat or grouped. Filtering runs over these." },
-          { prop: "value / defaultValue", type: "Item | Item[] | null", description: "Controlled or initial value. An array when multiple is set." },
-          { prop: "onValueChange", type: "(value, details) => void", description: "Called when the selection changes." },
-          { prop: "multiple", type: "boolean", default: "false", description: "Allow several values, shown as chips." },
-          { prop: "autoHighlight", type: "boolean", default: "false", description: "Highlight the first match as the person types." },
-          { prop: "ComboboxInput showTrigger", type: "boolean", default: "true", description: "Show the chevron that opens the full list." },
-          { prop: "ComboboxInput showClear", type: "boolean", default: "false", description: "Show a clear button once a value is picked. It replaces the chevron." },
-          { prop: "ComboboxContent anchor", type: "RefObject<HTMLElement>", description: "Element the popup lines up with. Pass the chips ref for multiple." },
-          { prop: "ComboboxContent container", type: "HTMLElement | ShadowRoot | RefObject | null", description: "Element the popup portals into instead of <body>, such as a preview stage. Inside a PortalScope the popup already takes that region’s theme." },
-          { prop: "ComboboxChip showRemove", type: "boolean", default: "true", description: "Show the remove button on a chip." },
-          { prop: "useComboboxAnchor", type: "() => RefObject<HTMLDivElement>", description: "Creates the ref shared by ComboboxChips and ComboboxContent." },
+          {
+            prop: "items",
+            type: "Item[] | { value, items }[]",
+            description:
+              "Options on Combobox, flat or grouped. Filtering runs over these.",
+          },
+          {
+            prop: "value / defaultValue",
+            type: "Item | Item[] | null",
+            description:
+              "Controlled or initial value. An array when multiple is set.",
+          },
+          {
+            prop: "onValueChange",
+            type: "(value, details) => void",
+            description: "Called when the selection changes.",
+          },
+          {
+            prop: "multiple",
+            type: "boolean",
+            default: "false",
+            description: "Allow several values, shown as chips.",
+          },
+          {
+            prop: "autoHighlight",
+            type: "boolean",
+            default: "false",
+            description: "Highlight the first match as the person types.",
+          },
+          {
+            prop: "ComboboxInput showTrigger",
+            type: "boolean",
+            default: "true",
+            description: "Show the chevron that opens the full list.",
+          },
+          {
+            prop: "ComboboxInput showClear",
+            type: "boolean",
+            default: "false",
+            description:
+              "Show a clear button once a value is picked. It replaces the chevron.",
+          },
+          {
+            prop: "ComboboxContent anchor",
+            type: "RefObject<HTMLElement>",
+            description:
+              "Element the popup lines up with. Pass the chips ref for multiple.",
+          },
+          {
+            prop: "ComboboxContent container",
+            type: "HTMLElement | ShadowRoot | RefObject | null",
+            description:
+              "Element the popup portals into instead of <body>, such as a preview stage. Inside a PortalScope the popup already takes that region’s theme.",
+          },
+          {
+            prop: "ComboboxChip showRemove",
+            type: "boolean",
+            default: "true",
+            description: "Show the remove button on a chip.",
+          },
+          {
+            prop: "useComboboxAnchor",
+            type: "() => RefObject<HTMLDivElement>",
+            description:
+              "Creates the ref shared by ComboboxChips and ComboboxContent.",
+          },
         ]}
       />
     </Examples>

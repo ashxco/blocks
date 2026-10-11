@@ -16,10 +16,19 @@ import {
   type TokenTier,
 } from "@/design-system/generated/tokens"
 
+import type { ThemeMode } from "@/lib/themes"
+
 import { parseOklch, type Oklch } from "./color"
 
 export type { DesignToken, Theme, ThemeId, ThemeTokenValue, TokenTier }
+export type { ThemeMode as Mode }
 export { defaultThemeId, themeIds, themes, tokens }
+
+/** Light, then dark: the order every page lists the two modes in. */
+export const modes: { value: ThemeMode; label: string }[] = [
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
+]
 
 const byName = new Map(tokens.map((t) => [t.name, t]))
 const byVar = new Map(tokens.map((t) => [t.cssVar, t]))
@@ -38,13 +47,15 @@ export function tokensIn(tier: TokenTier, group: string) {
 }
 
 /** Distinct groups of a tier, in source order. */
-export function groupsOf(tier: TokenTier) {
+function groupsOf(tier: TokenTier) {
   return [...new Set(tokens.filter((t) => t.tier === tier).map((t) => t.group))]
 }
 
 /** Short name without the tier prefix: "color.ink.950" -> "ink.950", "theme.neutral.950" -> "neutral.950". */
-export function shortName(name: string) {
-  return name.replace(/^(color|font|type|motion|component|theme)\./, "").replace(/\.DEFAULT$/, "")
+function shortName(name: string) {
+  return name
+    .replace(/^(color|font|type|motion|component|theme)\./, "")
+    .replace(/\.DEFAULT$/, "")
 }
 
 /** Last dot segment: "motion.duration.fast" -> "fast". */
@@ -76,7 +87,10 @@ export function sentenceCase(text: string) {
 
 /** One value per theme, for ThemeText and ByTheme. */
 export function perTheme<T>(fn: (theme: ThemeId) => T): Record<ThemeId, T> {
-  return Object.fromEntries(themeIds.map((id) => [id, fn(id)])) as Record<ThemeId, T>
+  return Object.fromEntries(themeIds.map((id) => [id, fn(id)])) as Record<
+    ThemeId,
+    T
+  >
 }
 
 export function themeById(id: ThemeId): Theme {
@@ -88,16 +102,6 @@ export function valueIn(theme: ThemeId, t: DesignToken): ThemeTokenValue {
   return tokenValueIn(theme, t)
 }
 
-/** True when some theme gives the token another value than the default theme. */
-export function isThemed(t: DesignToken) {
-  return Boolean(t.themed)
-}
-
-/** True when the theme file sets this token itself (rather than it following from another). */
-export function themeSets(theme: ThemeId, t: DesignToken) {
-  return themeById(theme).overrides.includes(t.name)
-}
-
 export type ScaleRole = "accent" | "neutral"
 
 /**
@@ -106,7 +110,7 @@ export type ScaleRole = "accent" | "neutral"
  * step (or a fixed step with the same value). Undefined when the theme
  * writes its own OKLCH values for the scale.
  */
-export function aliasScaleIn(
+function aliasScaleIn(
   theme: ThemeId,
   role: ScaleRole,
   step = role === "accent" ? "600" : "500"
@@ -114,9 +118,14 @@ export function aliasScaleIn(
   const alias = byName.get(`theme.${role}.${step}`)
   if (!alias) return undefined
   const v = valueIn(theme, alias)
-  if (v.ref?.startsWith("color.")) return v.ref.replace(/^color\./, "").split(".")[0]
+  if (v.ref?.startsWith("color."))
+    return v.ref.replace(/^color\./, "").split(".")[0]
   const same = tokens.find(
-    (t) => t.tier === "primitive" && !isAliasScale(t) && leafName(t.name) === step && String(t.value) === String(v.value)
+    (t) =>
+      t.tier === "primitive" &&
+      !isAliasScale(t) &&
+      leafName(t.name) === step &&
+      String(t.value) === String(v.value)
   )
   return same?.group
 }
@@ -143,16 +152,22 @@ export function aliasSummary(theme: ThemeId, role: ScaleRole) {
 }
 
 /** "Blocks points it at violet", or "… sets its own OKLCH values". */
-export function aliasSource(theme: ThemeId, themeName: string, role: ScaleRole) {
+export function aliasSource(
+  theme: ThemeId,
+  themeName: string,
+  role: ScaleRole
+) {
   const fixed = aliasScaleIn(theme, role)
-  return fixed ? `${themeName} points it at ${fixed}` : `${themeName} sets its own OKLCH values`
+  return fixed
+    ? `${themeName} points it at ${fixed}`
+    : `${themeName} sets its own OKLCH values`
 }
 
 /* ------------------------------------------------------------------------ */
 /* Colour                                                                    */
 /* ------------------------------------------------------------------------ */
 
-export interface ScaleStep {
+interface ScaleStep {
   step: string
   token: DesignToken
   value: string
@@ -179,23 +194,26 @@ function scalesOf(colorTokens: DesignToken[]): ColorScale[] {
 }
 
 /** True for the alias scales a theme re-points (--bk-accent-*, --bk-neutral-*). */
-export function isAliasScale(t: DesignToken) {
+function isAliasScale(t: DesignToken) {
   return t.name.startsWith("theme.")
-}
-
-/** Every primitive colour scale: the fixed ones, then the theme's alias scales. */
-export function primitiveScales(): ColorScale[] {
-  return scalesOf(tokens.filter((t) => t.tier === "primitive" && t.type === "color"))
 }
 
 /** The fixed OKLCH scales (violet, ink, green …), the same in every theme. */
 export function fixedScales(): ColorScale[] {
-  return scalesOf(tokens.filter((t) => t.tier === "primitive" && t.type === "color" && !isAliasScale(t)))
+  return scalesOf(
+    tokens.filter(
+      (t) => t.tier === "primitive" && t.type === "color" && !isAliasScale(t)
+    )
+  )
 }
 
 /** The theme scales: accent and neutral, aliases that each theme points at a fixed scale. */
 export function themeScales(): ColorScale[] {
-  return scalesOf(tokens.filter((t) => t.tier === "primitive" && t.type === "color" && isAliasScale(t)))
+  return scalesOf(
+    tokens.filter(
+      (t) => t.tier === "primitive" && t.type === "color" && isAliasScale(t)
+    )
+  )
 }
 
 export type ScaleKind = "accent" | "neutral" | "status"
@@ -206,25 +224,42 @@ export type ScaleKind = "accent" | "neutral" | "status"
  */
 export function scaleKind(scale: ColorScale): ScaleKind {
   if (scale.steps.some((s) => s.step === "1000")) return "neutral"
-  const statusRefs = tokensIn("semantic", "status").flatMap((t) => [t.ref, t.dark?.ref])
-  if (statusRefs.some((ref) => ref?.startsWith(`color.${scale.name}.`))) return "status"
+  const statusRefs = tokensIn("semantic", "status").flatMap((t) => [
+    t.ref,
+    t.dark?.ref,
+  ])
+  if (statusRefs.some((ref) => ref?.startsWith(`color.${scale.name}.`)))
+    return "status"
   return "accent"
 }
 
+/** Steps every scale has (50 … 950), so ramps drawn on them line up step for step. */
+export function sharedSteps(scales: ColorScale[]) {
+  const [first, ...rest] = scales
+  if (!first) return []
+  return first.steps
+    .map((s) => s.step)
+    .filter((step) =>
+      rest.every((scale) => scale.steps.some((s) => s.step === step))
+    )
+}
+
 /** Themes whose accent or neutral scale points at a fixed scale. */
-export function themesUsing(scale: string): { theme: Theme; role: ScaleRole }[] {
+export function themesUsing(
+  scale: string
+): { theme: Theme; role: ScaleRole }[] {
   return themes.flatMap((theme) =>
-    (["accent", "neutral"] as const).filter((role) => aliasScaleIn(theme.id, role) === scale).map((role) => ({ theme, role }))
+    (["accent", "neutral"] as const)
+      .filter((role) => aliasScaleIn(theme.id, role) === scale)
+      .map((role) => ({ theme, role }))
   )
 }
 
-export interface SemanticGroup {
-  name: string
-  tokens: DesignToken[]
-}
-
-export function semanticGroups(): SemanticGroup[] {
-  return groupsOf("semantic").map((name) => ({ name, tokens: tokensIn("semantic", name) }))
+export function semanticGroups(): { name: string; tokens: DesignToken[] }[] {
+  return groupsOf("semantic").map((name) => ({
+    name,
+    tokens: tokensIn("semantic", name),
+  }))
 }
 
 /** Role name as used in utilities: "--muted-foreground" -> "muted-foreground". */
@@ -237,7 +272,9 @@ export function refLabel(ref?: string) {
   return ref ? shortName(ref) : undefined
 }
 
-const primitiveColors = tokens.filter((t) => t.tier === "primitive" && t.type === "color")
+const primitiveColors = tokens.filter(
+  (t) => t.tier === "primitive" && t.type === "color"
+)
 /* The theme scales first, so a match names the alias semantic colours read ("neutral.0 at 9%"). */
 const aliasColors = primitiveColors.filter(isAliasScale)
 const fixedColors = primitiveColors.filter((t) => !isAliasScale(t))
@@ -248,19 +285,35 @@ const fixedColors = primitiveColors.filter((t) => !isAliasScale(t))
  * ("neutral.0 at 9%"), looked up in the theme's own scales first. Undefined
  * for a tuned one-off that matches no primitive.
  */
-export function colorAlias(value: string, ref?: string, theme: ThemeId = defaultThemeId): string | undefined {
+export function colorAlias(
+  value: string,
+  ref?: string,
+  theme: ThemeId = defaultThemeId
+): string | undefined {
   if (ref) return refLabel(ref)
   const parsed = parseOklch(value)
   if (!parsed) return undefined
   const same = (v: unknown) => {
     const q = parseOklch(v)
-    return q && q.l === parsed.l && q.c === parsed.c && (q.c === 0 || q.h === parsed.h)
+    return (
+      q &&
+      q.l === parsed.l &&
+      q.c === parsed.c &&
+      (q.c === 0 || q.h === parsed.h)
+    )
   }
   const match =
-    aliasColors.find((p) => same(valueIn(theme, p).value)) ?? fixedColors.find((p) => same(p.value))
-  const base = match ? refLabel(match.name) : parsed.l === 0 && parsed.c === 0 ? "black" : undefined
+    aliasColors.find((p) => same(valueIn(theme, p).value)) ??
+    fixedColors.find((p) => same(p.value))
+  const base = match
+    ? refLabel(match.name)
+    : parsed.l === 0 && parsed.c === 0
+      ? "black"
+      : undefined
   if (!base) return undefined
-  return parsed.alpha < 1 ? `${base} at ${Math.round(parsed.alpha * 100)}%` : base
+  return parsed.alpha < 1
+    ? `${base} at ${Math.round(parsed.alpha * 100)}%`
+    : base
 }
 
 /** Light and dark values for a semantic token in a theme (dark falls back to light). */
@@ -272,10 +325,17 @@ export function themeValues(t: DesignToken, theme: ThemeId = defaultThemeId) {
   }
 }
 
-/** Light and dark refs for a semantic token in a theme. */
-export function themeRefs(t: DesignToken, theme: ThemeId = defaultThemeId) {
+/**
+ * The primitive behind a colour role in one mode of a theme ("neutral.950",
+ * "accent.600", "neutral.0 at 9%"), or the raw value for a tuned one-off.
+ */
+export function refIn(t: DesignToken, mode: ThemeMode, theme: ThemeId) {
   const v = valueIn(theme, t)
-  return { light: v.ref, dark: v.dark ? v.dark.ref : v.ref }
+  const resolved = mode === "dark" && v.dark ? v.dark : v
+  return (
+    colorAlias(String(resolved.value), resolved.ref, theme) ??
+    String(resolved.value)
+  )
 }
 
 /* ------------------------------------------------------------------------ */
@@ -297,10 +357,11 @@ export function toRem(value: string): number | null {
   return px === null ? null : px / ROOT_PX
 }
 
-const round = (n: number) => Math.round(n * 100) / 100
+/** Rounds to two decimals, for printed sizes. */
+export const round = (n: number) => Math.round(n * 100) / 100
 
 /** Parses clamp(min, preferred, max) into px bounds. */
-export function clampRange(value: string): { min: number; max: number } | null {
+function clampRange(value: string): { min: number; max: number } | null {
   const m = /^clamp\(\s*([^,]+),[^,]+,\s*([^)]+)\)$/.exec(value.trim())
   if (!m) return null
   const min = toPx(m[1])
@@ -317,6 +378,12 @@ export function describeSize(value: unknown): string {
   if (px === null) return v
   if (px >= 9999) return "Fully round"
   return `${round(px)}px`
+}
+
+/** A radius: "12px", or "Pill" where it is fully round. */
+export function describeRadius(value: unknown): string {
+  const size = describeSize(value)
+  return size === "Fully round" ? "Pill" : size
 }
 
 /* ------------------------------------------------------------------------ */
@@ -358,7 +425,8 @@ export function formatValue(t: DesignToken, value: unknown): string {
     if (!v) return JSON.stringify(value)
     return `${v.fontSize} / ${v.lineHeight} · ${v.letterSpacing} · ${v.fontWeight}`
   }
-  if (t.type === "cubicBezier" && Array.isArray(value)) return `cubic-bezier(${value.join(", ")})`
+  if (t.type === "cubicBezier" && Array.isArray(value))
+    return `cubic-bezier(${value.join(", ")})`
   if (Array.isArray(value)) return value.join(", ")
   return String(value)
 }
@@ -371,7 +439,7 @@ export function isColor(t: DesignToken) {
 /* Breakpoint values                                                         */
 /* ------------------------------------------------------------------------ */
 
-export interface BreakpointValue {
+interface BreakpointValue {
   /** Breakpoint name, e.g. "md". */
   name: string
   /** Viewport width it starts at, e.g. "48rem". */
@@ -387,5 +455,9 @@ export interface BreakpointValue {
 export function breakpointValues(t: DesignToken): BreakpointValue[] {
   const values = t.breakpoints
   if (!values) return []
-  return breakpoints.flatMap((b) => (b.name in values ? [{ name: b.name, min: b.min, value: values[b.name] }] : []))
+  return breakpoints.flatMap((b) =>
+    b.name in values
+      ? [{ name: b.name, min: b.min, value: values[b.name] }]
+      : []
+  )
 }

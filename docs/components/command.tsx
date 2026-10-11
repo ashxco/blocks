@@ -20,6 +20,7 @@ import {
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { type Stage } from "@/docs/stage"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -43,9 +44,24 @@ const suggestions = [
 
 /* Each project has its own mark, so names that share a first letter stay apart. */
 const projects = [
-  { label: "Website relaunch", meta: "On track", tint: "bg-tint-violet", icon: GlobeIcon },
-  { label: "Mobile app 2.0", meta: "At risk", tint: "bg-tint-sky", icon: SmartphoneIcon },
-  { label: "Q4 planning", meta: "On track", tint: "bg-tint-mint", icon: CalendarRangeIcon },
+  {
+    label: "Website relaunch",
+    meta: "On track",
+    tint: "bg-tint-violet",
+    icon: GlobeIcon,
+  },
+  {
+    label: "Mobile app 2.0",
+    meta: "At risk",
+    tint: "bg-tint-sky",
+    icon: SmartphoneIcon,
+  },
+  {
+    label: "Q4 planning",
+    meta: "On track",
+    tint: "bg-tint-mint",
+    icon: CalendarRangeIcon,
+  },
 ]
 
 const settings = [
@@ -56,9 +72,18 @@ const settings = [
   { label: "Billing", icon: CreditCardIcon },
 ]
 
-function ProjectMark({ icon: Icon, tint }: { icon: React.ComponentType<{ className?: string }>; tint: string }) {
+function ProjectMark({
+  icon: Icon,
+  tint,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  tint: string
+}) {
   return (
-    <span aria-hidden="true" className={`grid size-5 shrink-0 place-items-center rounded-xs text-foreground ${tint}`}>
+    <span
+      aria-hidden="true"
+      className={`grid size-5 shrink-0 place-items-center rounded-xs text-foreground ${tint}`}
+    >
       <Icon className="size-3" />
     </span>
   )
@@ -106,15 +131,27 @@ function WhenVisible({
 }
 
 /** The Acme command list, shared by the inline and dialog examples. */
-function AcmeCommands({ onRun, listClassName }: { onRun: (label: string) => void; listClassName?: string }) {
+function AcmeCommands({
+  onRun,
+  listClassName,
+}: {
+  onRun: (label: string) => void
+  listClassName?: string
+}) {
   return (
     <>
       <CommandInput placeholder="Search projects and actions" />
       <CommandList className={listClassName}>
-        <CommandEmpty>No results. Try a project name, or an action such as “create”.</CommandEmpty>
+        <CommandEmpty>
+          No results. Try a project name, or an action such as “create”.
+        </CommandEmpty>
         <CommandGroup heading="Suggestions">
           {suggestions.map((item) => (
-            <CommandItem key={item.label} value={item.label} onSelect={() => onRun(item.label)}>
+            <CommandItem
+              key={item.label}
+              value={item.label}
+              onSelect={() => onRun(item.label)}
+            >
               <item.icon />
               <span>{item.label}</span>
               <CommandShortcut>
@@ -136,7 +173,9 @@ function AcmeCommands({ onRun, listClassName }: { onRun: (label: string) => void
             >
               <ProjectMark icon={project.icon} tint={project.tint} />
               <span className="truncate">{project.label}</span>
-              <span className="ms-auto shrink-0 text-xs text-muted-foreground">{project.meta}</span>
+              <span className="ms-auto shrink-0 text-xs text-muted-foreground">
+                {project.meta}
+              </span>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -195,14 +234,15 @@ function InlinePalette() {
       <Command loop className="border">
         {/* Tall enough that the list ends partway through the Settings group, so it reads as scrollable.
             In the page, not an overlay, so the wheel carries on to the page at the end of the list. */}
-        <AcmeCommands onRun={setLast} listClassName="max-h-96 overscroll-auto" />
+        <AcmeCommands
+          onRun={setLast}
+          listClassName="max-h-96 overscroll-auto"
+        />
       </Command>
       <LastRun label={last} />
     </div>
   )
 }
-
-type Stage = HTMLDivElement | null
 
 /**
  * The palette open in place, in a stage on the page. contain-layout makes the
@@ -229,7 +269,10 @@ function DialogPalette() {
   }, [])
 
   return (
-    <div ref={setContainer} className="relative isolate grid min-h-152 w-full content-start overflow-hidden contain-layout">
+    <div
+      ref={setContainer}
+      className="relative isolate grid min-h-152 w-full content-start overflow-hidden contain-layout"
+    >
       <div className="grid justify-items-center gap-4 p-6 sm:p-12">
         <Button
           variant="outline"
@@ -300,7 +343,9 @@ function SettingsSearch() {
         <CommandGroup heading="Danger zone">
           <CommandItem value="Delete project" disabled>
             <span>Delete project</span>
-            <span className="ms-auto text-caption text-muted-foreground">Owners only</span>
+            <span className="ms-auto text-caption text-muted-foreground">
+              Owners only
+            </span>
           </CommandItem>
         </CommandGroup>
       </CommandList>
@@ -312,10 +357,16 @@ function EmptyState() {
   const [search, setSearch] = React.useState("roadmap")
   return (
     <Command className="w-full max-w-112 border">
-      <CommandInput value={search} onValueChange={setSearch} placeholder="Search projects" />
+      <CommandInput
+        value={search}
+        onValueChange={setSearch}
+        placeholder="Search projects"
+      />
       <CommandList>
         <CommandEmpty>
-          <span className="block text-sm font-semibold text-foreground">No results for “{search}”</span>
+          <span className="block text-sm font-semibold text-foreground">
+            No results for “{search}”
+          </span>
           <span className="mt-1 block text-sm text-muted-foreground">
             Try a project name, or clear the search to see everything.
           </span>
@@ -390,7 +441,7 @@ React.useEffect(() => {
 </CommandDialog>`}
       >
         {/* Mounts once the stage reaches the upper half of the screen, so the first result is already in view. */}
-        <WhenVisible className="w-full min-h-152" rootMargin="0px 0px -50% 0px">
+        <WhenVisible className="min-h-152 w-full" rootMargin="0px 0px -50% 0px">
           <DialogPalette />
         </WhenVisible>
       </Example>
@@ -438,16 +489,62 @@ React.useEffect(() => {
 
       <ApiTable
         rows={[
-          { prop: "Command loop", type: "boolean", default: "false", description: "Wrap arrow-key navigation from the last item to the first." },
-          { prop: "Command shouldFilter", type: "boolean", default: "true", description: "Turn off to filter results yourself, for example from a server." },
-          { prop: "CommandInput value / onValueChange", type: "string / (value) => void", description: "Control the search text." },
-          { prop: "CommandItem value", type: "string", description: "Text used for matching and as the item’s identity. Defaults to its text content." },
-          { prop: "CommandItem keywords", type: "string[]", description: "Extra words that match the item, such as synonyms." },
-          { prop: "CommandItem onSelect", type: "(value) => void", description: "Runs on click or Enter." },
-          { prop: "CommandItem data-checked", type: "boolean", description: "Shows a check at the end of the row." },
-          { prop: "CommandGroup heading", type: "ReactNode", description: "Small muted heading above the group. Hidden when nothing in it matches." },
-          { prop: "CommandDialog title / description", type: "string", description: "Screen-reader title and description for the dialog." },
-          { prop: "CommandFooter", type: "component", description: "A hairline strip under the list for key hints." },
+          {
+            prop: "Command loop",
+            type: "boolean",
+            default: "false",
+            description:
+              "Wrap arrow-key navigation from the last item to the first.",
+          },
+          {
+            prop: "Command shouldFilter",
+            type: "boolean",
+            default: "true",
+            description:
+              "Turn off to filter results yourself, for example from a server.",
+          },
+          {
+            prop: "CommandInput value / onValueChange",
+            type: "string / (value) => void",
+            description: "Control the search text.",
+          },
+          {
+            prop: "CommandItem value",
+            type: "string",
+            description:
+              "Text used for matching and as the item’s identity. Defaults to its text content.",
+          },
+          {
+            prop: "CommandItem keywords",
+            type: "string[]",
+            description: "Extra words that match the item, such as synonyms.",
+          },
+          {
+            prop: "CommandItem onSelect",
+            type: "(value) => void",
+            description: "Runs on click or Enter.",
+          },
+          {
+            prop: "CommandItem data-checked",
+            type: "boolean",
+            description: "Shows a check at the end of the row.",
+          },
+          {
+            prop: "CommandGroup heading",
+            type: "ReactNode",
+            description:
+              "Small muted heading above the group. Hidden when nothing in it matches.",
+          },
+          {
+            prop: "CommandDialog title / description",
+            type: "string",
+            description: "Screen-reader title and description for the dialog.",
+          },
+          {
+            prop: "CommandFooter",
+            type: "component",
+            description: "A hairline strip under the list for key hints.",
+          },
         ]}
       />
     </Examples>

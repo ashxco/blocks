@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button"
 const inputGroupVariants = cva(
   [
     "group/input-group relative flex w-full min-w-0 items-center rounded-(--control-radius) border border-input bg-muted text-foreground",
-    "outline-none transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
+    "transition-[background-color,border-color] duration-(--duration-fast) ease-standard outline-none",
     "hover:border-foreground/25",
     // Focus: the group carries the focus state of its control.
     "has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:bg-background has-[[data-slot=input-group-control]:focus-visible]:focus-ring",
@@ -39,7 +39,7 @@ const inputGroupVariants = cva(
     "has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col",
     "has-[>textarea]:h-auto",
     // Inline addons tighten the control's padding on their side.
-    "has-[>[data-align=inline-start]]:[&>input]:ps-2 has-[>[data-align=inline-end]]:[&>input]:pe-2",
+    "has-[>[data-align=inline-end]]:[&>input]:pe-2 has-[>[data-align=inline-start]]:[&>input]:ps-2",
     // A text prefix (an addon holding only InputGroupText) is part of the
     // value, so the value starts right after it: "app.acme.com/acme".
     "has-[>[data-align=inline-start]>[data-slot=input-group-text]:only-child]:[&>input]:ps-0",
@@ -102,18 +102,18 @@ const inputGroupAddonVariants = cva(
   [
     "flex h-auto cursor-text items-center justify-center gap-2 font-medium text-muted-foreground select-none",
     "group-has-[[data-slot=input-group-control]:disabled]/input-group:pointer-events-none",
-    "[&>svg:not([class*='size-'])]:size-4 [&>svg]:shrink-0",
+    "[&>svg]:shrink-0 [&>svg:not([class*='size-'])]:size-4",
     "[&>kbd]:rounded-xs",
   ],
   {
     variants: {
       align: {
         "inline-start": [
-          "order-first ps-(--control-padding-x) has-[>button]:ps-2 has-[>kbd]:ps-2 has-[>[data-size=icon-sm]]:ps-1 has-[>[data-size=sm]]:ps-1",
+          "order-first ps-(--control-padding-x) has-[>[data-size=icon-sm]]:ps-1 has-[>[data-size=sm]]:ps-1 has-[>button]:ps-2 has-[>kbd]:ps-2",
           inlineText,
         ],
         "inline-end": [
-          "order-last pe-(--control-padding-x) has-[>button]:pe-2 has-[>kbd]:pe-2 has-[>[data-size=icon-sm]]:pe-1 has-[>[data-size=sm]]:pe-1",
+          "order-last pe-(--control-padding-x) has-[>[data-size=icon-sm]]:pe-1 has-[>[data-size=sm]]:pe-1 has-[>button]:pe-2 has-[>kbd]:pe-2",
           // A text suffix fills the rest of the group, so a click after the value still focuses it.
           "has-[>[data-slot=input-group-text]:only-child]:flex-1 has-[>[data-slot=input-group-text]:only-child]:justify-start",
           inlineText,
@@ -153,7 +153,10 @@ function InputGroupAddon({
         // A click on a suffix lands after the value, so put the caret at the end.
         if (align === "inline-end") {
           try {
-            control.setSelectionRange(control.value.length, control.value.length)
+            control.setSelectionRange(
+              control.value.length,
+              control.value.length
+            )
           } catch {
             // Number and email inputs do not support selection ranges.
           }

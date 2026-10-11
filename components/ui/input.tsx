@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils"
 const inputVariants = cva(
   [
     "w-full min-w-0 rounded-(--control-radius) border border-input bg-muted text-foreground",
-    "outline-none transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard",
+    "transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard outline-none",
     "placeholder:text-muted-foreground",
     "hover:border-foreground/25",
     "focus-visible:border-ring focus-visible:bg-background focus-visible:focus-ring",

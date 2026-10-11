@@ -100,7 +100,7 @@ function AccordionContent({
       className={cn(
         "h-(--accordion-panel-height) overflow-hidden text-body text-copy",
         "transition-[height,opacity] duration-(--duration-base) ease-out",
-        "data-starting-style:h-0 data-starting-style:opacity-0 data-ending-style:h-0 data-ending-style:opacity-0"
+        "data-ending-style:h-0 data-ending-style:opacity-0 data-starting-style:h-0 data-starting-style:opacity-0"
       )}
       {...props}
     >

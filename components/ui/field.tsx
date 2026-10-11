@@ -1,6 +1,5 @@
 "use client"
 
-import { useMemo } from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { CircleAlertIcon } from "lucide-react"
@@ -181,9 +180,7 @@ function FieldSeparator({
   children,
   className,
   ...props
-}: React.ComponentProps<"div"> & {
-  children?: React.ReactNode
-}) {
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="field-separator"
@@ -207,6 +204,26 @@ function FieldSeparator({
   )
 }
 
+/** One error as text, several (deduplicated by message) as a list. */
+function errorList(errors: Array<{ message?: string } | undefined> = []) {
+  const unique = [
+    ...new Map(errors.map((error) => [error?.message, error])).values(),
+  ]
+  if (unique.length === 1) {
+    return unique[0]?.message
+  }
+  if (unique.length === 0) {
+    return null
+  }
+  return (
+    <ul className="ml-4 flex list-disc flex-col gap-1">
+      {unique.map(
+        (error, index) => error?.message && <li key={index}>{error.message}</li>
+      )}
+    </ul>
+  )
+}
+
 function FieldError({
   className,
   children,
@@ -215,32 +232,7 @@ function FieldError({
 }: React.ComponentProps<"div"> & {
   errors?: Array<{ message?: string } | undefined>
 }) {
-  const content = useMemo(() => {
-    if (children) {
-      return children
-    }
-
-    if (!errors?.length) {
-      return null
-    }
-
-    const uniqueErrors = [
-      ...new Map(errors.map((error) => [error?.message, error])).values(),
-    ]
-
-    if (uniqueErrors?.length == 1) {
-      return uniqueErrors[0]?.message
-    }
-
-    return (
-      <ul className="ml-4 flex list-disc flex-col gap-1">
-        {uniqueErrors.map(
-          (error, index) =>
-            error?.message && <li key={index}>{error.message}</li>
-        )}
-      </ul>
-    )
-  }, [children, errors])
+  const content = children || errorList(errors)
 
   if (!content) {
     return null
@@ -256,7 +248,11 @@ function FieldError({
       )}
       {...props}
     >
-      <CircleAlertIcon aria-hidden="true" className="mt-px size-3.5 shrink-0" strokeWidth={2.25} />
+      <CircleAlertIcon
+        aria-hidden="true"
+        className="mt-px size-3.5 shrink-0"
+        strokeWidth={2.25}
+      />
       <div className="min-w-0">{content}</div>
     </div>
   )

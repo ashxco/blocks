@@ -1,12 +1,11 @@
 "use client"
 
-import * as React from "react"
 import type { LucideIcon } from "lucide-react"
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 
-export interface SegmentedOption<T extends string> {
+interface SegmentedOption<T extends string> {
   value: T
   label: string
   icon?: LucideIcon
@@ -23,7 +22,6 @@ export function Segmented<T extends string>({
   options,
   label,
   iconOnly = false,
-  labelClassName,
   className,
 }: {
   value: T
@@ -33,8 +31,6 @@ export function Segmented<T extends string>({
   label: string
   /** Show icons only; labels become accessible names and tooltips. */
   iconOnly?: boolean
-  /** Classes for the visible labels, e.g. "hidden sm:inline" to show icons only on phones. */
-  labelClassName?: string
   className?: string
 }) {
   return (
@@ -57,7 +53,7 @@ export function Segmented<T extends string>({
             title={iconOnly ? option.label : undefined}
           >
             {Icon ? <Icon aria-hidden="true" /> : null}
-            {iconOnly ? null : <span className={labelClassName}>{option.label}</span>}
+            {iconOnly ? null : <span>{option.label}</span>}
           </ToggleGroupItem>
         )
       })}

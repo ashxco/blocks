@@ -5,8 +5,15 @@ import * as React from "react"
 import { Segmented } from "@/components/viewer/segmented"
 import { useSiteLook } from "@/components/viewer/site-theme"
 import { PortalScope } from "@/lib/portal-container"
-import { isThemeId, themeScopeProps, type ThemeId, type ThemeMode } from "@/lib/themes"
+import {
+  isThemeId,
+  themeScopeProps,
+  type ThemeId,
+  type ThemeMode,
+} from "@/lib/themes"
 import { cn } from "@/lib/utils"
+
+import { modes } from "./data"
 
 /*
  * The Themes page's stage: one theme at a time, large. A row of tabs, each
@@ -29,11 +36,6 @@ export interface StageItem {
   /** Colour, shape and type details. */
   details: React.ReactNode
 }
-
-const modeOptions: { value: ThemeMode; label: string }[] = [
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-]
 
 function subscribeHash(onChange: () => void) {
   window.addEventListener("hashchange", onChange)
@@ -64,7 +66,8 @@ export function ThemeStage({ items }: { items: StageItem[] }) {
   const tabRefs = React.useRef<Map<ThemeId, HTMLButtonElement>>(new Map())
 
   const onKeyDown = (event: React.KeyboardEvent, index: number) => {
-    const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0
+    const step =
+      event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0
     if (!step) return
     event.preventDefault()
     const next = items[(index + step + items.length) % items.length]
@@ -75,7 +78,11 @@ export function ThemeStage({ items }: { items: StageItem[] }) {
   return (
     <div className="grid gap-8">
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
-        <div role="tablist" aria-label="Themes" className="-mx-1 flex flex-wrap gap-1">
+        <div
+          role="tablist"
+          aria-label="Themes"
+          className="-mx-1 flex flex-wrap gap-1"
+        >
           {items.map((item, index) => {
             const active = item.id === selected
             return (
@@ -99,17 +106,27 @@ export function ThemeStage({ items }: { items: StageItem[] }) {
                   cn(
                     "flex h-(--button-height-md) scroll-mt-24 items-center gap-2.5 rounded-(--button-radius) px-4 outline-none",
                     "font-heading text-label font-semibold transition-colors duration-(--duration-fast) focus-visible:focus-ring",
-                    active ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
+                    active
+                      ? "bg-secondary text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   )
                 )}
               >
-                <span aria-hidden="true" className="size-2 rounded-full bg-brand" />
+                <span
+                  aria-hidden="true"
+                  className="size-2 rounded-full bg-brand"
+                />
                 {item.name}
               </button>
             )
           })}
         </div>
-        <Segmented value={mode} onValueChange={setChosenMode} options={modeOptions} label="Stage appearance" />
+        <Segmented
+          value={mode}
+          onValueChange={setChosenMode}
+          options={modes}
+          label="Stage appearance"
+        />
       </div>
 
       {items.map((item) => (

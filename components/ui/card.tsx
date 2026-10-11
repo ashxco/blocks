@@ -134,7 +134,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
       className={cn(
         // The tinted band: bg-subtle sits one step off bg-card in both themes.
         "-mx-(--card-inset) -mb-(--card-inset) flex items-center gap-3 border-t border-border bg-subtle px-(--card-inset) py-4",
-        "group-data-[variant=subtle]/card:bg-secondary group-data-[variant=panel]/card:border-panel-border group-data-[variant=panel]/card:bg-panel-raised",
+        "group-data-[variant=panel]/card:border-panel-border group-data-[variant=panel]/card:bg-panel-raised group-data-[variant=subtle]/card:bg-secondary",
         className
       )}
       {...props}

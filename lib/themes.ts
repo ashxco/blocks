@@ -37,10 +37,10 @@ export const THEME_ATTRIBUTE = "data-theme"
 export const THEME_PARAM = "theme"
 export const MODE_PARAM = "mode"
 
-export const themeModes: readonly ThemeMode[] = ["light", "dark"]
-
 export function isThemeId(value: unknown): value is ThemeId {
-  return typeof value === "string" && (themeIds as readonly string[]).includes(value)
+  return (
+    typeof value === "string" && (themeIds as readonly string[]).includes(value)
+  )
 }
 
 export function isThemeMode(value: unknown): value is ThemeMode {
@@ -48,12 +48,20 @@ export function isThemeMode(value: unknown): value is ThemeMode {
 }
 
 export function getTheme(id: ThemeId): Theme {
-  return themes.find((t) => t.id === id) ?? themes.find((t) => t.id === defaultThemeId) ?? themes[0]
+  return (
+    themes.find((t) => t.id === id) ??
+    themes.find((t) => t.id === defaultThemeId) ??
+    themes[0]
+  )
 }
 
 /** The theme and mode a URL forces. Unknown values are ignored. */
-export function readLookQuery(search: string | URLSearchParams): { theme?: ThemeId; mode?: ThemeMode } {
-  const params = typeof search === "string" ? new URLSearchParams(search) : search
+export function readLookQuery(search: string | URLSearchParams): {
+  theme?: ThemeId
+  mode?: ThemeMode
+} {
+  const params =
+    typeof search === "string" ? new URLSearchParams(search) : search
   const theme = params.get(THEME_PARAM)
   const mode = params.get(MODE_PARAM)
   return {
@@ -68,7 +76,10 @@ export function readLookQuery(search: string | URLSearchParams): { theme?: Theme
  * for preview frames, shared links and screenshots. Pass `null` to remove one.
  * Works with absolute and relative URLs.
  */
-export function withLook(href: string, look: { theme?: ThemeId | null; mode?: ThemeMode | null }): string {
+export function withLook(
+  href: string,
+  look: { theme?: ThemeId | null; mode?: ThemeMode | null }
+): string {
   const base = "http://blocks.invalid"
   const url = new URL(href, base)
   if (look.theme === null) url.searchParams.delete(THEME_PARAM)
@@ -77,7 +88,8 @@ export function withLook(href: string, look: { theme?: ThemeId | null; mode?: Th
   else if (look.mode) {
     url.searchParams.set(MODE_PARAM, look.mode)
     // A legacy ?theme=dark|light would contradict the mode.
-    if (isThemeMode(url.searchParams.get(THEME_PARAM))) url.searchParams.delete(THEME_PARAM)
+    if (isThemeMode(url.searchParams.get(THEME_PARAM)))
+      url.searchParams.delete(THEME_PARAM)
   }
   const out = url.toString()
   return /^[a-z][a-z\d+.-]*:/i.test(href) ? out : out.slice(base.length)

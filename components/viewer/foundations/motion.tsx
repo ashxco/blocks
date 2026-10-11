@@ -1,8 +1,17 @@
-import * as React from "react"
-
 import { leafName, tokensIn } from "./data"
-import { DoDont, FoundationPage, Section } from "./layout"
-import { DurationDemos, EasingDemos, MotionInUse, type DurationItem, type EasingItem } from "./motion-demos"
+import {
+  DoDont,
+  FoundationPage,
+  Section,
+  type FoundationPageProps,
+} from "./layout"
+import { MotionInUse } from "./motion-scenes"
+import {
+  DurationDemos,
+  EasingDemos,
+  type DurationItem,
+  type EasingItem,
+} from "./motion-timing"
 
 function durations(): DurationItem[] {
   return tokensIn("layout", "duration").map((t) => ({
@@ -30,11 +39,13 @@ function easings(): EasingItem[] {
   })
 }
 
-export function MotionFoundation({ title, description }: { title: string; description: string }) {
+export function MotionFoundation({ title, description }: FoundationPageProps) {
   const durationItems = durations()
   const easingItems = easings()
-  const standard = easingItems.find((e) => e.name === "standard")?.cssVar ?? "--ease-standard"
-  const slowest = durationItems[durationItems.length - 1]?.cssVar ?? "--duration-slower"
+  const standard =
+    easingItems.find((e) => e.name === "standard")?.cssVar ?? "--ease-standard"
+  const slowest =
+    durationItems[durationItems.length - 1]?.cssVar ?? "--duration-slower"
 
   return (
     <FoundationPage title={title} description={description}>

@@ -1,5 +1,10 @@
 import type * as React from "react"
-import { MonitorIcon, SmartphoneIcon, TabletIcon, type LucideIcon } from "lucide-react"
+import {
+  MonitorIcon,
+  SmartphoneIcon,
+  TabletIcon,
+  type LucideIcon,
+} from "lucide-react"
 
 import { responsiveVars } from "@/design-system/generated/tokens"
 
@@ -10,7 +15,10 @@ export type Device = "desktop" | "tablet" | "mobile"
  * render at exactly these widths and scale down when the stage is
  * narrower, so a "Mobile" preview always lays out like a 390px phone.
  */
-export const devices: Record<Device, { width: number; label: string; icon: LucideIcon }> = {
+export const devices: Record<
+  Device,
+  { width: number; label: string; icon: LucideIcon }
+> = {
   desktop: { width: 1440, label: "Desktop", icon: MonitorIcon },
   tablet: { width: 834, label: "Tablet", icon: TabletIcon },
   mobile: { width: 390, label: "Mobile", icon: SmartphoneIcon },
@@ -26,8 +34,9 @@ function minPx(min: string) {
   return min.trim().endsWith("rem") ? value * ROOT_PX : value
 }
 
-/** A token formula written with vw, recomputed against the virtual viewport. */
-const toVirtualVw = (value: string) => value.replace(/(\d*\.?\d+)vw/g, "calc($1 * var(--bk-vw))")
+/** A token formula written with vw, recomputed against the virtual viewport's --bk-vw. */
+export const toVirtualVw = (value: string) =>
+  value.replace(/(\d*\.?\d+)vw/g, "calc($1 * var(--bk-vw))")
 
 /**
  * Inline style for a virtual viewport (`.bk-viewport`, see viewer-styles.ts)
@@ -41,9 +50,15 @@ const toVirtualVw = (value: string) => value.replace(/(\d*\.?\d+)vw/g, "calc($1 
  */
 export function viewportStyle(width: number): React.CSSProperties {
   const style: Record<string, string> = { "--bk-vw": `${width / 100}px` }
-  const layers = [responsiveVars.base, ...responsiveVars.breakpoints.filter((b) => width >= minPx(b.min)).map((b) => b.vars)]
+  const layers = [
+    responsiveVars.base,
+    ...responsiveVars.breakpoints
+      .filter((b) => width >= minPx(b.min))
+      .map((b) => b.vars),
+  ]
   for (const vars of layers) {
-    for (const [name, value] of Object.entries(vars)) style[name] = toVirtualVw(value)
+    for (const [name, value] of Object.entries(vars))
+      style[name] = toVirtualVw(value)
   }
   return style as React.CSSProperties
 }

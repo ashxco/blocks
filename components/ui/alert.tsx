@@ -22,12 +22,13 @@ const alertVariants = cva(
     // From sm up the action sits on the right; on phones it drops below the text.
     "sm:has-data-[slot=alert-action]:grid-cols-[1fr_auto]",
     "sm:has-[>svg]:has-data-[slot=alert-action]:grid-cols-[auto_1fr_auto]",
-    "*:[svg]:mt-0.5 *:[svg:not([class*='size-'])]:size-4 has-data-[slot=alert-description]:*:[svg]:row-span-2",
+    "*:[svg]:mt-0.5 has-data-[slot=alert-description]:*:[svg]:row-span-2 *:[svg:not([class*='size-'])]:size-4",
   ],
   {
     variants: {
       variant: {
-        default: "border-border bg-subtle text-foreground *:[svg]:text-foreground",
+        default:
+          "border-border bg-subtle text-foreground *:[svg]:text-foreground",
         info: "border-info/20 bg-info-subtle text-foreground *:[svg]:text-info",
         success:
           "border-success/20 bg-success-subtle text-foreground *:[svg]:text-success",
@@ -96,7 +97,7 @@ function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="alert-action"
       className={cn(
         "col-span-full mt-2 flex items-center gap-2 group-has-[>svg]/alert:pl-7",
-        "sm:col-[-2/-1] sm:row-start-1 sm:mt-0 sm:self-center sm:group-has-[>svg]/alert:pl-0 sm:group-has-data-[slot=alert-description]/alert:row-[1/span_2]",
+        "sm:col-[-2/-1] sm:row-start-1 sm:mt-0 sm:self-center sm:group-has-data-[slot=alert-description]/alert:row-[1/span_2] sm:group-has-[>svg]/alert:pl-0",
         className
       )}
       {...props}

@@ -29,7 +29,7 @@ const toggleVariants = cva(
         default:
           "bg-transparent text-muted-foreground hover:bg-accent hover:text-foreground data-pressed:hover:bg-primary/85 data-pressed:hover:text-primary-foreground",
         outline:
-          "border-input bg-background text-foreground hover:border-foreground/40 dark:bg-transparent data-pressed:border-primary data-pressed:hover:border-primary/85 data-pressed:hover:bg-primary/85",
+          "border-input bg-background text-foreground hover:border-foreground/40 data-pressed:border-primary data-pressed:hover:border-primary/85 data-pressed:hover:bg-primary/85 dark:bg-transparent",
       },
       size: {
         default:

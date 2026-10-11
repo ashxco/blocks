@@ -27,9 +27,20 @@ import {
   FieldTitle,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/components/ui/input-group"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 
 /* -------------------------------------------------------------------------- */
@@ -37,10 +48,26 @@ import { Switch } from "@/components/ui/switch"
 /* -------------------------------------------------------------------------- */
 
 const templates = [
-  { value: "roadmap", title: "Product roadmap", description: "Plan themes and launches on a timeline, quarter by quarter." },
-  { value: "marketing", title: "Marketing calendar", description: "Schedule campaigns, posts and emails on a shared calendar." },
-  { value: "clients", title: "Client projects", description: "Track deliverables, approvals and guests for each client." },
-  { value: "sprints", title: "Sprint planning", description: "Run two-week sprints on a board with estimates and owners." },
+  {
+    value: "roadmap",
+    title: "Product roadmap",
+    description: "Plan themes and launches on a timeline, quarter by quarter.",
+  },
+  {
+    value: "marketing",
+    title: "Marketing calendar",
+    description: "Schedule campaigns, posts and emails on a shared calendar.",
+  },
+  {
+    value: "clients",
+    title: "Client projects",
+    description: "Track deliverables, approvals and guests for each client.",
+  },
+  {
+    value: "sprints",
+    title: "Sprint planning",
+    description: "Run two-week sprints on a board with estimates and owners.",
+  },
 ] as const
 
 const owners = [
@@ -68,7 +95,8 @@ function validate(name: string, slug: string, milestones: Milestone[]): Errors {
   else if (name.trim().length > 60) errors.name = "Use 60 characters or fewer."
   if (!slug.trim()) errors.slug = "Enter a URL for the project."
   else if (!slugPattern.test(slug))
-    errors.slug = "Use lowercase letters, numbers and single hyphens, like team-offsite."
+    errors.slug =
+      "Use lowercase letters, numbers and single hyphens, like team-offsite."
   if (milestones.some((m) => m.due && !m.name.trim()))
     errors.milestones = "Give every dated milestone a name, like Beta launch."
   return errors
@@ -91,7 +119,9 @@ function CreateProjectForm() {
   const [submitted, setSubmitted] = React.useState(false)
 
   function updateMilestone(milestoneId: number, patch: Partial<Milestone>) {
-    setMilestones((rows) => rows.map((row) => (row.id === milestoneId ? { ...row, ...patch } : row)))
+    setMilestones((rows) =>
+      rows.map((row) => (row.id === milestoneId ? { ...row, ...patch } : row))
+    )
   }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -100,7 +130,9 @@ function CreateProjectForm() {
     setErrors(next)
     if (Object.keys(next).length > 0) {
       requestAnimationFrame(() => {
-        formRef.current?.querySelector<HTMLElement>("[aria-invalid=true]")?.focus()
+        formRef.current
+          ?.querySelector<HTMLElement>("[aria-invalid=true]")
+          ?.focus()
       })
       return
     }
@@ -116,21 +148,32 @@ function CreateProjectForm() {
 
   if (submitted) {
     const ownerLabel = owners.find((o) => o.value === owner)?.label ?? "you"
-    const templateLabel = templates.find((t) => t.value === template)?.title ?? "blank"
+    const templateLabel =
+      templates.find((t) => t.value === template)?.title ?? "blank"
     const named = milestones.filter((m) => m.name.trim()).length
     return (
       <FormFrame>
         <Card role="status" className="mx-auto w-full max-w-2xl">
           <CardHeader>
             <span className="mb-3 grid size-10 place-items-center rounded-full bg-success-subtle text-success">
-              <CheckIcon aria-hidden="true" className="size-5" strokeWidth={2.5} />
+              <CheckIcon
+                aria-hidden="true"
+                className="size-5"
+                strokeWidth={2.5}
+              />
             </span>
             <CardTitle>{name.trim()} is ready</CardTitle>
             <CardDescription className="text-pretty">
-              Created from the {templateLabel} template with {named} {named === 1 ? "milestone" : "milestones"}, owned
-              by {ownerLabel}. It lives at{" "}
-              <span className="font-mono break-all text-foreground">app.acme.com/acme/projects/{slug}</span>.{" "}
-              {isPrivate ? "Only invited members can see it." : "Everyone in Acme Inc. can see it."}
+              Created from the {templateLabel} template with {named}{" "}
+              {named === 1 ? "milestone" : "milestones"}, owned by {ownerLabel}.
+              It lives at{" "}
+              <span className="font-mono break-all text-foreground">
+                app.acme.com/acme/projects/{slug}
+              </span>
+              .{" "}
+              {isPrivate
+                ? "Only invited members can see it."
+                : "Everyone in Acme Inc. can see it."}
             </CardDescription>
           </CardHeader>
           <CardFooter>
@@ -150,7 +193,8 @@ function CreateProjectForm() {
           <CardHeader>
             <CardTitle>Create project</CardTitle>
             <CardDescription className="text-pretty">
-              Give the work a home in Acme Inc. You can invite people and add tasks next.
+              Give the work a home in Acme Inc. You can invite people and add
+              tasks next.
             </CardDescription>
           </CardHeader>
 
@@ -171,7 +215,9 @@ function CreateProjectForm() {
                 {errors.name ? (
                   <FieldError id={`${id}-name-error`}>{errors.name}</FieldError>
                 ) : (
-                  <FieldDescription id={`${id}-name-hint`}>Shown in the sidebar and on every task in the project.</FieldDescription>
+                  <FieldDescription id={`${id}-name-hint`}>
+                    Shown in the sidebar and on every task in the project.
+                  </FieldDescription>
                 )}
               </Field>
 
@@ -181,7 +227,10 @@ function CreateProjectForm() {
                   <InputGroupAddon>
                     {/* The full prefix needs room; on a phone the input keeps its width for the slug. */}
                     <InputGroupText className="gap-0">
-                      <span className="hidden @xl/form:inline">app.acme.com/acme</span>/projects/
+                      <span className="hidden @xl/form:inline">
+                        app.acme.com/acme
+                      </span>
+                      /projects/
                     </InputGroupText>
                   </InputGroupAddon>
                   <InputGroupInput
@@ -200,7 +249,8 @@ function CreateProjectForm() {
                   <FieldError id={`${id}-slug-error`}>{errors.slug}</FieldError>
                 ) : (
                   <FieldDescription id={`${id}-slug-hint`}>
-                    Members open the project at this link. You can change it later.
+                    Members open the project at this link. You can change it
+                    later.
                   </FieldDescription>
                 )}
               </Field>
@@ -214,15 +264,7 @@ function CreateProjectForm() {
                   className="grid gap-3 @xl/form:grid-cols-2"
                 >
                   {templates.map((t) => (
-                    <FieldLabel key={t.value}>
-                      <Field orientation="horizontal">
-                        <FieldContent>
-                          <FieldTitle>{t.title}</FieldTitle>
-                          <FieldDescription>{t.description}</FieldDescription>
-                        </FieldContent>
-                        <RadioGroupItem value={t.value} />
-                      </Field>
-                    </FieldLabel>
+                    <ChoiceCard key={t.value} {...t} />
                   ))}
                 </RadioGroup>
               </FieldSet>
@@ -246,12 +288,17 @@ function CreateProjectForm() {
                     ))}
                   </SelectContent>
                 </Select>
-                <FieldDescription>The owner gets the weekly status reminder and approves changes to the plan.</FieldDescription>
+                <FieldDescription>
+                  The owner gets the weekly status reminder and approves changes
+                  to the plan.
+                </FieldDescription>
               </Field>
 
               <FieldSet>
                 <FieldLegend variant="label">Milestones</FieldLegend>
-                <FieldDescription>Each milestone shows on the timeline and in the weekly report.</FieldDescription>
+                <FieldDescription>
+                  Each milestone shows on the timeline and in the weekly report.
+                </FieldDescription>
                 <div className="grid gap-4 @xl/form:gap-2">
                   {milestones.map((row, index) => (
                     <div
@@ -261,17 +308,25 @@ function CreateProjectForm() {
                       <Input
                         aria-label={`Milestone ${index + 1} name`}
                         value={row.name}
-                        onChange={(e) => updateMilestone(row.id, { name: e.target.value })}
+                        onChange={(e) =>
+                          updateMilestone(row.id, { name: e.target.value })
+                        }
                         placeholder="Beta launch"
                         autoComplete="off"
                         className="col-start-1 row-start-1 text-ellipsis"
-                        aria-invalid={Boolean(errors.milestones) && Boolean(row.due) && !row.name.trim()}
+                        aria-invalid={
+                          Boolean(errors.milestones) &&
+                          Boolean(row.due) &&
+                          !row.name.trim()
+                        }
                       />
                       <Input
                         type="date"
                         aria-label={`Milestone ${index + 1} due date`}
                         value={row.due}
-                        onChange={(e) => updateMilestone(row.id, { due: e.target.value })}
+                        onChange={(e) =>
+                          updateMilestone(row.id, { due: e.target.value })
+                        }
                         className="col-start-1 row-start-2 tabular @xl/form:col-start-2 @xl/form:row-start-1"
                       />
                       <Button
@@ -279,7 +334,11 @@ function CreateProjectForm() {
                         variant="ghost"
                         size="icon"
                         aria-label={`Remove ${row.name || `milestone ${index + 1}`}`}
-                        onClick={() => setMilestones((rows) => rows.filter((r) => r.id !== row.id))}
+                        onClick={() =>
+                          setMilestones((rows) =>
+                            rows.filter((r) => r.id !== row.id)
+                          )
+                        }
                         className="col-start-2 row-span-2 row-start-1 self-center text-muted-foreground hover:text-foreground @xl/form:col-start-3 @xl/form:row-span-1"
                       >
                         <Trash2Icon />
@@ -287,14 +346,19 @@ function CreateProjectForm() {
                     </div>
                   ))}
                 </div>
-                {errors.milestones ? <FieldError>{errors.milestones}</FieldError> : null}
+                {errors.milestones ? (
+                  <FieldError>{errors.milestones}</FieldError>
+                ) : null}
                 <div>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() =>
-                      setMilestones((rows) => [...rows, { id: nextMilestoneId.current++, name: "", due: "" }])
+                      setMilestones((rows) => [
+                        ...rows,
+                        { id: nextMilestoneId.current++, name: "", due: "" },
+                      ])
                     }
                   >
                     <PlusIcon data-icon="inline-start" />
@@ -311,8 +375,12 @@ function CreateProjectForm() {
                   onCheckedChange={(checked) => setIsPrivate(checked)}
                 />
                 <FieldContent>
-                  <FieldLabel htmlFor={`${id}-private`}>Private project</FieldLabel>
-                  <FieldDescription>Only people you invite can see the project and its tasks.</FieldDescription>
+                  <FieldLabel htmlFor={`${id}-private`}>
+                    Private project
+                  </FieldLabel>
+                  <FieldDescription>
+                    Only people you invite can see the project and its tasks.
+                  </FieldDescription>
                 </FieldContent>
               </Field>
             </FieldGroup>
@@ -330,6 +398,29 @@ function CreateProjectForm() {
   )
 }
 
+/** A choice card: the whole card is the label, the text leads and the radio sits at the top right. */
+function ChoiceCard({
+  value,
+  title,
+  description,
+}: {
+  value: string
+  title: string
+  description: string
+}) {
+  return (
+    <FieldLabel>
+      <Field orientation="horizontal">
+        <FieldContent>
+          <FieldTitle>{title}</FieldTitle>
+          <FieldDescription>{description}</FieldDescription>
+        </FieldContent>
+        <RadioGroupItem value={value} />
+      </Field>
+    </FieldLabel>
+  )
+}
+
 /**
  * The canvas around the form. Padding follows the example's container and the
  * form's layout follows the card's own container, so the example's desktop,
@@ -344,9 +435,29 @@ function FormFrame({ children }: { children: React.ReactNode }) {
 /* -------------------------------------------------------------------------- */
 
 const plans = [
-  { value: "free", title: "Free", description: "Up to 3 members and 5\u00a0projects." },
-  { value: "pro", title: "Pro", description: "$12 per member a month, billed annually. Unlimited projects." },
-  { value: "business", title: "Business", description: "$24 per member a month, billed annually. SSO and audit log." },
+  {
+    value: "free",
+    title: "Free",
+    description: "Up to 3 members and 5\u00a0projects.",
+  },
+  {
+    value: "pro",
+    title: "Pro",
+    description: "$12 per member a month, billed annually. Unlimited projects.",
+  },
+  {
+    value: "business",
+    title: "Business",
+    description: "$24 per member a month, billed annually. SSO and audit log.",
+  },
+]
+
+/** Security alerts always send, so that option is on and locked. */
+const notifications = [
+  { id: "assigned", label: "Tasks assigned to me", checked: true },
+  { id: "mentions", label: "Comments and mentions", checked: true },
+  { id: "digest", label: "Weekly project digest", checked: false },
+  { id: "security", label: "Security alerts", checked: true, disabled: true },
 ]
 
 export default function FieldDocs() {
@@ -366,7 +477,9 @@ export default function FieldDocs() {
           <Field>
             <FieldLabel htmlFor="field-anatomy">Project name</FieldLabel>
             <Input id="field-anatomy" placeholder="Website relaunch" />
-            <FieldDescription>Shown in the sidebar and on every task in the project.</FieldDescription>
+            <FieldDescription>
+              Shown in the sidebar and on every task in the project.
+            </FieldDescription>
           </Field>
         </div>
       </Example>
@@ -384,8 +497,15 @@ export default function FieldDocs() {
         <div className="w-full max-w-sm">
           <Field>
             <FieldLabel htmlFor="field-key">Project key</FieldLabel>
-            <FieldDescription>Two to five capital letters. Task IDs start with it, like WEB-142.</FieldDescription>
-            <Input id="field-key" defaultValue="WEB" className="font-mono" spellCheck={false} />
+            <FieldDescription>
+              Two to five capital letters. Task IDs start with it, like WEB-142.
+            </FieldDescription>
+            <Input
+              id="field-key"
+              defaultValue="WEB"
+              className="font-mono"
+              spellCheck={false}
+            />
           </Field>
         </div>
       </Example>
@@ -403,8 +523,16 @@ export default function FieldDocs() {
         <div className="w-full max-w-sm">
           <Field data-invalid>
             <FieldLabel htmlFor="field-email">Work email</FieldLabel>
-            <Input id="field-email" type="email" defaultValue="maya@acme" aria-invalid aria-describedby="field-email-error" />
-            <FieldError id="field-email-error">Finish the address, like maya@acme.com.</FieldError>
+            <Input
+              id="field-email"
+              type="email"
+              defaultValue="maya@acme"
+              aria-invalid
+              aria-describedby="field-email-error"
+            />
+            <FieldError id="field-email-error">
+              Finish the address, like maya@acme.com.
+            </FieldError>
           </Field>
         </div>
       </Example>
@@ -430,13 +558,18 @@ export default function FieldDocs() {
           <Field orientation="horizontal">
             <FieldContent>
               <FieldLabel htmlFor="field-summary">Weekly summary</FieldLabel>
-              <FieldDescription>Tasks completed, overdue work and project status, every Monday at 9:00.</FieldDescription>
+              <FieldDescription>
+                Tasks completed, overdue work and project status, every Monday
+                at 9:00.
+              </FieldDescription>
             </FieldContent>
             <Switch id="field-summary" defaultChecked />
           </Field>
           <Field orientation="horizontal">
             <Checkbox id="field-assigned" defaultChecked />
-            <FieldLabel htmlFor="field-assigned">Email me when a task is assigned to me</FieldLabel>
+            <FieldLabel htmlFor="field-assigned">
+              Email me when a task is assigned to me
+            </FieldLabel>
           </Field>
         </div>
       </Example>
@@ -471,24 +604,24 @@ export default function FieldDocs() {
         <div className="w-full max-w-md">
           <FieldSet>
             <FieldLegend>Notifications</FieldLegend>
-            <FieldDescription>Choose what Acme emails you about. Security alerts always send.</FieldDescription>
+            <FieldDescription>
+              Choose what Acme emails you about. Security alerts always send.
+            </FieldDescription>
             <FieldGroup data-slot="checkbox-group">
-              <Field orientation="horizontal">
-                <Checkbox id="field-n-assigned" defaultChecked />
-                <FieldLabel htmlFor="field-n-assigned">Tasks assigned to me</FieldLabel>
-              </Field>
-              <Field orientation="horizontal">
-                <Checkbox id="field-n-mentions" defaultChecked />
-                <FieldLabel htmlFor="field-n-mentions">Comments and mentions</FieldLabel>
-              </Field>
-              <Field orientation="horizontal">
-                <Checkbox id="field-n-digest" />
-                <FieldLabel htmlFor="field-n-digest">Weekly project digest</FieldLabel>
-              </Field>
-              <Field orientation="horizontal" data-disabled="true">
-                <Checkbox id="field-n-security" defaultChecked disabled />
-                <FieldLabel htmlFor="field-n-security">Security alerts</FieldLabel>
-              </Field>
+              {notifications.map(({ id, label, checked, disabled }) => (
+                <Field
+                  key={id}
+                  orientation="horizontal"
+                  data-disabled={disabled ? "true" : undefined}
+                >
+                  <Checkbox
+                    id={`field-n-${id}`}
+                    defaultChecked={checked}
+                    disabled={disabled}
+                  />
+                  <FieldLabel htmlFor={`field-n-${id}`}>{label}</FieldLabel>
+                </Field>
+              ))}
             </FieldGroup>
           </FieldSet>
         </div>
@@ -525,16 +658,8 @@ export default function FieldDocs() {
           <FieldSet>
             <FieldLegend variant="label">Plan</FieldLegend>
             <RadioGroup defaultValue="pro" name="plan">
-              {plans.map((p) => (
-                <FieldLabel key={p.value}>
-                  <Field orientation="horizontal">
-                    <FieldContent>
-                      <FieldTitle>{p.title}</FieldTitle>
-                      <FieldDescription>{p.description}</FieldDescription>
-                    </FieldContent>
-                    <RadioGroupItem value={p.value} />
-                  </Field>
-                </FieldLabel>
+              {plans.map((plan) => (
+                <ChoiceCard key={plan.value} {...plan} />
               ))}
             </RadioGroup>
           </FieldSet>
@@ -565,17 +690,34 @@ export default function FieldDocs() {
         <FieldGroup className="max-w-3xl">
           <Field orientation="responsive">
             <FieldContent>
-              <FieldLabel htmlFor="field-workspace-name">Workspace name</FieldLabel>
-              <FieldDescription>Shown in the sidebar and in email invites.</FieldDescription>
+              <FieldLabel htmlFor="field-workspace-name">
+                Workspace name
+              </FieldLabel>
+              <FieldDescription>
+                Shown in the sidebar and in email invites.
+              </FieldDescription>
             </FieldContent>
-            <Input id="field-workspace-name" defaultValue="Acme Inc." className="@md/field-group:basis-72" />
+            <Input
+              id="field-workspace-name"
+              defaultValue="Acme Inc."
+              className="@md/field-group:basis-72"
+            />
           </Field>
           <Field orientation="responsive">
             <FieldContent>
-              <FieldLabel htmlFor="field-workspace-url">Workspace URL</FieldLabel>
-              <FieldDescription>Members sign in at app.acme.com followed by this name.</FieldDescription>
+              <FieldLabel htmlFor="field-workspace-url">
+                Workspace URL
+              </FieldLabel>
+              <FieldDescription>
+                Members sign in at app.acme.com followed by this name.
+              </FieldDescription>
             </FieldContent>
-            <Input id="field-workspace-url" defaultValue="acme" className="font-mono @md/field-group:basis-72" spellCheck={false} />
+            <Input
+              id="field-workspace-url"
+              defaultValue="acme"
+              className="font-mono @md/field-group:basis-72"
+              spellCheck={false}
+            />
           </Field>
         </FieldGroup>
       </Example>
@@ -597,8 +739,14 @@ export default function FieldDocs() {
           </Button>
           <FieldSeparator>or</FieldSeparator>
           <Field>
-            <FieldLabel htmlFor="field-invite-emails">Invite by email</FieldLabel>
-            <Input id="field-invite-emails" placeholder="theo@acme.com, ines@acme.com" spellCheck={false} />
+            <FieldLabel htmlFor="field-invite-emails">
+              Invite by email
+            </FieldLabel>
+            <Input
+              id="field-invite-emails"
+              placeholder="theo@acme.com, ines@acme.com"
+              spellCheck={false}
+            />
           </Field>
         </div>
       </Example>
@@ -682,23 +830,78 @@ export default function FieldDocs() {
       <ApiTable
         title="Field"
         rows={[
-          { prop: "orientation", type: '"vertical" | "horizontal" | "responsive"', default: '"vertical"', description: "Stack the label above the control, put it beside the control, or switch once the FieldGroup is at least 28rem wide (@md)." },
-          { prop: "data-invalid", type: "boolean", description: "Marks the field invalid. Inputs, textareas, input groups and selection controls inside turn destructive." },
-          { prop: "data-disabled", type: "boolean", description: "Dims the label and title. Disable the control itself too." },
+          {
+            prop: "orientation",
+            type: '"vertical" | "horizontal" | "responsive"',
+            default: '"vertical"',
+            description:
+              "Stack the label above the control, put it beside the control, or switch once the FieldGroup is at least 28rem wide (@md).",
+          },
+          {
+            prop: "data-invalid",
+            type: "boolean",
+            description:
+              "Marks the field invalid. Inputs, textareas, input groups and selection controls inside turn destructive.",
+          },
+          {
+            prop: "data-disabled",
+            type: "boolean",
+            description:
+              "Dims the label and title. Disable the control itself too.",
+          },
         ]}
       />
 
       <ApiTable
         title="Parts"
         rows={[
-          { prop: "FieldLabel", type: "<label>", description: "Label-role text in ink. Wrapping a <Field> turns it into a choice card." },
-          { prop: "FieldTitle", type: "<div>", description: "The title inside a choice card, where the card itself is the label." },
-          { prop: "FieldDescription", type: "<p>", description: "Caption-size helper text in muted foreground. Links inside are ink and underlined." },
-          { prop: "FieldError", type: "<div role=alert>", description: "Destructive caption with an icon. Pass children, or errors={[{ message }]} to list several." },
-          { prop: "FieldContent", type: "<div>", description: "Stacks a label and description beside a control in horizontal fields." },
-          { prop: "FieldGroup", type: "<div>", description: "Stacks fields with gap-6, a wider rhythm than inside a field, and is the container for responsive fields." },
-          { prop: "FieldSet / FieldLegend", type: '<fieldset> / <legend variant="legend" | "label">', description: "Groups related controls. The legend variant is a bold section title; label matches FieldLabel." },
-          { prop: "FieldSeparator", type: "<div>", description: "A hairline with optional centred text, such as “or”." },
+          {
+            prop: "FieldLabel",
+            type: "<label>",
+            description:
+              "Label-role text in ink. Wrapping a <Field> turns it into a choice card.",
+          },
+          {
+            prop: "FieldTitle",
+            type: "<div>",
+            description:
+              "The title inside a choice card, where the card itself is the label.",
+          },
+          {
+            prop: "FieldDescription",
+            type: "<p>",
+            description:
+              "Caption-size helper text in muted foreground. Links inside are ink and underlined.",
+          },
+          {
+            prop: "FieldError",
+            type: "<div role=alert>",
+            description:
+              "Destructive caption with an icon. Pass children, or errors={[{ message }]} to list several.",
+          },
+          {
+            prop: "FieldContent",
+            type: "<div>",
+            description:
+              "Stacks a label and description beside a control in horizontal fields.",
+          },
+          {
+            prop: "FieldGroup",
+            type: "<div>",
+            description:
+              "Stacks fields with gap-6, a wider rhythm than inside a field, and is the container for responsive fields.",
+          },
+          {
+            prop: "FieldSet / FieldLegend",
+            type: '<fieldset> / <legend variant="legend" | "label">',
+            description:
+              "Groups related controls. The legend variant is a bold section title; label matches FieldLabel.",
+          },
+          {
+            prop: "FieldSeparator",
+            type: "<div>",
+            description: "A hairline with optional centred text, such as “or”.",
+          },
         ]}
       />
     </Examples>

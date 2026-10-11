@@ -1,9 +1,23 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, CircleCheckIcon, CircleIcon, LinkIcon, PanelRightIcon } from "lucide-react"
+import {
+  CheckIcon,
+  CircleCheckIcon,
+  CircleIcon,
+  LinkIcon,
+  PanelRightIcon,
+} from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import {
+  PreviewStage,
+  PropValue,
+  StagePage,
+  StageSwitcher,
+  openInPlace,
+  type Stage,
+} from "@/docs/stage"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -23,7 +37,6 @@ import {
 } from "@/components/ui/sheet"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 
 const sides = ["top", "right", "bottom", "left"] as const
@@ -53,71 +66,107 @@ const subtasks = [
   { name: "Schedule the launch email", done: false },
 ]
 
-type Stage = HTMLDivElement | null
-
-/**
- * The stage an example's sheet opens into, so the page shows the sheet
- * itself. contain-layout makes the stage the containing block for the fixed
- * overlay and panel, and isolate keeps them under the site header. The overlay
- * tints and blurs the page behind it, as it does over a real page.
- */
-function SheetStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
-  const [container, setContainer] = React.useState<Stage>(null)
+/** The stage an example's sheet opens into, on the task list it sits on. */
+function SheetStage({
+  className,
+  children,
+}: {
+  className?: string
+  children: (container: Stage) => React.ReactNode
+}) {
   return (
-    <div ref={setContainer} className={cn("relative isolate h-full min-h-176 w-full overflow-hidden contain-layout", className)}>
-      <TasksPage action={children(container)} />
-    </div>
+    <PreviewStage kind="overlay" className={cn("min-h-176", className)}>
+      {(container) => (
+        <StagePage
+          title="Website relaunch"
+          meta="14 open tasks · 38 done"
+          action={children(container)}
+        >
+          <TaskList />
+        </StagePage>
+      )}
+    </PreviewStage>
   )
 }
-
-/** Open in place on the docs page: no focus move, no scroll lock, no dismissal on outside clicks. */
-const inlineSheet = { defaultOpen: true, modal: false, disablePointerDismissal: true } as const
 
 /** SheetBody in place on the page: the wheel carries on to the page once the body has nothing left to scroll. */
 const inlineBody = "overscroll-auto"
 
 const tasks = [
-  { title: "Write the launch announcement", assignee: "Priya Raman", due: "Oct 14", priority: "High" },
-  { title: "Fix the pricing table on mobile", assignee: "Jordan Lee", due: "Oct 15", priority: "Urgent" },
-  { title: "Final homepage illustrations", assignee: "Sofia Alvarez", due: "Oct 16", priority: "Medium" },
-  { title: "Review page titles and descriptions", assignee: "Priya Raman", due: "Oct 21", priority: "Medium" },
-  { title: "Plan the launch-day schedule", assignee: "Maya Patel", due: "Oct 22", priority: "High" },
-  { title: "Brief the support team", assignee: "Sam Okafor", due: "Oct 23", priority: "Low" },
-  { title: "Update the help articles that link to old pages", assignee: "Sam Okafor", due: "Oct 28", priority: "Low" },
+  {
+    title: "Write the launch announcement",
+    assignee: "Priya Raman",
+    due: "Oct 14",
+    priority: "High",
+  },
+  {
+    title: "Fix the pricing table on mobile",
+    assignee: "Jordan Lee",
+    due: "Oct 15",
+    priority: "Urgent",
+  },
+  {
+    title: "Final homepage illustrations",
+    assignee: "Sofia Alvarez",
+    due: "Oct 16",
+    priority: "Medium",
+  },
+  {
+    title: "Review page titles and descriptions",
+    assignee: "Priya Raman",
+    due: "Oct 21",
+    priority: "Medium",
+  },
+  {
+    title: "Plan the launch-day schedule",
+    assignee: "Maya Patel",
+    due: "Oct 22",
+    priority: "High",
+  },
+  {
+    title: "Brief the support team",
+    assignee: "Sam Okafor",
+    due: "Oct 23",
+    priority: "Low",
+  },
+  {
+    title: "Update the help articles that link to old pages",
+    assignee: "Sam Okafor",
+    due: "Oct 28",
+    priority: "Low",
+  },
 ]
 
 /** The task list an open sheet sits on. */
-function TasksPage({ action }: { action: React.ReactNode }) {
+function TaskList() {
   return (
-    <div className="grid content-start gap-8 p-6 sm:p-12">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="grid gap-1">
-          <p className="text-h3 text-foreground">Website relaunch</p>
-          <p className="text-caption text-muted-foreground">14 open tasks · 38 done</p>
-        </div>
-        {action}
-      </div>
-      <ul className="grid divide-y border-y">
-        {tasks.map((row) => (
-          <li key={row.title} className="flex items-center justify-between gap-6 py-4">
-            <span className="grid min-w-0 gap-0.5">
-              <span className="truncate text-sm font-medium text-foreground">{row.title}</span>
-              <span className="truncate text-caption text-muted-foreground">
-                {row.assignee} · Due {row.due}
-              </span>
+    <ul className="grid divide-y border-y">
+      {tasks.map((row) => (
+        <li
+          key={row.title}
+          className="flex items-center justify-between gap-6 py-4"
+        >
+          <span className="grid min-w-0 gap-0.5">
+            <span className="truncate text-sm font-medium text-foreground">
+              {row.title}
             </span>
-            <span className="shrink-0 text-caption text-muted-foreground">{row.priority}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+            <span className="truncate text-caption text-muted-foreground">
+              {row.assignee} · Due {row.due}
+            </span>
+          </span>
+          <span className="shrink-0 text-caption text-muted-foreground">
+            {row.priority}
+          </span>
+        </li>
+      ))}
+    </ul>
   )
 }
 
 function TaskSheet({ container }: { container: Stage }) {
   const done = subtasks.filter((subtask) => subtask.done).length
   return (
-    <Sheet {...inlineSheet}>
+    <Sheet {...openInPlace}>
       <SheetTrigger render={<Button />}>
         <PanelRightIcon data-icon="inline-start" />
         Task Details
@@ -125,14 +174,21 @@ function TaskSheet({ container }: { container: Stage }) {
       <SheetContent container={container} initialFocus={false}>
         <SheetHeader>
           <SheetTitle>Write the launch announcement</SheetTitle>
-          <SheetDescription>Created by Maya Patel on Oct 2 in Website relaunch.</SheetDescription>
+          <SheetDescription>
+            Created by Maya Patel on Oct 2 in Website relaunch.
+          </SheetDescription>
         </SheetHeader>
         <SheetBody className={inlineBody}>
           <dl className="grid divide-y rounded-(--card-radius) border">
             {details.map((row) => (
-              <div key={row.label} className="flex items-center justify-between gap-4 px-4 py-3">
+              <div
+                key={row.label}
+                className="flex items-center justify-between gap-4 px-4 py-3"
+              >
                 <dt className="text-sm text-muted-foreground">{row.label}</dt>
-                <dd className="text-right text-sm font-medium text-foreground">{row.value}</dd>
+                <dd className="text-right text-sm font-medium text-foreground">
+                  {row.value}
+                </dd>
               </div>
             ))}
           </dl>
@@ -145,16 +201,33 @@ function TaskSheet({ container }: { container: Stage }) {
             </div>
             <ul className="grid gap-2.5">
               {subtasks.map((subtask) => (
-                <li key={subtask.name} className="flex items-center gap-2.5 text-sm">
+                <li
+                  key={subtask.name}
+                  className="flex items-center gap-2.5 text-sm"
+                >
                   {subtask.done ? (
-                    <CircleCheckIcon aria-hidden="true" className="size-4 shrink-0 text-success" />
+                    <CircleCheckIcon
+                      aria-hidden="true"
+                      className="size-4 shrink-0 text-success"
+                    />
                   ) : (
-                    <CircleIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                    <CircleIcon
+                      aria-hidden="true"
+                      className="size-4 shrink-0 text-muted-foreground"
+                    />
                   )}
-                  <span className={subtask.done ? "text-muted-foreground line-through" : "text-copy"}>
+                  <span
+                    className={
+                      subtask.done
+                        ? "text-muted-foreground line-through"
+                        : "text-copy"
+                    }
+                  >
                     {subtask.name}
                   </span>
-                  <span className="sr-only">{subtask.done ? "(done)" : "(open)"}</span>
+                  <span className="sr-only">
+                    {subtask.done ? "(done)" : "(open)"}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -178,9 +251,21 @@ function TaskSheet({ container }: { container: Stage }) {
 type Side = (typeof sides)[number]
 
 const notificationOptions = [
-  { label: "Tasks assigned to me", hint: "As soon as someone assigns you a task.", on: true },
-  { label: "Mentions and replies", hint: "When someone mentions you in a comment or doc.", on: true },
-  { label: "Weekly progress report", hint: "Every Monday, for the projects you follow.", on: false },
+  {
+    label: "Tasks assigned to me",
+    hint: "As soon as someone assigns you a task.",
+    on: true,
+  },
+  {
+    label: "Mentions and replies",
+    hint: "When someone mentions you in a comment or doc.",
+    on: true,
+  },
+  {
+    label: "Weekly progress report",
+    hint: "Every Monday, for the projects you follow.",
+    on: false,
+  },
 ]
 
 /** One sheet, open in a stage, whose side people switch from the bar above it. */
@@ -190,34 +275,38 @@ function SidesDemo() {
 
   return (
     <div className="grid">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b px-6 py-3 sm:px-12">
-        <code className="font-mono text-code text-muted-foreground">side=&quot;{side}&quot;</code>
-        <ToggleGroup
-          size="sm"
-          aria-label="Sheet side"
-          value={[side]}
-          onValueChange={(value) => {
-            const next = value[0] as Side | undefined
-            if (!next) return
-            setSide(next)
-            setOpen(true)
-          }}
-        >
-          {sides.map((option) => (
-            <ToggleGroupItem key={option} value={option} className="capitalize">
-              {option}
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-      </div>
+      <StageSwitcher
+        label={<PropValue name="side" value={side} />}
+        aria-label="Sheet side"
+        value={side}
+        options={sides.map((option) => ({ value: option, label: option }))}
+        itemClassName="capitalize"
+        onValueChange={(next) => {
+          setSide(next)
+          setOpen(true)
+        }}
+      />
       <SheetStage className="min-h-160">
         {(container) => (
-          <Sheet open={open} onOpenChange={setOpen} modal={false} disablePointerDismissal>
-            <SheetTrigger render={<Button variant="outline" />}>Notification Settings</SheetTrigger>
-            <SheetContent side={side} container={container} initialFocus={false}>
+          <Sheet
+            open={open}
+            onOpenChange={setOpen}
+            modal={false}
+            disablePointerDismissal
+          >
+            <SheetTrigger render={<Button variant="outline" />}>
+              Notification Settings
+            </SheetTrigger>
+            <SheetContent
+              side={side}
+              container={container}
+              initialFocus={false}
+            >
               <SheetHeader>
                 <SheetTitle>Notifications</SheetTitle>
-                <SheetDescription>Choose what Acme emails you about.</SheetDescription>
+                <SheetDescription>
+                  Choose what Acme emails you about.
+                </SheetDescription>
               </SheetHeader>
               <SheetBody className={inlineBody}>
                 <div className="grid divide-y">
@@ -227,8 +316,12 @@ function SidesDemo() {
                       className="flex items-center justify-between gap-6 py-3.5 first:pt-0 last:pb-0"
                     >
                       <span className="grid gap-0.5">
-                        <span className="text-sm font-medium text-foreground">{option.label}</span>
-                        <span className="text-caption text-muted-foreground">{option.hint}</span>
+                        <span className="text-sm font-medium text-foreground">
+                          {option.label}
+                        </span>
+                        <span className="text-caption text-muted-foreground">
+                          {option.hint}
+                        </span>
                       </span>
                       <Switch defaultChecked={option.on} />
                     </label>
@@ -248,13 +341,17 @@ function SidesDemo() {
 
 function ProjectSettingsSheet({ container }: { container: Stage }) {
   return (
-    <Sheet {...inlineSheet}>
-      <SheetTrigger render={<Button variant="outline" />}>Edit Project</SheetTrigger>
+    <Sheet {...openInPlace}>
+      <SheetTrigger render={<Button variant="outline" />}>
+        Edit Project
+      </SheetTrigger>
       <SheetContent container={container} initialFocus={false}>
         <form className="contents" onSubmit={(event) => event.preventDefault()}>
           <SheetHeader>
             <SheetTitle>Project settings</SheetTitle>
-            <SheetDescription>Changes apply for everyone in Website relaunch.</SheetDescription>
+            <SheetDescription>
+              Changes apply for everyone in Website relaunch.
+            </SheetDescription>
           </SheetHeader>
           <SheetBody className={inlineBody}>
             <Field>
@@ -271,26 +368,48 @@ function ProjectSettingsSheet({ container }: { container: Stage }) {
             </Field>
             <Field>
               <FieldLabel htmlFor="sheet-owner">Owner</FieldLabel>
-              <NativeSelect id="sheet-owner" defaultValue="maya" className="w-full">
+              <NativeSelect
+                id="sheet-owner"
+                defaultValue="maya"
+                className="w-full"
+              >
                 <NativeSelectOption value="maya">Maya Patel</NativeSelectOption>
-                <NativeSelectOption value="priya">Priya Raman</NativeSelectOption>
-                <NativeSelectOption value="sofia">Sofia Alvarez</NativeSelectOption>
+                <NativeSelectOption value="priya">
+                  Priya Raman
+                </NativeSelectOption>
+                <NativeSelectOption value="sofia">
+                  Sofia Alvarez
+                </NativeSelectOption>
               </NativeSelect>
             </Field>
             <Field>
               <FieldLabel htmlFor="sheet-view">Default view</FieldLabel>
-              <NativeSelect id="sheet-view" defaultValue="board" className="w-full">
+              <NativeSelect
+                id="sheet-view"
+                defaultValue="board"
+                className="w-full"
+              >
                 <NativeSelectOption value="list">List</NativeSelectOption>
                 <NativeSelectOption value="board">Board</NativeSelectOption>
-                <NativeSelectOption value="timeline">Timeline</NativeSelectOption>
-                <NativeSelectOption value="calendar">Calendar</NativeSelectOption>
+                <NativeSelectOption value="timeline">
+                  Timeline
+                </NativeSelectOption>
+                <NativeSelectOption value="calendar">
+                  Calendar
+                </NativeSelectOption>
               </NativeSelect>
-              <FieldDescription>Everyone sees this view first and can switch at any time.</FieldDescription>
+              <FieldDescription>
+                Everyone sees this view first and can switch at any time.
+              </FieldDescription>
             </Field>
           </SheetBody>
           <SheetFooter>
-            <SheetClose render={<Button variant="outline" />}>Cancel</SheetClose>
-            <SheetClose render={<Button type="submit" />}>Save Changes</SheetClose>
+            <SheetClose render={<Button variant="outline" />}>
+              Cancel
+            </SheetClose>
+            <SheetClose render={<Button type="submit" />}>
+              Save Changes
+            </SheetClose>
           </SheetFooter>
         </form>
       </SheetContent>
@@ -317,7 +436,9 @@ export default function SheetDocs() {
   </SheetFooter>
 </SheetContent>`}
       >
-        <SheetStage>{(container) => <TaskSheet container={container} />}</SheetStage>
+        <SheetStage>
+          {(container) => <TaskSheet container={container} />}
+        </SheetStage>
       </Example>
 
       <Example
@@ -353,27 +474,55 @@ export default function SheetDocs() {
       >
         <SheetStage>
           {(container) => (
-            <Sheet {...inlineSheet}>
-              <SheetTrigger render={<Button variant="outline" />}>Show Comments</SheetTrigger>
-              <SheetContent variant="floating" container={container} initialFocus={false}>
+            <Sheet {...openInPlace}>
+              <SheetTrigger render={<Button variant="outline" />}>
+                Show Comments
+              </SheetTrigger>
+              <SheetContent
+                variant="floating"
+                container={container}
+                initialFocus={false}
+              >
                 <SheetHeader>
                   <SheetTitle>Comments</SheetTitle>
-                  <SheetDescription>3 comments on Write the launch announcement</SheetDescription>
+                  <SheetDescription>
+                    3 comments on Write the launch announcement
+                  </SheetDescription>
                 </SheetHeader>
                 <SheetBody className={inlineBody}>
                   {[
-                    { name: "Jordan Lee", initials: "JL", time: "9:31", text: "The pricing section still says $10. Pro is $12 per member, billed annually." },
-                    { name: "Sofia Alvarez", initials: "SA", time: "9:58", text: "The hero image is final. It’s linked from the Figma file in the doc." },
-                    { name: "Hana Kim", initials: "HK", time: "10:12", text: "Reads well. I’ll sign off once the pricing is fixed." },
+                    {
+                      name: "Jordan Lee",
+                      initials: "JL",
+                      time: "9:31",
+                      text: "The pricing section still says $10. Pro is $12 per member, billed annually.",
+                    },
+                    {
+                      name: "Sofia Alvarez",
+                      initials: "SA",
+                      time: "9:58",
+                      text: "The hero image is final. It’s linked from the Figma file in the doc.",
+                    },
+                    {
+                      name: "Hana Kim",
+                      initials: "HK",
+                      time: "10:12",
+                      text: "Reads well. I’ll sign off once the pricing is fixed.",
+                    },
                   ].map((comment) => (
-                    <article key={comment.name} className="flex gap-3 border-b pb-5 last:border-b-0 last:pb-0">
+                    <article
+                      key={comment.name}
+                      className="flex gap-3 border-b pb-5 last:border-b-0 last:pb-0"
+                    >
                       <Avatar size="sm">
                         <AvatarFallback>{comment.initials}</AvatarFallback>
                       </Avatar>
                       <div className="grid min-w-0 gap-1">
                         <p className="flex items-baseline gap-2">
                           <span className="text-title">{comment.name}</span>
-                          <span className="text-caption text-muted-foreground">{comment.time}</span>
+                          <span className="text-caption text-muted-foreground">
+                            {comment.time}
+                          </span>
                         </p>
                         <p className="text-sm text-copy">{comment.text}</p>
                       </div>
@@ -381,7 +530,11 @@ export default function SheetDocs() {
                   ))}
                 </SheetBody>
                 <SheetFooter className="flex-col items-stretch sm:flex-col sm:items-stretch">
-                  <Textarea aria-label="Add a comment" placeholder="Add a comment" rows={2} />
+                  <Textarea
+                    aria-label="Add a comment"
+                    placeholder="Add a comment"
+                    rows={2}
+                  />
                   <div className="flex justify-end">
                     <Button>Post Comment</Button>
                   </div>
@@ -416,7 +569,9 @@ export default function SheetDocs() {
   </form>
 </SheetContent>`}
       >
-        <SheetStage>{(container) => <ProjectSettingsSheet container={container} />}</SheetStage>
+        <SheetStage>
+          {(container) => <ProjectSettingsSheet container={container} />}
+        </SheetStage>
       </Example>
 
       <Guidelines
@@ -434,13 +589,49 @@ export default function SheetDocs() {
 
       <ApiTable
         rows={[
-          { prop: "side", type: '"top" | "right" | "bottom" | "left"', default: '"right"', description: "On SheetContent. The edge the sheet slides in from." },
-          { prop: "variant", type: '"edge" | "floating"', default: '"edge"', description: "On SheetContent. Flush against the viewport, or inset with rounded corners." },
-          { prop: "showCloseButton", type: "boolean", default: "true", description: "On SheetContent. Shows the close button in the top-right corner." },
-          { prop: "open", type: "boolean", description: "On Sheet. Controlled open state. Pair with onOpenChange." },
-          { prop: "onOpenChange", type: "(open: boolean) => void", description: "On Sheet. Called when the sheet opens or closes." },
-          { prop: "SheetBody", type: "component", description: "The scrolling middle between header and footer, with --dialog-padding on the sides." },
-          { prop: "render", type: "ReactElement", description: "On SheetTrigger and SheetClose. Render as a Button: render={<Button variant=\"outline\" />}." },
+          {
+            prop: "side",
+            type: '"top" | "right" | "bottom" | "left"',
+            default: '"right"',
+            description: "On SheetContent. The edge the sheet slides in from.",
+          },
+          {
+            prop: "variant",
+            type: '"edge" | "floating"',
+            default: '"edge"',
+            description:
+              "On SheetContent. Flush against the viewport, or inset with rounded corners.",
+          },
+          {
+            prop: "showCloseButton",
+            type: "boolean",
+            default: "true",
+            description:
+              "On SheetContent. Shows the close button in the top-right corner.",
+          },
+          {
+            prop: "open",
+            type: "boolean",
+            description:
+              "On Sheet. Controlled open state. Pair with onOpenChange.",
+          },
+          {
+            prop: "onOpenChange",
+            type: "(open: boolean) => void",
+            description: "On Sheet. Called when the sheet opens or closes.",
+          },
+          {
+            prop: "SheetBody",
+            type: "component",
+            description:
+              "The scrolling middle between header and footer, with --dialog-padding on the sides.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description:
+              'On SheetTrigger and SheetClose. Render as a Button: render={<Button variant="outline" />}.',
+          },
         ]}
       />
     </Examples>

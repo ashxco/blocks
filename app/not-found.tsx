@@ -6,7 +6,8 @@ import { ViewerShell } from "@/components/viewer/viewer-shell"
 
 export const metadata: Metadata = {
   title: "Page not found",
-  description: "There is no page at this address. Search Blocks, go back to the overview or browse the components.",
+  description:
+    "There is no page at this address. Search Blocks, go back to the overview or browse the components.",
 }
 
 /**

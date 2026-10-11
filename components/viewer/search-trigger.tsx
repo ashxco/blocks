@@ -19,7 +19,10 @@ const subscribe = () => () => {}
 export function useModKey() {
   return React.useSyncExternalStore(
     subscribe,
-    () => (/Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent) ? "⌘" : "Ctrl "),
+    () =>
+      /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent)
+        ? "⌘"
+        : "Ctrl ",
     () => "⌘"
   )
 }
@@ -31,10 +34,18 @@ export function useModKey() {
 export function SearchTrigger({ label = "Search Blocks" }: { label?: string }) {
   const mod = useModKey()
   return (
-    <Button variant="outline" size="lg" onClick={openSearch} aria-keyshortcuts="Meta+K Control+K">
+    <Button
+      variant="outline"
+      size="lg"
+      onClick={openSearch}
+      aria-keyshortcuts="Meta+K Control+K"
+    >
       <SearchIcon data-icon="inline-start" />
       {label}
-      <Kbd aria-hidden="true" className="ml-1 hidden sm:not-pointer-coarse:inline-flex">
+      <Kbd
+        aria-hidden="true"
+        className="ml-1 hidden sm:not-pointer-coarse:inline-flex"
+      >
         {mod}K
       </Kbd>
     </Button>

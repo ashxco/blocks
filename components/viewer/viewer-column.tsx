@@ -11,5 +11,9 @@ import { usePathname } from "next/navigation"
 export function ViewerColumn({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   if (pathname === "/") return <>{children}</>
-  return <div className="container-page pt-18 pb-section sm:pt-20 lg:pt-14">{children}</div>
+  return (
+    <div className="container-page pt-18 pb-section sm:pt-20 lg:pt-14">
+      {children}
+    </div>
+  )
 }

@@ -34,10 +34,12 @@ const Combobox = ComboboxPrimitive.Root
  */
 const comboboxStyles = {
   /** The popup surface: popover colour, hairline border, overlay radius. */
-  popup: "rounded-(--overlay-radius) border border-popover-border bg-popover text-popover-foreground outline-none",
+  popup:
+    "rounded-(--overlay-radius) border border-popover-border bg-popover text-popover-foreground outline-none",
   /** The scrolling list inside the popup. */
   list: "no-scrollbar max-h-80 min-h-0 scroll-py-(--overlay-padding) overflow-y-auto overscroll-contain p-(--overlay-padding) outline-none data-empty:p-0",
-  label: "flex h-8 items-end px-2.5 pb-1.5 text-caption font-semibold text-muted-foreground select-none",
+  label:
+    "flex h-8 items-end px-2.5 pb-1.5 text-caption font-semibold text-muted-foreground select-none",
   item: cn(
     "group/combobox-item relative flex min-h-(--overlay-item-height) w-full cursor-default items-center gap-2 rounded-(--overlay-item-radius) py-1.5 ps-2.5 pe-9 text-sm text-foreground outline-none select-none",
     "transition-colors duration-(--duration-instant) ease-standard",
@@ -45,13 +47,15 @@ const comboboxStyles = {
     "data-disabled:pointer-events-none data-disabled:opacity-50",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
   ),
-  itemIndicator: "pointer-events-none absolute end-2.5 flex size-4 items-center justify-center",
+  itemIndicator:
+    "pointer-events-none absolute end-2.5 flex size-4 items-center justify-center",
   separator: "-mx-(--overlay-padding) my-(--overlay-padding) h-px bg-border",
   /** The borderless search row that ComboboxInput becomes inside the popup. */
-  search: "flex h-(--control-height-md) shrink-0 items-center gap-2.5 border-b border-border ps-3.5 pe-2",
+  search:
+    "flex h-(--control-height-md) shrink-0 items-center gap-2.5 border-b border-border ps-3.5 pe-2",
 } as const
 
-function ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props) {
+function ComboboxValue(props: ComboboxPrimitive.Value.Props) {
   return <ComboboxPrimitive.Value data-slot="combobox-value" {...props} />
 }
 
@@ -163,7 +167,9 @@ function ComboboxInput({
           <ChevronDownIcon className="transition-transform duration-(--duration-base) ease-out group-data-popup-open/combobox-trigger:rotate-180" />
         </ComboboxPrimitive.Trigger>
       ) : null}
-      {showClear ? <ComboboxClear disabled={disabled} className="-me-0.5" /> : null}
+      {showClear ? (
+        <ComboboxClear disabled={disabled} className="-me-0.5" />
+      ) : null}
     </ComboboxPrimitive.InputGroup>
   )
 }
@@ -204,7 +210,7 @@ function ComboboxContent({
               comboboxStyles.popup,
               "data-[chips=true]:min-w-(--anchor-width)",
               "duration-(--duration-base) ease-out data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
-              "data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=inline-start]:slide-in-from-right-1 data-[side=inline-end]:slide-in-from-left-1",
+              "data-[side=bottom]:slide-in-from-top-1 data-[side=inline-end]:slide-in-from-left-1 data-[side=inline-start]:slide-in-from-right-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1",
               "data-closed:data-[side=bottom]:slide-out-to-top-1 data-closed:data-[side=top]:slide-out-to-bottom-1",
               className
             )}
@@ -240,9 +246,7 @@ function ComboboxItem({
       {children}
       <ComboboxPrimitive.ItemIndicator
         data-slot="combobox-item-indicator"
-        render={
-          <span className={comboboxStyles.itemIndicator} />
-        }
+        render={<span className={comboboxStyles.itemIndicator} />}
       >
         <CheckIcon className="size-4 text-foreground" strokeWidth={2.5} />
       </ComboboxPrimitive.ItemIndicator>
@@ -273,7 +277,7 @@ function ComboboxLabel({
   )
 }
 
-function ComboboxCollection({ ...props }: ComboboxPrimitive.Collection.Props) {
+function ComboboxCollection(props: ComboboxPrimitive.Collection.Props) {
   return (
     <ComboboxPrimitive.Collection data-slot="combobox-collection" {...props} />
   )

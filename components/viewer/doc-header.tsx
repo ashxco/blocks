@@ -10,9 +10,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { slugify } from "@/components/viewer/nav"
+import { navSections, slugify } from "@/components/viewer/nav"
 
-export interface DocHeaderProps {
+interface DocHeaderProps {
   /** Section the page belongs to, e.g. "Components" or "Foundations". */
   section: string
   /** Group inside the section, e.g. "Forms". */
@@ -21,10 +21,9 @@ export interface DocHeaderProps {
   description: string
 }
 
-const sectionLinks: Record<string, string> = {
-  Foundations: "/foundations",
-  Components: "/components",
-}
+const sectionLinks: Record<string, string> = Object.fromEntries(
+  navSections.map((s) => [s.title, s.href])
+)
 
 /**
  * Header for every viewer page: a quiet breadcrumb, a bold title in full ink,
@@ -33,19 +32,29 @@ const sectionLinks: Record<string, string> = {
  * to a link back to the parent. The viewer may restyle it but must keep
  * these props.
  */
-export function DocHeader({ section, group, title, description }: DocHeaderProps) {
+export function DocHeader({
+  section,
+  group,
+  title,
+  description,
+}: DocHeaderProps) {
   const sectionHref = sectionLinks[section]
   const isSectionIndex = section === title && !group
   const crumbs: { label: string; href: string }[] = [
     { label: "Blocks", href: "/" },
     ...(sectionHref ? [{ label: section, href: sectionHref }] : []),
-    ...(group && sectionHref ? [{ label: group, href: `${sectionHref}#${slugify(group)}` }] : []),
+    ...(group && sectionHref
+      ? [{ label: group, href: `${sectionHref}#${slugify(group)}` }]
+      : []),
   ]
   const parent = crumbs[crumbs.length - 1]
 
   return (
     // One column that never grows past the page.
-    <header data-slot="doc-header" className="grid grid-cols-[minmax(0,1fr)] gap-6 border-b pb-10 sm:pb-12">
+    <header
+      data-slot="doc-header"
+      className="grid grid-cols-[minmax(0,1fr)] gap-6 border-b pb-10 sm:pb-12"
+    >
       <div className="grid gap-3">
         {isSectionIndex ? null : (
           <Breadcrumb aria-label="Breadcrumb">
@@ -63,13 +72,17 @@ export function DocHeader({ section, group, title, description }: DocHeaderProps
               {crumbs.map((crumb) => (
                 <React.Fragment key={crumb.href}>
                   <BreadcrumbItem>
-                    <BreadcrumbLink render={<Link href={crumb.href} />}>{crumb.label}</BreadcrumbLink>
+                    <BreadcrumbLink render={<Link href={crumb.href} />}>
+                      {crumb.label}
+                    </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                 </React.Fragment>
               ))}
               <BreadcrumbItem className="min-w-0">
-                <BreadcrumbPage className="block truncate">{title}</BreadcrumbPage>
+                <BreadcrumbPage className="block truncate">
+                  {title}
+                </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

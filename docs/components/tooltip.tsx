@@ -17,9 +17,15 @@ import {
 } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { pinnedTo, type Stage } from "@/docs/stage"
 import { Button } from "@/components/ui/button"
 import { Kbd } from "@/components/ui/kbd"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 /**
@@ -27,10 +33,30 @@ import { cn } from "@/lib/utils"
  * side its tooltip points to, so none overlap, and the pad fits a phone.
  */
 const placements = [
-  { side: "top", label: "Top", icon: ArrowUpIcon, cell: "col-start-2 row-start-1" },
-  { side: "left", label: "Left", icon: ArrowLeftIcon, cell: "col-start-1 row-start-2 justify-self-end" },
-  { side: "right", label: "Right", icon: ArrowRightIcon, cell: "col-start-3 row-start-2 justify-self-start" },
-  { side: "bottom", label: "Bottom", icon: ArrowDownIcon, cell: "col-start-2 row-start-3" },
+  {
+    side: "top",
+    label: "Top",
+    icon: ArrowUpIcon,
+    cell: "col-start-2 row-start-1",
+  },
+  {
+    side: "left",
+    label: "Left",
+    icon: ArrowLeftIcon,
+    cell: "col-start-1 row-start-2 justify-self-end",
+  },
+  {
+    side: "right",
+    label: "Right",
+    icon: ArrowRightIcon,
+    cell: "col-start-3 row-start-2 justify-self-start",
+  },
+  {
+    side: "bottom",
+    label: "Bottom",
+    icon: ArrowDownIcon,
+    cell: "col-start-2 row-start-3",
+  },
 ] as const
 
 const actions = [
@@ -40,8 +66,6 @@ const actions = [
   { label: "Open in a new tab", icon: ExternalLinkIcon },
 ]
 
-type Stage = HTMLDivElement | null
-
 /**
  * The examples show a tooltip already open, portalled into the example so it
  * follows the example's theme, and isolate keeps its z-index inside the
@@ -49,13 +73,25 @@ type Stage = HTMLDivElement | null
  * group: only one tooltip in a group shows at a time, so hovering another
  * trigger hands over to it.
  */
-function TooltipStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
+function TooltipStage({
+  className,
+  children,
+}: {
+  className?: string
+  children: React.ReactNode
+}) {
   const [container, setContainer] = React.useState<Stage>(null)
   return (
     <TooltipProvider>
       <StageContext.Provider value={container}>
-        <div ref={setContainer} className={cn("relative isolate flex flex-wrap items-center justify-center gap-4", className)}>
-          {children(container)}
+        <div
+          ref={setContainer}
+          className={cn(
+            "relative isolate flex flex-wrap items-center justify-center gap-4",
+            className
+          )}
+        >
+          {children}
         </div>
       </StageContext.Provider>
     </TooltipProvider>
@@ -73,7 +109,13 @@ const StageContext = React.createContext<Stage>(null)
 function ShownTooltip(props: React.ComponentProps<typeof Tooltip>) {
   const container = React.useContext(StageContext)
   const [open, setOpen] = React.useState(true)
-  return <Tooltip open={open && container !== null} onOpenChange={setOpen} {...props} />
+  return (
+    <Tooltip
+      open={open && container !== null}
+      onOpenChange={setOpen}
+      {...props}
+    />
+  )
 }
 
 /** An open tooltip in a group of its own, so several can show at once. */
@@ -85,9 +127,14 @@ function StandaloneTooltip(props: React.ComponentProps<typeof Tooltip>) {
   )
 }
 
-/** Shown tooltips keep their side, so they never flip as the page scrolls, and stay inside their stage. */
-function pinnedTo(container: Stage) {
-  return { collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined } as const
+/** Tooltip content that portals into the stage and keeps its side there. */
+function StageTooltipContent(
+  props: React.ComponentProps<typeof TooltipContent>
+) {
+  const container = React.useContext(StageContext)
+  return (
+    <TooltipContent container={container} {...pinnedTo(container)} {...props} />
+  )
 }
 
 export default function TooltipDocs() {
@@ -104,19 +151,21 @@ export default function TooltipDocs() {
 </Tooltip>`}
       >
         <TooltipStage className="gap-1 pt-8">
-          {(container) =>
-            actions.map(({ label, icon: Icon }, index) => {
-              const Root = index === 0 ? ShownTooltip : Tooltip
-              return (
-                <Root key={label}>
-                  <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label={label} />}>
-                    <Icon />
-                  </TooltipTrigger>
-                  <TooltipContent container={container} {...pinnedTo(container)}>{label}</TooltipContent>
-                </Root>
-              )
-            })
-          }
+          {actions.map(({ label, icon: Icon }, index) => {
+            const Root = index === 0 ? ShownTooltip : Tooltip
+            return (
+              <Root key={label}>
+                <TooltipTrigger
+                  render={
+                    <Button variant="ghost" size="icon" aria-label={label} />
+                  }
+                >
+                  <Icon />
+                </TooltipTrigger>
+                <StageTooltipContent>{label}</StageTooltipContent>
+              </Root>
+            )
+          })}
         </TooltipStage>
       </Example>
 
@@ -129,28 +178,34 @@ export default function TooltipDocs() {
 </TooltipContent>`}
       >
         <TooltipStage className="pt-8">
-          {(container) => (
-            <>
-              <ShownTooltip>
-                <TooltipTrigger render={<Button variant="outline" size="icon" aria-label="Search" />}>
-                  <SearchIcon />
-                </TooltipTrigger>
-                <TooltipContent container={container} {...pinnedTo(container)}>
-                  Search
-                  <Kbd>⌘K</Kbd>
-                </TooltipContent>
-              </ShownTooltip>
-              <Tooltip>
-                <TooltipTrigger render={<Button variant="outline" size="icon" aria-label="New task" />}>
-                  <PlusIcon />
-                </TooltipTrigger>
-                <TooltipContent container={container} {...pinnedTo(container)}>
-                  New task
-                  <Kbd>C</Kbd>
-                </TooltipContent>
-              </Tooltip>
-            </>
-          )}
+          <>
+            <ShownTooltip>
+              <TooltipTrigger
+                render={
+                  <Button variant="outline" size="icon" aria-label="Search" />
+                }
+              >
+                <SearchIcon />
+              </TooltipTrigger>
+              <StageTooltipContent>
+                Search
+                <Kbd>⌘K</Kbd>
+              </StageTooltipContent>
+            </ShownTooltip>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button variant="outline" size="icon" aria-label="New task" />
+                }
+              >
+                <PlusIcon />
+              </TooltipTrigger>
+              <StageTooltipContent>
+                New task
+                <Kbd>C</Kbd>
+              </StageTooltipContent>
+            </Tooltip>
+          </>
         </TooltipStage>
       </Example>
 
@@ -160,18 +215,23 @@ export default function TooltipDocs() {
         code={`<TooltipContent side="right">Copy link</TooltipContent>`}
       >
         <TooltipStage className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2 py-10">
-          {(container) =>
-            placements.map(({ side, label, icon: Icon, cell }) => (
-              <StandaloneTooltip key={side}>
-                <TooltipTrigger render={<Button variant="outline" size="icon" aria-label={label} className={cell} />}>
-                  <Icon />
-                </TooltipTrigger>
-                <TooltipContent side={side} container={container} {...pinnedTo(container)}>
-                  {label}
-                </TooltipContent>
-              </StandaloneTooltip>
-            ))
-          }
+          {placements.map(({ side, label, icon: Icon, cell }) => (
+            <StandaloneTooltip key={side}>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    aria-label={label}
+                    className={cell}
+                  />
+                }
+              >
+                <Icon />
+              </TooltipTrigger>
+              <StageTooltipContent side={side}>{label}</StageTooltipContent>
+            </StandaloneTooltip>
+          ))}
         </TooltipStage>
       </Example>
 
@@ -186,21 +246,22 @@ export default function TooltipDocs() {
 </Tooltip>`}
       >
         <TooltipStage className="pt-8">
-          {(container) => (
-            <ShownTooltip>
-              <TooltipTrigger
-                render={
-                  <span tabIndex={0} className="inline-flex rounded-(--button-radius) outline-none focus-visible:focus-ring" />
-                }
-              >
-                <Button disabled>
-                  <ArchiveIcon data-icon="inline-start" />
-                  Archive Project
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent container={container} {...pinnedTo(container)}>Only owners can archive</TooltipContent>
-            </ShownTooltip>
-          )}
+          <ShownTooltip>
+            <TooltipTrigger
+              render={
+                <span
+                  tabIndex={0}
+                  className="inline-flex rounded-(--button-radius) outline-none focus-visible:focus-ring"
+                />
+              }
+            >
+              <Button disabled>
+                <ArchiveIcon data-icon="inline-start" />
+                Archive Project
+              </Button>
+            </TooltipTrigger>
+            <StageTooltipContent>Only owners can archive</StageTooltipContent>
+          </ShownTooltip>
         </TooltipStage>
       </Example>
 
@@ -220,46 +281,52 @@ export default function TooltipDocs() {
 </TooltipProvider>`}
       >
         <TooltipStage className="pb-10">
-          {(container) => (
-            <div
-              role="toolbar"
-              aria-label="Task actions"
-              className="flex items-center gap-1 rounded-(--button-radius) border bg-background p-1"
-            >
-              {actions.slice(0, 3).map(({ label, icon: Icon }, index) => {
-                // The first action shows its tooltip on load; hover along the bar and it hands over.
-                const Root = index === 0 ? ShownTooltip : Tooltip
-                return (
-                  <Root key={label}>
-                    <TooltipTrigger render={<Button variant="ghost" size="icon-sm" aria-label={label} />}>
-                      <Icon />
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" container={container} {...pinnedTo(container)}>
-                      {label}
-                    </TooltipContent>
-                  </Root>
-                )
-              })}
-              <span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label="Delete task"
-                      className="text-destructive hover:text-destructive"
-                    />
-                  }
-                >
-                  <Trash2Icon />
-                </TooltipTrigger>
-                <TooltipContent side="bottom" container={container} {...pinnedTo(container)}>
-                  Delete task
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          )}
+          <div
+            role="toolbar"
+            aria-label="Task actions"
+            className="flex items-center gap-1 rounded-(--button-radius) border bg-background p-1"
+          >
+            {actions.slice(0, 3).map(({ label, icon: Icon }, index) => {
+              // The first action shows its tooltip on load; hover along the bar and it hands over.
+              const Root = index === 0 ? ShownTooltip : Tooltip
+              return (
+                <Root key={label}>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={label}
+                      />
+                    }
+                  >
+                    <Icon />
+                  </TooltipTrigger>
+                  <StageTooltipContent side="bottom">
+                    {label}
+                  </StageTooltipContent>
+                </Root>
+              )
+            })}
+            <span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label="Delete task"
+                    className="text-destructive hover:text-destructive"
+                  />
+                }
+              >
+                <Trash2Icon />
+              </TooltipTrigger>
+              <StageTooltipContent side="bottom">
+                Delete task
+              </StageTooltipContent>
+            </Tooltip>
+          </div>
         </TooltipStage>
       </Example>
 
@@ -278,13 +345,49 @@ export default function TooltipDocs() {
 
       <ApiTable
         rows={[
-          { prop: "side", type: '"top" | "right" | "bottom" | "left"', default: '"top"', description: "On TooltipContent. Preferred side of the trigger." },
-          { prop: "align", type: '"start" | "center" | "end"', default: '"center"', description: "On TooltipContent. Alignment along that side." },
-          { prop: "sideOffset", type: "number", default: "6", description: "On TooltipContent. Gap from the trigger, in pixels." },
-          { prop: "delay", type: "number", description: "On TooltipTrigger or TooltipProvider. Milliseconds before the tooltip opens. The app provider sets 0." },
-          { prop: "closeDelay", type: "number", default: "0", description: "On TooltipTrigger. Milliseconds before it closes." },
-          { prop: "disabled", type: "boolean", default: "false", description: "On Tooltip. Stops the tooltip from opening, e.g. when a sidebar is expanded." },
-          { prop: "render", type: "ReactElement", description: "On TooltipTrigger. Render as a Button: render={<Button size=\"icon\" />}." },
+          {
+            prop: "side",
+            type: '"top" | "right" | "bottom" | "left"',
+            default: '"top"',
+            description: "On TooltipContent. Preferred side of the trigger.",
+          },
+          {
+            prop: "align",
+            type: '"start" | "center" | "end"',
+            default: '"center"',
+            description: "On TooltipContent. Alignment along that side.",
+          },
+          {
+            prop: "sideOffset",
+            type: "number",
+            default: "6",
+            description: "On TooltipContent. Gap from the trigger, in pixels.",
+          },
+          {
+            prop: "delay",
+            type: "number",
+            description:
+              "On TooltipTrigger or TooltipProvider. Milliseconds before the tooltip opens. The app provider sets 0.",
+          },
+          {
+            prop: "closeDelay",
+            type: "number",
+            default: "0",
+            description: "On TooltipTrigger. Milliseconds before it closes.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description:
+              "On Tooltip. Stops the tooltip from opening, e.g. when a sidebar is expanded.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description:
+              'On TooltipTrigger. Render as a Button: render={<Button size="icon" />}.',
+          },
         ]}
       />
     </Examples>

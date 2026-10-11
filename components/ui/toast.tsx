@@ -35,18 +35,19 @@ const toastStyles = {
     "rounded-(--card-radius) border border-popover-border bg-popover text-popover-foreground",
   content: "flex items-start gap-3 py-3.5 pr-3 pl-4",
   text: "flex min-w-0 flex-1 flex-col gap-0.5 py-px",
-  title: "font-heading text-sm leading-snug font-bold tracking-(--text-title--letter-spacing) text-pretty text-foreground",
+  title:
+    "font-heading text-sm leading-snug font-bold tracking-(--text-title--letter-spacing) text-pretty text-foreground",
   description: "text-sm text-pretty text-muted-foreground",
   action: "shrink-0 self-center",
   close:
     "relative shrink-0 text-muted-foreground after:absolute after:-inset-2 after:content-[''] hover:text-foreground",
 } as const
 
-function ToastProvider({ ...props }: ToastPrimitive.Provider.Props) {
+function ToastProvider(props: ToastPrimitive.Provider.Props) {
   return <ToastPrimitive.Provider {...props} />
 }
 
-function ToastPortal({ ...props }: ToastPrimitive.Portal.Props) {
+function ToastPortal(props: ToastPrimitive.Portal.Props) {
   return <ToastPrimitive.Portal data-slot="toast-portal" {...props} />
 }
 
@@ -75,7 +76,7 @@ function Toast({ className, ...props }: ToastPrimitive.Root.Props) {
         "[transition:transform_var(--duration-slower)_var(--ease-out),opacity_var(--duration-slow)_var(--ease-out),height_var(--duration-fast)_var(--ease-standard)]",
         "after:absolute after:top-full after:left-0 after:h-[calc(var(--gap)+1px)] after:w-full after:content-['']",
         "data-expanded:h-(--toast-height) data-expanded:[transform:translateX(var(--toast-swipe-movement-x))_translateY(var(--offset-y))]",
-        "data-limited:opacity-0 data-ending-style:opacity-0 data-starting-style:[transform:translateY(150%)]",
+        "data-ending-style:opacity-0 data-limited:opacity-0 data-starting-style:[transform:translateY(150%)]",
         "[&[data-ending-style]:not([data-limited]):not([data-swipe-direction])]:[transform:translateY(150%)]",
         "data-ending-style:data-[swipe-direction=down]:[transform:translateY(calc(var(--toast-swipe-movement-y)+150%))]",
         "data-ending-style:data-[swipe-direction=left]:[transform:translateX(calc(var(--toast-swipe-movement-x)-150%))_translateY(var(--offset-y))]",
@@ -163,13 +164,26 @@ function ToastClose({
   )
 }
 
-const toastIcons: Record<string, { icon: React.ReactNode; className: string }> = {
-  success: { icon: <CircleCheckIcon aria-hidden="true" />, className: "text-success" },
-  info: { icon: <InfoIcon aria-hidden="true" />, className: "text-info" },
-  warning: { icon: <TriangleAlertIcon aria-hidden="true" />, className: "text-warning" },
-  error: { icon: <OctagonXIcon aria-hidden="true" />, className: "text-destructive" },
-  loading: { icon: <Spinner aria-hidden="true" role="presentation" />, className: "text-muted-foreground" },
-}
+const toastIcons: Record<string, { icon: React.ReactNode; className: string }> =
+  {
+    success: {
+      icon: <CircleCheckIcon aria-hidden="true" />,
+      className: "text-success",
+    },
+    info: { icon: <InfoIcon aria-hidden="true" />, className: "text-info" },
+    warning: {
+      icon: <TriangleAlertIcon aria-hidden="true" />,
+      className: "text-warning",
+    },
+    error: {
+      icon: <OctagonXIcon aria-hidden="true" />,
+      className: "text-destructive",
+    },
+    loading: {
+      icon: <Spinner aria-hidden="true" role="presentation" />,
+      className: "text-muted-foreground",
+    },
+  }
 
 function ToastIcon({ type }: { type: string | undefined }) {
   const entry = type ? toastIcons[type] : undefined

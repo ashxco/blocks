@@ -37,7 +37,11 @@ function Punct({ children }: { children: React.ReactNode }) {
   )
 }
 
-function kernString(text: string, afterElement: boolean, keyPrefix: string): React.ReactNode {
+function kernString(
+  text: string,
+  afterElement: boolean,
+  keyPrefix: string
+): React.ReactNode {
   const parts: React.ReactNode[] = []
   let rest = text
 
@@ -66,7 +70,10 @@ function kernString(text: string, afterElement: boolean, keyPrefix: string): Rea
 }
 
 /** Kerns a list of siblings. The result is spread back as static children, so no keys are needed. */
-function kernChildren(children: React.ReactNode[], keyPrefix: string): React.ReactNode[] {
+function kernChildren(
+  children: React.ReactNode[],
+  keyPrefix: string
+): React.ReactNode[] {
   let previousWasElement = false
   return children.map((child, index) => {
     const kerned = kernNode(child, previousWasElement, `${keyPrefix}${index}.`)
@@ -75,18 +82,31 @@ function kernChildren(children: React.ReactNode[], keyPrefix: string): React.Rea
   })
 }
 
-function kernNode(node: React.ReactNode, afterElement: boolean, keyPrefix: string): React.ReactNode {
+function kernNode(
+  node: React.ReactNode,
+  afterElement: boolean,
+  keyPrefix: string
+): React.ReactNode {
   if (typeof node === "string") return kernString(node, afterElement, keyPrefix)
 
   if (Array.isArray(node)) return kernChildren(node, keyPrefix)
 
   if (React.isValidElement<{ children?: React.ReactNode }>(node)) {
-    const isPlain = node.type === React.Fragment || typeof node.type === "string"
+    const isPlain =
+      node.type === React.Fragment || typeof node.type === "string"
     const { children } = node.props
     if (!isPlain || children == null) return node
     return Array.isArray(children)
-      ? React.cloneElement(node, undefined, ...kernChildren(children, `${keyPrefix}c`))
-      : React.cloneElement(node, undefined, kernNode(children, false, `${keyPrefix}c`))
+      ? React.cloneElement(
+          node,
+          undefined,
+          ...kernChildren(children, `${keyPrefix}c`)
+        )
+      : React.cloneElement(
+          node,
+          undefined,
+          kernNode(children, false, `${keyPrefix}c`)
+        )
   }
 
   return node
@@ -94,7 +114,12 @@ function kernNode(node: React.ReactNode, afterElement: boolean, keyPrefix: strin
 
 /** A heading's text with every word-ending comma, full stop, colon and question mark kerned in. */
 function Kern({ children }: { children?: React.ReactNode }) {
-  if (Array.isArray(children)) return React.createElement(React.Fragment, null, ...kernChildren(children, "k"))
+  if (Array.isArray(children))
+    return React.createElement(
+      React.Fragment,
+      null,
+      ...kernChildren(children, "k")
+    )
   return <>{kernNode(children, false, "k")}</>
 }
 
