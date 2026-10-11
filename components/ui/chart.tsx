@@ -111,28 +111,21 @@ function ChartContainer({
 }
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
-  const colorConfig = Object.entries(config).filter(
-    ([, config]) => config.theme ?? config.color
-  )
+  const declarations = Object.entries(config).flatMap(([key, item]) => {
+    const color = item.theme
+      ? `light-dark(${item.theme.light}, ${item.theme.dark})`
+      : item.color
+    return color ? [`  --color-${key}: ${color};`] : []
+  })
 
-  if (!colorConfig.length) {
+  if (!declarations.length) {
     return null
   }
-
-  const declarations = colorConfig
-    .map(([key, itemConfig]) => {
-      const color = itemConfig.theme
-        ? `light-dark(${itemConfig.theme.light}, ${itemConfig.theme.dark})`
-        : itemConfig.color
-      return color ? `  --color-${key}: ${color};` : null
-    })
-    .filter(Boolean)
-    .join("\n")
 
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `[data-chart=${id}] {\n${declarations}\n}`,
+        __html: `[data-chart=${id}] {\n${declarations.join("\n")}\n}`,
       }}
     />
   )
@@ -184,8 +177,12 @@ function ChartTooltipContent({
   >) {
   const { config } = useChart()
 
-  const tooltipLabel = React.useMemo(() => {
-    if (hideLabel || !payload?.length) {
+  if (!active || !payload?.length) {
+    return null
+  }
+
+  const tooltipLabel = (() => {
+    if (hideLabel) {
       return null
     }
 
@@ -197,18 +194,7 @@ function ChartTooltipContent({
         ? (config[label]?.label ?? label)
         : itemConfig?.label
 
-    if (labelFormatter) {
-      return (
-        <div
-          data-slot="chart-tooltip-label"
-          className={cn("font-semibold text-foreground", labelClassName)}
-        >
-          {labelFormatter(value, payload)}
-        </div>
-      )
-    }
-
-    if (!value) {
+    if (!labelFormatter && !value) {
       return null
     }
 
@@ -217,22 +203,10 @@ function ChartTooltipContent({
         data-slot="chart-tooltip-label"
         className={cn("font-semibold text-foreground", labelClassName)}
       >
-        {value}
+        {labelFormatter ? labelFormatter(value, payload) : value}
       </div>
     )
-  }, [
-    label,
-    labelFormatter,
-    payload,
-    hideLabel,
-    labelClassName,
-    config,
-    labelKey,
-  ])
-
-  if (!active || !payload?.length) {
-    return null
-  }
+  })()
 
   const nestLabel = payload.length === 1 && indicator !== "dot"
 
@@ -379,6 +353,19 @@ function ChartLegendContent({
   )
 }
 
+/** The string at `key` on a payload item or on its own payload, if there is one. */
+function stringAt(value: unknown, key: string): string | undefined {
+  if (typeof value !== "object" || value === null || !(key in value)) {
+    return undefined
+  }
+  const found = (value as Record<string, unknown>)[key]
+  return typeof found === "string" ? found : undefined
+}
+
+/**
+ * The config entry for a payload item: the one named by the item's `key`
+ * value (or its payload's), else the one named `key`.
+ */
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,
@@ -388,29 +375,10 @@ function getPayloadConfigFromPayload(
     return undefined
   }
 
-  const payloadPayload =
-    "payload" in payload &&
-    typeof payload.payload === "object" &&
-    payload.payload !== null
-      ? payload.payload
-      : undefined
-
-  let configLabelKey: string = key
-
-  if (
-    key in payload &&
-    typeof payload[key as keyof typeof payload] === "string"
-  ) {
-    configLabelKey = payload[key as keyof typeof payload] as string
-  } else if (
-    payloadPayload &&
-    key in payloadPayload &&
-    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
-  ) {
-    configLabelKey = payloadPayload[
-      key as keyof typeof payloadPayload
-    ] as string
-  }
+  const configLabelKey =
+    stringAt(payload, key) ??
+    ("payload" in payload ? stringAt(payload.payload, key) : undefined) ??
+    key
 
   return configLabelKey in config ? config[configLabelKey] : config[key]
 }

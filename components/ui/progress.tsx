@@ -19,7 +19,10 @@ function Progress({
     <ProgressPrimitive.Root
       value={value}
       data-slot="progress"
-      className={cn("flex w-full flex-wrap items-baseline gap-x-3 gap-y-2.5", className)}
+      className={cn(
+        "flex w-full flex-wrap items-baseline gap-x-3 gap-y-2.5",
+        className
+      )}
       {...props}
     >
       {children}
@@ -52,7 +55,7 @@ function ProgressIndicator({
       data-slot="progress-indicator"
       className={cn(
         "h-full rounded-full bg-primary transition-[width] duration-(--duration-slow) ease-out",
-        "data-indeterminate:w-2/5 data-indeterminate:-translate-x-full data-indeterminate:animate-out data-indeterminate:ease-in-out data-indeterminate:repeat-infinite data-indeterminate:slide-out-to-right-[350%] data-indeterminate:[--tw-animation-duration:calc(var(--duration-slower)*2.5)]",
+        "data-indeterminate:w-2/5 data-indeterminate:-translate-x-full data-indeterminate:animate-out data-indeterminate:ease-in-out data-indeterminate:repeat-infinite data-indeterminate:[--tw-animation-duration:calc(var(--duration-slower)*2.5)] data-indeterminate:slide-out-to-right-[350%]",
         "motion-reduce:data-indeterminate:w-full motion-reduce:data-indeterminate:translate-x-0 motion-reduce:data-indeterminate:animate-none motion-reduce:data-indeterminate:opacity-30",
         className
       )}

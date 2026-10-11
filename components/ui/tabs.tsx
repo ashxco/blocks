@@ -57,7 +57,11 @@ const tabsListVariants = cva(
     },
     compoundVariants: [
       // Small tracks follow small buttons, so a theme's soft square (Forest) never turns into a pill.
-      { variant: "segmented", size: "sm", className: "rounded-(--button-radius-sm)" },
+      {
+        variant: "segmented",
+        size: "sm",
+        className: "rounded-(--button-radius-sm)",
+      },
     ],
     defaultVariants: {
       variant: "default",
@@ -66,23 +70,30 @@ const tabsListVariants = cva(
   }
 )
 
-type TabsListVariant = NonNullable<VariantProps<typeof tabsListVariants>["variant"]>
+type TabsListVariant = NonNullable<
+  VariantProps<typeof tabsListVariants>["variant"]
+>
 type TabsListSize = NonNullable<VariantProps<typeof tabsListVariants>["size"]>
 
-const TabsListContext = React.createContext<{ variant: TabsListVariant; size: TabsListSize }>({
+const TabsListContext = React.createContext<{
+  variant: TabsListVariant
+  size: TabsListSize
+}>({
   variant: "default",
   size: "default",
 })
+
+/** A 2px ink bar laid over the hairline, for the default and line tabs. */
+const underlineIndicator =
+  "bg-foreground data-horizontal:top-auto data-horizontal:-bottom-px data-horizontal:h-(--border-width-strong) data-horizontal:w-(--active-tab-width) data-horizontal:translate-x-(--active-tab-left) data-vertical:-left-px data-vertical:h-(--active-tab-height) data-vertical:w-(--border-width-strong) data-vertical:translate-y-(--active-tab-top)"
 
 const tabsIndicatorVariants = cva(
   "pointer-events-none absolute top-0 left-0 -z-10 transition-[translate,width,height] duration-(--duration-base) ease-out",
   {
     variants: {
       variant: {
-        // A 2px ink bar laid over the hairline.
-        default:
-          "bg-foreground data-horizontal:top-auto data-horizontal:-bottom-px data-horizontal:h-(--border-width-strong) data-horizontal:w-(--active-tab-width) data-horizontal:translate-x-(--active-tab-left) data-vertical:-left-px data-vertical:h-(--active-tab-height) data-vertical:w-(--border-width-strong) data-vertical:translate-y-(--active-tab-top)",
-        line: "bg-foreground data-horizontal:top-auto data-horizontal:-bottom-px data-horizontal:h-(--border-width-strong) data-horizontal:w-(--active-tab-width) data-horizontal:translate-x-(--active-tab-left) data-vertical:-left-px data-vertical:h-(--active-tab-height) data-vertical:w-(--border-width-strong) data-vertical:translate-y-(--active-tab-top)",
+        default: underlineIndicator,
+        line: underlineIndicator,
         // An ink shape behind the active tab. Its radius is the track's minus
         // the 1px border and 3px padding, so the corners nest (pills stay pills).
         segmented:
@@ -94,7 +105,11 @@ const tabsIndicatorVariants = cva(
       },
     },
     compoundVariants: [
-      { variant: "segmented", size: "sm", className: "rounded-[max(0px,calc(var(--button-radius-sm)-0.25rem))]" },
+      {
+        variant: "segmented",
+        size: "sm",
+        className: "rounded-[max(0px,calc(var(--button-radius-sm)-0.25rem))]",
+      },
     ],
   }
 )
@@ -119,7 +134,9 @@ function TabsList({
       className={cn(tabsListVariants(resolved), className)}
       {...props}
     >
-      <TabsListContext.Provider value={resolved}>{children}</TabsListContext.Provider>
+      <TabsListContext.Provider value={resolved}>
+        {children}
+      </TabsListContext.Provider>
       <TabsPrimitive.Indicator
         data-slot="tabs-indicator"
         renderBeforeHydration
@@ -128,6 +145,9 @@ function TabsList({
     </TabsPrimitive.List>
   )
 }
+
+const underlineTrigger =
+  "rounded-xs data-vertical:h-(--control-height-sm) data-vertical:justify-start data-vertical:px-4"
 
 const tabsTriggerVariants = cva(
   [
@@ -140,9 +160,8 @@ const tabsTriggerVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "rounded-xs data-vertical:h-(--control-height-sm) data-vertical:justify-start data-vertical:px-4",
-        line: "rounded-xs data-vertical:h-(--control-height-sm) data-vertical:justify-start data-vertical:px-4",
+        default: underlineTrigger,
+        line: underlineTrigger,
         segmented:
           "h-full flex-1 rounded-[max(0px,calc(var(--button-radius)-0.25rem))] data-active:text-primary-foreground data-active:hover:text-primary-foreground data-vertical:h-(--control-height-sm) data-vertical:flex-none data-vertical:justify-start data-vertical:rounded-(--control-radius)",
       },
@@ -153,7 +172,12 @@ const tabsTriggerVariants = cva(
     },
     compoundVariants: [
       { variant: "segmented", size: "default", className: "px-4" },
-      { variant: "segmented", size: "sm", className: "rounded-[max(0px,calc(var(--button-radius-sm)-0.25rem))] px-3" },
+      {
+        variant: "segmented",
+        size: "sm",
+        className:
+          "rounded-[max(0px,calc(var(--button-radius-sm)-0.25rem))] px-3",
+      },
     ],
   }
 )

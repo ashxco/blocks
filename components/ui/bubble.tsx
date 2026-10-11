@@ -83,7 +83,7 @@ function BubbleContent({
           "w-fit max-w-full min-w-0 overflow-hidden rounded-lg border border-transparent px-4 py-2.5 text-sm/6 wrap-break-word",
           "group-data-[align=end]/bubble:self-end",
           // In a conversation, the top corner nearest the speaker is tighter.
-          "group-data-[align=start]/message:rounded-ss-xs group-data-[align=end]/message:rounded-se-xs group-data-[align=end]/bubble:rounded-se-xs",
+          "group-data-[align=end]/bubble:rounded-se-xs group-data-[align=end]/message:rounded-se-xs group-data-[align=start]/message:rounded-ss-xs",
           "[&_a]:underline [&_a]:underline-offset-3 [&_code]:font-mono [&_code]:text-code [&_p+p]:mt-3",
           "[button]:text-left [button,a]:transition-colors [button,a]:duration-(--duration-fast) [button,a]:ease-standard [button,a]:outline-none [button,a]:focus-visible:focus-ring",
           className

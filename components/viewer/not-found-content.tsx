@@ -3,7 +3,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { EntryRow } from "@/components/viewer/entry-index"
-import { Punct } from "@/components/viewer/kern"
+import { Punct } from "@/components/ui/kern"
 import { MissingPath } from "@/components/viewer/missing-path"
 import { topLinks } from "@/components/viewer/nav"
 
@@ -23,20 +23,30 @@ export function NotFoundContent({
   return (
     <div className="grid gap-14 sm:gap-20">
       <div className="grid gap-8">
-        <h1 className={size === "hero" ? "pb-3 text-hero sm:pb-5" : "text-display"}>
+        <h1
+          className={
+            size === "hero" ? "pb-3 text-hero sm:pb-5" : "text-display"
+          }
+        >
           Page not <span className="text-brand">found</span>
           <Punct>.</Punct>
         </h1>
         <p className="max-w-prose text-lead text-copy">
-          There is nothing at <MissingPath />. The page may have moved, or the address has a typo. Start again from
-          the overview, or browse the components.
+          There is nothing at <MissingPath />. The page may have moved, or the
+          address has a typo. Start again from the overview, or browse the
+          components.
         </p>
         <div className="grid gap-3 sm:flex sm:flex-wrap">
           <Button size="lg" nativeButton={false} render={<Link href="/" />}>
             <ArrowLeftIcon data-icon="inline-start" />
             Back to the Overview
           </Button>
-          <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/components" />}>
+          <Button
+            size="lg"
+            variant="outline"
+            nativeButton={false}
+            render={<Link href="/components" />}
+          >
             Browse Components
             <ArrowRightIcon data-icon="inline-end" />
           </Button>
@@ -49,7 +59,11 @@ export function NotFoundContent({
         <ul className="grid gap-x-8 md:grid-cols-3">
           {topLinks.map((link) => (
             <li key={link.id} className="grid">
-              <EntryRow href={link.href} title={link.title} description={link.description} />
+              <EntryRow
+                href={link.href}
+                title={link.title}
+                description={link.description}
+              />
             </li>
           ))}
         </ul>

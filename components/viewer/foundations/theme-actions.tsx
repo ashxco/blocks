@@ -26,7 +26,13 @@ import { ByTheme } from "./by-theme"
  * Before hydration the site's theme is only known to CSS, so the first frame
  * picks "Current theme" or the button from <html data-theme> (ByTheme).
  */
-export function ThemeActions({ theme, name }: { theme: ThemeId; name: string }) {
+export function ThemeActions({
+  theme,
+  name,
+}: {
+  theme: ThemeId
+  name: string
+}) {
   const { theme: active, forced, savedTheme } = useThemePreset()
   const chooseTheme = useChooseTheme()
   const statusRef = React.useRef<HTMLSpanElement>(null)
@@ -40,7 +46,8 @@ export function ThemeActions({ theme, name }: { theme: ThemeId; name: string }) 
   }
 
   const saved = savedTheme ?? defaultThemeId
-  const previewing = active !== undefined && forced !== undefined && forced !== saved
+  const previewing =
+    active !== undefined && forced !== undefined && forced !== saved
   const isCurrent = previewing ? theme === saved : theme === active
 
   // After choosing this theme, move focus from the button (now gone) to the status that replaced it.

@@ -1,14 +1,34 @@
 import * as React from "react"
-import { CircleCheckIcon, ClockIcon, FolderKanbanIcon, InboxIcon, ListChecksIcon, PlusIcon, ZapIcon } from "lucide-react"
+import {
+  CircleCheckIcon,
+  ClockIcon,
+  FolderKanbanIcon,
+  InboxIcon,
+  ListChecksIcon,
+  PlusIcon,
+  ZapIcon,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
 import { tokenByName, toPx } from "./data"
 import { IconGrid } from "./icon-grid"
-import { Code, DoDont, FoundationPage, Meta, Section } from "./layout"
+import {
+  Code,
+  DoDont,
+  FoundationPage,
+  Meta,
+  Section,
+  type FoundationPageProps,
+} from "./layout"
 
 /* Each size in the context it is made for. Literal class names so Tailwind generates every size. */
-const sizes: { step: number; className: string; use: string; sample: React.ReactNode }[] = [
+const sizes: {
+  step: number
+  className: string
+  use: string
+  sample: React.ReactNode
+}[] = [
   {
     step: 3.5,
     className: "size-3.5",
@@ -79,8 +99,15 @@ function Sizes() {
 }
 
 const strokes: { width: number; note: string; recommended?: boolean }[] = [
-  { width: 1.5, note: "Too thin beside label text; reads as a different icon set." },
-  { width: 2, note: "Lucide’s default. Matches the weight of label and body text.", recommended: true },
+  {
+    width: 1.5,
+    note: "Too thin beside label text; reads as a different icon set.",
+  },
+  {
+    width: 2,
+    note: "Lucide’s default. Matches the weight of label and body text.",
+    recommended: true,
+  },
   { width: 2.5, note: "Too heavy; competes with headings." },
 ]
 
@@ -102,11 +129,25 @@ function Strokes() {
             <ClockIcon className="size-8" strokeWidth={s.width} />
           </div>
           <div className="grid gap-1">
-            <p className={s.recommended ? "text-title text-panel-foreground" : "text-title text-foreground"}>
+            <p
+              className={
+                s.recommended
+                  ? "text-title text-panel-foreground"
+                  : "text-title text-foreground"
+              }
+            >
               Stroke {s.width}
               {s.recommended ? " · use this" : ""}
             </p>
-            <p className={s.recommended ? "text-caption text-panel-muted" : "text-caption text-copy"}>{s.note}</p>
+            <p
+              className={
+                s.recommended
+                  ? "text-caption text-panel-muted"
+                  : "text-caption text-copy"
+              }
+            >
+              {s.note}
+            </p>
           </div>
         </li>
       ))}
@@ -118,9 +159,15 @@ function Strokes() {
 function Aligned({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative inline-flex items-center px-6">
-      <span aria-hidden className="absolute top-1/2 left-0 h-(--border-width-strong) w-4 -translate-y-1/2 rounded-full bg-brand" />
+      <span
+        aria-hidden
+        className="absolute top-1/2 left-0 h-(--border-width-strong) w-4 -translate-y-1/2 rounded-full bg-brand"
+      />
       {children}
-      <span aria-hidden className="absolute top-1/2 right-0 h-(--border-width-strong) w-4 -translate-y-1/2 rounded-full bg-brand" />
+      <span
+        aria-hidden
+        className="absolute top-1/2 right-0 h-(--border-width-strong) w-4 -translate-y-1/2 rounded-full bg-brand"
+      />
     </div>
   )
 }
@@ -197,7 +244,10 @@ function Pairings() {
   )
 }
 
-export function IconographyFoundation({ title, description }: { title: string; description: string }) {
+export function IconographyFoundation({
+  title,
+  description,
+}: FoundationPageProps) {
   return (
     <FoundationPage title={title} description={description}>
       <Section
@@ -205,8 +255,9 @@ export function IconographyFoundation({ title, description }: { title: string; d
         title="Library"
         description={
           <>
-            Blocks uses lucide-react and nothing else. These are the icons the kit already uses; reach for them first.
-            Import the <Code>Icon</Code>-suffixed name and click any icon to copy it.
+            Blocks uses lucide-react and nothing else. These are the icons the
+            kit already uses; reach for them first. Import the <Code>Icon</Code>
+            -suffixed name and click any icon to copy it.
           </>
         }
       >

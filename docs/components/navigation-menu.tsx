@@ -17,6 +17,7 @@ import {
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { AcmeWordmark } from "@/docs/sample/acme-wordmark"
+import { isOutsideDismiss, pinnedTo, type Stage } from "@/docs/stage"
 import { Button } from "@/components/ui/button"
 import { Kern } from "@/components/ui/kern"
 import {
@@ -39,18 +40,54 @@ import {
 } from "@/components/ui/sheet"
 
 const product = [
-  { title: "Projects", description: "List, board, timeline and calendar views.", icon: FolderKanbanIcon },
-  { title: "Tasks", description: "Assignees, due dates and priorities.", icon: ListTodoIcon },
-  { title: "Docs", description: "Specs and notes next to the work.", icon: FileTextIcon },
-  { title: "Automations", description: "Rules that move work along for you.", icon: ZapIcon },
-  { title: "Reports", description: "Workload, on-time delivery and cycle time.", icon: ChartColumnIcon },
-  { title: "Integrations", description: "Slack, Google Drive, GitHub and more.", icon: PlugIcon },
+  {
+    title: "Projects",
+    description: "List, board, timeline and calendar views.",
+    icon: FolderKanbanIcon,
+  },
+  {
+    title: "Tasks",
+    description: "Assignees, due dates and priorities.",
+    icon: ListTodoIcon,
+  },
+  {
+    title: "Docs",
+    description: "Specs and notes next to the work.",
+    icon: FileTextIcon,
+  },
+  {
+    title: "Automations",
+    description: "Rules that move work along for you.",
+    icon: ZapIcon,
+  },
+  {
+    title: "Reports",
+    description: "Workload, on-time delivery and cycle time.",
+    icon: ChartColumnIcon,
+  },
+  {
+    title: "Integrations",
+    description: "Slack, Google Drive, GitHub and more.",
+    icon: PlugIcon,
+  },
 ]
 
 const resources = [
-  { title: "Guides", description: "Set up your workspace and first project.", icon: BookOpenIcon },
-  { title: "Blog", description: "Product news, planning tips and customer stories.", icon: NewspaperIcon },
-  { title: "API reference", description: "Create and sync tasks with the Acme SDK.", icon: BracesIcon },
+  {
+    title: "Guides",
+    description: "Set up your workspace and first project.",
+    icon: BookOpenIcon,
+  },
+  {
+    title: "Blog",
+    description: "Product news, planning tips and customer stories.",
+    icon: NewspaperIcon,
+  },
+  {
+    title: "API reference",
+    description: "Create and sync tasks with the Acme SDK.",
+    icon: BracesIcon,
+  },
 ]
 
 function PanelLink({
@@ -63,19 +100,22 @@ function PanelLink({
   icon: React.ComponentType<{ className?: string }>
 }) {
   return (
-    <NavigationMenuLink href={`#${title.toLowerCase().replace(/\s+/g, "-")}`} className="items-start">
+    <NavigationMenuLink
+      href={`#${title.toLowerCase().replace(/\s+/g, "-")}`}
+      className="items-start"
+    >
       <span className="grid size-9 shrink-0 place-items-center rounded-(--control-radius) border bg-muted text-foreground">
         <Icon className="size-4" />
       </span>
       <span className="grid gap-0.5">
         <span className="text-label text-foreground">{title}</span>
-        <span className="text-caption font-normal text-muted-foreground">{description}</span>
+        <span className="text-caption font-normal text-muted-foreground">
+          {description}
+        </span>
       </span>
     </NavigationMenuLink>
   )
 }
-
-type Stage = HTMLElement | null
 
 /**
  * The examples show a panel already open, portalled into an isolated stage
@@ -90,17 +130,37 @@ type Stage = HTMLElement | null
  */
 function useShownPanel(initial: string, container: Stage) {
   const [value, setValue] = React.useState<string | null>(initial)
-  const onValueChange = React.useCallback((next: string | null, details: { reason: string }) => {
-    if (next === null && (details.reason === "outside-press" || details.reason === "focus-out")) return
-    setValue(next)
-  }, [])
+  const onValueChange = React.useCallback(
+    (next: string | null, details: { reason: string }) => {
+      if (next === null && isOutsideDismiss(details)) return
+      setValue(next)
+    },
+    []
+  )
   return {
     value: container ? value : null,
     onValueChange,
     container,
-    collisionAvoidance: { side: "none" },
-    collisionBoundary: container ?? undefined,
+    ...pinnedTo(container),
   } as const
+}
+
+/** The Resources panel, in the site bar and in its own example. */
+function ResourcesItem() {
+  return (
+    <NavigationMenuItem value="resources">
+      <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
+      <NavigationMenuContent className="w-[min(var(--popover-width-lg),calc(100cqw-4rem))]">
+        <ul className="grid gap-1">
+          {resources.map((item) => (
+            <li key={item.title}>
+              <PanelLink {...item} />
+            </li>
+          ))}
+        </ul>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  )
 }
 
 function SiteNav({ container }: { container: Stage }) {
@@ -108,7 +168,8 @@ function SiteNav({ container }: { container: Stage }) {
   const { onValueChange } = shown
   // Below md the bar is hidden behind the menu button, so start closed there.
   React.useEffect(() => {
-    if (!window.matchMedia("(min-width: 48rem)").matches) onValueChange(null, { reason: "none" })
+    if (!window.matchMedia("(min-width: 48rem)").matches)
+      onValueChange(null, { reason: "none" })
   }, [onValueChange])
   return (
     <NavigationMenu {...shown}>
@@ -129,9 +190,12 @@ function SiteNav({ container }: { container: Stage }) {
                 className="group/feature hidden flex-col justify-between gap-6 rounded-(--overlay-item-radius) border border-panel-border bg-panel-raised p-5 text-panel-foreground outline-none focus-visible:focus-ring md:flex"
               >
                 <span className="grid gap-2">
-                  <span className="text-title text-panel-foreground">Automations 2.0</span>
+                  <span className="text-title text-panel-foreground">
+                    Automations 2.0
+                  </span>
                   <span className="text-caption text-panel-muted">
-                    Rules can now run several steps and check a condition between them, so the busywork runs itself.
+                    Rules can now run several steps and check a condition
+                    between them, so the busywork runs itself.
                   </span>
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-label text-panel-foreground">
@@ -142,25 +206,20 @@ function SiteNav({ container }: { container: Stage }) {
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        <NavigationMenuItem value="resources">
-          <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
-          <NavigationMenuContent className="w-[min(var(--popover-width-lg),calc(100cqw-4rem))]">
-            <ul className="grid gap-1">
-              {resources.map((item) => (
-                <li key={item.title}>
-                  <PanelLink {...item} />
-                </li>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+        <ResourcesItem />
         <NavigationMenuItem>
-          <NavigationMenuLink href="#pricing" className={navigationMenuTriggerStyle()}>
+          <NavigationMenuLink
+            href="#pricing"
+            className={navigationMenuTriggerStyle()}
+          >
             Pricing
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem className="max-sm:hidden">
-          <NavigationMenuLink href="#changelog" className={navigationMenuTriggerStyle()}>
+          <NavigationMenuLink
+            href="#changelog"
+            className={navigationMenuTriggerStyle()}
+          >
             Changelog
           </NavigationMenuLink>
         </NavigationMenuItem>
@@ -194,7 +253,8 @@ function SiteNavDemo() {
           <Kern>Plan, track and ship your team’s work in one place.</Kern>
         </h3>
         <p className="max-w-prose text-lead text-copy">
-          Open Product or Resources in the bar above, or the menu button on a phone. Panels open on hover and on click, and close with Escape.
+          Open Product or Resources in the bar above, or the menu button on a
+          phone. Panels open on hover and on click, and close with Escape.
         </p>
       </div>
     </div>
@@ -205,23 +265,18 @@ function ResourcesNav() {
   const [container, setContainer] = React.useState<Stage>(null)
   const shown = useShownPanel("resources", container)
   return (
-    <div ref={setContainer} className="relative isolate flex w-full justify-center self-start">
+    <div
+      ref={setContainer}
+      className="relative isolate flex w-full justify-center self-start"
+    >
       <NavigationMenu {...shown}>
         <NavigationMenuList>
-          <NavigationMenuItem value="resources">
-            <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
-            <NavigationMenuContent className="w-[min(var(--popover-width-lg),calc(100cqw-4rem))]">
-              <ul className="grid gap-1">
-                {resources.map((item) => (
-                  <li key={item.title}>
-                    <PanelLink {...item} />
-                  </li>
-                ))}
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
+          <ResourcesItem />
           <NavigationMenuItem>
-            <NavigationMenuLink href="#customers" className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              href="#customers"
+              className={navigationMenuTriggerStyle()}
+            >
               Customers
             </NavigationMenuLink>
           </NavigationMenuItem>
@@ -239,18 +294,35 @@ function MobileNav() {
   ]
   return (
     <Sheet>
-      <SheetTrigger render={<Button variant="ghost" size="icon-sm" aria-label="Open menu" className="md:hidden" />}>
+      <SheetTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Open menu"
+            className="md:hidden"
+          />
+        }
+      >
         <MenuIcon />
       </SheetTrigger>
       <SheetContent side="right">
         <SheetHeader>
           <SheetTitle>Acme</SheetTitle>
-          <SheetDescription className="sr-only">Site navigation</SheetDescription>
+          <SheetDescription className="sr-only">
+            Site navigation
+          </SheetDescription>
         </SheetHeader>
         <SheetBody className="gap-8">
           {groups.map((group) => (
-            <nav key={group.label} aria-label={group.label} className="grid gap-2">
-              <p className="text-caption font-semibold text-muted-foreground">{group.label}</p>
+            <nav
+              key={group.label}
+              aria-label={group.label}
+              className="grid gap-2"
+            >
+              <p className="text-caption font-semibold text-muted-foreground">
+                {group.label}
+              </p>
               <ul className="-mx-2 grid">
                 {group.items.map((item) => (
                   <li key={item.title}>
@@ -357,7 +429,10 @@ export default function NavigationMenuDocs() {
           <NavigationMenu className="col-span-2 row-start-2 -ml-3 justify-self-start @2xl:mr-auto @2xl:ml-0">
             <NavigationMenuList>
               {["Product", "Pricing", "Customers", "Blog"].map((label) => (
-                <NavigationMenuItem key={label} className={label === "Blog" ? "@max-md:hidden" : undefined}>
+                <NavigationMenuItem
+                  key={label}
+                  className={label === "Blog" ? "@max-md:hidden" : undefined}
+                >
                   <NavigationMenuLink
                     href={`#${label.toLowerCase()}`}
                     aria-current={label === "Pricing" ? "page" : undefined}
@@ -391,14 +466,56 @@ export default function NavigationMenuDocs() {
 
       <ApiTable
         rows={[
-          { prop: "align", type: '"start" | "center" | "end"', default: '"start"', description: "NavigationMenu: how panels line up with their trigger." },
-          { prop: "value / onValueChange", type: "any / (value) => void", description: "NavigationMenu: control which item is open." },
-          { prop: "delay / closeDelay", type: "number", default: "50 / 50", description: "NavigationMenu: milliseconds before a panel opens or closes on hover." },
-          { prop: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "NavigationMenu: arrow-key direction for moving between items." },
-          { prop: "className", type: "string", description: "NavigationMenuContent: set the panel width here, for example w-180." },
-          { prop: "render", type: "ReactElement", description: "NavigationMenuLink: render as a router link." },
-          { prop: "active", type: "boolean", default: "false", description: "NavigationMenuLink: marks the link for the current page." },
-          { prop: "navigationMenuTriggerStyle()", type: "() => string", description: "Classes that make a top-level link match the triggers." },
+          {
+            prop: "align",
+            type: '"start" | "center" | "end"',
+            default: '"start"',
+            description:
+              "NavigationMenu: how panels line up with their trigger.",
+          },
+          {
+            prop: "value / onValueChange",
+            type: "any / (value) => void",
+            description: "NavigationMenu: control which item is open.",
+          },
+          {
+            prop: "delay / closeDelay",
+            type: "number",
+            default: "50 / 50",
+            description:
+              "NavigationMenu: milliseconds before a panel opens or closes on hover.",
+          },
+          {
+            prop: "orientation",
+            type: '"horizontal" | "vertical"',
+            default: '"horizontal"',
+            description:
+              "NavigationMenu: arrow-key direction for moving between items.",
+          },
+          {
+            prop: "className",
+            type: "string",
+            description:
+              "NavigationMenuContent: set the panel width here, for example w-180.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description: "NavigationMenuLink: render as a router link.",
+          },
+          {
+            prop: "active",
+            type: "boolean",
+            default: "false",
+            description:
+              "NavigationMenuLink: marks the link for the current page.",
+          },
+          {
+            prop: "navigationMenuTriggerStyle()",
+            type: "() => string",
+            description:
+              "Classes that make a top-level link match the triggers.",
+          },
         ]}
       />
     </Examples>

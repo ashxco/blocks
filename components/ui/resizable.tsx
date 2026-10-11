@@ -25,7 +25,7 @@ function ResizablePanelGroup({
   )
 }
 
-function ResizablePanel({ ...props }: ResizablePrimitive.PanelProps) {
+function ResizablePanel(props: ResizablePrimitive.PanelProps) {
   return <ResizablePrimitive.Panel data-slot="resizable-panel" {...props} />
 }
 
@@ -44,7 +44,7 @@ function ResizableHandle({
         "transition-colors duration-(--duration-fast) ease-standard",
         // Invisible 9px hit area centred on the line.
         "after:absolute after:inset-y-0 after:left-1/2 after:w-2.25 after:-translate-x-1/2",
-        "data-[separator=hover]:bg-border-strong data-[separator=active]:bg-brand focus-visible:bg-ring",
+        "focus-visible:bg-ring data-[separator=active]:bg-brand data-[separator=hover]:bg-border-strong",
         "aria-disabled:cursor-not-allowed aria-disabled:opacity-50",
         // Rows: the separator lies flat.
         "aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full",
@@ -61,7 +61,7 @@ function ResizableHandle({
             "z-10 flex h-7 w-3.5 shrink-0 flex-col items-center justify-center gap-0.75 rounded-full border border-border-strong bg-background",
             "transition-colors duration-(--duration-fast) ease-standard",
             "group-data-[separator=hover]/handle:border-muted-foreground/60",
-            "group-data-[separator=active]/handle:border-brand group-focus-visible/handle:border-ring"
+            "group-focus-visible/handle:border-ring group-data-[separator=active]/handle:border-brand"
           )}
         >
           <span className="size-0.75 rounded-full bg-muted-foreground" />

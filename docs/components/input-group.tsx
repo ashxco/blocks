@@ -12,8 +12,19 @@ import {
   XIcon,
 } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines, tokenPx } from "@/docs/kit"
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
+import {
+  ApiTable,
+  Example,
+  Examples,
+  Guidelines,
+  controlSizes,
+} from "@/docs/kit"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field"
 import {
   InputGroup,
   InputGroupAddon,
@@ -39,7 +50,11 @@ function SearchWithClear() {
       />
       <InputGroupAddon align="inline-end">
         {query ? (
-          <InputGroupButton size="icon-xs" aria-label="Clear search" onClick={() => setQuery("")}>
+          <InputGroupButton
+            size="icon-xs"
+            aria-label="Clear search"
+            onClick={() => setQuery("")}
+          >
             <XIcon />
           </InputGroupButton>
         ) : (
@@ -71,15 +86,25 @@ function InviteLink() {
         <InputGroupAddon>
           <LinkIcon aria-hidden="true" />
         </InputGroupAddon>
-        <InputGroupInput id="ig-invite" readOnly value={url} className="font-mono" />
+        <InputGroupInput
+          id="ig-invite"
+          readOnly
+          value={url}
+          className="font-mono"
+        />
         <InputGroupAddon align="inline-end">
-          <InputGroupButton size="icon-xs" aria-label={copied ? "Copied" : "Copy invite link"} onClick={copy}>
+          <InputGroupButton
+            size="icon-xs"
+            aria-label={copied ? "Copied" : "Copy invite link"}
+            onClick={copy}
+          >
             {copied ? <CheckIcon /> : <CopyIcon />}
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>
       <FieldDescription>
-        Anyone with this link can join Acme Inc. as a member for the next 14 days.
+        Anyone with this link can join Acme Inc. as a member for the next 14
+        days.
       </FieldDescription>
     </Field>
   )
@@ -115,7 +140,9 @@ function PasswordField() {
 
 function StatusUpdate() {
   const max = 200
-  const [update, setUpdate] = React.useState("Hero copy is approved. Next up is the pricing page review on Thursday.")
+  const [update, setUpdate] = React.useState(
+    "Hero copy is approved. Next up is the pricing page review on Thursday."
+  )
   const [posted, setPosted] = React.useState(false)
   return (
     <Field>
@@ -135,7 +162,12 @@ function StatusUpdate() {
           <InputGroupText className="text-caption tabular">
             {update.length}/{max}
           </InputGroupText>
-          <InputGroupButton variant="default" size="sm" className="ml-auto" onClick={() => setPosted(true)}>
+          <InputGroupButton
+            variant="default"
+            size="sm"
+            className="ml-auto"
+            onClick={() => setPosted(true)}
+          >
             {posted ? (
               <>
                 <CheckIcon data-icon="inline-start" />
@@ -151,11 +183,12 @@ function StatusUpdate() {
   )
 }
 
-const groupSizes = [
-  { size: "sm", label: "Small", height: `${tokenPx("--control-height-sm")}px`, button: "icon-xs" },
-  { size: "default", label: "Medium", height: `${tokenPx("--control-height-md")}px`, button: "icon-sm" },
-  { size: "lg", label: "Large", height: `${tokenPx("--control-height-lg")}px`, button: "icon-sm" },
-] as const
+/** The icon button size that fits each group size. */
+const groupButton = {
+  sm: "icon-xs",
+  default: "icon-sm",
+  lg: "icon-sm",
+} as const
 
 export default function InputGroupDocs() {
   return (
@@ -237,13 +270,22 @@ export default function InputGroupDocs() {
               <InputGroupAddon>
                 <InputGroupText>app.acme.com/</InputGroupText>
               </InputGroupAddon>
-              <InputGroupInput id="ig-workspace-url" defaultValue="acme" placeholder="your-team" spellCheck={false} />
+              <InputGroupInput
+                id="ig-workspace-url"
+                defaultValue="acme"
+                placeholder="your-team"
+                spellCheck={false}
+              />
             </InputGroup>
           </Field>
           <Field>
             <FieldLabel htmlFor="ig-task-email">Email tasks to</FieldLabel>
             <InputGroup>
-              <InputGroupInput id="ig-task-email" defaultValue="website-relaunch" spellCheck={false} />
+              <InputGroupInput
+                id="ig-task-email"
+                defaultValue="website-relaunch"
+                spellCheck={false}
+              />
               <InputGroupAddon align="inline-end">
                 <InputGroupText>@tasks.acme.com</InputGroupText>
               </InputGroupAddon>
@@ -252,7 +294,14 @@ export default function InputGroupDocs() {
           <Field>
             <FieldLabel htmlFor="ig-estimate">Default estimate</FieldLabel>
             <InputGroup className="max-w-40">
-              <InputGroupInput id="ig-estimate" type="number" defaultValue={4} min={1} max={40} className="tabular" />
+              <InputGroupInput
+                id="ig-estimate"
+                type="number"
+                defaultValue={4}
+                min={1}
+                max={40}
+                className="tabular"
+              />
               <InputGroupAddon align="inline-end">
                 <InputGroupText>hours</InputGroupText>
               </InputGroupAddon>
@@ -366,18 +415,27 @@ export default function InputGroupDocs() {
 </InputGroup>`}
       >
         <div className="grid w-full max-w-sm gap-6">
-          {groupSizes.map(({ size, label, height, button }) => (
+          {controlSizes.map(({ size, label, height }) => (
             <Field key={size}>
               <FieldLabel htmlFor={`ig-size-${size}`}>
-                {label} <span className="font-normal text-muted-foreground">{height}</span>
+                {label}{" "}
+                <span className="font-normal text-muted-foreground">
+                  {height}
+                </span>
               </FieldLabel>
               <InputGroup size={size}>
                 <InputGroupAddon>
                   <SearchIcon aria-hidden="true" />
                 </InputGroupAddon>
-                <InputGroupInput id={`ig-size-${size}`} placeholder="Search tasks" />
+                <InputGroupInput
+                  id={`ig-size-${size}`}
+                  placeholder="Search tasks"
+                />
                 <InputGroupAddon align="inline-end">
-                  <InputGroupButton size={button} aria-label="Filter by priority">
+                  <InputGroupButton
+                    size={groupButton[size]}
+                    aria-label="Filter by priority"
+                  >
                     <ListFilterIcon />
                   </InputGroupButton>
                 </InputGroupAddon>
@@ -423,7 +481,9 @@ export default function InputGroupDocs() {
                 aria-describedby="ig-invalid-error"
               />
             </InputGroup>
-            <FieldError id="ig-invalid-error">Use lowercase letters, numbers and hyphens, like acme.</FieldError>
+            <FieldError id="ig-invalid-error">
+              Use lowercase letters, numbers and hyphens, like acme.
+            </FieldError>
           </Field>
           <Field data-disabled="true">
             <FieldLabel htmlFor="ig-disabled">Workspace URL</FieldLabel>
@@ -433,7 +493,9 @@ export default function InputGroupDocs() {
               </InputGroupAddon>
               <InputGroupInput id="ig-disabled" defaultValue="acme" disabled />
             </InputGroup>
-            <FieldDescription>Only owners can change the workspace URL.</FieldDescription>
+            <FieldDescription>
+              Only owners can change the workspace URL.
+            </FieldDescription>
           </Field>
         </div>
       </Example>
@@ -454,20 +516,62 @@ export default function InputGroupDocs() {
       <ApiTable
         title="InputGroup"
         rows={[
-          { prop: "size", type: '"sm" | "default" | "lg"', default: '"default"', description: "Height from the --control-height-* tokens. Groups with a textarea or block addon grow to fit." },
-          { prop: "className", type: "string", description: "Width and layout. The surface, border and focus state are set by the group." },
+          {
+            prop: "size",
+            type: '"sm" | "default" | "lg"',
+            default: '"default"',
+            description:
+              "Height from the --control-height-* tokens. Groups with a textarea or block addon grow to fit.",
+          },
+          {
+            prop: "className",
+            type: "string",
+            description:
+              "Width and layout. The surface, border and focus state are set by the group.",
+          },
         ]}
       />
 
       <ApiTable
         title="Parts"
         rows={[
-          { prop: "InputGroupAddon align", type: '"inline-start" | "inline-end" | "block-start" | "block-end"', default: '"inline-start"', description: "Where the addon sits. Block addons stack above or below the control." },
-          { prop: "InputGroupButton size", type: '"xs" | "sm" | "icon-xs" | "icon-sm"', default: '"xs"', description: "Button size from the --button-height-* tokens." },
-          { prop: "InputGroupButton variant", type: "Button variant", default: '"ghost"', description: "Any button variant. Use default for a primary action in a block addon." },
-          { prop: "InputGroupInput", type: "<input>", description: "The control. Takes every input prop, including aria-invalid and disabled." },
-          { prop: "InputGroupTextarea", type: "<textarea>", description: "A textarea control that grows with its content." },
-          { prop: "InputGroupText", type: "<span>", description: "Muted text inside an addon, such as a prefix, suffix or counter, at the same size as the value. When it is the only thing in an inline addon, a prefix runs straight into the value and a suffix follows it." },
+          {
+            prop: "InputGroupAddon align",
+            type: '"inline-start" | "inline-end" | "block-start" | "block-end"',
+            default: '"inline-start"',
+            description:
+              "Where the addon sits. Block addons stack above or below the control.",
+          },
+          {
+            prop: "InputGroupButton size",
+            type: '"xs" | "sm" | "icon-xs" | "icon-sm"',
+            default: '"xs"',
+            description: "Button size from the --button-height-* tokens.",
+          },
+          {
+            prop: "InputGroupButton variant",
+            type: "Button variant",
+            default: '"ghost"',
+            description:
+              "Any button variant. Use default for a primary action in a block addon.",
+          },
+          {
+            prop: "InputGroupInput",
+            type: "<input>",
+            description:
+              "The control. Takes every input prop, including aria-invalid and disabled.",
+          },
+          {
+            prop: "InputGroupTextarea",
+            type: "<textarea>",
+            description: "A textarea control that grows with its content.",
+          },
+          {
+            prop: "InputGroupText",
+            type: "<span>",
+            description:
+              "Muted text inside an addon, such as a prefix, suffix or counter, at the same size as the value. When it is the only thing in an inline addon, a prefix runs straight into the value and a suffix follows it.",
+          },
         ]}
       />
     </Examples>

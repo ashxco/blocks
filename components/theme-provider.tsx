@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { isTypingTarget } from "@/lib/dom"
 import { usePathname, useSearchParams } from "next/navigation"
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes"
 
@@ -75,33 +76,27 @@ function ThemeScript() {
   )
 }
 
-function isTypingTarget(target: EventTarget | null) {
-  if (!(target instanceof HTMLElement)) {
-    return false
-  }
-
-  return (
-    target.isContentEditable ||
-    target.tagName === "INPUT" ||
-    target.tagName === "TEXTAREA" ||
-    target.tagName === "SELECT"
-  )
-}
-
 /**
  * Drops a mode the URL forces (&mode=dark|light, or the older
  * ?theme=dark|light) so a saved mode can show, and tells the forced-mode
  * listener (it follows popstate) to read the URL again. A ?theme=<id> stays.
- * Returns whether the URL forced a mode.
  */
-function releaseForcedMode(): boolean {
-  if (!readLookQuery(window.location.search).mode) return false
-  const legacy = isThemeMode(new URLSearchParams(window.location.search).get(THEME_PARAM))
+function releaseForcedMode() {
+  if (!readLookQuery(window.location.search).mode) return
+  const legacy = isThemeMode(
+    new URLSearchParams(window.location.search).get(THEME_PARAM)
+  )
   // Null state: Next.js copies its own history state and picks up the new URL.
-  window.history.replaceState(null, "", withLook(window.location.href, { mode: null, ...(legacy ? { theme: null } : {}) }))
+  window.history.replaceState(
+    null,
+    "",
+    withLook(window.location.href, {
+      mode: null,
+      ...(legacy ? { theme: null } : {}),
+    })
+  )
   // No state, so the router ignores it; only the look listeners react.
   window.dispatchEvent(new PopStateEvent("popstate"))
-  return true
 }
 
 /**
@@ -112,41 +107,36 @@ function releaseForcedMode(): boolean {
 function useToggleAppearance(): () => void {
   const { setTheme } = useTheme()
   return React.useCallback(() => {
-    const shown = document.documentElement.classList.contains("dark") ? "dark" : "light"
+    const shown = document.documentElement.classList.contains("dark")
+      ? "dark"
+      : "light"
     releaseForcedMode()
     setTheme(shown === "dark" ? "light" : "dark")
   }, [setTheme])
 }
 
+/** D switches Appearance, unless a modifier is held or focus is in a text field. */
 function ThemeHotkey() {
   const toggleAppearance = useToggleAppearance()
 
   React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      if (event.defaultPrevented || event.repeat) {
+      if (
+        event.defaultPrevented ||
+        event.repeat ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey ||
+        event.key.toLowerCase() !== "d" ||
+        isTypingTarget(event.target)
+      ) {
         return
       }
-
-      if (event.metaKey || event.ctrlKey || event.altKey) {
-        return
-      }
-
-      if (event.key.toLowerCase() !== "d") {
-        return
-      }
-
-      if (isTypingTarget(event.target)) {
-        return
-      }
-
       toggleAppearance()
     }
 
     window.addEventListener("keydown", onKeyDown)
-
-    return () => {
-      window.removeEventListener("keydown", onKeyDown)
-    }
+    return () => window.removeEventListener("keydown", onKeyDown)
   }, [toggleAppearance])
 
   return null
@@ -181,13 +171,16 @@ function subscribeToNavigation(onChange: () => void) {
 }
 
 function useModeFromQuery() {
-  return React.useSyncExternalStore(subscribeToNavigation, readModeQuery, () => undefined)
+  return React.useSyncExternalStore(
+    subscribeToNavigation,
+    readModeQuery,
+    () => undefined
+  )
 }
 
 /* -------------------------------------------------------------------------- */
 /* Theme preset                                                                */
 /* -------------------------------------------------------------------------- */
-
 
 function readSavedTheme(): ThemeId | undefined {
   try {
@@ -227,7 +220,10 @@ function applyTheme(theme: ThemeId) {
 function subscribeToTheme(onChange: () => void) {
   listeners.add(onChange)
   const observer = new MutationObserver(onChange)
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: [THEME_ATTRIBUTE] })
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: [THEME_ATTRIBUTE],
+  })
   const onStorage = (event: StorageEvent) => {
     if (event.key === THEME_STORAGE_KEY || event.key === null) onChange()
   }
@@ -255,18 +251,21 @@ function setThemePreset(theme: ThemeId) {
     // Storage blocked: the choice lasts for this page only.
   }
   if (readForcedTheme()) {
-    const url = new URL(window.location.href)
-    url.searchParams.delete(THEME_PARAM)
     // Null state: Next.js copies its own history state and syncs
     // useSearchParams with the new URL (it skips states that carry its own).
-    window.history.replaceState(null, "", url)
+    window.history.replaceState(
+      null,
+      "",
+      withLook(window.location.href, { theme: null })
+    )
   }
   applyTheme(theme)
   notify()
 }
 
 /** The theme a page should be on: the one its URL forces, else the saved one, else the default. */
-const wantedTheme = () => readForcedTheme() ?? readSavedTheme() ?? defaultThemeId
+const wantedTheme = () =>
+  readForcedTheme() ?? readSavedTheme() ?? defaultThemeId
 
 /** True inside a preview frame: the viewer that embeds it keeps it on the viewer's look. */
 const inFrame = () => window.self !== window.top
@@ -334,10 +333,22 @@ export interface ThemePresetState {
 
 /** The active theme preset and a way to change it. Works anywhere under the root layout. */
 function useThemePreset(): ThemePresetState {
-  const theme = React.useSyncExternalStore(subscribeToTheme, readActiveTheme, serverSnapshot)
-  const forced = React.useSyncExternalStore(subscribeToTheme, readForcedTheme, serverSnapshot)
-  const savedTheme = React.useSyncExternalStore(subscribeToTheme, readSavedTheme, serverSnapshot)
+  const theme = React.useSyncExternalStore(
+    subscribeToTheme,
+    readActiveTheme,
+    serverSnapshot
+  )
+  const forced = React.useSyncExternalStore(
+    subscribeToTheme,
+    readForcedTheme,
+    serverSnapshot
+  )
+  const savedTheme = React.useSyncExternalStore(
+    subscribeToTheme,
+    readSavedTheme,
+    serverSnapshot
+  )
   return { theme, setTheme: setThemePreset, themes, forced, savedTheme }
 }
 
-export { releaseForcedMode, ThemeProvider, useThemePreset, useToggleAppearance }
+export { ThemeProvider, useThemePreset, useToggleAppearance }

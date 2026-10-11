@@ -4,70 +4,48 @@ import * as React from "react"
 import { FolderIcon, MapPinIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { PreviewStage, pinnedTo, usePinnedOpen, type Stage } from "@/docs/stage"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import { cn } from "@/lib/utils"
 
 const linkClass =
   "rounded-xs font-semibold text-brand link-underline outline-none focus-visible:focus-ring"
 
-type Stage = HTMLDivElement | null
-
 /**
- * A stage the example's card opens into, so the page shows the card itself.
- * It is open on load and stays open while people click elsewhere on the page;
- * hovering the trigger and leaving it closes it as usual. isolate keeps the
- * card's z-index inside the example, so it scrolls under the site header.
- */
-function HoverCardStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
-  const [container, setContainer] = React.useState<Stage>(null)
-  return (
-    <div ref={setContainer} className={cn("relative isolate flex w-full items-start justify-center pt-2", className)}>
-      {children(container)}
-    </div>
-  )
-}
-
-/**
- * Open on load, and kept open when people click elsewhere. It only opens once
- * the stage exists, so the card is placed inside the stage from its first frame.
- */
-function usePinnedOpen(container: Stage) {
-  const [open, setOpen] = React.useState(true)
-  const onOpenChange = React.useCallback((next: boolean, details: { reason: string }) => {
-    if (!next && (details.reason === "outside-press" || details.reason === "focus-out")) return
-    setOpen(next)
-  }, [])
-  return { open: open && container !== null, onOpenChange }
-}
-
-/**
- * The pinned cards open below the trigger, from its start edge, and keep that
+ * The shown cards open below the trigger, from its start edge, and keep that
  * side as the page scrolls. Each sentence ends at its trigger, so the card
  * never covers the rest of it.
  */
-function pinnedTo(container: Stage) {
-  return { side: "bottom", align: "start", collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined } as const
+function belowTrigger(container: Stage) {
+  return { side: "bottom", align: "start", ...pinnedTo(container) } as const
 }
 
 function ProfileCard({ container }: { container: Stage }) {
-  const pinned = usePinnedOpen(container)
+  const { open, onOpenChange } = usePinnedOpen(container)
   return (
     <p className="max-w-96 text-center text-body text-copy">
       The launch announcement is assigned to{" "}
-      <HoverCard {...pinned}>
+      <HoverCard open={open} onOpenChange={onOpenChange}>
         <HoverCardTrigger href="#priya" className={linkClass}>
           @priya
         </HoverCardTrigger>
-        <HoverCardContent container={container} {...pinnedTo(container)}>
+        <HoverCardContent container={container} {...belowTrigger(container)}>
           <div className="flex gap-3">
             <Avatar size="lg">
               <AvatarFallback tone="sky">PR</AvatarFallback>
             </Avatar>
             <div className="grid gap-1">
               <p className="text-title text-foreground">Priya Raman</p>
-              <p className="text-sm text-copy">Marketing at Acme Inc. Runs launches, the blog and the newsletter.</p>
+              <p className="text-sm text-copy">
+                Marketing at Acme Inc. Runs launches, the blog and the
+                newsletter.
+              </p>
               <p className="mt-1 flex items-center gap-1.5 text-caption text-muted-foreground">
                 <MapPinIcon aria-hidden="true" className="size-3.5" />
                 London · 3:42 PM local time
@@ -82,17 +60,19 @@ function ProfileCard({ container }: { container: Stage }) {
 }
 
 function TaskCard({ container }: { container: Stage }) {
-  const pinned = usePinnedOpen(container)
+  const { open, onOpenChange } = usePinnedOpen(container)
   return (
     <p className="max-w-96 text-center text-body text-copy">
       The launch email waits on{" "}
-      <HoverCard {...pinned}>
+      <HoverCard open={open} onOpenChange={onOpenChange}>
         <HoverCardTrigger href="#fix-the-pricing-table" className={linkClass}>
           Fix the pricing table
         </HoverCardTrigger>
-        <HoverCardContent container={container} {...pinnedTo(container)}>
+        <HoverCardContent container={container} {...belowTrigger(container)}>
           <div className="flex items-start justify-between gap-3">
-            <p className="text-title text-foreground">Fix the pricing table on mobile</p>
+            <p className="text-title text-foreground">
+              Fix the pricing table on mobile
+            </p>
             <Badge variant="info">In progress</Badge>
           </div>
           <div className="flex items-center gap-2 text-caption text-muted-foreground">
@@ -104,11 +84,15 @@ function TaskCard({ container }: { container: Stage }) {
           <dl className="grid grid-cols-2 gap-3 border-t pt-3">
             <div className="grid gap-0.5">
               <dt className="text-caption text-muted-foreground">Due</dt>
-              <dd className="text-sm font-semibold text-foreground tabular">Oct 15</dd>
+              <dd className="text-sm font-semibold text-foreground tabular">
+                Oct 15
+              </dd>
             </div>
             <div className="grid gap-0.5">
               <dt className="text-caption text-muted-foreground">Subtasks</dt>
-              <dd className="text-sm font-semibold text-foreground tabular">2 of 3 done</dd>
+              <dd className="text-sm font-semibold text-foreground tabular">
+                2 of 3 done
+              </dd>
             </div>
           </dl>
         </HoverCardContent>
@@ -119,9 +103,24 @@ function TaskCard({ container }: { container: Stage }) {
 }
 
 const projects = [
-  { name: "Website relaunch", status: "On track", dot: "bg-success", note: "38 of 52 tasks done · due Nov 14" },
-  { name: "Brand refresh", status: "On track", dot: "bg-success", note: "27 of 40 tasks done · due Nov 6" },
-  { name: "Mobile app 2.0", status: "At risk", dot: "bg-warning", note: "2 tasks overdue · due Nov 20" },
+  {
+    name: "Website relaunch",
+    status: "On track",
+    dot: "bg-success",
+    note: "38 of 52 tasks done · due Nov 14",
+  },
+  {
+    name: "Brand refresh",
+    status: "On track",
+    dot: "bg-success",
+    note: "27 of 40 tasks done · due Nov 6",
+  },
+  {
+    name: "Mobile app 2.0",
+    status: "At risk",
+    dot: "bg-warning",
+    note: "2 tasks overdue · due Nov 20",
+  },
 ]
 
 /** Links in a list stay ink, so a column of them doesn’t flood the page with the accent. */
@@ -145,18 +144,25 @@ function useCardSide() {
 }
 
 function ProjectList({ container }: { container: Stage }) {
-  const pinned = usePinnedOpen(container)
+  const { open, onOpenChange } = usePinnedOpen(container)
   const side = useCardSide()
   const shown = projects[projects.length - 1].name
 
   return (
     <div className="grid w-full max-w-80 gap-3">
-      <p className="font-mono text-code text-muted-foreground">delay 200 · closeDelay 150</p>
+      <p className="font-mono text-code text-muted-foreground">
+        delay 200 · closeDelay 150
+      </p>
       <ul className="grid divide-y rounded-(--card-radius) border bg-card">
         {projects.map((item) => (
           <li key={item.name} className="flex items-center gap-2.5 px-4 py-3">
-            <FolderIcon aria-hidden="true" className="size-4 text-muted-foreground" />
-            <HoverCard {...(item.name === shown ? pinned : undefined)}>
+            <FolderIcon
+              aria-hidden="true"
+              className="size-4 text-muted-foreground"
+            />
+            <HoverCard
+              {...(item.name === shown ? { open, onOpenChange } : undefined)}
+            >
               <HoverCardTrigger
                 href={`#${item.name.toLowerCase().replace(/\W+/g, "-")}`}
                 delay={200}
@@ -176,11 +182,17 @@ function ProjectList({ container }: { container: Stage }) {
                 collisionBoundary={container ?? undefined}
               >
                 <p className="flex items-center gap-2 text-title text-foreground">
-                  <span aria-hidden="true" className={`size-2 shrink-0 rounded-full ${item.dot}`} />
+                  <span
+                    aria-hidden="true"
+                    className={`size-2 shrink-0 rounded-full ${item.dot}`}
+                  />
                   {item.name}
                 </p>
                 <p className="text-sm text-copy">
-                  <span className="font-semibold text-foreground">{item.status}</span> · {item.note}
+                  <span className="font-semibold text-foreground">
+                    {item.status}
+                  </span>{" "}
+                  · {item.note}
                 </p>
               </HoverCardContent>
             </HoverCard>
@@ -210,7 +222,9 @@ export default function HoverCardDocs() {
   </HoverCardContent>
 </HoverCard>`}
       >
-        <HoverCardStage className="min-h-60">{(container) => <ProfileCard container={container} />}</HoverCardStage>
+        <PreviewStage className="min-h-60 pt-2">
+          {(container) => <ProfileCard container={container} />}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -231,7 +245,9 @@ export default function HoverCardDocs() {
   </HoverCardContent>
 </HoverCard>`}
       >
-        <HoverCardStage className="min-h-64">{(container) => <TaskCard container={container} />}</HoverCardStage>
+        <PreviewStage className="min-h-64 pt-2">
+          {(container) => <TaskCard container={container} />}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -240,9 +256,9 @@ export default function HoverCardDocs() {
         code={`<HoverCardTrigger delay={200} closeDelay={150}>…</HoverCardTrigger>
 <HoverCardContent side="right" align="start" sideOffset={25}>…</HoverCardContent>`}
       >
-        <HoverCardStage className="min-h-80 justify-start @md:justify-center">
+        <PreviewStage className="min-h-80 justify-start pt-2 @md:justify-center">
           {(container) => <ProjectList container={container} />}
-        </HoverCardStage>
+        </PreviewStage>
       </Example>
 
       <Guidelines
@@ -260,12 +276,45 @@ export default function HoverCardDocs() {
 
       <ApiTable
         rows={[
-          { prop: "delay", type: "number", default: "600", description: "On HoverCardTrigger. Milliseconds before the card opens." },
-          { prop: "closeDelay", type: "number", default: "300", description: "On HoverCardTrigger. Milliseconds before the card closes." },
-          { prop: "href", type: "string", description: "On HoverCardTrigger, which renders a link. Where the trigger goes when clicked." },
-          { prop: "side", type: '"top" | "right" | "bottom" | "left"', default: '"bottom"', description: "On HoverCardContent. Preferred side of the trigger." },
-          { prop: "align", type: '"start" | "center" | "end"', default: '"center"', description: "On HoverCardContent. Alignment along that side." },
-          { prop: "sideOffset", type: "number", default: "8", description: "On HoverCardContent. Gap from the trigger, in pixels." },
+          {
+            prop: "delay",
+            type: "number",
+            default: "600",
+            description:
+              "On HoverCardTrigger. Milliseconds before the card opens.",
+          },
+          {
+            prop: "closeDelay",
+            type: "number",
+            default: "300",
+            description:
+              "On HoverCardTrigger. Milliseconds before the card closes.",
+          },
+          {
+            prop: "href",
+            type: "string",
+            description:
+              "On HoverCardTrigger, which renders a link. Where the trigger goes when clicked.",
+          },
+          {
+            prop: "side",
+            type: '"top" | "right" | "bottom" | "left"',
+            default: '"bottom"',
+            description: "On HoverCardContent. Preferred side of the trigger.",
+          },
+          {
+            prop: "align",
+            type: '"start" | "center" | "end"',
+            default: '"center"',
+            description: "On HoverCardContent. Alignment along that side.",
+          },
+          {
+            prop: "sideOffset",
+            type: "number",
+            default: "8",
+            description:
+              "On HoverCardContent. Gap from the trigger, in pixels.",
+          },
         ]}
       />
     </Examples>

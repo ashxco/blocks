@@ -27,13 +27,8 @@
  * does both. Prints each theme's traits and the pairwise matrix, and exits with
  * 1 when a pair shares too much.
  */
-import { createHash } from "node:crypto"
-import { readdir, readFile } from "node:fs/promises"
-import path from "node:path"
-import { fileURLToPath } from "node:url"
-
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
-const source = path.join(root, "design-system/generated/themes.json")
+import { parseOklch } from "./lib/oklch.mjs"
+import { pad, readThemesData } from "./lib/themes-data.mjs"
 
 /** How many of the six traits every pair must differ on. */
 const MIN_DIFFERENT = 4
@@ -53,9 +48,10 @@ const CARD_RADIUS_STEP = 6
 /* ----------------------------------------------------------------- Values */
 
 function oklch(value) {
-  const m = /^oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+|none)/.exec(String(value).trim())
-  if (!m) throw new Error(`Cannot read colour ${value}: write theme colours in OKLCH`)
-  return { L: Number(m[1]) / (m[2] ? 100 : 1), C: Number(m[3]), H: m[4] === "none" ? 0 : Number(m[4]) }
+  const color = parseOklch(value)
+  if (!color)
+    throw new Error(`Cannot read colour ${value}: write theme colours in OKLCH`)
+  return color
 }
 
 const ROOT_PX = 16
@@ -81,7 +77,8 @@ function buttonShape(radius) {
 }
 
 const fmtPx = (v) => (px(v) >= 999 ? "pill" : `${Number(px(v).toFixed(2))}px`)
-const fmtHue = (c, noHue) => (c.C < noHue ? "none" : `${Math.round(c.H)}° C${c.C.toFixed(3)}`)
+const fmtHue = (c, noHue) =>
+  c.C < noHue ? "none" : `${Math.round(c.H)}° C${c.C.toFixed(3)}`
 
 /* ----------------------------------------------------------------- Traits */
 
@@ -96,7 +93,10 @@ const traits = [
       if (hueless === 2) return { differs: false, why: "neither has a hue" }
       if (hueless === 1) return { differs: true, why: "one has no hue" }
       const gap = hueGap(x.H, y.H)
-      return { differs: gap >= HUE_FAMILY, why: `hues ${Math.round(gap)}° apart` }
+      return {
+        differs: gap >= HUE_FAMILY,
+        why: `hues ${Math.round(gap)}° apart`,
+      }
     },
   },
   {
@@ -111,16 +111,23 @@ const traits = [
       const ratio = Math.max(x.C, y.C) / Math.min(x.C, y.C)
       const hueShows = Math.min(x.C, y.C) >= NEUTRAL_VISIBLE_TINT
       return {
-        differs: ratio >= NEUTRAL_CHROMA_RATIO || (hueShows && gap >= HUE_FAMILY),
+        differs:
+          ratio >= NEUTRAL_CHROMA_RATIO || (hueShows && gap >= HUE_FAMILY),
         why: `${hueShows ? `tints ${Math.round(gap)}° apart` : "a faint tint"}, chroma ×${ratio.toFixed(2)}`,
       }
     },
   },
   {
     id: "buttons",
-    show: (t) => (buttonShape(t.radius.button) === "pill" ? "pill" : `${buttonShape(t.radius.button)} (${fmtPx(t.radius.button)})`),
+    show: (t) =>
+      buttonShape(t.radius.button) === "pill"
+        ? "pill"
+        : `${buttonShape(t.radius.button)} (${fmtPx(t.radius.button)})`,
     compare(a, b) {
-      const [x, y] = [buttonShape(a.radius.button), buttonShape(b.radius.button)]
+      const [x, y] = [
+        buttonShape(a.radius.button),
+        buttonShape(b.radius.button),
+      ]
       return { differs: x !== y, why: x === y ? `both ${x}` : `${x} vs ${y}` }
     },
   },
@@ -129,7 +136,10 @@ const traits = [
     show: (t) => fmtPx(t.radius.card),
     compare(a, b) {
       const gap = Math.abs(px(a.radius.card) - px(b.radius.card))
-      return { differs: gap >= CARD_RADIUS_STEP, why: `${Number(gap.toFixed(2))}px apart` }
+      return {
+        differs: gap >= CARD_RADIUS_STEP,
+        why: `${Number(gap.toFixed(2))}px apart`,
+      }
     },
   },
   fontTrait("heading", "heading"),
@@ -144,79 +154,90 @@ function fontTrait(id, kind) {
     compare(a, b) {
       const [x, y] = [a.genres[kind], b.genres[kind]]
       if (x !== y) return { differs: true, why: `${x} vs ${y}` }
-      return { differs: false, why: a.fonts[kind] === b.fonts[kind] ? `both ${a.fonts[kind]}` : `both ${x}: ${a.fonts[kind]}, ${b.fonts[kind]}` }
+      return {
+        differs: false,
+        why:
+          a.fonts[kind] === b.fonts[kind]
+            ? `both ${a.fonts[kind]}`
+            : `both ${x}: ${a.fonts[kind]}, ${b.fonts[kind]}`,
+      }
     },
   }
 }
 
 /* -------------------------------------------------------------------- Run */
 
-const data = JSON.parse(
-  await readFile(source, "utf8").catch(() => {
-    console.error(`check-themes: ${path.relative(root, source)} is missing. Run npm run tokens first.`)
-    process.exit(2)
-  })
-)
-
-// The same fingerprint of the token sources as design-system/build.mjs, so a
-// stale themes.json never passes for the current tokens.
-const hash = createHash("sha256")
-for (const dir of ["design-system/tokens", "design-system/themes"]) {
-  for (const file of (await readdir(path.join(root, dir))).filter((f) => f.endsWith(".json")).sort()) {
-    hash.update(`${dir}/${file}\n`).update(await readFile(path.join(root, dir, file)))
-  }
-}
-if (data.sources !== hash.digest("hex")) {
-  console.error("check-themes: the token sources changed after the last token build. Run npm run tokens first.")
-  process.exit(2)
-}
+const data = await readThemesData("check-themes")
 if (data.themes.some((t) => !t.identity?.genres)) {
-  console.error("check-themes: themes.json has no theme identity. Run npm run tokens first.")
+  console.error(
+    "check-themes: themes.json has no theme identity. Run npm run tokens first."
+  )
   process.exit(2)
 }
 
 const themes = data.themes.map((t) => ({
   id: t.id,
   name: t.name,
-  accent: oklch(t.identity.accent.brand.light ?? Object.values(t.identity.accent.brand)[0]),
+  accent: oklch(
+    t.identity.accent.brand.light ?? Object.values(t.identity.accent.brand)[0]
+  ),
   neutral: oklch(t.identity.neutral[500]),
   radius: t.identity.radius,
   fonts: t.identity.fonts,
   genres: t.identity.genres,
 }))
 
-const pad = (s, n) => String(s).padEnd(n)
 const lines = []
 
 // Each theme's traits.
-const widths = traits.map((trait) => Math.max(trait.id.length, ...themes.map((t) => trait.show(t).length)) + 2)
+const widths = traits.map(
+  (trait) =>
+    Math.max(trait.id.length, ...themes.map((t) => trait.show(t).length)) + 2
+)
 const idWidth = Math.max(...themes.map((t) => t.id.length)) + 2
-lines.push("Theme traits", `  ${pad("", idWidth)}${traits.map((trait, i) => pad(trait.id, widths[i])).join("")}`)
-for (const t of themes) lines.push(`  ${pad(t.id, idWidth)}${traits.map((trait, i) => pad(trait.show(t), widths[i])).join("")}`)
+lines.push(
+  "Theme traits",
+  `  ${pad("", idWidth)}${traits.map((trait, i) => pad(trait.id, widths[i])).join("")}`
+)
+for (const t of themes)
+  lines.push(
+    `  ${pad(t.id, idWidth)}${traits.map((trait, i) => pad(trait.show(t), widths[i])).join("")}`
+  )
 
 // Every pair.
 const pairs = []
 for (let i = 0; i < themes.length; i++) {
   for (let j = i + 1; j < themes.length; j++) {
     const [a, b] = [themes[i], themes[j]]
-    const results = traits.map((trait) => ({ id: trait.id, ...trait.compare(a, b) }))
-    pairs.push({ a, b, results, count: results.filter((r) => r.differs).length })
+    const results = traits.map((trait) => ({
+      id: trait.id,
+      ...trait.compare(a, b),
+    }))
+    pairs.push({
+      a,
+      b,
+      results,
+      count: results.filter((r) => r.differs).length,
+    })
   }
 }
-const countOf = (a, b) => pairs.find((p) => (p.a === a && p.b === b) || (p.a === b && p.b === a))?.count
+const countOf = (a, b) =>
+  pairs.find((p) => (p.a === a && p.b === b) || (p.a === b && p.b === a))?.count
 
-const cell = Math.max(...themes.map((t) => t.id.length)) + 2
 lines.push(
   "",
   `Traits each pair differs on (of ${traits.length}; at least ${MIN_DIFFERENT} required)`,
-  `  ${pad("", idWidth)}${themes.map((t) => pad(t.id, cell)).join("")}`
+  `  ${pad("", idWidth)}${themes.map((t) => pad(t.id, idWidth)).join("")}`
 )
 for (const a of themes) {
-  lines.push(`  ${pad(a.id, idWidth)}${themes.map((b) => pad(a === b ? "·" : `${countOf(a, b)}${countOf(a, b) < MIN_DIFFERENT ? "!" : ""}`, cell)).join("")}`)
+  lines.push(
+    `  ${pad(a.id, idWidth)}${themes.map((b) => pad(a === b ? "·" : `${countOf(a, b)}${countOf(a, b) < MIN_DIFFERENT ? "!" : ""}`, idWidth)).join("")}`
+  )
 }
 
 lines.push("", "Pairs")
-const pairWidth = Math.max(...pairs.map((p) => `${p.a.id} / ${p.b.id}`.length)) + 2
+const pairWidth =
+  Math.max(...pairs.map((p) => `${p.a.id} / ${p.b.id}`.length)) + 2
 for (const p of pairs) {
   const shared = p.results.filter((r) => !r.differs)
   const verdict = p.count >= MIN_DIFFERENT ? "ok  " : "FAIL"
@@ -233,4 +254,6 @@ if (failing.length) {
   )
   process.exit(1)
 }
-console.log(`\nAll ${pairs.length} theme pairs differ on at least ${MIN_DIFFERENT} of ${traits.length} traits.`)
+console.log(
+  `\nAll ${pairs.length} theme pairs differ on at least ${MIN_DIFFERENT} of ${traits.length} traits.`
+)

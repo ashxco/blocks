@@ -10,7 +10,8 @@ import { SearchTrigger } from "@/components/viewer/search-trigger"
  */
 export const metadata: Metadata = {
   title: "Page not found",
-  description: "There is no page at this address. Search Blocks, or go back to the overview.",
+  description:
+    "There is no page at this address. Search Blocks, or go back to the overview.",
 }
 
 /**

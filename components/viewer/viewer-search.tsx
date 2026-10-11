@@ -4,13 +4,7 @@ import * as React from "react"
 
 import { CommandPalette } from "@/components/viewer/command-palette"
 import { OPEN_SEARCH_EVENT } from "@/components/viewer/search-trigger"
-
-function isTypingTarget(target: EventTarget | null) {
-  return (
-    target instanceof HTMLElement &&
-    (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
-  )
-}
+import { isTypingTarget } from "@/lib/dom"
 
 /**
  * The command palette and the ways to open it: ⌘K (Ctrl K) toggles it, "/"
@@ -27,7 +21,13 @@ export function ViewerSearch() {
         setOpen((value) => !value)
         return
       }
-      if (event.key === "/" && !event.metaKey && !event.ctrlKey && !event.altKey && !isTypingTarget(event.target)) {
+      if (
+        event.key === "/" &&
+        !event.metaKey &&
+        !event.ctrlKey &&
+        !event.altKey &&
+        !isTypingTarget(event.target)
+      ) {
         event.preventDefault()
         setOpen(true)
       }

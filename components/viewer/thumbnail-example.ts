@@ -8,7 +8,9 @@ import * as React from "react"
 export function thumbnailExample(children: React.ReactNode): React.ReactNode {
   const list = React.Children.toArray(children)
   const marked = list.find(
-    (child) => React.isValidElement<{ thumbnail?: boolean }>(child) && child.props.thumbnail === true
+    (child) =>
+      React.isValidElement<{ thumbnail?: boolean }>(child) &&
+      child.props.thumbnail === true
   )
   return marked ?? list[0] ?? null
 }

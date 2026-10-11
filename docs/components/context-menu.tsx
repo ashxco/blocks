@@ -15,7 +15,14 @@ import {
   UserIcon,
 } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines, useReturnFocus } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import {
+  PreviewStage,
+  pinnedMenuClass,
+  pinnedTo,
+  usePinnedOpen,
+  type Stage,
+} from "@/docs/stage"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { initialsTone } from "@/docs/sample/people"
 import { Badge } from "@/components/ui/badge"
@@ -49,24 +56,6 @@ const docs = [
 
 const docIcon = { folder: FolderIcon, doc: FileTextIcon }
 
-type Stage = HTMLDivElement | null
-
-/**
- * The examples show their menus already open, as if someone had just
- * right-clicked, portalled into a stage inside the example so they follow its
- * theme and stay under the site header. contain-layout makes the stage the
- * containing block for the fixed menu, so it scrolls with the page.
- */
-function MenuStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
-  const [container, setContainer] = React.useState<Stage>(null)
-  useReturnFocus(container)
-  return (
-    <div ref={setContainer} className={cn("relative flex w-full items-start justify-center contain-layout", className)}>
-      {children(container)}
-    </div>
-  )
-}
-
 /**
  * Each example shows its menu open on load at a marked point inside the
  * trigger (`point`), as if someone had just right-clicked there. A real
@@ -74,34 +63,41 @@ function MenuStage({ className, children }: { className?: string; children: (con
  * open-on-load copy is a plain non-modal menu with the same items and styles.
  * It stays open when people click or tab elsewhere; an item, Escape or a real
  * right-click on the trigger closes it, and from then on the trigger opens the
- * real context menu at the pointer.
+ * real context menu at the pointer. Its stage has contain-layout, which makes
+ * the stage the containing block for the fixed menu, so it scrolls with the page.
  */
 function useShownContextMenu(container: Stage) {
-  const [shown, setShown] = React.useState(true)
+  const {
+    open: shown,
+    setOpen: setShown,
+    onOpenChange,
+  } = usePinnedOpen(container)
   const [point, setPoint] = React.useState<HTMLSpanElement | null>(null)
-  const onOpenChange = React.useCallback((next: boolean, details: { reason: string }) => {
-    if (!next && (details.reason === "outside-press" || details.reason === "focus-out")) return
-    setShown(next)
-  }, [])
 
   return {
-    trigger: { onContextMenu: () => setShown(false), "data-shown": shown || undefined },
+    trigger: {
+      onContextMenu: () => setShown(false),
+      "data-shown": shown || undefined,
+    },
     /** The real context menu, for right-clicks. */
     content: { container },
     /** The non-modal copy that is open on load, anchored at `point`. */
     showcase: {
-      root: { open: shown && container !== null && point !== null, onOpenChange, modal: false },
+      root: { open: shown && point !== null, onOpenChange, modal: false },
       content: {
         container,
         anchor: point,
-        collisionAvoidance: { side: "none" },
-        collisionBoundary: container ?? undefined,
-        className: "max-h-none overscroll-auto",
+        ...pinnedTo(container),
+        className: pinnedMenuClass,
       } as const,
     },
     /** Render where the menu opens on load. Place it with left-* and top-* classes. */
     point: (className: string) => (
-      <span ref={setPoint} aria-hidden="true" className={cn("pointer-events-none absolute size-0", className)} />
+      <span
+        ref={setPoint}
+        aria-hidden="true"
+        className={cn("pointer-events-none absolute size-0", className)}
+      />
     ),
   }
 }
@@ -123,17 +119,43 @@ function ShownContextMenu({
         <ContextMenuContent {...shown.content}>{children}</ContextMenuContent>
       </ContextMenu>
       <DropdownMenu {...shown.showcase.root}>
-        <ContextMenuContent {...shown.showcase.content}>{children}</ContextMenuContent>
+        <ContextMenuContent {...shown.showcase.content}>
+          {children}
+        </ContextMenuContent>
       </DropdownMenu>
     </>
   )
 }
 
 const tasks = [
-  { title: "Outline the key messages", initials: "PR", due: "Oct 6", done: true, overdue: false },
-  { title: "Approve the hero copy", initials: "HK", due: "Oct 7", done: false, overdue: true },
-  { title: "Set up redirects for old blog URLs", initials: "JL", due: "Oct 8", done: false, overdue: true },
-  { title: "Final homepage illustrations", initials: "SA", due: "Oct 16", done: false, overdue: false },
+  {
+    title: "Outline the key messages",
+    initials: "PR",
+    due: "Oct 6",
+    done: true,
+    overdue: false,
+  },
+  {
+    title: "Approve the hero copy",
+    initials: "HK",
+    due: "Oct 7",
+    done: false,
+    overdue: true,
+  },
+  {
+    title: "Set up redirects for old blog URLs",
+    initials: "JL",
+    due: "Oct 8",
+    done: false,
+    overdue: true,
+  },
+  {
+    title: "Final homepage illustrations",
+    initials: "SA",
+    due: "Oct 16",
+    done: false,
+    overdue: false,
+  },
 ]
 
 function TaskListView({ container }: { container: Stage }) {
@@ -143,7 +165,10 @@ function TaskListView({ container }: { container: Stage }) {
   const [filter, setFilter] = React.useState("all")
 
   const rows = tasks.filter(
-    (task) => filter === "all" || (filter === "open" && !task.done) || (filter === "overdue" && task.overdue)
+    (task) =>
+      filter === "all" ||
+      (filter === "open" && !task.done) ||
+      (filter === "overdue" && task.overdue)
   )
 
   return (
@@ -156,7 +181,9 @@ function TaskListView({ container }: { container: Stage }) {
         >
           {/* Below the list on narrow stages and at the right edge when there is room, so the menu never covers the rows whose view options it changes. */}
           {shown.point("top-full left-[20%] @4xl:top-1/2 @4xl:left-[97%]")}
-          <p className="px-2.5 pt-1.5 pb-2 text-caption font-semibold text-muted-foreground">Website relaunch · Tasks</p>
+          <p className="px-2.5 pt-1.5 pb-2 text-caption font-semibold text-muted-foreground">
+            Website relaunch · Tasks
+          </p>
           <ul className="grid grid-cols-[minmax(0,1fr)]">
             {rows.map((task) => (
               <li
@@ -164,13 +191,21 @@ function TaskListView({ container }: { container: Stage }) {
                 className="flex h-(--table-row-height-sm) items-center gap-2.5 rounded-(--overlay-item-radius) px-2.5 text-sm"
               >
                 {task.done ? (
-                  <CircleCheckIcon aria-hidden="true" className="size-4 shrink-0 text-success" />
+                  <CircleCheckIcon
+                    aria-hidden="true"
+                    className="size-4 shrink-0 text-success"
+                  />
                 ) : (
-                  <CircleIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                  <CircleIcon
+                    aria-hidden="true"
+                    className="size-4 shrink-0 text-muted-foreground"
+                  />
                 )}
                 <span
                   className={
-                    task.done ? "min-w-0 flex-1 truncate text-muted-foreground line-through" : "min-w-0 flex-1 truncate font-medium text-foreground"
+                    task.done
+                      ? "min-w-0 flex-1 truncate text-muted-foreground line-through"
+                      : "min-w-0 flex-1 truncate font-medium text-foreground"
                   }
                 >
                   {task.title}
@@ -178,7 +213,9 @@ function TaskListView({ container }: { container: Stage }) {
                 {dueDates ? (
                   <span
                     className={
-                      task.overdue ? "shrink-0 text-caption text-destructive tabular" : "shrink-0 text-caption text-muted-foreground tabular"
+                      task.overdue
+                        ? "shrink-0 text-caption text-destructive tabular"
+                        : "shrink-0 text-caption text-muted-foreground tabular"
                     }
                   >
                     {task.due}
@@ -186,7 +223,9 @@ function TaskListView({ container }: { container: Stage }) {
                 ) : null}
                 {assignees ? (
                   <Avatar size="sm">
-                    <AvatarFallback tone={initialsTone(task.initials)}>{task.initials}</AvatarFallback>
+                    <AvatarFallback tone={initialsTone(task.initials)}>
+                      {task.initials}
+                    </AvatarFallback>
                   </Avatar>
                 ) : null}
               </li>
@@ -197,20 +236,31 @@ function TaskListView({ container }: { container: Stage }) {
     >
       <ContextMenuGroup>
         <ContextMenuLabel>View</ContextMenuLabel>
-        <ContextMenuCheckboxItem checked={dueDates} onCheckedChange={setDueDates}>
+        <ContextMenuCheckboxItem
+          checked={dueDates}
+          onCheckedChange={setDueDates}
+        >
           Show due dates
         </ContextMenuCheckboxItem>
-        <ContextMenuCheckboxItem checked={assignees} onCheckedChange={setAssignees}>
+        <ContextMenuCheckboxItem
+          checked={assignees}
+          onCheckedChange={setAssignees}
+        >
           Show assignees
         </ContextMenuCheckboxItem>
       </ContextMenuGroup>
       <ContextMenuSeparator />
       <ContextMenuGroup>
         <ContextMenuLabel>Show</ContextMenuLabel>
-        <ContextMenuRadioGroup value={filter} onValueChange={(value) => setFilter(String(value))}>
+        <ContextMenuRadioGroup
+          value={filter}
+          onValueChange={(value) => setFilter(String(value))}
+        >
           <ContextMenuRadioItem value="all">All tasks</ContextMenuRadioItem>
           <ContextMenuRadioItem value="open">Open tasks</ContextMenuRadioItem>
-          <ContextMenuRadioItem value="overdue">Overdue only</ContextMenuRadioItem>
+          <ContextMenuRadioItem value="overdue">
+            Overdue only
+          </ContextMenuRadioItem>
         </ContextMenuRadioGroup>
       </ContextMenuGroup>
     </ShownContextMenu>
@@ -230,7 +280,9 @@ function TaskCard({ container }: { container: Stage }) {
         >
           {shown.point("top-[92%] left-[30%] @lg:left-[70%]")}
           <div className="flex items-center justify-between gap-3">
-            <p className="text-title text-foreground">Write the launch announcement</p>
+            <p className="text-title text-foreground">
+              Write the launch announcement
+            </p>
             <Badge variant="brand">In review</Badge>
           </div>
           <p className="text-sm text-copy">Priya Raman · Due Oct 14 · High</p>
@@ -284,7 +336,9 @@ function DocTree({ container }: { container: Stage }) {
           {...shown.trigger}
           className="group/tree relative grid w-full max-w-80 rounded-(--card-radius) border bg-card p-(--overlay-padding)"
         >
-          <p className="px-2.5 pt-1.5 pb-2 text-caption font-semibold text-muted-foreground">Website relaunch · Docs</p>
+          <p className="px-2.5 pt-1.5 pb-2 text-caption font-semibold text-muted-foreground">
+            Website relaunch · Docs
+          </p>
           <ul className="grid">
             {docs.map((doc) => {
               const Icon = docIcon[doc.kind]
@@ -296,8 +350,13 @@ function DocTree({ container }: { container: Stage }) {
                   onContextMenu={() => setClicked(doc.name)}
                   className="relative flex h-(--overlay-item-height) items-center gap-2.5 rounded-(--overlay-item-radius) px-2.5 text-sm font-medium text-foreground hover:bg-accent group-data-popup-open/tree:data-clicked:bg-accent group-data-shown/tree:data-clicked:bg-accent"
                 >
-                  {doc.name === clickedDoc ? shown.point("top-1/2 left-[40%] @lg:left-[70%]") : null}
-                  <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+                  {doc.name === clickedDoc
+                    ? shown.point("top-1/2 left-[40%] @lg:left-[70%]")
+                    : null}
+                  <Icon
+                    aria-hidden="true"
+                    className="size-4 shrink-0 text-muted-foreground"
+                  />
                   <span className="truncate">{doc.name}</span>
                 </li>
               )
@@ -373,7 +432,9 @@ export default function ContextMenuDocs() {
   </ContextMenuContent>
 </ContextMenu>`}
       >
-        <MenuStage className="min-h-80">{(container) => <TaskCard container={container} />}</MenuStage>
+        <PreviewStage returnFocus className="min-h-80 contain-layout">
+          {(container) => <TaskCard container={container} />}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -407,7 +468,9 @@ export default function ContextMenuDocs() {
   </ContextMenuContent>
 </ContextMenu>`}
       >
-        <MenuStage className="min-h-96">{(container) => <DocTree container={container} />}</MenuStage>
+        <PreviewStage returnFocus className="min-h-96 contain-layout">
+          {(container) => <DocTree container={container} />}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -422,7 +485,12 @@ export default function ContextMenuDocs() {
   <ContextMenuRadioItem value="overdue">Overdue only</ContextMenuRadioItem>
 </ContextMenuRadioGroup>`}
       >
-        <MenuStage className="min-h-128 @4xl:min-h-88">{(container) => <TaskListView container={container} />}</MenuStage>
+        <PreviewStage
+          returnFocus
+          className="min-h-128 contain-layout @4xl:min-h-88"
+        >
+          {(container) => <TaskListView container={container} />}
+        </PreviewStage>
       </Example>
 
       <Guidelines
@@ -440,13 +508,53 @@ export default function ContextMenuDocs() {
 
       <ApiTable
         rows={[
-          { prop: "className", type: "string", description: "On ContextMenuTrigger. Style the area that listens for right-click and long-press." },
-          { prop: "variant", type: '"default" | "destructive"', default: '"default"', description: "On ContextMenuItem. Destructive items use text-destructive." },
-          { prop: "inset", type: "boolean", default: "false", description: "On items and labels. Indents text to line up with items that have an icon." },
-          { prop: "disabled", type: "boolean", default: "false", description: "On ContextMenu or an item. Turns off the whole menu, or dims one item." },
-          { prop: "side", type: '"top" | "right" | "bottom" | "left" | "inline-start" | "inline-end"', default: '"right"', description: "On ContextMenuContent. The side of the pointer the menu opens on. It flips when there is no room." },
-          { prop: "align", type: '"start" | "center" | "end"', default: '"start"', description: "On ContextMenuContent. How the menu lines up with the pointer along that side." },
-          { prop: "onOpenChange", type: "(open: boolean) => void", description: "On ContextMenu. Called when the menu opens or closes." },
+          {
+            prop: "className",
+            type: "string",
+            description:
+              "On ContextMenuTrigger. Style the area that listens for right-click and long-press.",
+          },
+          {
+            prop: "variant",
+            type: '"default" | "destructive"',
+            default: '"default"',
+            description:
+              "On ContextMenuItem. Destructive items use text-destructive.",
+          },
+          {
+            prop: "inset",
+            type: "boolean",
+            default: "false",
+            description:
+              "On items and labels. Indents text to line up with items that have an icon.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description:
+              "On ContextMenu or an item. Turns off the whole menu, or dims one item.",
+          },
+          {
+            prop: "side",
+            type: '"top" | "right" | "bottom" | "left" | "inline-start" | "inline-end"',
+            default: '"right"',
+            description:
+              "On ContextMenuContent. The side of the pointer the menu opens on. It flips when there is no room.",
+          },
+          {
+            prop: "align",
+            type: '"start" | "center" | "end"',
+            default: '"start"',
+            description:
+              "On ContextMenuContent. How the menu lines up with the pointer along that side.",
+          },
+          {
+            prop: "onOpenChange",
+            type: "(open: boolean) => void",
+            description:
+              "On ContextMenu. Called when the menu opens or closes.",
+          },
         ]}
       />
     </Examples>

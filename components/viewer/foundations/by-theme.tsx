@@ -15,7 +15,12 @@
  */
 import * as React from "react"
 
-import { defaultThemeId, THEME_ATTRIBUTE, themeIds, type ThemeId } from "@/lib/themes"
+import {
+  defaultThemeId,
+  THEME_ATTRIBUTE,
+  themeIds,
+  type ThemeId,
+} from "@/lib/themes"
 
 const ATTR = "data-theme-only"
 
@@ -97,6 +102,16 @@ export function ThemeText({ value }: { value: PerTheme }) {
 }
 
 /** Shows its children only while the page is on `theme`, such as a "Current" mark beside that theme. */
-export function OnlyInTheme({ theme, children }: { theme: ThemeId; children: React.ReactNode }) {
-  return <ByTheme by={(active) => (active === theme ? "on" : "off")}>{(active) => (active === theme ? children : null)}</ByTheme>
+export function OnlyInTheme({
+  theme,
+  children,
+}: {
+  theme: ThemeId
+  children: React.ReactNode
+}) {
+  return (
+    <ByTheme by={(active) => (active === theme ? "on" : "off")}>
+      {(active) => (active === theme ? children : null)}
+    </ByTheme>
+  )
 }

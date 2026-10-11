@@ -19,7 +19,8 @@ type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
    not zoom on focus), 14px from md. */
 const selectSize = {
   sm: "h-(--control-height-sm) ps-3 pe-9 text-sm",
-  default: "h-(--control-height-md) ps-(--control-padding-x) pe-10 text-control",
+  default:
+    "h-(--control-height-md) ps-(--control-padding-x) pe-10 text-control",
   lg: "h-(--control-height-lg) ps-4 pe-11 text-base",
 } as const
 
@@ -56,9 +57,9 @@ function NativeSelect({
         aria-hidden="true"
         data-slot="native-select-icon"
         className={cn(
-          "pointer-events-none absolute top-1/2 end-3 size-4 -translate-y-1/2 text-muted-foreground select-none",
+          "pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground select-none",
           "transition-colors duration-(--duration-fast) group-hover/native-select:text-foreground",
-          "group-data-[size=sm]/native-select:end-2.5 group-data-[size=lg]/native-select:end-3.5"
+          "group-data-[size=lg]/native-select:end-3.5 group-data-[size=sm]/native-select:end-2.5"
         )}
       />
     </div>
@@ -85,7 +86,10 @@ function NativeSelectOptGroup({
   return (
     <optgroup
       data-slot="native-select-optgroup"
-      className={cn("bg-popover font-semibold text-popover-foreground", className)}
+      className={cn(
+        "bg-popover font-semibold text-popover-foreground",
+        className
+      )}
       {...props}
     />
   )

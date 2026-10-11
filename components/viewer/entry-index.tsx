@@ -34,13 +34,20 @@ export function EntryIndex({
         if (!items.length) return null
         const id = slugify(group)
         return (
-          <section key={group} id={id} aria-labelledby={`${id}-title`} className="grid scroll-mt-24 gap-8">
+          <section
+            key={group}
+            id={id}
+            aria-labelledby={`${id}-title`}
+            className="grid scroll-mt-24 gap-8"
+          >
             <div className="grid gap-2">
               <h2 id={`${id}-title`} className="text-h3">
                 {group}
               </h2>
               {groupDescriptions[group] ? (
-                <p className="max-w-prose text-body text-copy">{groupDescriptions[group]}</p>
+                <p className="max-w-prose text-body text-copy">
+                  {groupDescriptions[group]}
+                </p>
               ) : null}
             </div>
             <ul className="grid gap-y-10 sm:grid-cols-2 sm:gap-x-5 xl:grid-cols-3">
@@ -103,7 +110,9 @@ function EntryCard({
               {title}
             </Link>
           </h3>
-          <p className="line-clamp-2 text-caption text-muted-foreground">{description}</p>
+          <p className="line-clamp-2 text-caption text-muted-foreground">
+            {description}
+          </p>
         </div>
         <ArrowRightIcon
           aria-hidden="true"
@@ -136,7 +145,9 @@ export function EntryRow({
       )}
     >
       <span className="text-title text-foreground">{title}</span>
-      <span className="line-clamp-2 text-caption text-muted-foreground">{description}</span>
+      <span className="line-clamp-2 text-caption text-muted-foreground">
+        {description}
+      </span>
       <ArrowRightIcon
         aria-hidden="true"
         className={cn(

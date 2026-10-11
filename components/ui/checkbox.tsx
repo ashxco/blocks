@@ -17,16 +17,16 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
       data-slot="checkbox"
       className={cn(
         "peer group/checkbox relative inline-flex size-(--selection-size) max-w-(--selection-size) min-w-(--selection-size) shrink-0 items-center justify-center rounded-xs border border-muted-foreground/75 bg-background text-primary-foreground",
-        "outline-none transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
+        "transition-[background-color,border-color] duration-(--duration-fast) ease-standard outline-none",
         "after:absolute after:-inset-2.5",
         "data-unchecked:not-data-indeterminate:hover:border-foreground",
         "focus-visible:focus-ring",
-        "data-checked:border-primary data-checked:bg-primary data-indeterminate:border-primary data-indeterminate:bg-primary",
+        "data-indeterminate:border-primary data-indeterminate:bg-primary data-checked:border-primary data-checked:bg-primary",
         "group-data-[invalid=true]/field:border-destructive aria-invalid:border-destructive",
-        "aria-invalid:aria-checked:border-primary group-data-[invalid=true]/field:aria-checked:border-primary",
+        "group-data-[invalid=true]/field:aria-checked:border-primary aria-invalid:aria-checked:border-primary",
         // Disabled: an empty box takes the muted fill and a lighter border, so
         // it stays visible; a checked box fades its ink.
-        "data-disabled:cursor-not-allowed data-disabled:data-checked:opacity-50 data-disabled:data-indeterminate:opacity-50",
+        "data-disabled:cursor-not-allowed data-disabled:data-indeterminate:opacity-50 data-disabled:data-checked:opacity-50",
         "data-disabled:data-unchecked:not-data-indeterminate:border-muted-foreground/50 data-disabled:data-unchecked:not-data-indeterminate:bg-muted",
         "group-has-[>[data-slot=field]]/field-label:focus-visible:outline-none",
         className
@@ -38,7 +38,7 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
         className={cn(
           "grid place-content-center",
           "transition-[opacity,scale] duration-(--duration-fast) ease-out",
-          "data-starting-style:scale-50 data-starting-style:opacity-0 data-ending-style:scale-50 data-ending-style:opacity-0"
+          "data-ending-style:scale-50 data-ending-style:opacity-0 data-starting-style:scale-50 data-starting-style:opacity-0"
         )}
       >
         <CheckIcon

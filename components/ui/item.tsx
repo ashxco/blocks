@@ -79,15 +79,17 @@ const itemVariants = cva(
   [
     "group/item flex w-full flex-wrap items-center rounded-(--control-radius) border text-left text-body",
     "transition-colors duration-(--duration-fast) ease-standard outline-none focus-visible:focus-ring",
-    "[a]:hover:bg-accent [button]:hover:bg-accent aria-disabled:pointer-events-none aria-disabled:opacity-50",
+    "aria-disabled:pointer-events-none aria-disabled:opacity-50 [a]:hover:bg-accent [button]:hover:bg-accent",
     "aria-[current=page]:bg-accent data-selected:bg-accent",
   ],
   {
     variants: {
       variant: {
         default: "border-transparent",
-        outline: "border-border bg-card [a]:hover:border-border-strong [button]:hover:border-border-strong",
-        muted: "border-transparent bg-subtle [a]:hover:bg-muted [button]:hover:bg-muted",
+        outline:
+          "border-border bg-card [a]:hover:border-border-strong [button]:hover:border-border-strong",
+        muted:
+          "border-transparent bg-subtle [a]:hover:bg-muted [button]:hover:bg-muted",
       },
       size: {
         default: "gap-4 px-4 py-3.5",
@@ -131,7 +133,8 @@ const itemMediaVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-transparent text-muted-foreground [&_svg:not([class*='size-'])]:size-5",
+        default:
+          "bg-transparent text-muted-foreground [&_svg:not([class*='size-'])]:size-5",
         icon: [
           "size-10 rounded-(--control-radius) border border-border bg-muted text-foreground [&_svg:not([class*='size-'])]:size-4.5",
           "group-data-[size=sm]/item:size-9 group-data-[size=sm]/item:[&_svg:not([class*='size-'])]:size-4",

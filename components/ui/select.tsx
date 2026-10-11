@@ -28,7 +28,8 @@ const Select = SelectPrimitive.Root
 const selectStyles = {
   /** The list surface: popover colour, hairline border, overlay radius. */
   list: "rounded-(--overlay-radius) border border-popover-border bg-popover p-(--overlay-padding) text-popover-foreground outline-none",
-  label: "flex h-8 items-end px-2.5 pb-1.5 text-caption font-semibold text-muted-foreground select-none",
+  label:
+    "flex h-8 items-end px-2.5 pb-1.5 text-caption font-semibold text-muted-foreground select-none",
   item: cn(
     "group/select-item relative flex min-h-(--overlay-item-height) w-full cursor-default items-center gap-2 rounded-(--overlay-item-radius) py-1.5 ps-2.5 pe-9 text-sm text-foreground outline-none select-none",
     "transition-colors duration-(--duration-instant) ease-standard",
@@ -37,8 +38,10 @@ const selectStyles = {
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
   ),
   itemText: "flex min-w-0 flex-1 items-center gap-2 whitespace-nowrap",
-  itemIndicator: "pointer-events-none absolute end-2.5 flex size-4 items-center justify-center",
-  separator: "pointer-events-none -mx-(--overlay-padding) my-(--overlay-padding) h-px bg-border",
+  itemIndicator:
+    "pointer-events-none absolute end-2.5 flex size-4 items-center justify-center",
+  separator:
+    "pointer-events-none -mx-(--overlay-padding) my-(--overlay-padding) h-px bg-border",
 } as const
 
 function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
@@ -90,7 +93,7 @@ function SelectTrigger({
         "outline-none hover:border-foreground/25 focus-visible:border-ring focus-visible:focus-ring",
         "data-popup-open:border-foreground/30 data-popup-open:bg-background",
         "data-placeholder:text-muted-foreground",
-        "aria-invalid:border-destructive data-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",
+        "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive data-invalid:border-destructive",
         "disabled:cursor-not-allowed disabled:opacity-50 data-disabled:cursor-not-allowed data-disabled:opacity-50",
         triggerSize[size],
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground",
@@ -141,17 +144,20 @@ function SelectContent({
           data-slot="select-content"
           data-align-trigger={alignItemWithTrigger}
           className={cn(
-            "relative isolate max-h-[min(var(--available-height),--spacing(96))] w-max min-w-(--anchor-width) max-w-(--available-width) origin-(--transform-origin) overflow-x-hidden overflow-y-auto overscroll-contain",
+            "relative isolate max-h-[min(var(--available-height),--spacing(96))] w-max max-w-(--available-width) min-w-(--anchor-width) origin-(--transform-origin) overflow-x-hidden overflow-y-auto overscroll-contain",
             selectStyles.list,
             "duration-(--duration-base) ease-out data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
-            "data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=inline-start]:slide-in-from-right-1 data-[side=inline-end]:slide-in-from-left-1",
+            "data-[side=bottom]:slide-in-from-top-1 data-[side=inline-end]:slide-in-from-left-1 data-[side=inline-start]:slide-in-from-right-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1",
             "data-closed:data-[side=bottom]:slide-out-to-top-1 data-closed:data-[side=top]:slide-out-to-bottom-1",
             className
           )}
           {...props}
         >
           <SelectScrollUpButton />
-          <SelectPrimitive.List data-slot="select-list" className="outline-none">
+          <SelectPrimitive.List
+            data-slot="select-list"
+            className="outline-none"
+          >
             {children}
           </SelectPrimitive.List>
           <SelectScrollDownButton />
@@ -193,9 +199,7 @@ function SelectItem({
       </SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator
         data-slot="select-item-indicator"
-        render={
-          <span className={selectStyles.itemIndicator} />
-        }
+        render={<span className={selectStyles.itemIndicator} />}
       >
         <CheckIcon className="size-4 text-foreground" strokeWidth={2.5} />
       </SelectPrimitive.ItemIndicator>

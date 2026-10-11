@@ -1,10 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { OTPInputContext, REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS, type RenderProps } from "input-otp"
+import {
+  OTPInputContext,
+  REGEXP_ONLY_DIGITS,
+  REGEXP_ONLY_DIGITS_AND_CHARS,
+  type RenderProps,
+} from "input-otp"
 import { CheckIcon } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines, StateCell } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -14,8 +19,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Field, FieldDescription, FieldError, FieldLabel, FieldTitle } from "@/components/ui/field"
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  FieldTitle,
+} from "@/components/ui/field"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
 
 type SixDigitsProps = Omit<
   React.ComponentProps<typeof InputOTP>,
@@ -23,7 +39,12 @@ type SixDigitsProps = Omit<
 > & { defaultValue?: string }
 
 /** Six slots in two groups. Holds its own state unless `value` is passed. */
-function SixDigits({ defaultValue = "", value, onChange, ...props }: SixDigitsProps) {
+function SixDigits({
+  defaultValue = "",
+  value,
+  onChange,
+  ...props
+}: SixDigitsProps) {
   const [inner, setInner] = React.useState(defaultValue)
   return (
     <InputOTP
@@ -91,17 +112,13 @@ function TypingSnapshot() {
   )
 }
 
-/** One row of the States example: a real field, with the state it shows named underneath, as on the Input page. */
-function StateCell({ state, children }: { state: string; children: React.ReactNode }) {
-  return (
-    <div className="grid gap-3">
-      {children}
-      <p className="border-t pt-2.5 text-caption text-muted-foreground">{state}</p>
-    </div>
-  )
-}
-
-function BackupCode({ id, ...props }: { id: string; "aria-describedby"?: string }) {
+function BackupCode({
+  id,
+  ...props
+}: {
+  id: string
+  "aria-describedby"?: string
+}) {
   const [code, setCode] = React.useState("K7F2QX")
   return (
     <InputOTP
@@ -111,7 +128,9 @@ function BackupCode({ id, ...props }: { id: string; "aria-describedby"?: string 
       pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
       value={code}
       onChange={(next) => setCode(next.toUpperCase())}
-      pasteTransformer={(text) => text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()}
+      pasteTransformer={(text) =>
+        text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()
+      }
     >
       <InputOTPGroup>
         <InputOTPSlot index={0} />
@@ -154,10 +173,16 @@ function VerifySignIn() {
       <Card role="status" className="w-full max-w-md">
         <CardHeader className="justify-items-center text-center">
           <span className="mb-3 grid size-10 place-items-center rounded-full bg-success-subtle text-success">
-            <CheckIcon aria-hidden="true" className="size-5" strokeWidth={2.5} />
+            <CheckIcon
+              aria-hidden="true"
+              className="size-5"
+              strokeWidth={2.5}
+            />
           </span>
           <CardTitle>You’re signed in</CardTitle>
-          <CardDescription className="text-pretty">Welcome back to Acme Inc. This device stays trusted for 30 days.</CardDescription>
+          <CardDescription className="text-pretty">
+            Welcome back to Acme Inc. This device stays trusted for 30 days.
+          </CardDescription>
         </CardHeader>
         <CardFooter className="justify-center">
           <Button
@@ -187,8 +212,11 @@ function VerifySignIn() {
         <CardHeader className="justify-items-center text-center">
           <CardTitle>Confirm it’s you</CardTitle>
           <CardDescription className="text-balance">
-            We sent a code to <span className="font-semibold whitespace-nowrap text-foreground">maya@acme.com</span>.
-            It expires in 10&nbsp;minutes.
+            We sent a code to{" "}
+            <span className="font-semibold whitespace-nowrap text-foreground">
+              maya@acme.com
+            </span>
+            . It expires in 10&nbsp;minutes.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -209,7 +237,10 @@ function VerifySignIn() {
               aria-describedby={error ? `${id}-error` : undefined}
               containerClassName="justify-center"
             />
-            <FieldError id={`${id}-error`} className="justify-center text-center">
+            <FieldError
+              id={`${id}-error`}
+              className="justify-center text-center"
+            >
               {error}
             </FieldError>
           </Field>
@@ -218,7 +249,10 @@ function VerifySignIn() {
           <Button type="submit" className="w-full">
             Verify and Sign In
           </Button>
-          <p className="text-center text-caption text-muted-foreground" aria-live="polite">
+          <p
+            className="text-center text-caption text-muted-foreground"
+            aria-live="polite"
+          >
             {resent ? (
               "We sent a new code. Check your spam folder too."
             ) : (
@@ -269,8 +303,15 @@ export default function InputOTPDocs() {
       >
         <Field className="w-fit">
           <FieldLabel htmlFor="otp-six">Verification code</FieldLabel>
-          <SixDigits id="otp-six" defaultValue="42" autoComplete="one-time-code" aria-describedby="otp-six-hint" />
-          <FieldDescription id="otp-six-hint">Enter the code we emailed to maya@acme.com.</FieldDescription>
+          <SixDigits
+            id="otp-six"
+            defaultValue="42"
+            autoComplete="one-time-code"
+            aria-describedby="otp-six-hint"
+          />
+          <FieldDescription id="otp-six-hint">
+            Enter the code we emailed to maya@acme.com.
+          </FieldDescription>
         </Field>
       </Example>
 
@@ -307,7 +348,10 @@ const [code, setCode] = React.useState("")
         <Field className="w-fit">
           <FieldLabel htmlFor="otp-backup">Backup code</FieldLabel>
           <BackupCode id="otp-backup" aria-describedby="otp-backup-hint" />
-          <FieldDescription id="otp-backup-hint">Use one of the codes you saved when you turned on two-factor authentication.</FieldDescription>
+          <FieldDescription id="otp-backup-hint">
+            Use one of the codes you saved when you turned on two-factor
+            authentication.
+          </FieldDescription>
         </Field>
       </Example>
 
@@ -357,21 +401,32 @@ const [code, setCode] = React.useState("")
             <Field>
               <FieldTitle>Verification code</FieldTitle>
               <TypingSnapshot />
-              <FieldDescription>Enter the code we emailed to maya@acme.com.</FieldDescription>
+              <FieldDescription>
+                Enter the code we emailed to maya@acme.com.
+              </FieldDescription>
             </Field>
           </StateCell>
           <StateCell state="Invalid">
             <Field data-invalid>
               <FieldLabel htmlFor="otp-invalid">Verification code</FieldLabel>
-              <SixDigits id="otp-invalid" defaultValue="481920" aria-invalid aria-describedby="otp-invalid-error" />
-              <FieldError id="otp-invalid-error">That code is incorrect. Check the latest email from Acme.</FieldError>
+              <SixDigits
+                id="otp-invalid"
+                defaultValue="481920"
+                aria-invalid
+                aria-describedby="otp-invalid-error"
+              />
+              <FieldError id="otp-invalid-error">
+                That code is incorrect. Check the latest email from Acme.
+              </FieldError>
             </Field>
           </StateCell>
           <StateCell state="Disabled">
             <Field>
               <FieldLabel htmlFor="otp-disabled">Verification code</FieldLabel>
               <SixDigits id="otp-disabled" defaultValue="4819" disabled />
-              <FieldDescription>Too many attempts. Try again in 5 minutes.</FieldDescription>
+              <FieldDescription>
+                Too many attempts. Try again in 5 minutes.
+              </FieldDescription>
             </Field>
           </StateCell>
         </div>
@@ -419,7 +474,7 @@ const [code, setCode] = React.useState("")
 
       <Guidelines
         do={[
-          "Set autoComplete=\"one-time-code\" so phones offer the code from the message.",
+          'Set autoComplete="one-time-code" so phones offer the code from the message.',
           "Restrict input with a pattern, such as REGEXP_ONLY_DIGITS.",
           "Submit on complete, and keep a visible button as well.",
           "Say where the code was sent and when it expires.",
@@ -433,14 +488,48 @@ const [code, setCode] = React.useState("")
 
       <ApiTable
         rows={[
-          { prop: "maxLength", type: "number", description: "Number of characters. Render one InputOTPSlot per character." },
-          { prop: "pattern", type: "string", description: "Allowed characters as a regular expression string, such as REGEXP_ONLY_DIGITS." },
-          { prop: "value / onChange", type: "string / (value: string) => void", description: "Controlled value. Use defaultValue for uncontrolled." },
-          { prop: "onComplete", type: "(value: string) => void", description: "Called when every slot is filled." },
-          { prop: "aria-invalid", type: "boolean", description: "Turns every slot destructive." },
-          { prop: "disabled", type: "boolean", description: "Dims the code and blocks input." },
-          { prop: "containerClassName", type: "string", description: "Classes for the wrapper that lays out the groups." },
-          { prop: "InputOTPSlot index", type: "number", description: "Which character the slot shows, from 0." },
+          {
+            prop: "maxLength",
+            type: "number",
+            description:
+              "Number of characters. Render one InputOTPSlot per character.",
+          },
+          {
+            prop: "pattern",
+            type: "string",
+            description:
+              "Allowed characters as a regular expression string, such as REGEXP_ONLY_DIGITS.",
+          },
+          {
+            prop: "value / onChange",
+            type: "string / (value: string) => void",
+            description: "Controlled value. Use defaultValue for uncontrolled.",
+          },
+          {
+            prop: "onComplete",
+            type: "(value: string) => void",
+            description: "Called when every slot is filled.",
+          },
+          {
+            prop: "aria-invalid",
+            type: "boolean",
+            description: "Turns every slot destructive.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            description: "Dims the code and blocks input.",
+          },
+          {
+            prop: "containerClassName",
+            type: "string",
+            description: "Classes for the wrapper that lays out the groups.",
+          },
+          {
+            prop: "InputOTPSlot index",
+            type: "number",
+            description: "Which character the slot shows, from 0.",
+          },
         ]}
       />
     </Examples>

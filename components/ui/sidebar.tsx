@@ -107,8 +107,9 @@ function SidebarProvider({
   )
 
   const toggleSidebar = React.useCallback(() => {
-    return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open)
-  }, [isMobile, setOpen, setOpenMobile])
+    if (isMobile) setOpenMobile((open) => !open)
+    else setOpen((open) => !open)
+  }, [isMobile, setOpen])
 
   // Cmd/Ctrl+B toggles the sidebar.
   React.useEffect(() => {
@@ -179,6 +180,8 @@ function Sidebar({
   container?: React.ComponentProps<typeof SheetContent>["container"]
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+  // Floating and inset sidebars sit inside a margin; the plain one owns a hairline edge.
+  const inset = variant === "floating" || variant === "inset"
 
   if (collapsible === "none") {
     return (
@@ -242,7 +245,7 @@ function Sidebar({
           "relative w-(--sidebar-width) bg-transparent transition-[width] duration-(--duration-base) ease-standard",
           "group-data-[collapsible=offcanvas]:w-0",
           "group-data-[side=right]:rotate-180",
-          variant === "floating" || variant === "inset"
+          inset
             ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+--spacing(4)+2px)]"
             : "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+1px)]"
         )}
@@ -254,8 +257,7 @@ function Sidebar({
           "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-(--duration-base) ease-standard md:flex",
           "data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]",
           "data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
-          // Floating and inset sidebars sit inside a margin; the plain one owns a hairline edge.
-          variant === "floating" || variant === "inset"
+          inset
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+--spacing(4)+2px)]"
             : "border-sidebar-border group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+1px)] group-data-[side=left]:border-r group-data-[side=right]:border-l",
           className
@@ -512,7 +514,7 @@ const sidebarMenuButtonVariants = cva(
     "group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-3!",
     "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:focus-ring",
     "active:bg-sidebar-accent active:text-sidebar-accent-foreground",
-    "data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground",
+    "data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground",
     "data-active:bg-sidebar-primary data-active:text-sidebar-primary-foreground data-active:hover:bg-sidebar-primary data-active:hover:text-sidebar-primary-foreground",
     "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
     "[&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate",
@@ -559,7 +561,7 @@ function SidebarMenuButton({
       },
       props
     ),
-    render: !tooltip ? render : <TooltipTrigger render={render} />,
+    render: tooltip ? <TooltipTrigger render={render} /> : render,
     state: {
       slot: "sidebar-menu-button",
       sidebar: "menu-button",
@@ -572,12 +574,6 @@ function SidebarMenuButton({
     return comp
   }
 
-  if (typeof tooltip === "string") {
-    tooltip = {
-      children: tooltip,
-    }
-  }
-
   return (
     <Tooltip>
       {comp}
@@ -585,7 +581,7 @@ function SidebarMenuButton({
         side="right"
         align="center"
         hidden={state !== "collapsed" || isMobile}
-        {...tooltip}
+        {...(typeof tooltip === "string" ? { children: tooltip } : tooltip)}
       />
     </Tooltip>
   )
@@ -635,7 +631,7 @@ function SidebarMenuBadge({
       data-sidebar="menu-badge"
       className={cn(
         "pointer-events-none absolute top-1/2 right-2 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-(--badge-radius) bg-sidebar-accent px-1.5 text-xs font-semibold text-sidebar-foreground tabular select-none",
-        "group-data-[collapsible=icon]:hidden group-has-data-[sidebar=menu-action]/menu-item:right-9",
+        "group-has-data-[sidebar=menu-action]/menu-item:right-9 group-data-[collapsible=icon]:hidden",
         "peer-hover/menu-button:bg-sidebar peer-data-active/menu-button:bg-sidebar-primary-foreground/15 peer-data-active/menu-button:text-sidebar-primary-foreground",
         className
       )}

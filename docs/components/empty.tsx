@@ -1,10 +1,22 @@
 "use client"
 
-import { ArrowRightIcon, FolderKanbanIcon, SearchXIcon, UsersIcon, ZapIcon } from "lucide-react"
+import {
+  ArrowRightIcon,
+  FolderKanbanIcon,
+  SearchXIcon,
+  UsersIcon,
+  ZapIcon,
+} from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
-import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardAction,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   Empty,
   EmptyContent,
@@ -13,6 +25,26 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+
+/** The same empty state in each variant, so only the frame differs. */
+function NoAutomations({ variant }: { variant: "subtle" | "plain" }) {
+  return (
+    <Empty variant={variant}>
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <ZapIcon />
+        </EmptyMedia>
+        <EmptyTitle>No automations yet</EmptyTitle>
+        <EmptyDescription>
+          Let Acme move tasks and notify owners for you.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <Button size="sm">Create Rule</Button>
+      </EmptyContent>
+    </Empty>
+  )
+}
 
 export default function EmptyDocs() {
   return (
@@ -44,7 +76,8 @@ export default function EmptyDocs() {
             </EmptyMedia>
             <EmptyTitle>No projects yet</EmptyTitle>
             <EmptyDescription>
-              Create a project to plan work, assign tasks and track progress with your team, or start from a template.
+              Create a project to plan work, assign tasks and track progress
+              with your team, or start from a template.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
@@ -67,36 +100,18 @@ export default function EmptyDocs() {
         {/* Equal cells and the same action, so only the frame differs. */}
         <div className="grid gap-x-4 gap-y-6 md:grid-cols-2">
           <figure className="grid grid-rows-[1fr_auto] gap-3">
-            <Empty variant="subtle">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <ZapIcon />
-                </EmptyMedia>
-                <EmptyTitle>No automations yet</EmptyTitle>
-                <EmptyDescription>Let Acme move tasks and notify owners for you.</EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <Button size="sm">Create Rule</Button>
-              </EmptyContent>
-            </Empty>
-            <figcaption className="font-mono text-code text-muted-foreground">variant=&quot;subtle&quot;</figcaption>
+            <NoAutomations variant="subtle" />
+            <figcaption className="font-mono text-code text-muted-foreground">
+              variant=&quot;subtle&quot;
+            </figcaption>
           </figure>
           <figure className="grid grid-rows-[1fr_auto] gap-3">
             <div className="flex rounded-(--card-radius) border bg-card">
-              <Empty variant="plain">
-                <EmptyHeader>
-                  <EmptyMedia variant="icon">
-                    <ZapIcon />
-                  </EmptyMedia>
-                  <EmptyTitle>No automations yet</EmptyTitle>
-                  <EmptyDescription>Let Acme move tasks and notify owners for you.</EmptyDescription>
-                </EmptyHeader>
-                <EmptyContent>
-                  <Button size="sm">Create Rule</Button>
-                </EmptyContent>
-              </Empty>
+              <NoAutomations variant="plain" />
             </div>
-            <figcaption className="font-mono text-code text-muted-foreground">variant=&quot;plain&quot;</figcaption>
+            <figcaption className="font-mono text-code text-muted-foreground">
+              variant=&quot;plain&quot;
+            </figcaption>
           </figure>
         </div>
       </Example>
@@ -122,7 +137,10 @@ export default function EmptyDocs() {
               <SearchXIcon />
             </EmptyMedia>
             <EmptyTitle>No tasks match “invoice”</EmptyTitle>
-            <EmptyDescription>Nothing in open tasks. Try a shorter query or include completed tasks.</EmptyDescription>
+            <EmptyDescription>
+              Nothing in open tasks. Try a shorter query or include completed
+              tasks.
+            </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
             <Button variant="outline" size="sm">
@@ -144,7 +162,9 @@ export default function EmptyDocs() {
         <Card className="max-w-prose">
           <CardHeader className="border-b">
             <CardTitle>Members</CardTitle>
-            <CardDescription>People who can see and edit Website relaunch</CardDescription>
+            <CardDescription>
+              People who can see and edit Website relaunch
+            </CardDescription>
             <CardAction>
               <Button size="sm">Invite</Button>
             </CardAction>
@@ -156,7 +176,8 @@ export default function EmptyDocs() {
               </EmptyMedia>
               <EmptyTitle>You are the only member</EmptyTitle>
               <EmptyDescription>
-                Invite your team to assign tasks and share updates. <a href="#roles">Compare roles</a>
+                Invite your team to assign tasks and share updates.{" "}
+                <a href="#roles">Compare roles</a>
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
@@ -178,9 +199,25 @@ export default function EmptyDocs() {
 
       <ApiTable
         rows={[
-          { prop: "Empty variant", type: '"default" | "subtle" | "plain"', default: '"default"', description: "Dashed outline, dashed outline on a tint, or no frame." },
-          { prop: "EmptyMedia variant", type: '"default" | "icon"', default: '"default"', description: "A bare icon or image, or an icon in a muted tile." },
-          { prop: "children", type: "ReactNode", description: "EmptyContent: actions, laid out in a centred, wrapping row." },
+          {
+            prop: "Empty variant",
+            type: '"default" | "subtle" | "plain"',
+            default: '"default"',
+            description:
+              "Dashed outline, dashed outline on a tint, or no frame.",
+          },
+          {
+            prop: "EmptyMedia variant",
+            type: '"default" | "icon"',
+            default: '"default"',
+            description: "A bare icon or image, or an icon in a muted tile.",
+          },
+          {
+            prop: "children",
+            type: "ReactNode",
+            description:
+              "EmptyContent: actions, laid out in a centred, wrapping row.",
+          },
         ]}
       />
     </Examples>

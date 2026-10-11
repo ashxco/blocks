@@ -4,7 +4,7 @@ import { MoonIcon, SunIcon } from "lucide-react"
 
 import { useToggleAppearance } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
-import { useSiteTheme, type SiteMode } from "@/components/viewer/site-theme"
+import { useSiteMode, type SiteMode } from "@/components/viewer/site-theme"
 
 /**
  * The site's Appearance as the visitor sees it (forced by the URL or not),
@@ -13,8 +13,12 @@ import { useSiteTheme, type SiteMode } from "@/components/viewer/site-theme"
  * change shows at once and later switches keep working. Use it wherever the
  * viewer offers light or dark.
  */
-export function useAppearance(): { mode: SiteMode | undefined; next: SiteMode; toggle: () => void } {
-  const mode = useSiteTheme()
+export function useAppearance(): {
+  mode: SiteMode | undefined
+  next: SiteMode
+  toggle: () => void
+} {
+  const mode = useSiteMode()
   const next: SiteMode = mode === "dark" ? "light" : "dark"
   const toggle = useToggleAppearance()
   return { mode, next, toggle }
@@ -33,7 +37,11 @@ export function ThemeToggle({ className }: { className?: string }) {
       variant="ghost"
       size="icon-sm"
       className={className}
-      aria-label={mode ? `Appearance: switch to ${next}` : "Appearance: switch between light and dark"}
+      aria-label={
+        mode
+          ? `Appearance: switch to ${next}`
+          : "Appearance: switch between light and dark"
+      }
       title="Appearance (D)"
       onClick={toggle}
     >

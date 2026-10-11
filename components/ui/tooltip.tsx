@@ -23,11 +23,11 @@ function TooltipProvider({
   )
 }
 
-function Tooltip({ ...props }: TooltipPrimitive.Root.Props) {
+function Tooltip(props: TooltipPrimitive.Root.Props) {
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />
 }
 
-function TooltipTrigger({ ...props }: TooltipPrimitive.Trigger.Props) {
+function TooltipTrigger(props: TooltipPrimitive.Trigger.Props) {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
 }
 
@@ -37,7 +37,6 @@ function TooltipContent({
   sideOffset = 6,
   align = "center",
   alignOffset = 0,
-  children,
   collisionAvoidance,
   collisionBoundary,
   container,
@@ -45,7 +44,12 @@ function TooltipContent({
 }: TooltipPrimitive.Popup.Props &
   Pick<
     TooltipPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset" | "collisionAvoidance" | "collisionBoundary"
+    | "align"
+    | "alignOffset"
+    | "side"
+    | "sideOffset"
+    | "collisionAvoidance"
+    | "collisionBoundary"
   > & {
     /** Element to portal into instead of <body>, e.g. a preview stage. */
     container?: TooltipPrimitive.Portal.Props["container"]
@@ -74,9 +78,7 @@ function TooltipContent({
             className
           )}
           {...props}
-        >
-          {children}
-        </TooltipPrimitive.Popup>
+        />
       </TooltipPrimitive.Positioner>
     </ScopedPortal>
   )

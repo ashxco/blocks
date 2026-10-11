@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
@@ -53,11 +52,11 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-import { useCopy } from "./copy-button"
+import { useCopy } from "@/components/viewer/copy-button"
 
 type IconEntry = [name: string, Icon: LucideIcon]
 
-export const iconGroups: { name: string; icons: IconEntry[] }[] = [
+const iconGroups: { name: string; icons: IconEntry[] }[] = [
   {
     name: "Navigation",
     icons: [

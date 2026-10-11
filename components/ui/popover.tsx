@@ -16,11 +16,11 @@ import { ScopedPortal } from "@/lib/portal-container"
  *   </Popover>
  */
 
-function Popover({ ...props }: PopoverPrimitive.Root.Props) {
+function Popover(props: PopoverPrimitive.Root.Props) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />
 }
 
-function PopoverTrigger({ ...props }: PopoverPrimitive.Trigger.Props) {
+function PopoverTrigger(props: PopoverPrimitive.Trigger.Props) {
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
 }
 
@@ -37,7 +37,12 @@ function PopoverContent({
 }: PopoverPrimitive.Popup.Props &
   Pick<
     PopoverPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset" | "collisionAvoidance" | "collisionBoundary"
+    | "align"
+    | "alignOffset"
+    | "side"
+    | "sideOffset"
+    | "collisionAvoidance"
+    | "collisionBoundary"
   > & {
     /** Element to portal into instead of <body>, e.g. a preview stage. */
     container?: PopoverPrimitive.Portal.Props["container"]

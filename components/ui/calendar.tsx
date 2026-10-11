@@ -10,7 +10,11 @@ import {
 } from "react-day-picker"
 
 import { Button, buttonVariants } from "@/components/ui/button"
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "lucide-react"
 
 /**
  * Blocks calendar, on react-day-picker.
@@ -134,14 +138,26 @@ function Calendar({
             "data-[outside=true]:bg-transparent [&:has(+[data-outside=true])]:rounded-e-(--button-radius) [[data-outside=true]+&]:rounded-s-(--button-radius)",
           defaultClassNames.day
         ),
-        range_start: cn("rounded-s-(--button-radius) bg-accent", defaultClassNames.range_start),
-        range_middle: cn("rounded-none bg-accent", defaultClassNames.range_middle),
-        range_end: cn("rounded-e-(--button-radius) bg-accent", defaultClassNames.range_end),
+        range_start: cn(
+          "rounded-s-(--button-radius) bg-accent",
+          defaultClassNames.range_start
+        ),
+        range_middle: cn(
+          "rounded-none bg-accent",
+          defaultClassNames.range_middle
+        ),
+        range_end: cn(
+          "rounded-e-(--button-radius) bg-accent",
+          defaultClassNames.range_end
+        ),
         today: cn(defaultClassNames.today),
         outside: cn(defaultClassNames.outside),
         disabled: cn(defaultClassNames.disabled),
         hidden: cn("invisible", defaultClassNames.hidden),
-        footer: cn("pt-3 text-sm text-muted-foreground", defaultClassNames.footer),
+        footer: cn(
+          "pt-3 text-sm text-muted-foreground",
+          defaultClassNames.footer
+        ),
         ...classNames,
       }}
       components={{
@@ -164,7 +180,10 @@ function Calendar({
 
           if (orientation === "right") {
             return (
-              <ChevronRightIcon className={cn("size-4", className)} {...props} />
+              <ChevronRightIcon
+                className={cn("size-4", className)}
+                {...props}
+              />
             )
           }
 
@@ -244,7 +263,7 @@ function CalendarDayButton({
         // flips to the fill's foreground, so it still shows where brand is ink.
         "data-[today=true]:font-bold",
         "after:pointer-events-none after:absolute after:bottom-1.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-brand after:opacity-0 data-[today=true]:after:opacity-100",
-        "data-[selected-single=true]:after:bg-primary-foreground data-[range-start=true]:after:bg-primary-foreground data-[range-end=true]:after:bg-primary-foreground",
+        "data-[range-end=true]:after:bg-primary-foreground data-[range-start=true]:after:bg-primary-foreground data-[selected-single=true]:after:bg-primary-foreground",
         // Selection: ink fill for single days and range ends.
         "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[selected-single=true]:hover:bg-primary/85",
         "data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-start=true]:hover:bg-primary/85",

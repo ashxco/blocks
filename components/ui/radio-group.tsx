@@ -26,13 +26,13 @@ function RadioGroupItem({ className, ...props }: RadioPrimitive.Root.Props) {
       data-slot="radio-group-item"
       className={cn(
         "group/radio-group-item peer relative inline-flex aspect-square size-(--selection-size) max-w-(--selection-size) min-w-(--selection-size) shrink-0 items-center justify-center rounded-full border border-muted-foreground/75 bg-background",
-        "outline-none transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
+        "transition-[background-color,border-color] duration-(--duration-fast) ease-standard outline-none",
         "after:absolute after:-inset-2.5",
         "data-unchecked:hover:border-foreground",
         "focus-visible:focus-ring",
         "data-checked:border-primary data-checked:bg-primary",
         "group-data-[invalid=true]/field:border-destructive aria-invalid:border-destructive",
-        "aria-invalid:aria-checked:border-primary group-data-[invalid=true]/field:aria-checked:border-primary",
+        "group-data-[invalid=true]/field:aria-checked:border-primary aria-invalid:aria-checked:border-primary",
         // Disabled: an empty circle takes the muted fill and a lighter border,
         // so it stays visible; a selected circle fades its ink.
         "data-disabled:cursor-not-allowed data-disabled:data-checked:opacity-50",
@@ -47,7 +47,7 @@ function RadioGroupItem({ className, ...props }: RadioPrimitive.Root.Props) {
         className={cn(
           "flex items-center justify-center",
           "transition-[opacity,scale] duration-(--duration-fast) ease-out",
-          "data-starting-style:scale-0 data-starting-style:opacity-0 data-ending-style:scale-0 data-ending-style:opacity-0"
+          "data-ending-style:scale-0 data-ending-style:opacity-0 data-starting-style:scale-0 data-starting-style:opacity-0"
         )}
       >
         <span className="size-2 rounded-full bg-primary-foreground" />

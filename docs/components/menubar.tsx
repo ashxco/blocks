@@ -11,7 +11,13 @@ import {
   UserIcon,
 } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines, useReturnFocus } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import {
+  PreviewStage,
+  pinnedMenuClass,
+  pinnedTo,
+  type Stage,
+} from "@/docs/stage"
 import {
   Menubar,
   MenubarCheckboxItem,
@@ -29,37 +35,18 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar"
-import { cn } from "@/lib/utils"
-
-type Stage = HTMLDivElement | null
 
 /**
- * The first examples show one menu already open, portalled into a stage inside
- * the example so it follows the example's theme, and isolate keeps its
- * z-index inside the example so it scrolls under the site header. A click
- * anywhere else closes it, as in an app.
- */
-function MenubarStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
-  const [container, setContainer] = React.useState<Stage>(null)
-  useReturnFocus(container)
-  return (
-    <div ref={setContainer} className={cn("relative isolate flex w-full items-start justify-center", className)}>
-      {children(container)}
-    </div>
-  )
-}
-
-/**
- * The menu that is open on load. It only opens once the stage exists, so it is
- * placed inside the stage from its first frame instead of against <body>. It
- * keeps its side and full height as the page scrolls, and the wheel carries on
- * to the page over it.
+ * The first examples show one menu already open, portalled into a stage
+ * inside the example. A click anywhere else closes it, as in an app. It only
+ * opens once the stage exists, and keeps its side and full height as the
+ * page scrolls.
  */
 function useShownMenu(shown: boolean, container: Stage | undefined) {
   const [open, setOpen] = React.useState(shown)
   const ready = !shown || container != null
   const content = shown
-    ? ({ collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined, className: "max-h-none overscroll-auto" } as const)
+    ? { ...pinnedTo(container ?? null), className: pinnedMenuClass }
     : undefined
   return { menu: { open: open && ready, onOpenChange: setOpen }, content }
 }
@@ -155,8 +142,13 @@ function AcmeMenubar({ openMenu, container, className }: DemoMenubarProps) {
           <MenubarSeparator />
           <MenubarGroup>
             <MenubarLabel>Density</MenubarLabel>
-            <MenubarRadioGroup value={density} onValueChange={(value) => setDensity(String(value))}>
-              <MenubarRadioItem value="comfortable">Comfortable</MenubarRadioItem>
+            <MenubarRadioGroup
+              value={density}
+              onValueChange={(value) => setDensity(String(value))}
+            >
+              <MenubarRadioItem value="comfortable">
+                Comfortable
+              </MenubarRadioItem>
               <MenubarRadioItem value="compact">Compact</MenubarRadioItem>
             </MenubarRadioGroup>
           </MenubarGroup>
@@ -212,7 +204,10 @@ function BoardMenubar({ openMenu, container }: DemoMenubarProps) {
             Subtasks
             <MenubarShortcut>⌘T</MenubarShortcut>
           </MenubarCheckboxItem>
-          <MenubarCheckboxItem checked={completed} onCheckedChange={setCompleted}>
+          <MenubarCheckboxItem
+            checked={completed}
+            onCheckedChange={setCompleted}
+          >
             Completed tasks
           </MenubarCheckboxItem>
           <MenubarCheckboxItem checked={dueDates} onCheckedChange={setDueDates}>
@@ -226,7 +221,10 @@ function BoardMenubar({ openMenu, container }: DemoMenubarProps) {
         <MenubarContent container={container} {...groupMenu.content}>
           <MenubarGroup>
             <MenubarLabel>Group tasks by</MenubarLabel>
-            <MenubarRadioGroup value={group} onValueChange={(value) => setGroup(String(value))}>
+            <MenubarRadioGroup
+              value={group}
+              onValueChange={(value) => setGroup(String(value))}
+            >
               <MenubarRadioItem value="status">Status</MenubarRadioItem>
               <MenubarRadioItem value="assignee">Assignee</MenubarRadioItem>
               <MenubarRadioItem value="priority">Priority</MenubarRadioItem>
@@ -259,7 +257,9 @@ const board = [
   {
     name: "In review",
     count: 2,
-    tasks: [{ title: "Write the launch announcement", meta: "Priya Raman · Oct 14" }],
+    tasks: [
+      { title: "Write the launch announcement", meta: "Priya Raman · Oct 14" },
+    ],
   },
 ]
 
@@ -290,9 +290,9 @@ export default function MenubarDocs() {
   <MenubarMenu>…</MenubarMenu>
 </Menubar>`}
       >
-        <MenubarStage className="min-h-72">
+        <PreviewStage returnFocus className="min-h-72">
           {(container) => <AcmeMenubar openMenu="file" container={container} />}
-        </MenubarStage>
+        </PreviewStage>
       </Example>
 
       <Example
@@ -306,9 +306,11 @@ export default function MenubarDocs() {
   Completed tasks
 </MenubarCheckboxItem>`}
       >
-        <MenubarStage className="min-h-56">
-          {(container) => <BoardMenubar openMenu="view" container={container} />}
-        </MenubarStage>
+        <PreviewStage returnFocus className="min-h-56">
+          {(container) => (
+            <BoardMenubar openMenu="view" container={container} />
+          )}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -323,9 +325,11 @@ export default function MenubarDocs() {
   </MenubarRadioGroup>
 </MenubarGroup>`}
       >
-        <MenubarStage className="min-h-60">
-          {(container) => <BoardMenubar openMenu="group" container={container} />}
-        </MenubarStage>
+        <PreviewStage returnFocus className="min-h-60">
+          {(container) => (
+            <BoardMenubar openMenu="group" container={container} />
+          )}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -348,14 +352,21 @@ export default function MenubarDocs() {
           <div className="@container/window overflow-hidden rounded-(--card-radius) border bg-background">
             {/* In a narrow window the project name sits above the menus, with no separator left dangling. */}
             <div className="flex flex-col items-start gap-x-3 gap-y-1 border-b bg-subtle px-3 py-1.5 @md/window:flex-row @md/window:items-center">
-              <p className="px-2 text-label text-foreground">Website relaunch</p>
-              <span aria-hidden="true" className="hidden h-4 w-px bg-border @md/window:block" />
+              <p className="px-2 text-label text-foreground">
+                Website relaunch
+              </p>
+              <span
+                aria-hidden="true"
+                className="hidden h-4 w-px bg-border @md/window:block"
+              />
               <AcmeMenubar className="border-0 bg-transparent p-0" />
             </div>
             <div className="grid gap-4 p-4 sm:p-6">
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <p className="text-title text-foreground">Board</p>
-                <p className="text-caption text-muted-foreground">14 open tasks · updated 4 minutes ago</p>
+                <p className="text-caption text-muted-foreground">
+                  14 open tasks · updated 4 minutes ago
+                </p>
               </div>
               <div className="grid gap-3 @lg:grid-cols-3">
                 {board.map((column) => (
@@ -369,9 +380,16 @@ export default function MenubarDocs() {
                       <span className="tabular">{column.count}</span>
                     </p>
                     {column.tasks.map((task) => (
-                      <div key={task.title} className="grid gap-1 rounded-sm border bg-card px-3 py-2.5">
-                        <p className="text-sm font-medium text-foreground">{task.title}</p>
-                        <p className="text-caption text-muted-foreground">{task.meta}</p>
+                      <div
+                        key={task.title}
+                        className="grid gap-1 rounded-sm border bg-card px-3 py-2.5"
+                      >
+                        <p className="text-sm font-medium text-foreground">
+                          {task.title}
+                        </p>
+                        <p className="text-caption text-muted-foreground">
+                          {task.meta}
+                        </p>
                       </div>
                     ))}
                   </section>
@@ -397,13 +415,55 @@ export default function MenubarDocs() {
 
       <ApiTable
         rows={[
-          { prop: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "On Menubar. The direction of the bar and its arrow-key navigation." },
-          { prop: "loopFocus", type: "boolean", default: "true", description: "On Menubar. Wrap arrow-key focus from the last menu to the first." },
-          { prop: "disabled", type: "boolean", default: "false", description: "On Menubar or MenubarMenu. Turns off the whole bar or one menu." },
-          { prop: "variant", type: '"default" | "destructive"', default: '"default"', description: "On MenubarItem. Destructive items use text-destructive." },
-          { prop: "inset", type: "boolean", default: "false", description: "On items and labels. Indents text to line up with items that have an icon." },
-          { prop: "align", type: '"start" | "center" | "end"', default: '"start"', description: "On MenubarContent. Lines the menu up with the trigger label." },
-          { prop: "sideOffset", type: "number", default: "9", description: "On MenubarContent. Distance in pixels from the trigger, so the menu opens just under the bar." },
+          {
+            prop: "orientation",
+            type: '"horizontal" | "vertical"',
+            default: '"horizontal"',
+            description:
+              "On Menubar. The direction of the bar and its arrow-key navigation.",
+          },
+          {
+            prop: "loopFocus",
+            type: "boolean",
+            default: "true",
+            description:
+              "On Menubar. Wrap arrow-key focus from the last menu to the first.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description:
+              "On Menubar or MenubarMenu. Turns off the whole bar or one menu.",
+          },
+          {
+            prop: "variant",
+            type: '"default" | "destructive"',
+            default: '"default"',
+            description:
+              "On MenubarItem. Destructive items use text-destructive.",
+          },
+          {
+            prop: "inset",
+            type: "boolean",
+            default: "false",
+            description:
+              "On items and labels. Indents text to line up with items that have an icon.",
+          },
+          {
+            prop: "align",
+            type: '"start" | "center" | "end"',
+            default: '"start"',
+            description:
+              "On MenubarContent. Lines the menu up with the trigger label.",
+          },
+          {
+            prop: "sideOffset",
+            type: "number",
+            default: "9",
+            description:
+              "On MenubarContent. Distance in pixels from the trigger, so the menu opens just under the bar.",
+          },
         ]}
       />
     </Examples>

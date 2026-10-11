@@ -5,7 +5,7 @@ import { RotateCcwIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Kern } from "@/components/viewer/kern"
+import { Kern } from "@/components/ui/kern"
 import { cn } from "@/lib/utils"
 
 import { ThemeText, type PerTheme } from "./by-theme"
@@ -98,17 +98,29 @@ export function TypeSpecimens({ roles }: { roles: RoleSpec[] }) {
             className="grid gap-4 border-t py-6 @narrow:grid-cols-[16rem_minmax(0,1fr)] @narrow:items-baseline @narrow:gap-10 @narrow:py-8"
           >
             <div className="grid content-start gap-1">
-              <code className="font-mono text-label text-foreground">{role.utility}</code>
+              <code className="font-mono text-label text-foreground">
+                {role.utility}
+              </code>
               {/* Size · line height · tracking · weight, for the theme the page is on. A size range means the role is fluid. */}
-              <span className="font-mono text-xs text-muted-foreground tabular" title="Size · line height · tracking · weight">
+              <span
+                className="font-mono text-xs text-muted-foreground tabular"
+                title="Size · line height · tracking · weight"
+              >
                 <ThemeText value={role.meta} />
               </span>
               {role.responsive?.map((line) => (
-                <span key={line} className="font-mono text-xs text-muted-foreground tabular">
+                <span
+                  key={line}
+                  className="font-mono text-xs text-muted-foreground tabular"
+                >
                   {line}
                 </span>
               ))}
-              {role.description ? <p className="mt-1 text-caption text-copy">{role.description}</p> : null}
+              {role.description ? (
+                <p className="mt-1 text-caption text-copy">
+                  {role.description}
+                </p>
+              ) : null}
             </div>
             {/* Display-size samples wrap balanced, so a headline never leaves one word on its last line. */}
             <p
@@ -121,7 +133,9 @@ export function TypeSpecimens({ roles }: { roles: RoleSpec[] }) {
               {kernedRoles.has(role.key) ? (
                 <Kern>{text || defaultSample[role.key]}</Kern>
               ) : (
-                text || defaultSample[role.key] || "Plan, track and ship your team’s work in one place"
+                text ||
+                defaultSample[role.key] ||
+                "Plan, track and ship your team’s work in one place"
               )}
             </p>
           </li>

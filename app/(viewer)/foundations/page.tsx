@@ -7,7 +7,8 @@ import { foundations } from "@/lib/registry"
 
 export const metadata: Metadata = {
   title: "Foundations",
-  description: "Themes, colour, type, space, shape, motion, icons and every token behind the Blocks design system.",
+  description:
+    "Themes, colour, type, space, shape, motion, icons and every token behind the Blocks design system.",
 }
 
 export default function Page() {
@@ -17,7 +18,13 @@ export default function Page() {
     <ViewerPage>
       <FoundationsOverview />
       {first ? (
-        <DocPager next={{ title: first.title, href: `/foundations/${first.slug}`, group: first.group }} />
+        <DocPager
+          next={{
+            title: first.title,
+            href: `/foundations/${first.slug}`,
+            group: first.group,
+          }}
+        />
       ) : null}
     </ViewerPage>
   )

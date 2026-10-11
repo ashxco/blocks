@@ -36,8 +36,7 @@ const buttonVariants = cva(
         link: "h-auto! rounded-none! px-0! text-brand link-underline",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/88",
-        inverse:
-          "bg-panel-foreground text-panel hover:bg-panel-foreground/88",
+        inverse: "bg-panel-foreground text-panel hover:bg-panel-foreground/88",
         "outline-inverse":
           "border-panel-foreground/25 text-panel-foreground hover:border-panel-foreground/70 aria-expanded:border-panel-foreground/70",
       },

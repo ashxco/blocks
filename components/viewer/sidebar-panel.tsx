@@ -27,7 +27,10 @@ function SidebarSearch() {
     >
       <SearchIcon aria-hidden="true" className="size-4 shrink-0" />
       Search
-      <Kbd aria-hidden="true" className="ml-auto bg-background pointer-coarse:hidden">
+      <Kbd
+        aria-hidden="true"
+        className="ml-auto bg-background pointer-coarse:hidden"
+      >
         {mod}K
       </Kbd>
     </button>
@@ -62,12 +65,12 @@ export function SidebarPanel({
       </div>
       <div
         ref={navRef}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-4 pb-8 [scrollbar-width:thin]"
+        className="min-h-0 flex-1 [scrollbar-width:thin] overflow-y-auto overscroll-contain px-3 pt-4 pb-8"
       >
         <SidebarNav onNavigate={onNavigate} />
       </div>
       <div className="flex shrink-0 items-center justify-between gap-2 border-t px-3 py-3">
-        <ThemePicker nameClassName="inline-grid" align="start" className="w-auto px-3" />
+        <ThemePicker />
         <ThemeToggle />
       </div>
     </div>

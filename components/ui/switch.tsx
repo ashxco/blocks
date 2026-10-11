@@ -35,7 +35,7 @@ function Switch({
         "[--switch-track-h:var(--switch-height)] [--switch-track-w:var(--switch-width)]",
         "data-[size=sm]:[--switch-track-h:var(--switch-height-sm)] data-[size=sm]:[--switch-track-w:var(--switch-width-sm)]",
         "h-(--switch-track-h) w-(--switch-track-w) max-w-(--switch-track-w) min-w-(--switch-track-w)",
-        "outline-none transition-[background-color,border-color] duration-(--duration-base) ease-standard",
+        "transition-[background-color,border-color] duration-(--duration-base) ease-standard outline-none",
         "after:absolute after:-inset-x-2 after:-inset-y-2.5",
         variant === "inverse"
           ? [

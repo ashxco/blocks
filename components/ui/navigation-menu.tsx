@@ -30,7 +30,10 @@ function NavigationMenu({
   children,
   ...props
 }: NavigationMenuPrimitive.Root.Props &
-  Pick<NavigationMenuPrimitive.Positioner.Props, "align" | "collisionAvoidance" | "collisionBoundary"> & {
+  Pick<
+    NavigationMenuPrimitive.Positioner.Props,
+    "align" | "collisionAvoidance" | "collisionBoundary"
+  > & {
     /** Element to portal the panel into instead of <body>, e.g. a preview stage. */
     container?: NavigationMenuPrimitive.Portal.Props["container"]
   }) {
@@ -89,7 +92,7 @@ const navigationMenuTriggerStyle = cva([
   "transition-[background-color,color] duration-(--duration-fast) ease-standard",
   "hover:bg-accent hover:text-foreground focus-visible:focus-ring",
   "data-popup-open:bg-accent data-popup-open:text-foreground",
-  "data-active:text-foreground aria-[current=page]:text-foreground",
+  "aria-[current=page]:text-foreground data-active:text-foreground",
   "disabled:pointer-events-none disabled:opacity-50 data-disabled:pointer-events-none data-disabled:opacity-50",
   "[&_svg:not([class*='size-'])]:size-4",
 ])
@@ -124,7 +127,7 @@ function NavigationMenuContent({
       className={cn(
         "h-full w-auto p-(--overlay-padding)",
         "transition-[opacity,translate] duration-(--duration-base) ease-out",
-        "data-starting-style:opacity-0 data-ending-style:opacity-0",
+        "data-ending-style:opacity-0 data-starting-style:opacity-0",
         "data-starting-style:data-[activation-direction=left]:-translate-x-4 data-starting-style:data-[activation-direction=right]:translate-x-4",
         "data-ending-style:data-[activation-direction=left]:translate-x-4 data-ending-style:data-[activation-direction=right]:-translate-x-4",
         className
@@ -167,7 +170,7 @@ function NavigationMenuPositioner({
             "relative h-(--popup-height) w-(--popup-width) origin-(--transform-origin) overflow-hidden",
             "rounded-(--overlay-radius) border border-popover-border bg-popover text-popover-foreground outline-none",
             "transition-[opacity,scale,width,height] duration-(--duration-base) ease-out",
-            "data-starting-style:scale-98 data-starting-style:opacity-0 data-ending-style:scale-98 data-ending-style:opacity-0"
+            "data-ending-style:scale-98 data-ending-style:opacity-0 data-starting-style:scale-98 data-starting-style:opacity-0"
           )}
         >
           <NavigationMenuPrimitive.Viewport

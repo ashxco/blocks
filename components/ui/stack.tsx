@@ -58,7 +58,14 @@ function Stack({
   return useRender({
     defaultTagName: "div",
     props: mergeProps<"div">(
-      { className: cn("flex min-w-0 flex-col", gapClasses[gap], stackAlign[align], className) },
+      {
+        className: cn(
+          "flex min-w-0 flex-col",
+          gapClasses[gap],
+          stackAlign[align],
+          className
+        ),
+      },
       props
     ),
     render,

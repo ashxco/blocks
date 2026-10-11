@@ -13,7 +13,15 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { getTheme, isThemeId, THEME_ATTRIBUTE, themeIds, themes, type Theme, type ThemeId } from "@/lib/themes"
+import {
+  getTheme,
+  isThemeId,
+  themeIds,
+  themes,
+  themeScopeProps,
+  type Theme,
+  type ThemeId,
+} from "@/lib/themes"
 import { cn } from "@/lib/utils"
 import { loadThemeFonts, warmThemeFonts } from "@/components/viewer/theme-fonts"
 
@@ -79,25 +87,23 @@ export function useChooseTheme() {
 /* Swatches and names                                                          */
 /* -------------------------------------------------------------------------- */
 
-function scope(theme: ThemeId | undefined) {
-  return theme ? { [THEME_ATTRIBUTE]: theme } : {}
-}
-
 /**
  * A theme's accent and neutral as two dots in a small outline shaped like
  * the theme's buttons: its --button-radius scaled from a full-size button to
  * the chip, so a pill stays a pill and an 8px button reads as a rounded
- * square. Without `theme` it shows whatever theme it sits in.
+ * square.
  */
-export function ThemeSwatch({ theme, className }: { theme?: ThemeId; className?: string }) {
+export function ThemeSwatch({ theme }: { theme: ThemeId }) {
   return (
     <span
       aria-hidden="true"
-      {...scope(theme)}
-      className={cn(
-        "flex h-5 shrink-0 items-center gap-1 border border-border-strong px-1.5",
-        "rounded-[calc(min(var(--button-radius),var(--button-height-md)/2)*0.5)]",
-        className
+      {...themeScopeProps(
+        theme,
+        undefined,
+        cn(
+          "flex h-5 shrink-0 items-center gap-1 border border-border-strong px-1.5",
+          "rounded-[calc(min(var(--button-radius),var(--button-height-md)/2)*0.5)]"
+        )
       )}
     >
       <span className="size-2.5 rounded-full bg-brand" />
@@ -109,46 +115,48 @@ export function ThemeSwatch({ theme, className }: { theme?: ThemeId; className?:
 /**
  * A theme in one quiet mark: its accent as a dot on its own muted fill,
  * inside a hairline circle, so every row in the menu has the same shape and
- * only the colours change. Without `theme` it shows whatever theme it sits in.
+ * only the colours change. It shows the theme it sits in.
  */
-export function ThemeChip({ theme, className }: { theme?: ThemeId; className?: string }) {
+function ThemeChip() {
   return (
     <span
       aria-hidden="true"
-      {...scope(theme)}
-      className={cn("flex size-7 shrink-0 items-center justify-center rounded-full border bg-muted", className)}
+      className="flex size-7 shrink-0 items-center justify-center rounded-full border bg-muted"
     >
       <span className="size-3 rounded-full bg-brand" />
     </span>
   )
 }
 
-/** The accent of the theme it sits in (or of `theme`), as one dot: for triggers. */
-function AccentDot({ theme, className }: { theme?: ThemeId; className?: string }) {
-  return <span aria-hidden="true" {...scope(theme)} className={cn("size-3 shrink-0 rounded-full bg-brand", className)} />
+/** The accent of the theme it sits in, as one dot: for triggers. */
+function AccentDot() {
+  return (
+    <span
+      aria-hidden="true"
+      className="size-3 shrink-0 rounded-full bg-brand"
+    />
+  )
 }
 
 /**
- * A theme's name, as wide as the widest name so a trigger never changes
- * width when the theme does. With `theme` it shows that theme. Without it,
- * it shows the page's theme (the data-theme on <html>) through CSS
- * (viewer-styles.ts), so the right name is there on first paint, before
- * React hydrates. Use that form only outside any other theme scope.
+ * The page's theme name (the data-theme on <html>), shown through CSS
+ * (viewer-styles.ts) so it is right on first paint, before React hydrates.
+ * It is as wide as the widest name, so the trigger never changes width when
+ * the theme does. Use it only outside any other theme scope.
  */
-export function ThemeName({ theme, className }: { theme?: ThemeId; className?: string }) {
+function ThemeName() {
   return (
-    <span className={cn("inline-grid text-left", className)}>
-      {themes.map((t) =>
-        theme ? (
-          <span key={t.id} className={cn("[grid-area:1/1]", t.id !== theme && "invisible")}>
-            {t.name}
-          </span>
-        ) : (
-          <span key={t.id} data-theme-text={t.id} data-stable="" className="[grid-area:1/1]">
-            {t.name}
-          </span>
-        )
-      )}
+    <span className="inline-grid text-left">
+      {themes.map((t) => (
+        <span
+          key={t.id}
+          data-theme-text={t.id}
+          data-stable=""
+          className="[grid-area:1/1]"
+        >
+          {t.name}
+        </span>
+      ))}
     </span>
   )
 }
@@ -159,7 +167,11 @@ export function ThemeName({ theme, className }: { theme?: ThemeId; className?: s
  * it takes the width of the current text. Use it only outside any other
  * theme scope.
  */
-export function PageThemeText({ field }: { field: "name" | "heading" | "sans" | "mono" }) {
+export function PageThemeText({
+  field,
+}: {
+  field: "name" | "heading" | "sans" | "mono"
+}) {
   return (
     <>
       {themes.map((t) => (
@@ -175,105 +187,65 @@ export function PageThemeText({ field }: { field: "name" | "heading" | "sans" | 
 /* Picker                                                                      */
 /* -------------------------------------------------------------------------- */
 
-export interface ThemePickerProps {
-  /**
-   * The theme shown as chosen. Pass it with onValueChange to pick a theme for
-   * something other than the site, such as a preview; the choice is not saved.
-   * Omit both to show, save and apply the site theme.
-   */
-  value?: ThemeId
-  onValueChange?: (theme: ThemeId) => void
-  /**
-   * - header: a ghost button, the accent dot alone below xl, plus the name and a chevron from xl (below
-   *   that a narrow bar has no room for them); pass nameClassName to show the name at every width, as the sidebar does)
-   * - toolbar: a hairline track like the viewer's segmented switches: the dot and a chevron, plus the name from md
-   */
-  variant?: "header" | "toolbar"
-  /** Classes for the visible name, e.g. "inline-grid" to show it at every width. */
-  nameClassName?: string
-  /** Heading of the menu and start of the trigger's accessible name. */
-  label?: string
-  align?: "start" | "center" | "end"
-  className?: string
-}
-
-export function ThemePicker({
-  value,
-  onValueChange,
-  variant = "header",
-  nameClassName,
-  label = "Theme",
-  align = "end",
-  className,
-}: ThemePickerProps) {
+/**
+ * The site's theme picker, at the foot of the sidebar: the accent dot, the
+ * theme's name and a chevron, opening a menu of every preset. Choosing one
+ * saves and applies it.
+ */
+export function ThemePicker() {
   const site = useThemePreset()
   const choose = useChooseTheme()
-  const controlled = onValueChange !== undefined
-  const current = controlled ? value : site.theme
-  const currentName = current ? getTheme(current).name : undefined
+  const currentName = site.theme ? getTheme(site.theme).name : undefined
   const warm = React.useCallback(() => warmThemeFonts(themeIds), [])
   // Keeps the open menu 16px clear of the window's sides, like the page gutter
   // on phones (the positioner adds its own 5px on top of this inset). Below sm
   // the menu is as wide as the space between the gutters.
-  const [boundary, setBoundary] = React.useState<{ x: number; y: number; width: number; height: number }>()
+  const [boundary, setBoundary] = React.useState<{
+    x: number
+    y: number
+    width: number
+    height: number
+  }>()
   const onOpenChange = (open: boolean) => {
     if (!open) return
     warm()
-    setBoundary({ x: 11, y: 0, width: window.innerWidth - 22, height: window.innerHeight })
+    setBoundary({
+      x: 11,
+      y: 0,
+      width: window.innerWidth - 22,
+      height: window.innerHeight,
+    })
   }
-
-  const select = (next: string) => {
-    if (!isThemeId(next)) return
-    if (controlled) onValueChange(next)
-    else choose(next)
-  }
-
-  // A controlled picker shows its own value; the site picker reads <html> through CSS.
-  const shown = controlled ? current : undefined
 
   return (
     <DropdownMenu onOpenChange={onOpenChange}>
       <DropdownMenuTrigger
-        aria-label={currentName ? `${label}: ${currentName}` : label}
-        title={label}
+        aria-label={currentName ? `Theme: ${currentName}` : "Theme"}
+        title="Theme"
         onPointerEnter={warm}
         onFocus={warm}
-        render={
-          variant === "header" ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn("w-(--button-height-sm) gap-2 px-0 xl:w-auto xl:px-3", className)}
-            />
-          ) : (
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "gap-2 border-border bg-muted px-3 hover:border-border-strong hover:bg-muted aria-expanded:border-border-strong aria-expanded:bg-muted",
-                className
-              )}
-            />
-          )
-        }
+        render={<Button variant="ghost" size="sm" className="gap-2 px-3" />}
       >
-        <AccentDot theme={shown} />
-        <ThemeName
-          theme={shown}
-          className={cn(nameClassName ?? (variant === "header" ? "hidden xl:inline-grid" : "hidden md:inline-grid"))}
-        />
+        {/* The trigger shows the page's theme through CSS (<html data-theme>), right on first paint. */}
+        <AccentDot />
+        <ThemeName />
         <ChevronDownIcon
           aria-hidden="true"
-          className={cn("size-3.5! text-muted-foreground", !nameClassName && variant === "header" && "hidden xl:block")}
+          className="size-3.5! text-muted-foreground"
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        align={align}
+        align="start"
         collisionBoundary={boundary}
         className="w-[calc(100vw-2rem)] sm:w-88"
       >
-        <DropdownMenuRadioGroup value={current ?? null} onValueChange={select}>
-          <DropdownMenuLabel>{label}</DropdownMenuLabel>
+        <DropdownMenuRadioGroup
+          value={site.theme ?? null}
+          onValueChange={(next: string) => {
+            if (isThemeId(next)) choose(next)
+          }}
+        >
+          <DropdownMenuLabel>Theme</DropdownMenuLabel>
           {themes.map((theme) => (
             <ThemeOption key={theme.id} theme={theme} />
           ))}
@@ -295,13 +267,17 @@ function ThemeOption({ theme }: { theme: Theme }) {
       value={theme.id}
       closeOnClick
       label={theme.name}
-      {...scope(theme.id)}
+      {...themeScopeProps(theme.id)}
       className="group/theme-option gap-3 py-2 pr-2.5 pl-2 [&>[data-slot=dropdown-menu-radio-item-indicator]]:hidden"
     >
       <ThemeChip />
       <span className="grid min-w-0 flex-1">
-        <span className="truncate font-heading text-sm font-semibold text-foreground">{theme.name}</span>
-        <span className="truncate text-caption font-normal text-muted-foreground">{themeTagline(theme)}</span>
+        <span className="truncate font-heading text-sm font-semibold text-foreground">
+          {theme.name}
+        </span>
+        <span className="truncate text-caption font-normal text-muted-foreground">
+          {themeTagline(theme)}
+        </span>
       </span>
       <CheckIcon
         aria-hidden="true"

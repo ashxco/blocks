@@ -9,7 +9,9 @@ import { cn } from "@/lib/utils"
 import { isIconOnly, toggleVariants } from "@/components/ui/toggle"
 
 type ToggleGroupSize = NonNullable<VariantProps<typeof toggleVariants>["size"]>
-type ToggleGroupVariant = NonNullable<VariantProps<typeof toggleVariants>["variant"]>
+type ToggleGroupVariant = NonNullable<
+  VariantProps<typeof toggleVariants>["variant"]
+>
 
 /**
  * Blocks toggle group.
@@ -114,7 +116,8 @@ function ToggleGroupItem({
   ...props
 }: TogglePrimitive.Props & VariantProps<typeof toggleVariants>) {
   const context = React.useContext(ToggleGroupContext)
-  const itemVariant: ToggleGroupVariant = context.variant || variant || "default"
+  const itemVariant: ToggleGroupVariant =
+    context.variant || variant || "default"
   const itemSize: ToggleGroupSize = context.size || size || "default"
   const joined = itemVariant === "outline" && context.spacing === 0
   const vertical = context.orientation === "vertical"

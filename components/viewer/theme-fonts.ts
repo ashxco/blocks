@@ -31,14 +31,17 @@ function themeFamilies(theme: ThemeId): string[] {
   const probe = document.createElement("div")
   probe.setAttribute(THEME_ATTRIBUTE, theme)
   probe.setAttribute("aria-hidden", "true")
-  probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;inset:0 auto auto 0;"
+  probe.style.cssText =
+    "position:absolute;visibility:hidden;pointer-events:none;inset:0 auto auto 0;"
   const heading = document.createElement("span")
   heading.className = "font-heading"
   const mono = document.createElement("span")
   mono.className = "font-mono"
   probe.append(heading, mono)
   document.body.appendChild(probe)
-  const lists = [probe, heading, mono].map((el) => getComputedStyle(el).fontFamily)
+  const lists = [probe, heading, mono].map(
+    (el) => getComputedStyle(el).fontFamily
+  )
   probe.remove()
   const result = [...new Set(lists.filter(Boolean))]
   families.set(theme, result)
@@ -57,7 +60,11 @@ export function loadThemeFonts(theme: ThemeId): Promise<void> {
     const fonts = document.fonts
     const lists = themeFamilies(theme)
     load = fonts
-      ? Promise.all(lists.flatMap((list) => WEIGHTS.map((weight) => fonts.load(`${weight} 1em ${list}`)))).then(
+      ? Promise.all(
+          lists.flatMap((list) =>
+            WEIGHTS.map((weight) => fonts.load(`${weight} 1em ${list}`))
+          )
+        ).then(
           () => undefined,
           () => undefined
         )
@@ -70,7 +77,10 @@ export function loadThemeFonts(theme: ThemeId): Promise<void> {
 }
 
 function withTimeout(load: Promise<void>) {
-  return Promise.race([load, new Promise<void>((resolve) => window.setTimeout(resolve, MAX_WAIT))])
+  return Promise.race([
+    load,
+    new Promise<void>((resolve) => window.setTimeout(resolve, MAX_WAIT)),
+  ])
 }
 
 /** Starts loading every listed theme's fonts in the background, e.g. when a picker opens. */

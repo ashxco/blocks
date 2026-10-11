@@ -23,7 +23,16 @@ import {
   UsersIcon,
 } from "lucide-react"
 
-import { ApiTable, Example, Examples, Guidelines, blurWithin, useReturnFocus } from "@/docs/kit"
+import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import {
+  PreviewStage,
+  blurWithin,
+  isOutsideDismiss,
+  pinnedMenuClass,
+  pinnedTo,
+  usePinnedOpen,
+  type Stage,
+} from "@/docs/stage"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -44,46 +53,23 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
-type Stage = HTMLDivElement | null
-
 /**
- * The examples show their menus already open, portalled into a stage inside
- * the example so they follow its theme, and isolate keeps their z-index
- * inside the example so they scroll under the site header. A shown menu
- * stays open while people click elsewhere on the page; its trigger, an item
- * or Escape close it.
- */
-function MenuStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
-  const [container, setContainer] = React.useState<Stage>(null)
-  useReturnFocus(container)
-  return (
-    <div ref={setContainer} className={cn("relative isolate flex w-full items-start justify-center", className)}>
-      {children(container)}
-    </div>
-  )
-}
-
-/**
- * Open on load, non-modal, and kept open when people click or tab elsewhere.
- * It only opens once the stage exists, so the menu is placed inside the stage
- * from its first frame instead of against <body>.
+ * Open on load and non-modal, so the page keeps scrolling. A shown menu stays
+ * open while people click elsewhere on the page; its trigger, an item or
+ * Escape close it.
  */
 function useShownMenu(container: Stage) {
-  const [open, setOpen] = React.useState(true)
-  const onOpenChange = React.useCallback((next: boolean, details: { reason: string }) => {
-    if (!next && (details.reason === "outside-press" || details.reason === "focus-out")) return
-    setOpen(next)
-  }, [])
-  return { open: open && container !== null, onOpenChange, modal: false }
+  const { open, onOpenChange } = usePinnedOpen(container)
+  return { open, onOpenChange, modal: false }
 }
 
-/**
- * Shown menus keep their side and their full height as the page scrolls, so
- * they never flip over the example's own text, and the wheel carries on to
- * the page over them. Each stage leaves room below.
- */
-function pinnedTo(container: Stage) {
-  return { collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined, className: "max-h-none overscroll-auto" } as const
+/** Where a shown menu opens: in the stage, keeping its side and full height. */
+function inStage(container: Stage) {
+  return {
+    container,
+    ...pinnedTo(container),
+    className: pinnedMenuClass,
+  } as const
 }
 
 const columns = [
@@ -110,14 +96,16 @@ function ColumnsMenu({ container }: { container: Stage }) {
         <Columns3Icon data-icon="inline-start" />
         Columns
       </DropdownMenuTrigger>
-      <DropdownMenuContent container={container} {...pinnedTo(container)}>
+      <DropdownMenuContent {...inStage(container)}>
         <DropdownMenuGroup>
           <DropdownMenuLabel>Show columns</DropdownMenuLabel>
           {columns.map((column) => (
             <DropdownMenuCheckboxItem
               key={column.id}
               checked={visible[column.id]}
-              onCheckedChange={(checked) => setVisible((current) => ({ ...current, [column.id]: checked }))}
+              onCheckedChange={(checked) =>
+                setVisible((current) => ({ ...current, [column.id]: checked }))
+              }
             >
               {column.label}
             </DropdownMenuCheckboxItem>
@@ -147,10 +135,13 @@ function SortMenu({ container }: { container: Stage }) {
         {current?.label}
         <ChevronDownIcon data-icon="inline-end" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent container={container} {...pinnedTo(container)}>
+      <DropdownMenuContent {...inStage(container)}>
         <DropdownMenuGroup>
           <DropdownMenuLabel>Sort tasks</DropdownMenuLabel>
-          <DropdownMenuRadioGroup value={sort} onValueChange={(value) => setSort(String(value))}>
+          <DropdownMenuRadioGroup
+            value={sort}
+            onValueChange={(value) => setSort(String(value))}
+          >
             {sortOptions.map((option) => (
               <DropdownMenuRadioItem key={option.value} value={option.value}>
                 {option.label}
@@ -170,23 +161,29 @@ function AccountMenu({ container }: { container: Stage }) {
   return (
     <DropdownMenu {...shown}>
       <DropdownMenuTrigger
-        render={<Button variant="ghost" className="h-auto gap-3 py-1.5 pr-3 pl-1.5" />}
+        render={
+          <Button variant="ghost" className="h-auto gap-3 py-1.5 pr-3 pl-1.5" />
+        }
       >
         <Avatar size="sm">
           <AvatarFallback tone="violet">MP</AvatarFallback>
         </Avatar>
         Maya Patel
-        <ChevronDownIcon data-icon="inline-end" className="text-muted-foreground" />
+        <ChevronDownIcon
+          data-icon="inline-end"
+          className="text-muted-foreground"
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        container={container}
-        {...pinnedTo(container)}
-        className={cn(pinnedTo(container).className, "min-w-(--menu-min-width-lg)")}
+        {...inStage(container)}
+        className={cn(pinnedMenuClass, "min-w-(--menu-min-width-lg)")}
       >
         <div className="grid gap-0.5 px-2.5 pt-2 pb-2.5">
           <p className="text-sm font-semibold text-foreground">Maya Patel</p>
-          <p className="truncate text-caption text-muted-foreground">maya@acme.com</p>
+          <p className="truncate text-caption text-muted-foreground">
+            maya@acme.com
+          </p>
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
@@ -211,7 +208,10 @@ function AccountMenu({ container }: { container: Stage }) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuLabel inset>Appearance</DropdownMenuLabel>
-          <DropdownMenuRadioGroup value={theme} onValueChange={(value) => setTheme(String(value))}>
+          <DropdownMenuRadioGroup
+            value={theme}
+            onValueChange={(value) => setTheme(String(value))}
+          >
             <DropdownMenuRadioItem value="light">
               <SunIcon />
               Light
@@ -245,10 +245,14 @@ function ActionsMenu({ container }: { container: Stage }) {
 
   return (
     <DropdownMenu {...shown}>
-      <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="Task options" />}>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="outline" size="icon" aria-label="Task options" />
+        }
+      >
         <MoreHorizontalIcon />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" container={container} {...pinnedTo(container)}>
+      <DropdownMenuContent align="end" {...inStage(container)}>
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <CircleCheckIcon />
@@ -296,19 +300,25 @@ function ProjectMenu({ container }: { container: Stage }) {
   const shownOpen = shown.open
   React.useEffect(() => {
     if (!shownOpen || !container) return
-    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+    const rem =
+      parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
     const roomForBoth = container.clientWidth >= SIDE_BY_SIDE_REM * rem
-    const open = roomForBoth ? window.setTimeout(() => setSubOpen(true), 320) : undefined
+    const open = roomForBoth
+      ? window.setTimeout(() => setSubOpen(true), 320)
+      : undefined
     const blur = window.setTimeout(() => blurWithin(container), 480)
     return () => {
       window.clearTimeout(open)
       window.clearTimeout(blur)
     }
   }, [shownOpen, container])
-  const onSubOpenChange = React.useCallback((next: boolean, details: { reason: string }) => {
-    if (!next && (details.reason === "outside-press" || details.reason === "focus-out")) return
-    setSubOpen(next)
-  }, [])
+  const onSubOpenChange = React.useCallback(
+    (next: boolean, details: { reason: string }) => {
+      if (!next && isOutsideDismiss(details)) return
+      setSubOpen(next)
+    },
+    []
+  )
 
   return (
     <DropdownMenu {...shown}>
@@ -316,12 +326,15 @@ function ProjectMenu({ container }: { container: Stage }) {
         Project
         <ChevronDownIcon data-icon="inline-end" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent container={container} {...pinnedTo(container)}>
+      <DropdownMenuContent {...inStage(container)}>
         <DropdownMenuItem>
           <PencilIcon />
           Rename
         </DropdownMenuItem>
-        <DropdownMenuSub open={subOpen && shown.open} onOpenChange={onSubOpenChange}>
+        <DropdownMenuSub
+          open={subOpen && shown.open}
+          onOpenChange={onSubOpenChange}
+        >
           <DropdownMenuSubTrigger>
             <FolderInputIcon />
             Move to team
@@ -380,7 +393,9 @@ export default function DropdownMenuDocs() {
   </DropdownMenuContent>
 </DropdownMenu>`}
       >
-        <MenuStage className="min-h-68">{(container) => <ActionsMenu container={container} />}</MenuStage>
+        <PreviewStage returnFocus className="min-h-68">
+          {(container) => <ActionsMenu container={container} />}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -393,7 +408,9 @@ export default function DropdownMenuDocs() {
   Assignee
 </DropdownMenuCheckboxItem>`}
       >
-        <MenuStage className="min-h-72">{(container) => <ColumnsMenu container={container} />}</MenuStage>
+        <PreviewStage returnFocus className="min-h-72">
+          {(container) => <ColumnsMenu container={container} />}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -404,7 +421,9 @@ export default function DropdownMenuDocs() {
   <DropdownMenuRadioItem value="priority">Highest priority</DropdownMenuRadioItem>
 </DropdownMenuRadioGroup>`}
       >
-        <MenuStage className="min-h-64">{(container) => <SortMenu container={container} />}</MenuStage>
+        <PreviewStage returnFocus className="min-h-64">
+          {(container) => <SortMenu container={container} />}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -418,9 +437,9 @@ export default function DropdownMenuDocs() {
   </DropdownMenuSubContent>
 </DropdownMenuSub>`}
       >
-        <MenuStage className="min-h-72">
+        <PreviewStage returnFocus className="min-h-72">
           {(container) => <ProjectMenu container={container} />}
-        </MenuStage>
+        </PreviewStage>
       </Example>
 
       <Example
@@ -455,7 +474,9 @@ export default function DropdownMenuDocs() {
   </DropdownMenuContent>
 </DropdownMenu>`}
       >
-        <MenuStage className="min-h-128">{(container) => <AccountMenu container={container} />}</MenuStage>
+        <PreviewStage returnFocus className="min-h-128">
+          {(container) => <AccountMenu container={container} />}
+        </PreviewStage>
       </Example>
 
       <Guidelines
@@ -474,14 +495,60 @@ export default function DropdownMenuDocs() {
 
       <ApiTable
         rows={[
-          { prop: "align", type: '"start" | "center" | "end"', default: '"start"', description: "On DropdownMenuContent. Alignment with the trigger." },
-          { prop: "side", type: '"top" | "right" | "bottom" | "left"', default: '"bottom"', description: "On DropdownMenuContent. Preferred side of the trigger." },
-          { prop: "sideOffset", type: "number", default: "6", description: "On DropdownMenuContent. Gap from the trigger, in pixels." },
-          { prop: "variant", type: '"default" | "destructive"', default: '"default"', description: "On DropdownMenuItem. Destructive items use text-destructive." },
-          { prop: "inset", type: "boolean", default: "false", description: "On items and labels. Indents text to line up with items that have an icon." },
-          { prop: "closeOnClick", type: "boolean", default: "true", description: "On items. Whether choosing the item closes the menu. Checkbox and radio items stay open by default." },
-          { prop: "disabled", type: "boolean", default: "false", description: "On items. Dims the item and skips it in keyboard navigation." },
-          { prop: "render", type: "ReactElement", description: "On DropdownMenuTrigger and DropdownMenuItem. Render as a Button or a Link." },
+          {
+            prop: "align",
+            type: '"start" | "center" | "end"',
+            default: '"start"',
+            description: "On DropdownMenuContent. Alignment with the trigger.",
+          },
+          {
+            prop: "side",
+            type: '"top" | "right" | "bottom" | "left"',
+            default: '"bottom"',
+            description:
+              "On DropdownMenuContent. Preferred side of the trigger.",
+          },
+          {
+            prop: "sideOffset",
+            type: "number",
+            default: "6",
+            description:
+              "On DropdownMenuContent. Gap from the trigger, in pixels.",
+          },
+          {
+            prop: "variant",
+            type: '"default" | "destructive"',
+            default: '"default"',
+            description:
+              "On DropdownMenuItem. Destructive items use text-destructive.",
+          },
+          {
+            prop: "inset",
+            type: "boolean",
+            default: "false",
+            description:
+              "On items and labels. Indents text to line up with items that have an icon.",
+          },
+          {
+            prop: "closeOnClick",
+            type: "boolean",
+            default: "true",
+            description:
+              "On items. Whether choosing the item closes the menu. Checkbox and radio items stay open by default.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description:
+              "On items. Dims the item and skips it in keyboard navigation.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description:
+              "On DropdownMenuTrigger and DropdownMenuItem. Render as a Button or a Link.",
+          },
         ]}
       />
     </Examples>

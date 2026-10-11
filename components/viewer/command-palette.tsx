@@ -35,7 +35,11 @@ import {
 import { Kbd } from "@/components/ui/kbd"
 import { useThemePreset } from "@/components/theme-provider"
 import { navSections, type SectionId } from "@/components/viewer/nav"
-import { ThemeSwatch, themeTagline, useChooseTheme } from "@/components/viewer/theme-picker"
+import {
+  ThemeSwatch,
+  themeTagline,
+  useChooseTheme,
+} from "@/components/viewer/theme-picker"
 import { useAppearance } from "@/components/viewer/theme-toggle"
 import { themes } from "@/lib/themes"
 
@@ -87,8 +91,14 @@ interface Section {
  * before every page that mentions dark mode.
  */
 function score(entry: Entry, search: string) {
-  const name = Math.max(defaultFilter(entry.label, search), entry.alias ? defaultFilter(entry.alias, search) : 0)
-  return Math.max(name, 0.9 * defaultFilter(entry.label, search, entry.keywords))
+  const name = Math.max(
+    defaultFilter(entry.label, search),
+    entry.alias ? defaultFilter(entry.alias, search) : 0
+  )
+  return Math.max(
+    name,
+    0.9 * defaultFilter(entry.label, search, entry.keywords)
+  )
 }
 
 /**
@@ -107,7 +117,10 @@ function rank(sections: Section[], query: string): Section[] {
         .map((entry) => ({ entry, score: score(entry, search) }))
         .filter((row) => row.score > 0)
         .sort((a, b) => b.score - a.score)
-      return { section: { ...section, entries: scored.map((row) => row.entry) }, best: scored[0]?.score ?? 0 }
+      return {
+        section: { ...section, entries: scored.map((row) => row.entry) },
+        best: scored[0]?.score ?? 0,
+      }
     })
     .filter((group) => group.best > 0)
     .sort((a, b) => b.best - a.best)
@@ -157,7 +170,10 @@ export function CommandPalette({
           entries: section.groups.flatMap((group) =>
             group.items.map((item) => {
               const Icon = pageIcon[item.href] ?? SectionIcon
-              const label = item.href === section.href ? `${section.title} ${item.title.toLowerCase()}` : item.title
+              const label =
+                item.href === section.href
+                  ? `${section.title} ${item.title.toLowerCase()}`
+                  : item.title
               return {
                 value: item.href,
                 label,
@@ -166,7 +182,10 @@ export function CommandPalette({
                 onSelect: () => run(() => router.push(item.href)),
                 content: (
                   <>
-                    <Icon aria-hidden="true" className="text-muted-foreground" />
+                    <Icon
+                      aria-hidden="true"
+                      className="text-muted-foreground"
+                    />
                     <span className="truncate text-foreground">{label}</span>
                     {group.title ? (
                       <span className="ml-auto hidden shrink-0 text-caption text-muted-foreground sm:inline">
@@ -191,7 +210,12 @@ export function CommandPalette({
       // The name itself, so typing a theme's name is an exact match.
       value: theme.name,
       label: theme.name,
-      keywords: ["theme", theme.fonts.heading, theme.fonts.sans, themeTagline(theme)],
+      keywords: [
+        "theme",
+        theme.fonts.heading,
+        theme.fonts.sans,
+        themeTagline(theme),
+      ],
       onSelect: () => run(() => chooseTheme(theme.id)),
       content: (
         <>
@@ -224,7 +248,9 @@ export function CommandPalette({
               <MoonIcon aria-hidden="true" className="text-muted-foreground" />
             )}
             <span className="text-foreground">{appearanceLabel}</span>
-            <CommandShortcut className="hidden sm:not-pointer-coarse:inline">D</CommandShortcut>
+            <CommandShortcut className="hidden sm:not-pointer-coarse:inline">
+              D
+            </CommandShortcut>
           </>
         ),
       },
@@ -256,15 +282,25 @@ export function CommandPalette({
       {/* Filtering and order are done here (rank), not by cmdk. */}
       <Command shouldFilter={false}>
         {/* Short enough for a phone, and covers every section and action. */}
-        <CommandInput placeholder="Search Blocks…" value={query} onValueChange={setQuery} />
+        <CommandInput
+          placeholder="Search Blocks…"
+          value={query}
+          onValueChange={setQuery}
+        />
         <CommandList className="max-h-[min(26rem,60dvh)]">
-          <CommandEmpty>No results. Try “button”, “dialog” or “color”.</CommandEmpty>
+          <CommandEmpty>
+            No results. Try “button”, “dialog” or “color”.
+          </CommandEmpty>
           {sections.map((section) => (
             <React.Fragment key={section.id}>
               {section.separated ? <CommandSeparator /> : null}
               <CommandGroup heading={section.heading}>
                 {section.entries.map((entry) => (
-                  <CommandItem key={entry.value} value={entry.value} onSelect={entry.onSelect}>
+                  <CommandItem
+                    key={entry.value}
+                    value={entry.value}
+                    onSelect={entry.onSelect}
+                  >
                     {entry.content}
                   </CommandItem>
                 ))}

@@ -1,9 +1,27 @@
 "use client"
 
 import * as React from "react"
-import { ArchiveIcon, MoreHorizontalIcon, PencilIcon, PlusIcon, Trash2Icon, UserPlusIcon } from "lucide-react"
+import {
+  ArchiveIcon,
+  MoreHorizontalIcon,
+  PencilIcon,
+  PlusIcon,
+  Trash2Icon,
+  UserPlusIcon,
+} from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import {
+  PreviewStage,
+  PropValue,
+  StageDetails,
+  StagePage,
+  StageSwitcher,
+  dialogInStage,
+  openInPlace,
+  type Stage,
+  type StageDetail,
+} from "@/docs/stage"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { initialsTone } from "@/docs/sample/people"
 import { Badge } from "@/components/ui/badge"
@@ -31,7 +49,6 @@ import { Input } from "@/components/ui/input"
 import { Kbd } from "@/components/ui/kbd"
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { Spinner } from "@/components/ui/spinner"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 
 const shortcuts = [
@@ -45,28 +62,85 @@ const shortcuts = [
 
 /** The history of one task, newest first: long enough to scroll inside the dialog. */
 const taskHistory = [
-  { initials: "PR", name: "Priya Raman", action: "moved the task to In review", time: "10:42" },
-  { initials: "PR", name: "Priya Raman", action: "completed the subtask Draft the blog post", time: "10:40" },
-  { initials: "SA", name: "Sofia Alvarez", action: "attached Hero image v3 from Figma", time: "09:58" },
-  { initials: "JL", name: "Jordan Lee", action: "commented: the pricing section still says $10", time: "09:31" },
-  { initials: "PR", name: "Priya Raman", action: "completed the subtask Outline the key messages", time: "Yesterday" },
-  { initials: "MP", name: "Maya Patel", action: "changed the priority from Medium to High", time: "Yesterday" },
-  { initials: "MP", name: "Maya Patel", action: "moved the due date to Oct 14", time: "Yesterday" },
-  { initials: "HK", name: "Hana Kim", action: "asked to sign off before it goes out", time: "Oct 6" },
-  { initials: "PR", name: "Priya Raman", action: "added 4 subtasks", time: "Oct 5" },
-  { initials: "PR", name: "Priya Raman", action: "moved the task to In progress", time: "Oct 5" },
-  { initials: "SO", name: "Sam Okafor", action: "linked the doc Support FAQ for launch day", time: "Oct 4" },
-  { initials: "MP", name: "Maya Patel", action: "assigned the task to Priya Raman", time: "Oct 2" },
-  { initials: "MP", name: "Maya Patel", action: "created the task in Website relaunch", time: "Oct 2" },
+  {
+    initials: "PR",
+    name: "Priya Raman",
+    action: "moved the task to In review",
+    time: "10:42",
+  },
+  {
+    initials: "PR",
+    name: "Priya Raman",
+    action: "completed the subtask Draft the blog post",
+    time: "10:40",
+  },
+  {
+    initials: "SA",
+    name: "Sofia Alvarez",
+    action: "attached Hero image v3 from Figma",
+    time: "09:58",
+  },
+  {
+    initials: "JL",
+    name: "Jordan Lee",
+    action: "commented: the pricing section still says $10",
+    time: "09:31",
+  },
+  {
+    initials: "PR",
+    name: "Priya Raman",
+    action: "completed the subtask Outline the key messages",
+    time: "Yesterday",
+  },
+  {
+    initials: "MP",
+    name: "Maya Patel",
+    action: "changed the priority from Medium to High",
+    time: "Yesterday",
+  },
+  {
+    initials: "MP",
+    name: "Maya Patel",
+    action: "moved the due date to Oct 14",
+    time: "Yesterday",
+  },
+  {
+    initials: "HK",
+    name: "Hana Kim",
+    action: "asked to sign off before it goes out",
+    time: "Oct 6",
+  },
+  {
+    initials: "PR",
+    name: "Priya Raman",
+    action: "added 4 subtasks",
+    time: "Oct 5",
+  },
+  {
+    initials: "PR",
+    name: "Priya Raman",
+    action: "moved the task to In progress",
+    time: "Oct 5",
+  },
+  {
+    initials: "SO",
+    name: "Sam Okafor",
+    action: "linked the doc Support FAQ for launch day",
+    time: "Oct 4",
+  },
+  {
+    initials: "MP",
+    name: "Maya Patel",
+    action: "assigned the task to Priya Raman",
+    time: "Oct 2",
+  },
+  {
+    initials: "MP",
+    name: "Maya Patel",
+    action: "created the task in Website relaunch",
+    time: "Oct 2",
+  },
 ]
-
-type Stage = HTMLDivElement | null
-
-/**
- * Inside a stage, the dialog fits the stage rather than the viewport, and the
- * wheel carries on to the page once the dialog has nothing left to scroll.
- */
-const inStage = "max-h-[calc(100%-2rem)] overscroll-auto"
 
 /** Loose enough to catch typos such as a missing domain, without rejecting real addresses. */
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -98,7 +172,9 @@ function InviteMembersDialog({ container }: { container: Stage }) {
     }
     const invalid = list.find((value) => !emailPattern.test(value))
     if (invalid) {
-      setError(`“${invalid}” is not a full email address. Check it has a name, an @ and a domain.`)
+      setError(
+        `“${invalid}” is not a full email address. Check it has a name, an @ and a domain.`
+      )
       return
     }
     setError(null)
@@ -107,21 +183,29 @@ function InviteMembersDialog({ container }: { container: Stage }) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange} modal={false} disablePointerDismissal>
+    <Dialog
+      open={open}
+      onOpenChange={handleOpenChange}
+      modal={false}
+      disablePointerDismissal
+    >
       <DialogTrigger render={<Button />}>
         <UserPlusIcon data-icon="inline-start" />
         Invite Members
       </DialogTrigger>
-      <DialogContent container={container} initialFocus={false} className={inStage}>
+      <DialogContent {...dialogInStage(container)}>
         <form onSubmit={handleSubmit} noValidate className="contents">
           <DialogHeader>
             <DialogTitle>Invite members</DialogTitle>
             <DialogDescription>
-              They join Acme Inc. as members and can see every project that isn’t private.
+              They join Acme Inc. as members and can see every project that
+              isn’t private.
             </DialogDescription>
           </DialogHeader>
           <Field data-invalid={error ? true : undefined}>
-            <FieldLabel htmlFor="dialog-invite-emails">Email addresses</FieldLabel>
+            <FieldLabel htmlFor="dialog-invite-emails">
+              Email addresses
+            </FieldLabel>
             <Input
               id="dialog-invite-emails"
               type="text"
@@ -133,12 +217,19 @@ function InviteMembersDialog({ container }: { container: Stage }) {
               aria-describedby="dialog-invite-help"
               onChange={(event) => setEmails(event.target.value)}
             />
-            <FieldDescription id="dialog-invite-help" className={error ? "text-destructive" : undefined}>
-              {error ?? "Separate addresses with commas. Invites expire after 7 days."}
+            <FieldDescription
+              id="dialog-invite-help"
+              className={error ? "text-destructive" : undefined}
+            >
+              {error ??
+                "Separate addresses with commas. Invites expire after 7 days."}
             </FieldDescription>
           </Field>
           <DialogFooter>
-            <DialogClose render={<Button variant="outline" />} disabled={pending}>
+            <DialogClose
+              render={<Button variant="outline" />}
+              disabled={pending}
+            >
               Cancel
             </DialogClose>
             <Button type="submit" disabled={pending}>
@@ -159,7 +250,15 @@ function ProjectMenuWithDialog({ container }: { container: Stage }) {
   return (
     <>
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="Project options" />}>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Project options"
+            />
+          }
+        >
           <MoreHorizontalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" container={container}>
@@ -181,25 +280,44 @@ function ProjectMenuWithDialog({ container }: { container: Stage }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={open} onOpenChange={setOpen} modal={false} disablePointerDismissal>
-        <DialogContent container={container} initialFocus={false} className={inStage}>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+        modal={false}
+        disablePointerDismissal
+      >
+        <DialogContent {...dialogInStage(container)}>
           <DialogHeader>
             <DialogTitle>Archive Help center</DialogTitle>
             <DialogDescription>
-              The project leaves the sidebar and project lists, and its docs become read-only. Restore it from Settings
-              at any time.
+              The project leaves the sidebar and project lists, and its docs
+              become read-only. Restore it from Settings at any time.
             </DialogDescription>
           </DialogHeader>
           <Field>
-            <FieldLabel htmlFor="dialog-archive-tasks">The 21 open tasks</FieldLabel>
-            <NativeSelect id="dialog-archive-tasks" defaultValue="keep" className="w-full">
-              <NativeSelectOption value="keep">Leave them open</NativeSelectOption>
-              <NativeSelectOption value="done">Mark them as done</NativeSelectOption>
-              <NativeSelectOption value="move">Move them to Customer portal</NativeSelectOption>
+            <FieldLabel htmlFor="dialog-archive-tasks">
+              The 21 open tasks
+            </FieldLabel>
+            <NativeSelect
+              id="dialog-archive-tasks"
+              defaultValue="keep"
+              className="w-full"
+            >
+              <NativeSelectOption value="keep">
+                Leave them open
+              </NativeSelectOption>
+              <NativeSelectOption value="done">
+                Mark them as done
+              </NativeSelectOption>
+              <NativeSelectOption value="move">
+                Move them to Customer portal
+              </NativeSelectOption>
             </NativeSelect>
           </Field>
           <DialogFooter>
-            <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+            <DialogClose render={<Button variant="outline" />}>
+              Cancel
+            </DialogClose>
             <DialogClose render={<Button />}>Archive Project</DialogClose>
           </DialogFooter>
         </DialogContent>
@@ -209,12 +327,9 @@ function ProjectMenuWithDialog({ container }: { container: Stage }) {
 }
 
 /**
- * A stage for an example that shows its dialog already open. The dialog
- * portals into the stage instead of <body>: contain-layout makes the stage the
- * containing block for the fixed overlay and popup, and isolate keeps them
- * under the site header. The dialog is non-modal there, so the page still
+ * A stage for an example that shows its dialog already open, on the project
+ * page the dialog sits on. The dialog is non-modal there, so the page still
  * scrolls, and a click elsewhere leaves it open. Close it to reach the trigger.
- * The overlay tints and blurs the page behind it, as it does over a real page.
  */
 function DialogStage({
   className,
@@ -225,18 +340,25 @@ function DialogStage({
   project?: StageProject
   children: (container: Stage) => React.ReactNode
 }) {
-  const [container, setContainer] = React.useState<Stage>(null)
   return (
-    <div ref={setContainer} className={cn("relative isolate h-full min-h-112 w-full overflow-hidden contain-layout", className)}>
-      <StagePage project={project} action={children(container)} />
-    </div>
+    <PreviewStage kind="overlay" className={cn("min-h-112", className)}>
+      {(container) => (
+        <StagePage
+          title={project.name}
+          meta={project.meta}
+          action={children(container)}
+        >
+          <StageDetails rows={project.details} />
+        </StagePage>
+      )}
+    </PreviewStage>
   )
 }
 
 interface StageProject {
   name: string
   meta: string
-  details: { label: string; value: React.ReactNode }[]
+  details: StageDetail[]
 }
 
 const websiteRelaunch: StageProject = {
@@ -264,32 +386,6 @@ const helpCenter: StageProject = {
   ],
 }
 
-/** The project page the open dialog sits on. */
-function StagePage({ project, action }: { project: StageProject; action: React.ReactNode }) {
-  return (
-    <div className="grid content-start gap-8 p-6 sm:p-12">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="grid gap-1">
-          <p className="text-h3 text-foreground">{project.name}</p>
-          <p className="text-caption text-muted-foreground">{project.meta}</p>
-        </div>
-        {action}
-      </div>
-      <dl className="grid divide-y border-y">
-        {project.details.map((row) => (
-          <div key={row.label} className="flex items-center justify-between gap-6 py-4">
-            <dt className="text-sm text-muted-foreground">{row.label}</dt>
-            <dd className="text-sm font-medium text-foreground">{row.value}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
-  )
-}
-
-/** Open in place on the docs page: no focus move, no scroll lock, no dismissal on outside clicks. */
-const inlineDialog = { defaultOpen: true, modal: false, disablePointerDismissal: true } as const
-
 type DialogSize = "sm" | "default" | "lg"
 
 const sizeOptions: { value: DialogSize; label: string }[] = [
@@ -305,31 +401,28 @@ function SizesDemo() {
 
   return (
     <div className="grid">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b px-6 py-3 sm:px-12">
-        <code className="font-mono text-code text-muted-foreground">size=&quot;{size}&quot;</code>
-        <ToggleGroup
-          size="sm"
-          aria-label="Dialog size"
-          value={[size]}
-          onValueChange={(value) => {
-            const next = value[0] as DialogSize | undefined
-            if (!next) return
-            setSize(next)
-            setOpen(true)
-          }}
-        >
-          {sizeOptions.map((option) => (
-            <ToggleGroupItem key={option.value} value={option.value}>
-              {option.label}
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-      </div>
+      <StageSwitcher
+        label={<PropValue name="size" value={size} />}
+        aria-label="Dialog size"
+        value={size}
+        options={sizeOptions}
+        onValueChange={(next) => {
+          setSize(next)
+          setOpen(true)
+        }}
+      />
       <DialogStage className="min-h-144">
         {(container) => (
-          <Dialog open={open} onOpenChange={setOpen} modal={false} disablePointerDismissal>
-            <DialogTrigger render={<Button variant="outline" />}>Open Dialog</DialogTrigger>
-            <DialogContent size={size} container={container} initialFocus={false} className={inStage}>
+          <Dialog
+            open={open}
+            onOpenChange={setOpen}
+            modal={false}
+            disablePointerDismissal
+          >
+            <DialogTrigger render={<Button variant="outline" />}>
+              Open Dialog
+            </DialogTrigger>
+            <DialogContent size={size} {...dialogInStage(container)}>
               <SizeContent size={size} />
             </DialogContent>
           </Dialog>
@@ -345,9 +438,16 @@ function SizeContent({ size }: { size: DialogSize }) {
       <>
         <DialogHeader>
           <DialogTitle>Copy invite link</DialogTitle>
-          <DialogDescription>Anyone with this link can join Acme Inc. as a member.</DialogDescription>
+          <DialogDescription>
+            Anyone with this link can join Acme Inc. as a member.
+          </DialogDescription>
         </DialogHeader>
-        <Input readOnly aria-label="Invite link" defaultValue="app.acme.com/acme/join/7hq2xl" className="text-ellipsis" />
+        <Input
+          readOnly
+          aria-label="Invite link"
+          defaultValue="app.acme.com/acme/join/7hq2xl"
+          className="text-ellipsis"
+        />
         <DialogFooter>
           <DialogClose render={<Button />}>Copy Link</DialogClose>
         </DialogFooter>
@@ -359,25 +459,40 @@ function SizeContent({ size }: { size: DialogSize }) {
       <>
         <DialogHeader>
           <DialogTitle>Add a task</DialogTitle>
-          <DialogDescription>It goes to the top of To do in Website relaunch.</DialogDescription>
+          <DialogDescription>
+            It goes to the top of To do in Website relaunch.
+          </DialogDescription>
         </DialogHeader>
         <Field>
           <FieldLabel htmlFor="dialog-task-name">Task name</FieldLabel>
-          <Input id="dialog-task-name" placeholder="Write the launch announcement" />
+          <Input
+            id="dialog-task-name"
+            placeholder="Write the launch announcement"
+          />
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field>
             <FieldLabel htmlFor="dialog-task-assignee">Assignee</FieldLabel>
-            <NativeSelect id="dialog-task-assignee" defaultValue="priya" className="w-full">
+            <NativeSelect
+              id="dialog-task-assignee"
+              defaultValue="priya"
+              className="w-full"
+            >
               <NativeSelectOption value="maya">Maya Patel</NativeSelectOption>
               <NativeSelectOption value="priya">Priya Raman</NativeSelectOption>
-              <NativeSelectOption value="sofia">Sofia Alvarez</NativeSelectOption>
+              <NativeSelectOption value="sofia">
+                Sofia Alvarez
+              </NativeSelectOption>
               <NativeSelectOption value="jordan">Jordan Lee</NativeSelectOption>
             </NativeSelect>
           </Field>
           <Field>
             <FieldLabel htmlFor="dialog-task-priority">Priority</FieldLabel>
-            <NativeSelect id="dialog-task-priority" defaultValue="medium" className="w-full">
+            <NativeSelect
+              id="dialog-task-priority"
+              defaultValue="medium"
+              className="w-full"
+            >
               <NativeSelectOption value="urgent">Urgent</NativeSelectOption>
               <NativeSelectOption value="high">High</NativeSelectOption>
               <NativeSelectOption value="medium">Medium</NativeSelectOption>
@@ -386,7 +501,9 @@ function SizeContent({ size }: { size: DialogSize }) {
           </Field>
         </div>
         <DialogFooter>
-          <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+          <DialogClose render={<Button variant="outline" />}>
+            Cancel
+          </DialogClose>
           <DialogClose render={<Button />}>Add Task</DialogClose>
         </DialogFooter>
       </>
@@ -396,11 +513,16 @@ function SizeContent({ size }: { size: DialogSize }) {
     <>
       <DialogHeader>
         <DialogTitle>Keyboard shortcuts</DialogTitle>
-        <DialogDescription>Shortcuts work anywhere in Acme except inside text fields.</DialogDescription>
+        <DialogDescription>
+          Shortcuts work anywhere in Acme except inside text fields.
+        </DialogDescription>
       </DialogHeader>
       <ul className="grid divide-y border-y">
         {shortcuts.map((shortcut) => (
-          <li key={shortcut.label} className="flex items-center justify-between gap-4 py-3">
+          <li
+            key={shortcut.label}
+            className="flex items-center justify-between gap-4 py-3"
+          >
             <span className="text-sm text-copy">{shortcut.label}</span>
             <span className="flex gap-1">
               {shortcut.keys.map((key) => (
@@ -443,24 +565,29 @@ export default function DialogDocs() {
       >
         <DialogStage>
           {(container) => (
-            <Dialog {...inlineDialog}>
+            <Dialog {...openInPlace}>
               <DialogTrigger render={<Button />}>
                 <PlusIcon data-icon="inline-start" />
                 New Project
               </DialogTrigger>
-              <DialogContent container={container} initialFocus={false} className={inStage}>
+              <DialogContent {...dialogInStage(container)}>
                 <DialogHeader>
                   <DialogTitle>Create project</DialogTitle>
                   <DialogDescription>
-                    A project holds the tasks, docs and timeline for one piece of work. Invite people once it exists.
+                    A project holds the tasks, docs and timeline for one piece
+                    of work. Invite people once it exists.
                   </DialogDescription>
                 </DialogHeader>
                 <Field>
-                  <FieldLabel htmlFor="dialog-basic-name">Project name</FieldLabel>
+                  <FieldLabel htmlFor="dialog-basic-name">
+                    Project name
+                  </FieldLabel>
                   <Input id="dialog-basic-name" placeholder="Spring campaign" />
                 </Field>
                 <DialogFooter>
-                  <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+                  <DialogClose render={<Button variant="outline" />}>
+                    Cancel
+                  </DialogClose>
                   <DialogClose render={<Button />}>Create Project</DialogClose>
                 </DialogFooter>
               </DialogContent>
@@ -504,7 +631,9 @@ export default function DialogDocs() {
   </DialogContent>
 </Dialog>`}
       >
-        <DialogStage>{(container) => <InviteMembersDialog container={container} />}</DialogStage>
+        <DialogStage>
+          {(container) => <InviteMembersDialog container={container} />}
+        </DialogStage>
       </Example>
 
       <Example
@@ -520,23 +649,35 @@ export default function DialogDocs() {
       >
         <DialogStage>
           {(container) => (
-            <Dialog {...inlineDialog}>
-              <DialogTrigger render={<Button variant="outline" />}>What’s New</DialogTrigger>
-              <DialogContent showCloseButton={false} container={container} initialFocus={false} className={inStage}>
+            <Dialog {...openInPlace}>
+              <DialogTrigger render={<Button variant="outline" />}>
+                What’s New
+              </DialogTrigger>
+              <DialogContent
+                showCloseButton={false}
+                {...dialogInStage(container)}
+              >
                 <DialogHeader>
                   <DialogTitle>Automations 2.0 is here</DialogTitle>
                   <DialogDescription>
-                    Rules can now run several steps and check a condition between them. The automations you already
-                    have keep working as they are.
+                    Rules can now run several steps and check a condition
+                    between them. The automations you already have keep working
+                    as they are.
                   </DialogDescription>
                 </DialogHeader>
                 <ul className="grid gap-3 text-sm text-copy">
                   <li className="flex gap-3">
-                    <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
+                    <span
+                      aria-hidden="true"
+                      className="mt-2 size-1.5 shrink-0 rounded-full bg-brand"
+                    />
                     Add an If step to route tasks by priority or assignee.
                   </li>
                   <li className="flex gap-3">
-                    <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
+                    <span
+                      aria-hidden="true"
+                      className="mt-2 size-1.5 shrink-0 rounded-full bg-brand"
+                    />
                     Start from one of 20 recipes.
                   </li>
                 </ul>
@@ -573,13 +714,16 @@ export default function DialogDocs() {
       >
         <DialogStage className="min-h-144">
           {(container) => (
-            <Dialog {...inlineDialog}>
-              <DialogTrigger render={<Button variant="outline" />}>View Task History</DialogTrigger>
-              <DialogContent size="lg" container={container} initialFocus={false} className={inStage}>
+            <Dialog {...openInPlace}>
+              <DialogTrigger render={<Button variant="outline" />}>
+                View Task History
+              </DialogTrigger>
+              <DialogContent size="lg" {...dialogInStage(container)}>
                 <DialogHeader>
                   <DialogTitle>Task history</DialogTitle>
                   <DialogDescription>
-                    Write the launch announcement · Website relaunch · {taskHistory.length} changes
+                    Write the launch announcement · Website relaunch ·{" "}
+                    {taskHistory.length} changes
                   </DialogDescription>
                 </DialogHeader>
                 <ol
@@ -588,19 +732,31 @@ export default function DialogDocs() {
                   className="grid max-h-72 divide-y overflow-auto rounded-(--control-radius) border outline-none focus-visible:focus-ring"
                 >
                   {taskHistory.map((entry) => (
-                    <li key={`${entry.time}-${entry.action}`} className="flex items-center gap-3 px-4 py-3">
+                    <li
+                      key={`${entry.time}-${entry.action}`}
+                      className="flex items-center gap-3 px-4 py-3"
+                    >
                       <Avatar size="sm">
-                        <AvatarFallback tone={initialsTone(entry.initials)}>{entry.initials}</AvatarFallback>
+                        <AvatarFallback tone={initialsTone(entry.initials)}>
+                          {entry.initials}
+                        </AvatarFallback>
                       </Avatar>
                       <p className="min-w-0 flex-1 text-sm text-copy">
-                        <span className="font-semibold text-foreground">{entry.name}</span> {entry.action}
+                        <span className="font-semibold text-foreground">
+                          {entry.name}
+                        </span>{" "}
+                        {entry.action}
                       </p>
-                      <span className="shrink-0 text-caption text-muted-foreground tabular">{entry.time}</span>
+                      <span className="shrink-0 text-caption text-muted-foreground tabular">
+                        {entry.time}
+                      </span>
                     </li>
                   ))}
                 </ol>
                 <DialogFooter>
-                  <DialogClose render={<Button variant="outline" />}>Close</DialogClose>
+                  <DialogClose render={<Button variant="outline" />}>
+                    Close
+                  </DialogClose>
                   <Button>Export as CSV</Button>
                 </DialogFooter>
               </DialogContent>
@@ -621,7 +777,9 @@ export default function DialogDocs() {
   <DialogContent>…</DialogContent>
 </Dialog>`}
       >
-        <DialogStage project={helpCenter}>{(container) => <ProjectMenuWithDialog container={container} />}</DialogStage>
+        <DialogStage project={helpCenter}>
+          {(container) => <ProjectMenuWithDialog container={container} />}
+        </DialogStage>
       </Example>
 
       <Guidelines
@@ -640,15 +798,61 @@ export default function DialogDocs() {
 
       <ApiTable
         rows={[
-          { prop: "open", type: "boolean", description: "Controlled open state. Pair with onOpenChange." },
-          { prop: "onOpenChange", type: "(open: boolean) => void", description: "Called when the dialog opens or closes." },
-          { prop: "defaultOpen", type: "boolean", default: "false", description: "Initial open state when uncontrolled." },
-          { prop: "modal", type: 'boolean | "trap-focus"', default: "true", description: "Locks scroll and traps focus while open." },
-          { prop: "size", type: '"sm" | "default" | "lg"', default: '"default"', description: "On DialogContent. Maximum width: --dialog-width-sm, --dialog-width or --dialog-width-lg." },
-          { prop: "showCloseButton", type: "boolean", default: "true", description: "On DialogContent. Shows the close button in the top-right corner." },
-          { prop: "initialFocus", type: "RefObject | boolean", description: "On DialogContent. The element to focus when the dialog opens." },
-          { prop: "showCloseButton (footer)", type: "boolean", default: "false", description: "On DialogFooter. Adds an outline Close button after the other actions." },
-          { prop: "render", type: "ReactElement", description: "On DialogTrigger and DialogClose. Render as a Button: render={<Button variant=\"outline\" />}." },
+          {
+            prop: "open",
+            type: "boolean",
+            description: "Controlled open state. Pair with onOpenChange.",
+          },
+          {
+            prop: "onOpenChange",
+            type: "(open: boolean) => void",
+            description: "Called when the dialog opens or closes.",
+          },
+          {
+            prop: "defaultOpen",
+            type: "boolean",
+            default: "false",
+            description: "Initial open state when uncontrolled.",
+          },
+          {
+            prop: "modal",
+            type: 'boolean | "trap-focus"',
+            default: "true",
+            description: "Locks scroll and traps focus while open.",
+          },
+          {
+            prop: "size",
+            type: '"sm" | "default" | "lg"',
+            default: '"default"',
+            description:
+              "On DialogContent. Maximum width: --dialog-width-sm, --dialog-width or --dialog-width-lg.",
+          },
+          {
+            prop: "showCloseButton",
+            type: "boolean",
+            default: "true",
+            description:
+              "On DialogContent. Shows the close button in the top-right corner.",
+          },
+          {
+            prop: "initialFocus",
+            type: "RefObject | boolean",
+            description:
+              "On DialogContent. The element to focus when the dialog opens.",
+          },
+          {
+            prop: "showCloseButton (footer)",
+            type: "boolean",
+            default: "false",
+            description:
+              "On DialogFooter. Adds an outline Close button after the other actions.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description:
+              'On DialogTrigger and DialogClose. Render as a Button: render={<Button variant="outline" />}.',
+          },
         ]}
       />
     </Examples>

@@ -1,9 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { BellIcon, CheckIcon, CopyIcon, Link2Icon, SlidersHorizontalIcon } from "lucide-react"
+import {
+  BellIcon,
+  CheckIcon,
+  CopyIcon,
+  Link2Icon,
+  SlidersHorizontalIcon,
+} from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { PreviewStage, pinnedTo, usePinnedOpen, type Stage } from "@/docs/stage"
 import { Button } from "@/components/ui/button"
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -17,45 +24,6 @@ import {
 } from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
-
-type Stage = HTMLDivElement | null
-
-/**
- * A stage the example's popover opens into, so the page shows the popover
- * itself. It opens on load and stays open while people use the rest of the
- * page; its trigger and Escape still close it. isolate keeps the popover's
- * z-index inside the example, so it scrolls under the site header.
- */
-function PopoverStage({ className, children }: { className?: string; children: (container: Stage) => React.ReactNode }) {
-  const [container, setContainer] = React.useState<Stage>(null)
-  return (
-    <div ref={setContainer} className={cn("relative isolate flex w-full items-start justify-center", className)}>
-      {children(container)}
-    </div>
-  )
-}
-
-/**
- * Open on load, and kept open when people click or tab elsewhere. It only
- * opens once the stage exists, so the popover is placed inside the stage from
- * its first frame instead of against <body>.
- */
-function usePinnedOpen(container: Stage) {
-  const [open, setOpen] = React.useState(true)
-  const onOpenChange = React.useCallback((next: boolean, details: { reason: string }) => {
-    if (!next && (details.reason === "outside-press" || details.reason === "focus-out")) return
-    setOpen(next)
-  }, [])
-  return { open: open && container !== null, setOpen, onOpenChange }
-}
-
-/**
- * Pinned previews keep their side, so they never flip over the example's own
- * text as the page scrolls, and they stay inside their stage.
- */
-function pinnedTo(container: Stage) {
-  return { collisionAvoidance: { side: "none" }, collisionBoundary: container ?? undefined } as const
-}
 
 function SharePopover({ container }: { container: Stage }) {
   const [copied, setCopied] = React.useState(false)
@@ -81,7 +49,9 @@ function SharePopover({ container }: { container: Stage }) {
       >
         <PopoverHeader>
           <PopoverTitle>Share this doc</PopoverTitle>
-          <PopoverDescription>Anyone in Acme Inc. with the link can read the launch plan.</PopoverDescription>
+          <PopoverDescription>
+            Anyone in Acme Inc. with the link can read the launch plan.
+          </PopoverDescription>
         </PopoverHeader>
         <div className="flex gap-2">
           {/* dir="rtl" keeps the end of the link (the doc's name) in view when the field is too narrow for all of it. */}
@@ -115,7 +85,12 @@ function UsageAlertPopover({ container }: { container: Stage }) {
         <BellIcon data-icon="inline-start" />
         Set Usage Alert
       </PopoverTrigger>
-      <PopoverContent align="start" container={container} initialFocus={false} {...pinnedTo(container)}>
+      <PopoverContent
+        align="start"
+        container={container}
+        initialFocus={false}
+        {...pinnedTo(container)}
+      >
         <form
           className="contents"
           onSubmit={(event) => {
@@ -125,15 +100,31 @@ function UsageAlertPopover({ container }: { container: Stage }) {
         >
           <PopoverHeader>
             <PopoverTitle>Automation usage alert</PopoverTitle>
-            <PopoverDescription>We email workspace owners when runs pass this number in a month.</PopoverDescription>
+            <PopoverDescription>
+              We email workspace owners when runs pass this number in a month.
+            </PopoverDescription>
           </PopoverHeader>
           <Field>
             <FieldLabel htmlFor="popover-limit">Alert at (runs)</FieldLabel>
-            <Input id="popover-limit" type="number" inputMode="numeric" defaultValue={9000} min={0} step={500} />
-            <FieldDescription>7,240 of 10,000 runs used this month.</FieldDescription>
+            <Input
+              id="popover-limit"
+              type="number"
+              inputMode="numeric"
+              defaultValue={9000}
+              min={0}
+              step={500}
+            />
+            <FieldDescription>
+              7,240 of 10,000 runs used this month.
+            </FieldDescription>
           </Field>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setOpen(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" size="sm">
@@ -152,10 +143,30 @@ function UsageAlertPopover({ container }: { container: Stage }) {
  * show top and bottom only.
  */
 const placements = [
-  { side: "top", cell: "col-start-2 row-start-1", priority: "Urgent", count: 2 },
-  { side: "left", cell: "col-start-1 row-start-2 justify-self-end", priority: "High", count: 5 },
-  { side: "right", cell: "col-start-3 row-start-2 justify-self-start", priority: "Medium", count: 4 },
-  { side: "bottom", cell: "col-start-2 row-start-3", priority: "Low", count: 3 },
+  {
+    side: "top",
+    cell: "col-start-2 row-start-1",
+    priority: "Urgent",
+    count: 2,
+  },
+  {
+    side: "left",
+    cell: "col-start-1 row-start-2 justify-self-end",
+    priority: "High",
+    count: 5,
+  },
+  {
+    side: "right",
+    cell: "col-start-3 row-start-2 justify-self-start",
+    priority: "Medium",
+    count: 4,
+  },
+  {
+    side: "bottom",
+    cell: "col-start-2 row-start-3",
+    priority: "Low",
+    count: 3,
+  },
 ] as const
 
 /** Wide enough for a --popover-width-sm popover on each side of the middle column. */
@@ -168,20 +179,28 @@ function PlacementStage() {
   React.useLayoutEffect(() => {
     if (!container) return
     // The first observation arrives before paint, so no synchronous read is needed.
-    const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width))
+    const observer = new ResizeObserver(([entry]) =>
+      setWidth(entry.contentRect.width)
+    )
     observer.observe(container)
     return () => observer.disconnect()
   }, [container])
 
   const wide = width >= PLACEMENT_WIDE
-  const shown = wide ? placements : placements.filter((placement) => placement.side === "top" || placement.side === "bottom")
+  const shown = wide
+    ? placements
+    : placements.filter(
+        (placement) => placement.side === "top" || placement.side === "bottom"
+      )
 
   return (
     <div
       ref={setContainer}
       className={cn(
         "relative isolate grid w-full items-center gap-x-4 py-30",
-        wide ? "grid-cols-[1fr_auto_1fr] gap-y-10" : "grid-cols-2 justify-items-center"
+        wide
+          ? "grid-cols-[1fr_auto_1fr] gap-y-10"
+          : "grid-cols-2 justify-items-center"
       )}
     >
       {shown.map((placement) => (
@@ -203,12 +222,25 @@ function PriorityPopover({
   priority,
   count,
   container,
-}: Omit<(typeof placements)[number], "cell"> & { cell?: string; container: Stage }) {
+}: Omit<(typeof placements)[number], "cell"> & {
+  cell?: string
+  container: Stage
+}) {
   const { open, onOpenChange } = usePinnedOpen(container)
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger render={<Button variant="outline" className={cn("capitalize", cell)} />}>{side}</PopoverTrigger>
-      <PopoverContent side={side} className="w-(--popover-width-sm)" container={container} initialFocus={false} {...pinnedTo(container)}>
+      <PopoverTrigger
+        render={<Button variant="outline" className={cn("capitalize", cell)} />}
+      >
+        {side}
+      </PopoverTrigger>
+      <PopoverContent
+        side={side}
+        className="w-(--popover-width-sm)"
+        container={container}
+        initialFocus={false}
+        {...pinnedTo(container)}
+      >
         <PopoverHeader>
           <PopoverTitle>{priority} priority</PopoverTitle>
           <PopoverDescription>
@@ -225,7 +257,15 @@ function BoardViewPopover({ container }: { container: Stage }) {
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger render={<Button variant="outline" size="icon" aria-label="Board view options" />}>
+      <PopoverTrigger
+        render={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Board view options"
+          />
+        }
+      >
         <SlidersHorizontalIcon />
       </PopoverTrigger>
       <PopoverContent
@@ -244,7 +284,10 @@ function BoardViewPopover({ container }: { container: Stage }) {
             { label: "Show assignees", on: false },
             { label: "Show due dates", on: true },
           ].map((option) => (
-            <label key={option.label} className="flex items-center justify-between gap-4 text-sm font-medium text-foreground">
+            <label
+              key={option.label}
+              className="flex items-center justify-between gap-4 text-sm font-medium text-foreground"
+            >
               {option.label}
               <Switch defaultChecked={option.on} />
             </label>
@@ -272,7 +315,9 @@ export default function PopoverDocs() {
   </PopoverContent>
 </Popover>`}
       >
-        <PopoverStage className="min-h-56">{(container) => <SharePopover container={container} />}</PopoverStage>
+        <PreviewStage className="min-h-56">
+          {(container) => <SharePopover container={container} />}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -295,7 +340,9 @@ export default function PopoverDocs() {
   </PopoverContent>
 </Popover>`}
       >
-        <PopoverStage className="min-h-84">{(container) => <UsageAlertPopover container={container} />}</PopoverStage>
+        <PreviewStage className="min-h-84">
+          {(container) => <UsageAlertPopover container={container} />}
+        </PreviewStage>
       </Example>
 
       <Example
@@ -319,9 +366,9 @@ export default function PopoverDocs() {
   </PopoverContent>
 </Popover>`}
       >
-        <PopoverStage className="min-h-60">
+        <PreviewStage className="min-h-60">
           {(container) => <BoardViewPopover container={container} />}
-        </PopoverStage>
+        </PreviewStage>
       </Example>
 
       <Guidelines
@@ -339,14 +386,55 @@ export default function PopoverDocs() {
 
       <ApiTable
         rows={[
-          { prop: "side", type: '"top" | "right" | "bottom" | "left" | "inline-start" | "inline-end"', default: '"bottom"', description: "On PopoverContent. Preferred side of the trigger." },
-          { prop: "align", type: '"start" | "center" | "end"', default: '"center"', description: "On PopoverContent. Alignment along that side." },
-          { prop: "sideOffset", type: "number", default: "8", description: "On PopoverContent. Gap from the trigger, in pixels." },
-          { prop: "className", type: "string", default: '"w-(--popover-width)"', description: "On PopoverContent. Change the width with w-(--popover-width-sm) or w-(--popover-width-lg)." },
-          { prop: "open", type: "boolean", description: "On Popover. Controlled open state. Pair with onOpenChange." },
-          { prop: "modal", type: 'boolean | "trap-focus"', default: "false", description: "On Popover. Locks scroll and traps focus while open." },
-          { prop: "openOnHover", type: "boolean", default: "false", description: "On PopoverTrigger. Also open on hover, after delay." },
-          { prop: "render", type: "ReactElement", description: "On PopoverTrigger. Render as a Button: render={<Button variant=\"outline\" />}." },
+          {
+            prop: "side",
+            type: '"top" | "right" | "bottom" | "left" | "inline-start" | "inline-end"',
+            default: '"bottom"',
+            description: "On PopoverContent. Preferred side of the trigger.",
+          },
+          {
+            prop: "align",
+            type: '"start" | "center" | "end"',
+            default: '"center"',
+            description: "On PopoverContent. Alignment along that side.",
+          },
+          {
+            prop: "sideOffset",
+            type: "number",
+            default: "8",
+            description: "On PopoverContent. Gap from the trigger, in pixels.",
+          },
+          {
+            prop: "className",
+            type: "string",
+            default: '"w-(--popover-width)"',
+            description:
+              "On PopoverContent. Change the width with w-(--popover-width-sm) or w-(--popover-width-lg).",
+          },
+          {
+            prop: "open",
+            type: "boolean",
+            description:
+              "On Popover. Controlled open state. Pair with onOpenChange.",
+          },
+          {
+            prop: "modal",
+            type: 'boolean | "trap-focus"',
+            default: "false",
+            description: "On Popover. Locks scroll and traps focus while open.",
+          },
+          {
+            prop: "openOnHover",
+            type: "boolean",
+            default: "false",
+            description: "On PopoverTrigger. Also open on hover, after delay.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description:
+              'On PopoverTrigger. Render as a Button: render={<Button variant="outline" />}.',
+          },
         ]}
       />
     </Examples>

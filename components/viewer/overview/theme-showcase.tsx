@@ -7,10 +7,20 @@ import { useThemePreset } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeScope } from "@/lib/theme-scope"
-import { defaultThemeId, isThemeId, THEME_ATTRIBUTE, themes, type Theme } from "@/lib/themes"
+import {
+  defaultThemeId,
+  isThemeId,
+  THEME_ATTRIBUTE,
+  themes,
+  type Theme,
+} from "@/lib/themes"
 import { cn } from "@/lib/utils"
-import { rampFill, rampSteps } from "@/components/viewer/foundations/scale-fill"
-import { themeFontsLabel, themeTagline, useChooseTheme } from "@/components/viewer/theme-picker"
+import { AliasRamp } from "@/components/viewer/foundations/alias-ramp"
+import {
+  themeFontsLabel,
+  themeTagline,
+  useChooseTheme,
+} from "@/components/viewer/theme-picker"
 
 /** Rows every card shares: heading, input, buttons, panel, scales, band. */
 const ROWS = "grid-rows-[repeat(6,auto)]"
@@ -45,9 +55,12 @@ export function ThemeShowcase({ className }: { className?: string }) {
     if (!list || list.scrollWidth <= list.clientWidth) return
     const page = document.documentElement.getAttribute(THEME_ATTRIBUTE)
     const id = isThemeId(page) ? page : defaultThemeId
-    const item = list.querySelector<HTMLElement>(`[data-theme-card="${id}"]`)?.closest("li")
+    const item = list
+      .querySelector<HTMLElement>(`[data-theme-card="${id}"]`)
+      ?.closest("li")
     if (!item) return
-    const padding = parseFloat(getComputedStyle(list).scrollPaddingInlineStart) || 0
+    const padding =
+      parseFloat(getComputedStyle(list).scrollPaddingInlineStart) || 0
     list.scrollLeft = Math.max(0, item.offsetLeft - list.offsetLeft - padding)
     // Once, on mount: later choices are made in view.
   }, [])
@@ -58,22 +71,37 @@ export function ThemeShowcase({ className }: { className?: string }) {
       aria-label="Themes"
       className={cn(
         // Room above and below for a card's 4px focus ring: the scroller clips.
-        "-mx-gutter grid snap-x snap-mandatory scroll-px-gutter auto-cols-max grid-flow-col gap-x-4 gap-y-0 overflow-x-auto px-gutter pt-2 pb-3 [scrollbar-width:none]",
+        "-mx-gutter grid snap-x snap-mandatory scroll-px-gutter [scrollbar-width:none] auto-cols-max grid-flow-col gap-x-4 gap-y-0 overflow-x-auto px-gutter pt-2 pb-3",
         "xl:mx-0 xl:grid-flow-row xl:grid-cols-5 xl:overflow-visible xl:px-0 xl:pt-0 xl:pb-0",
         ROWS,
         className
       )}
     >
       {themes.map((theme) => (
-        <li key={theme.id} className="row-span-6 grid w-64 snap-start grid-rows-subgrid xl:w-auto">
-          <ThemeCard theme={theme} active={active === theme.id} onChoose={() => choose(theme.id)} />
+        <li
+          key={theme.id}
+          className="row-span-6 grid w-64 snap-start grid-rows-subgrid xl:w-auto"
+        >
+          <ThemeCard
+            theme={theme}
+            active={active === theme.id}
+            onChoose={() => choose(theme.id)}
+          />
         </li>
       ))}
     </ul>
   )
 }
 
-function ThemeCard({ theme, active, onChoose }: { theme: Theme; active: boolean; onChoose: () => void }) {
+function ThemeCard({
+  theme,
+  active,
+  onChoose,
+}: {
+  theme: Theme
+  active: boolean
+  onChoose: () => void
+}) {
   const descriptionId = React.useId()
   return (
     <ThemeScope
@@ -87,16 +115,27 @@ function ThemeCard({ theme, active, onChoose }: { theme: Theme; active: boolean;
       )}
     >
       {/* A picture of the theme, not a control: its heading face, controls, buttons, panel and scales. */}
-      <div inert aria-hidden="true" className="row-span-5 grid grid-rows-subgrid gap-y-5 p-5">
+      <div
+        inert
+        aria-hidden="true"
+        className="row-span-5 grid grid-rows-subgrid gap-y-5 p-5"
+      >
         <div className="grid content-start gap-2">
           <p className="text-h3 font-extrabold text-foreground">
             Ship it
             <br />
             <span className="text-brand">together</span>.
           </p>
-          <p className="text-caption text-muted-foreground">{themeFontsLabel(theme)}</p>
+          <p className="text-caption text-muted-foreground">
+            {themeFontsLabel(theme)}
+          </p>
         </div>
-        <Input tabIndex={-1} defaultValue="maya@acme.com" aria-label="Email" size="sm" />
+        <Input
+          tabIndex={-1}
+          defaultValue="maya@acme.com"
+          aria-label="Email"
+          size="sm"
+        />
         <div className="flex flex-wrap content-start gap-2">
           <Button size="sm" tabIndex={-1}>
             Publish
@@ -117,11 +156,7 @@ function ThemeCard({ theme, active, onChoose }: { theme: Theme; active: boolean;
         </div>
         <div className="grid content-start gap-1">
           {(["accent", "neutral"] as const).map((role) => (
-            <span key={role} className="grid h-2.5 grid-cols-11 overflow-hidden rounded-xs">
-              {rampSteps.map((step) => (
-                <span key={step} className={rampFill[role][step]} />
-              ))}
-            </span>
+            <AliasRamp key={role} role={role} className="h-2.5 rounded-xs" />
           ))}
         </div>
       </div>
@@ -139,7 +174,10 @@ function ThemeCard({ theme, active, onChoose }: { theme: Theme; active: boolean;
               {theme.name}
             </button>
           </h3>
-          <p id={descriptionId} className="line-clamp-2 text-caption text-muted-foreground">
+          <p
+            id={descriptionId}
+            className="line-clamp-2 text-caption text-muted-foreground"
+          >
             {themeTagline(theme)}
           </p>
         </div>

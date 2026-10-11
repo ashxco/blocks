@@ -15,13 +15,17 @@ import { menuStyles, submenuOffsets } from "@/components/ui/dropdown-menu"
  * only way in.
  */
 
-function ContextMenu({ ...props }: ContextMenuPrimitive.Root.Props) {
+function ContextMenu(props: ContextMenuPrimitive.Root.Props) {
   return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />
 }
 
-function ContextMenuPortal({ ...props }: ContextMenuPrimitive.Portal.Props) {
+function ContextMenuPortal(props: ContextMenuPrimitive.Portal.Props) {
   return (
-    <ScopedPortal portal={ContextMenuPrimitive.Portal} data-slot="context-menu-portal" {...props} />
+    <ScopedPortal
+      portal={ContextMenuPrimitive.Portal}
+      data-slot="context-menu-portal"
+      {...props}
+    />
   )
 }
 
@@ -52,7 +56,13 @@ function ContextMenuContent({
 }: ContextMenuPrimitive.Popup.Props &
   Pick<
     ContextMenuPrimitive.Positioner.Props,
-    "align" | "alignOffset" | "side" | "sideOffset" | "anchor" | "collisionAvoidance" | "collisionBoundary"
+    | "align"
+    | "alignOffset"
+    | "side"
+    | "sideOffset"
+    | "anchor"
+    | "collisionAvoidance"
+    | "collisionBoundary"
   > & {
     /** Element to portal into instead of <body>, e.g. a preview stage. */
     container?: ContextMenuPrimitive.Portal.Props["container"]
@@ -71,7 +81,11 @@ function ContextMenuContent({
       >
         <ContextMenuPrimitive.Popup
           data-slot="context-menu-content"
-          className={cn(menuStyles.popup, "min-w-(--menu-min-width)", className)}
+          className={cn(
+            menuStyles.popup,
+            "min-w-(--menu-min-width)",
+            className
+          )}
           {...props}
         />
       </ContextMenuPrimitive.Positioner>
@@ -79,7 +93,7 @@ function ContextMenuContent({
   )
 }
 
-function ContextMenuGroup({ ...props }: ContextMenuPrimitive.Group.Props) {
+function ContextMenuGroup(props: ContextMenuPrimitive.Group.Props) {
   return (
     <ContextMenuPrimitive.Group data-slot="context-menu-group" {...props} />
   )
@@ -122,7 +136,7 @@ function ContextMenuItem({
   )
 }
 
-function ContextMenuSub({ ...props }: ContextMenuPrimitive.SubmenuRoot.Props) {
+function ContextMenuSub(props: ContextMenuPrimitive.SubmenuRoot.Props) {
   return (
     <ContextMenuPrimitive.SubmenuRoot data-slot="context-menu-sub" {...props} />
   )
@@ -171,7 +185,6 @@ function ContextMenuSubContent({
 function ContextMenuCheckboxItem({
   className,
   children,
-  checked,
   inset,
   ...props
 }: ContextMenuPrimitive.CheckboxItem.Props & {
@@ -182,7 +195,6 @@ function ContextMenuCheckboxItem({
       data-slot="context-menu-checkbox-item"
       data-inset={inset || undefined}
       className={cn(menuStyles.checkableItem, className)}
-      checked={checked}
       {...props}
     >
       <span
@@ -198,9 +210,7 @@ function ContextMenuCheckboxItem({
   )
 }
 
-function ContextMenuRadioGroup({
-  ...props
-}: ContextMenuPrimitive.RadioGroup.Props) {
+function ContextMenuRadioGroup(props: ContextMenuPrimitive.RadioGroup.Props) {
   return (
     <ContextMenuPrimitive.RadioGroup
       data-slot="context-menu-radio-group"

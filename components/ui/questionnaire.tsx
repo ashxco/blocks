@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Questionnaire as QuestionnairePrimitive } from "@shadcn/react/questionnaire"
+import { useHydrated } from "@/hooks/use-hydrated"
+import { Questionnaire as QuestionnairePrimitive } from "@/lib/primitives/questionnaire"
 import { cn } from "@/lib/utils"
 
 import { buttonVariants, type Button } from "@/components/ui/button"
@@ -161,17 +162,6 @@ function QuestionnaireChoices({
   )
 }
 
-const subscribeToNothing = () => () => {}
-
-/** False on the server and during hydration, true afterwards. */
-function useHydrated() {
-  return React.useSyncExternalStore(
-    subscribeToNothing,
-    () => true,
-    () => false
-  )
-}
-
 function QuestionnaireChoice({
   children,
   className,
@@ -221,12 +211,12 @@ function QuestionnaireChoice({
       >
         <span
           data-slot="questionnaire-choice-indicator-dot"
-          className="hidden size-1.5 rounded-full bg-primary-foreground group-data-checked/questionnaire-choice:block group-data-[type=checkbox]/questionnaire-choice:hidden"
+          className="hidden size-1.5 rounded-full bg-primary-foreground group-data-[type=checkbox]/questionnaire-choice:hidden group-data-checked/questionnaire-choice:block"
         />
         <CheckIcon
           data-slot="questionnaire-choice-indicator-check"
           strokeWidth={3}
-          className="hidden size-3 group-data-checked/questionnaire-choice:block group-data-[type=radio]/questionnaire-choice:hidden"
+          className="hidden size-3 group-data-[type=radio]/questionnaire-choice:hidden group-data-checked/questionnaire-choice:block"
         />
       </span>
       <QuestionnairePrimitive.ChoiceLabel
@@ -255,7 +245,10 @@ function QuestionnaireChoiceDescription({
   return (
     <span
       data-slot="questionnaire-choice-description"
-      className={cn("text-caption font-normal text-muted-foreground", className)}
+      className={cn(
+        "text-caption font-normal text-muted-foreground",
+        className
+      )}
       {...props}
     />
   )
@@ -274,7 +267,7 @@ function QuestionnaireInput({
         data-slot="questionnaire-input"
         className={cn(
           "h-(--control-height-md) w-full min-w-0 rounded-(--control-radius) border border-input bg-muted px-(--control-padding-x) text-control text-foreground",
-          "outline-none transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard",
+          "transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard outline-none",
           "placeholder:text-muted-foreground hover:border-foreground/25",
           "focus-visible:border-ring focus-visible:bg-background focus-visible:focus-ring",
           "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",

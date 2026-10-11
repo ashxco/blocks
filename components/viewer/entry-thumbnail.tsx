@@ -3,8 +3,8 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
-import { ExampleThumbnailContext } from "@/components/viewer/example-canvas"
-import { useElementSize } from "@/components/viewer/use-element-size"
+import { ExampleThumbnailContext } from "@/components/viewer/example-thumbnail"
+import { useElementSize, useMediaQuery } from "@/components/viewer/hooks"
 
 /*
  * On phones each tile is the width of the screen, and a 1280px section scaled
@@ -13,20 +13,6 @@ import { useElementSize } from "@/components/viewer/use-element-size"
  */
 const phoneQuery = "(max-width: 639px)"
 const SMALL_TILE = 240
-
-function subscribePhone(onChange: () => void) {
-  const query = window.matchMedia(phoneQuery)
-  query.addEventListener("change", onChange)
-  return () => query.removeEventListener("change", onChange)
-}
-
-function usePhone() {
-  return React.useSyncExternalStore(
-    subscribePhone,
-    () => window.matchMedia(phoneQuery).matches,
-    () => false
-  )
-}
 
 /**
  * A live miniature of a docs module's first example. The example renders
@@ -50,7 +36,7 @@ export function EntryThumbnail({
 }) {
   const [ref, size] = useElementSize<HTMLDivElement>()
   const [visible, setVisible] = React.useState(false)
-  const phone = usePhone()
+  const phone = useMediaQuery(phoneQuery)
 
   React.useEffect(() => {
     const el = ref.current
@@ -70,9 +56,15 @@ export function EntryThumbnail({
 
   const ready = visible && size !== null && size.width > 0
   const full = phone ? Math.min(viewport.full, 768) : viewport.full
-  const other = size && size.width < SMALL_TILE ? Math.min(viewport.other, 400) : viewport.other
+  const other =
+    size && size.width < SMALL_TILE
+      ? Math.min(viewport.other, 400)
+      : viewport.other
   const value = React.useMemo(
-    () => (size ? { width: size.width, height: size.height, viewport: { full, other } } : null),
+    () =>
+      size
+        ? { width: size.width, height: size.height, viewport: { full, other } }
+        : null,
     [size, full, other]
   )
 
@@ -89,9 +81,13 @@ export function EntryThumbnail({
       )}
     >
       {ready ? (
-        <ExampleThumbnailContext.Provider value={value}>{children}</ExampleThumbnailContext.Provider>
+        <ExampleThumbnailContext.Provider value={value}>
+          {children}
+        </ExampleThumbnailContext.Provider>
       ) : (
-        <div className="absolute inset-0 grid place-items-center p-6">{placeholder}</div>
+        <div className="absolute inset-0 grid place-items-center p-6">
+          {placeholder}
+        </div>
       )}
     </div>
   )

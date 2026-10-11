@@ -4,6 +4,7 @@ import * as React from "react"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
+import { statusVariant } from "@/docs/sample/status"
 import { Badge } from "@/components/ui/badge"
 import {
   Pagination,
@@ -18,7 +19,9 @@ import {
 /** Page numbers to show: first, last, and the current page with its neighbours. */
 function pageWindow(current: number, total: number): (number | "ellipsis")[] {
   const pages = new Set([1, total, current - 1, current, current + 1])
-  const sorted = [...pages].filter((p) => p >= 1 && p <= total).sort((a, b) => a - b)
+  const sorted = [...pages]
+    .filter((p) => p >= 1 && p <= total)
+    .sort((a, b) => a - b)
   const out: (number | "ellipsis")[] = []
   sorted.forEach((p, i) => {
     if (i > 0 && p - sorted[i - 1] > 1) out.push("ellipsis")
@@ -65,12 +68,18 @@ function StatefulPagination({
             <PaginationItem
               key={p}
               className={
-                (p < page && items[i - 1] === "ellipsis") || (p > page && items[i + 1] === "ellipsis")
+                (p < page && items[i - 1] === "ellipsis") ||
+                (p > page && items[i + 1] === "ellipsis")
                   ? "max-sm:hidden"
                   : undefined
               }
             >
-              <PaginationLink href={`#page-${p}`} size={size} isActive={p === page} onClick={go(p)}>
+              <PaginationLink
+                href={`#page-${p}`}
+                size={size}
+                isActive={p === page}
+                onClick={go(p)}
+              >
                 {p}
               </PaginationLink>
             </PaginationItem>
@@ -91,19 +100,57 @@ function StatefulPagination({
 
 /** Page 6 of the workspace’s tasks, 10 to a page: rows 51–60 of 312. */
 const tasks = [
-  { title: "Draft the Q4 hiring plan", meta: "Q4 planning · Lucas Moreau", status: "In progress" },
-  { title: "Review the onboarding survey results", meta: "Onboarding redesign · Sofia Alvarez", status: "Done" },
-  { title: "Fix crash when uploading photos", meta: "Mobile app 2.0 · Jordan Lee", status: "Overdue" },
-  { title: "Update the refund policy article", meta: "Help center · Sam Okafor", status: "Done" },
-  { title: "Move saved cards to the new payment provider", meta: "Billing migration · Daniel Brooks", status: "In progress" },
-  { title: "Export the new logo files", meta: "Brand refresh · Sofia Alvarez", status: "Done" },
-  { title: "Add search to the invoices page", meta: "Customer portal · Jordan Lee", status: "Overdue" },
-  { title: "Book the venue for the Q4 offsite", meta: "Q4 planning · Lucas Moreau", status: "Done" },
-  { title: "Interview five customers about reports", meta: "Q4 planning · Maya Patel", status: "To do" },
-  { title: "Write the plan comparison page", meta: "Website relaunch · Priya Raman", status: "To do" },
+  {
+    title: "Draft the Q4 hiring plan",
+    meta: "Q4 planning · Lucas Moreau",
+    status: "In progress",
+  },
+  {
+    title: "Review the onboarding survey results",
+    meta: "Onboarding redesign · Sofia Alvarez",
+    status: "Done",
+  },
+  {
+    title: "Fix crash when uploading photos",
+    meta: "Mobile app 2.0 · Jordan Lee",
+    status: "Overdue",
+  },
+  {
+    title: "Update the refund policy article",
+    meta: "Help center · Sam Okafor",
+    status: "Done",
+  },
+  {
+    title: "Move saved cards to the new payment provider",
+    meta: "Billing migration · Daniel Brooks",
+    status: "In progress",
+  },
+  {
+    title: "Export the new logo files",
+    meta: "Brand refresh · Sofia Alvarez",
+    status: "Done",
+  },
+  {
+    title: "Add search to the invoices page",
+    meta: "Customer portal · Jordan Lee",
+    status: "Overdue",
+  },
+  {
+    title: "Book the venue for the Q4 offsite",
+    meta: "Q4 planning · Lucas Moreau",
+    status: "Done",
+  },
+  {
+    title: "Interview five customers about reports",
+    meta: "Q4 planning · Maya Patel",
+    status: "To do",
+  },
+  {
+    title: "Write the plan comparison page",
+    meta: "Website relaunch · Priya Raman",
+    status: "To do",
+  },
 ] as const
-
-const statusVariant = { Done: "success", "In progress": "info", Overdue: "destructive", "To do": "secondary" } as const
 
 /** The footer’s page links: first and last page, the current page and its neighbours. */
 const footerPage = 6
@@ -206,21 +253,36 @@ export default function PaginationDocs() {
         <section className="overflow-hidden rounded-(--card-radius) border bg-card">
           <ul className="divide-y">
             {tasks.map((task) => (
-              <li key={task.title} className="flex items-center justify-between gap-4 px-5 py-3.5">
+              <li
+                key={task.title}
+                className="flex items-center justify-between gap-4 px-5 py-3.5"
+              >
                 <div className="grid min-w-0 gap-0.5">
-                  <p className="truncate text-label text-foreground">{task.title}</p>
-                  <p className="truncate text-caption text-muted-foreground">{task.meta}</p>
+                  <p className="truncate text-label text-foreground">
+                    {task.title}
+                  </p>
+                  <p className="truncate text-caption text-muted-foreground">
+                    {task.meta}
+                  </p>
                 </div>
-                <Badge variant={statusVariant[task.status]}>{task.status}</Badge>
+                <Badge variant={statusVariant[task.status]}>
+                  {task.status}
+                </Badge>
               </li>
             ))}
           </ul>
           <div className="flex flex-col items-center gap-3 border-t bg-subtle px-5 py-3 sm:flex-row sm:justify-between">
-            <p className="text-caption text-muted-foreground tabular">Showing 51–60 of 312 tasks</p>
+            <p className="text-caption text-muted-foreground tabular">
+              Showing 51–60 of 312 tasks
+            </p>
             <Pagination className="mx-0 w-auto">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationLink href="#page-5" size="icon-sm" aria-label="Go to previous page">
+                  <PaginationLink
+                    href="#page-5"
+                    size="icon-sm"
+                    aria-label="Go to previous page"
+                  >
                     <ChevronLeftIcon />
                   </PaginationLink>
                 </PaginationItem>
@@ -234,19 +296,28 @@ export default function PaginationDocs() {
                     <PaginationItem
                       key={p}
                       className={
-                        (p < footerPage && items[i - 1] === "ellipsis") || (p > footerPage && items[i + 1] === "ellipsis")
+                        (p < footerPage && items[i - 1] === "ellipsis") ||
+                        (p > footerPage && items[i + 1] === "ellipsis")
                           ? "max-sm:hidden"
                           : undefined
                       }
                     >
-                      <PaginationLink href={`#page-${p}`} size="icon-sm" isActive={p === footerPage}>
+                      <PaginationLink
+                        href={`#page-${p}`}
+                        size="icon-sm"
+                        isActive={p === footerPage}
+                      >
                         {p}
                       </PaginationLink>
                     </PaginationItem>
                   )
                 )}
                 <PaginationItem>
-                  <PaginationLink href="#page-7" size="icon-sm" aria-label="Go to next page">
+                  <PaginationLink
+                    href="#page-7"
+                    size="icon-sm"
+                    aria-label="Go to next page"
+                  >
                     <ChevronRightIcon />
                   </PaginationLink>
                 </PaginationItem>
@@ -271,12 +342,46 @@ export default function PaginationDocs() {
 
       <ApiTable
         rows={[
-          { prop: "isActive", type: "boolean", default: "false", description: "PaginationLink: marks the current page with a solid ink fill and aria-current." },
-          { prop: "PaginationLink size", type: '"icon" | "icon-sm" | "icon-lg" | …', default: '"icon"', description: "Any Button size. Page sizes come from --button-height-*." },
-          { prop: "href", type: "string", description: "PaginationLink, PaginationPrevious, PaginationNext: the page to go to." },
-          { prop: "text", type: "string", default: '"Previous" / "Next"', description: "PaginationPrevious and PaginationNext: the label shown from the sm breakpoint up." },
-          { prop: "size", type: '"default" | "sm"', default: '"default"', description: "PaginationPrevious and PaginationNext: match sm with icon-sm page links." },
-          { prop: "aria-disabled", type: "boolean", description: "Fades a link and stops pointer events, for Previous on page 1 or Next on the last page." },
+          {
+            prop: "isActive",
+            type: "boolean",
+            default: "false",
+            description:
+              "PaginationLink: marks the current page with a solid ink fill and aria-current.",
+          },
+          {
+            prop: "PaginationLink size",
+            type: '"icon" | "icon-sm" | "icon-lg" | …',
+            default: '"icon"',
+            description:
+              "Any Button size. Page sizes come from --button-height-*.",
+          },
+          {
+            prop: "href",
+            type: "string",
+            description:
+              "PaginationLink, PaginationPrevious, PaginationNext: the page to go to.",
+          },
+          {
+            prop: "text",
+            type: "string",
+            default: '"Previous" / "Next"',
+            description:
+              "PaginationPrevious and PaginationNext: the label shown from the sm breakpoint up.",
+          },
+          {
+            prop: "size",
+            type: '"default" | "sm"',
+            default: '"default"',
+            description:
+              "PaginationPrevious and PaginationNext: match sm with icon-sm page links.",
+          },
+          {
+            prop: "aria-disabled",
+            type: "boolean",
+            description:
+              "Fades a link and stops pointer events, for Previous on page 1 or Next on the last page.",
+          },
         ]}
       />
     </Examples>

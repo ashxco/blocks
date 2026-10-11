@@ -41,6 +41,15 @@ const unmatched = [
   { name: "Design team", detail: "Row 118 · 7 tasks" },
 ]
 
+function faqItem(item: (typeof faq)[number]) {
+  return (
+    <AccordionItem key={item.value} value={item.value}>
+      <AccordionTrigger>{item.question}</AccordionTrigger>
+      <AccordionContent>{item.answer}</AccordionContent>
+    </AccordionItem>
+  )
+}
+
 export default function AccordionDocs() {
   return (
     <Examples>
@@ -59,12 +68,7 @@ export default function AccordionDocs() {
 </Accordion>`}
       >
         <Accordion defaultValue={["trial"]} className="max-w-narrow">
-          {faq.map((item) => (
-            <AccordionItem key={item.value} value={item.value}>
-              <AccordionTrigger>{item.question}</AccordionTrigger>
-              <AccordionContent>{item.answer}</AccordionContent>
-            </AccordionItem>
-          ))}
+          {faq.map(faqItem)}
         </Accordion>
       </Example>
 
@@ -76,12 +80,7 @@ export default function AccordionDocs() {
         code={`<Accordion variant="contained">…</Accordion>`}
       >
         <Accordion variant="contained" className="max-w-narrow">
-          {faq.slice(0, 3).map((item) => (
-            <AccordionItem key={item.value} value={item.value}>
-              <AccordionTrigger>{item.question}</AccordionTrigger>
-              <AccordionContent>{item.answer}</AccordionContent>
-            </AccordionItem>
-          ))}
+          {faq.slice(0, 3).map(faqItem)}
         </Accordion>
       </Example>
 
@@ -91,13 +90,12 @@ export default function AccordionDocs() {
         layout="stack"
         code={`<Accordion multiple defaultValue={["trial", "guests"]}>…</Accordion>`}
       >
-        <Accordion multiple defaultValue={["trial", "guests"]} className="max-w-narrow">
-          {faq.slice(0, 3).map((item) => (
-            <AccordionItem key={item.value} value={item.value}>
-              <AccordionTrigger>{item.question}</AccordionTrigger>
-              <AccordionContent>{item.answer}</AccordionContent>
-            </AccordionItem>
-          ))}
+        <Accordion
+          multiple
+          defaultValue={["trial", "guests"]}
+          className="max-w-narrow"
+        >
+          {faq.slice(0, 3).map(faqItem)}
         </Accordion>
       </Example>
 
@@ -111,16 +109,23 @@ export default function AccordionDocs() {
           <AccordionItem value="audit">
             <AccordionTrigger>Audit log</AccordionTrigger>
             <AccordionContent>
-              Every change to projects, tasks, members and permissions, with who made it and when.
+              Every change to projects, tasks, members and permissions, with who
+              made it and when.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="sso">
             <AccordionTrigger>SSO and SAML</AccordionTrigger>
-            <AccordionContent>Sign in with your identity provider, on Business and Enterprise.</AccordionContent>
+            <AccordionContent>
+              Sign in with your identity provider, on Business and Enterprise.
+            </AccordionContent>
           </AccordionItem>
           <AccordionItem value="residency" disabled>
-            <AccordionTrigger>Data residency, available on Enterprise</AccordionTrigger>
-            <AccordionContent>Keep your workspace data stored in the EU or the US.</AccordionContent>
+            <AccordionTrigger>
+              Data residency, available on Enterprise
+            </AccordionTrigger>
+            <AccordionContent>
+              Keep your workspace data stored in the EU or the US.
+            </AccordionContent>
           </AccordionItem>
         </Accordion>
       </Example>
@@ -130,7 +135,11 @@ export default function AccordionDocs() {
         description="Rich content works inside a row: status, lists and links. Keep the title short and put detail in the panel."
         layout="stack"
       >
-        <Accordion variant="contained" defaultValue={["assignees"]} className="max-w-narrow">
+        <Accordion
+          variant="contained"
+          defaultValue={["assignees"]}
+          className="max-w-narrow"
+        >
           <AccordionItem value="tasks">
             <AccordionTrigger>
               <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
@@ -140,8 +149,9 @@ export default function AccordionDocs() {
             </AccordionTrigger>
             <AccordionContent>
               <p>
-                Imported 284 tasks into Client projects in <span className="tabular">6 seconds</span>, with their
-                due dates and priorities.
+                Imported 284 tasks into Client projects in{" "}
+                <span className="tabular">6 seconds</span>, with their due dates
+                and priorities.
               </p>
             </AccordionContent>
           </AccordionItem>
@@ -153,17 +163,28 @@ export default function AccordionDocs() {
               </span>
             </AccordionTrigger>
             <AccordionContent>
-              <p>Two names in the file don’t match anyone in Acme Inc., so their tasks have no assignee yet.</p>
+              <p>
+                Two names in the file don’t match anyone in Acme Inc., so their
+                tasks have no assignee yet.
+              </p>
               <ul className="divide-y rounded-(--control-radius) border">
                 {unmatched.map((row) => (
-                  <li key={row.name} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 px-3 py-2">
-                    <span className="font-semibold text-foreground">{row.name}</span>
-                    <span className="text-caption text-muted-foreground tabular-nums">{row.detail}</span>
+                  <li
+                    key={row.name}
+                    className="flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 px-3 py-2"
+                  >
+                    <span className="font-semibold text-foreground">
+                      {row.name}
+                    </span>
+                    <span className="text-caption text-muted-foreground tabular-nums">
+                      {row.detail}
+                    </span>
                   </li>
                 ))}
               </ul>
               <p>
-                Pick a member for each name, or leave the tasks unassigned. <a href="#import-guide">Read the import guide</a>
+                Pick a member for each name, or leave the tasks unassigned.{" "}
+                <a href="#import-guide">Read the import guide</a>
               </p>
             </AccordionContent>
           </AccordionItem>
@@ -196,13 +217,48 @@ export default function AccordionDocs() {
 
       <ApiTable
         rows={[
-          { prop: "variant", type: '"default" | "contained"', default: '"default"', description: "Accordion: open hairline rows, or rows in a bordered box." },
-          { prop: "multiple", type: "boolean", default: "false", description: "Accordion: let more than one row be open at a time." },
-          { prop: "defaultValue", type: "any[]", description: "Accordion: rows open on first render, when uncontrolled." },
-          { prop: "value / onValueChange", type: "any[] / (value) => void", description: "Accordion: control which rows are open." },
-          { prop: "hiddenUntilFound", type: "boolean", default: "false", description: "Accordion: keep closed content findable with the browser’s find in page." },
-          { prop: "value", type: "any", description: "AccordionItem: identifies the row." },
-          { prop: "disabled", type: "boolean", default: "false", description: "Accordion or AccordionItem: stop rows from opening." },
+          {
+            prop: "variant",
+            type: '"default" | "contained"',
+            default: '"default"',
+            description:
+              "Accordion: open hairline rows, or rows in a bordered box.",
+          },
+          {
+            prop: "multiple",
+            type: "boolean",
+            default: "false",
+            description: "Accordion: let more than one row be open at a time.",
+          },
+          {
+            prop: "defaultValue",
+            type: "any[]",
+            description:
+              "Accordion: rows open on first render, when uncontrolled.",
+          },
+          {
+            prop: "value / onValueChange",
+            type: "any[] / (value) => void",
+            description: "Accordion: control which rows are open.",
+          },
+          {
+            prop: "hiddenUntilFound",
+            type: "boolean",
+            default: "false",
+            description:
+              "Accordion: keep closed content findable with the browser’s find in page.",
+          },
+          {
+            prop: "value",
+            type: "any",
+            description: "AccordionItem: identifies the row.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description: "Accordion or AccordionItem: stop rows from opening.",
+          },
         ]}
       />
     </Examples>

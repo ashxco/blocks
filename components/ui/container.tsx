@@ -33,7 +33,10 @@ function Container({
 }: useRender.ComponentProps<"div"> & { size?: ContainerSize }) {
   return useRender({
     defaultTagName: "div",
-    props: mergeProps<"div">({ className: cn(containerSizes[size], className) }, props),
+    props: mergeProps<"div">(
+      { className: cn(containerSizes[size], className) },
+      props
+    ),
     render,
     state: { slot: "container", size },
   })

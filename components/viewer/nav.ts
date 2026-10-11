@@ -2,11 +2,16 @@
  * Navigation model for the viewer, derived from lib/registry.ts. The sidebar, the mobile menu, the command palette, the index pages, the
  * 404 pages and the pagers all read from here so they never disagree.
  */
-import { componentGroups, components, foundations, type RegistryEntry } from "@/lib/registry"
+import {
+  componentGroups,
+  components,
+  foundations,
+  type RegistryEntry,
+} from "@/lib/registry"
 
 export type SectionId = "foundations" | "components"
 
-export interface NavItem {
+interface NavItem {
   title: string
   href: string
   description: string
@@ -20,7 +25,7 @@ export interface NavGroup {
   items: NavItem[]
 }
 
-export interface NavSection {
+interface NavSection {
   id: SectionId
   title: string
   href: string
@@ -33,14 +38,16 @@ export const sectionHref: Record<SectionId, string> = {
   components: "/components",
 }
 
-export const sectionTitle: Record<SectionId, string> = {
+const sectionTitle: Record<SectionId, string> = {
   foundations: "Foundations",
   components: "Components",
 }
 
 export const sectionDescription: Record<SectionId, string> = {
-  foundations: "Colour, type, space, shape, motion and themes: the tokens everything else is made of.",
-  components: "Accessible primitives on Base UI, restyled from the ground up with Blocks tokens.",
+  foundations:
+    "Colour, type, space, shape, motion and themes: the tokens everything else is made of.",
+  components:
+    "Accessible primitives on Base UI, restyled from the ground up with Blocks tokens.",
 }
 
 /** One sentence per component group, shown on the Components index. */
@@ -71,11 +78,17 @@ function toItem(base: string, entry: RegistryEntry): NavItem {
   }
 }
 
-function grouped(base: string, groups: readonly string[], entries: RegistryEntry[]): NavGroup[] {
+function grouped(
+  base: string,
+  groups: readonly string[],
+  entries: RegistryEntry[]
+): NavGroup[] {
   return groups
     .map((group) => ({
       title: group,
-      items: entries.filter((e) => e.group === group).map((e) => toItem(base, e)),
+      items: entries
+        .filter((e) => e.group === group)
+        .map((e) => toItem(base, e)),
     }))
     .filter((g) => g.items.length > 0)
 }
@@ -89,7 +102,11 @@ export const navSections: NavSection[] = [
     groups: [
       {
         items: [
-          { title: "Overview", href: sectionHref.foundations, description: sectionDescription.foundations },
+          {
+            title: "Overview",
+            href: sectionHref.foundations,
+            description: sectionDescription.foundations,
+          },
           ...foundations.map((e) => toItem(sectionHref.foundations, e)),
         ],
       },
@@ -101,7 +118,15 @@ export const navSections: NavSection[] = [
     href: sectionHref.components,
     description: sectionDescription.components,
     groups: [
-      { items: [{ title: "Overview", href: sectionHref.components, description: sectionDescription.components }] },
+      {
+        items: [
+          {
+            title: "Overview",
+            href: sectionHref.components,
+            description: sectionDescription.components,
+          },
+        ],
+      },
       ...grouped(sectionHref.components, componentGroups, components),
     ],
   },
@@ -110,7 +135,8 @@ export const navSections: NavSection[] = [
 /** Which section a pathname belongs to, if any. */
 export function sectionForPath(pathname: string): SectionId | undefined {
   return (Object.keys(sectionHref) as SectionId[]).find(
-    (id) => pathname === sectionHref[id] || pathname.startsWith(`${sectionHref[id]}/`)
+    (id) =>
+      pathname === sectionHref[id] || pathname.startsWith(`${sectionHref[id]}/`)
   )
 }
 
@@ -121,7 +147,7 @@ const themesEntry = foundations.find((e) => e.slug === "themes")
  * Foundations page, but it is what makes Blocks more than one look, so the
  * header, the 404 pages and the overview link to it on its own.
  */
-export interface TopLink {
+interface TopLink {
   id: SectionId | "themes"
   title: string
   href: string
@@ -129,7 +155,12 @@ export interface TopLink {
 }
 
 export const topLinks: TopLink[] = [
-  ...navSections.map(({ id, title, href, description }) => ({ id, title, href, description })),
+  ...navSections.map(({ id, title, href, description }) => ({
+    id,
+    title,
+    href,
+    description,
+  })),
   ...(themesEntry
     ? [
         {
@@ -156,39 +187,46 @@ export interface PagerLink {
  * entry leads back to the section overview and the last one on to the next
  * section, when there is one.
  */
-export function pagerFor<T extends { slug: string; title: string; group: string }>(
-  entries: T[],
-  slug: string,
-  base: string
+export function pagerFor(
+  sectionId: SectionId,
+  slug: string
 ): { prev?: PagerLink; next?: PagerLink } {
-  const href = `${base}/${slug}`
-  const sectionIndex = navSections.findIndex((s) => s.href === base)
+  const sectionIndex = navSections.findIndex((s) => s.id === sectionId)
   const section = navSections[sectionIndex]
+  const href = `${section.href}/${slug}`
 
-  if (!section) {
-    const index = entries.findIndex((e) => e.slug === slug)
-    if (index < 0) return {}
-    const link = (e: T | undefined): PagerLink | undefined =>
-      e ? { title: e.title, href: `${base}/${e.slug}`, group: e.group } : undefined
-    return { prev: link(entries[index - 1]), next: link(entries[index + 1]) }
-  }
-
-  const items = section.groups.flatMap((g) => g.items).filter((i) => i.href !== section.href)
+  const items = section.groups
+    .flatMap((g) => g.items)
+    .filter((i) => i.href !== section.href)
   const index = items.findIndex((i) => i.href === href)
   if (index < 0) return {}
-  const toLink = (i: NavItem): PagerLink => ({ title: i.title, href: i.href, group: i.group ?? section.title })
+  const toLink = (i: NavItem): PagerLink => ({
+    title: i.title,
+    href: i.href,
+    group: i.group ?? section.title,
+  })
 
   const prev: PagerLink =
     index > 0
       ? toLink(items[index - 1])
-      : { title: `${section.title} overview`, href: section.href, group: section.title, caption: "Back to the start" }
+      : {
+          title: `${section.title} overview`,
+          href: section.href,
+          group: section.title,
+          caption: "Back to the start",
+        }
 
   const following = navSections[sectionIndex + 1]
   const next: PagerLink | undefined =
     index < items.length - 1
       ? toLink(items[index + 1])
       : following
-        ? { title: following.title, href: following.href, group: following.title, caption: "Next section" }
+        ? {
+            title: following.title,
+            href: following.href,
+            group: following.title,
+            caption: "Next section",
+          }
         : undefined
 
   return { prev, next }

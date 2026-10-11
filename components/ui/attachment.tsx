@@ -30,9 +30,9 @@ const attachmentVariants = cva(
     variants: {
       size: {
         default:
-          "gap-3 p-2 text-sm has-data-[slot=attachment-content]:pr-3 not-has-[[data-slot=attachment-media]]:pl-3",
-        sm: "gap-2.5 p-1.5 text-xs has-data-[slot=attachment-content]:pr-2.5 not-has-[[data-slot=attachment-media]]:pl-2.5",
-        xs: "gap-2 rounded-sm p-1 text-xs has-data-[slot=attachment-content]:pr-2 not-has-[[data-slot=attachment-media]]:pl-2",
+          "gap-3 p-2 text-sm not-has-[[data-slot=attachment-media]]:pl-3 has-data-[slot=attachment-content]:pr-3",
+        sm: "gap-2.5 p-1.5 text-xs not-has-[[data-slot=attachment-media]]:pl-2.5 has-data-[slot=attachment-content]:pr-2.5",
+        xs: "gap-2 rounded-sm p-1 text-xs not-has-[[data-slot=attachment-media]]:pl-2 has-data-[slot=attachment-content]:pr-2",
       },
       orientation: {
         horizontal: "min-w-48 items-center",
@@ -151,7 +151,7 @@ function AttachmentDescription({
       className={cn(
         "block max-w-full min-w-0 truncate text-xs text-muted-foreground tabular-nums",
         // An error says what went wrong and how to fix it, so it wraps instead of truncating.
-        "group-data-[state=error]/attachment:text-destructive group-data-[state=error]/attachment:whitespace-normal",
+        "group-data-[state=error]/attachment:whitespace-normal group-data-[state=error]/attachment:text-destructive",
         className
       )}
       {...props}
@@ -227,7 +227,7 @@ function AttachmentGroup({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="attachment-group"
       className={cn(
-        "flex min-w-0 no-scrollbar snap-x snap-mandatory scroll-px-1 gap-2 overflow-x-auto overscroll-x-contain p-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start",
+        "no-scrollbar flex min-w-0 snap-x snap-mandatory scroll-px-1 gap-2 overflow-x-auto overscroll-x-contain p-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start",
         className
       )}
       {...props}
