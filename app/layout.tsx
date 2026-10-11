@@ -1,14 +1,5 @@
 import type { Metadata } from "next"
-import {
-  Bricolage_Grotesque,
-  DM_Sans,
-  Fraunces,
-  Geist,
-  Geist_Mono,
-  Inter_Tight,
-  Manrope,
-  Plus_Jakarta_Sans,
-} from "next/font/google"
+import localFont from "next/font/local"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -22,32 +13,50 @@ import { cn } from "@/lib/utils"
  * (font.family.sans, .heading and .mono in design-system/tokens and
  * design-system/themes). The default theme's fonts are preloaded; a theme's
  * own fonts download when a page first uses that theme.
+ *
+ * Every font is self-hosted from app/fonts/<family>/ (latin subset, upright,
+ * variable, each with its OFL license), so neither the build nor the browser
+ * fetches a font from anywhere else. A variable font's weight range covers
+ * the weights the system uses (400 to 800).
  */
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const jakarta = localFont({
+  src: "./fonts/plus-jakarta-sans/plus-jakarta-sans-latin-wght-normal.woff2",
+  weight: "400 800",
+  style: "normal",
   variable: "--font-jakarta",
 })
 
 /** Code in every theme, and Mono's headings at 800: the variable font, weights 100 to 900. */
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  weight: "variable",
+const geistMono = localFont({
+  src: "./fonts/geist-mono/geist-mono-latin-wght-normal.woff2",
+  weight: "100 900",
+  style: "normal",
   variable: "--font-geist-mono",
+  // Code keeps its columns while the font loads: fall back to a system monospace, not adjusted Arial.
+  adjustFontFallback: false,
+  fallback: [
+    "ui-monospace",
+    "SFMono-Regular",
+    "Menlo",
+    "Consolas",
+    "monospace",
+  ],
 })
 
 /** Ocean. */
-const interTight = Inter_Tight({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const interTight = localFont({
+  src: "./fonts/inter-tight/inter-tight-latin-wght-normal.woff2",
+  weight: "400 800",
+  style: "normal",
   variable: "--font-inter-tight",
   preload: false,
 })
 
 /** Forest. */
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const manrope = localFont({
+  src: "./fonts/manrope/manrope-latin-wght-normal.woff2",
+  weight: "400 800",
+  style: "normal",
   variable: "--font-manrope",
   preload: false,
 })
@@ -56,18 +65,19 @@ const manrope = Manrope({
  * Forest's headings: Bricolage Grotesque as the variable font (weights 200 to
  * 800) with its optical-size axis, so display sizes get the display cut.
  */
-const bricolage = Bricolage_Grotesque({
-  subsets: ["latin"],
-  weight: "variable",
-  axes: ["opsz"],
+const bricolage = localFont({
+  src: "./fonts/bricolage-grotesque/bricolage-grotesque-latin-opsz-normal.woff2",
+  weight: "200 800",
+  style: "normal",
   variable: "--font-bricolage",
   preload: false,
 })
 
 /** Ember. */
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const dmSans = localFont({
+  src: "./fonts/dm-sans/dm-sans-latin-wght-normal.woff2",
+  weight: "400 800",
+  style: "normal",
   variable: "--font-dm-sans",
   preload: false,
 })
@@ -76,19 +86,20 @@ const dmSans = DM_Sans({
  * Ember's headings: Fraunces, upright only, as the variable font (weights 100
  * to 900) with its optical-size axis, so display sizes get the display cut.
  */
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: "variable",
+const fraunces = localFont({
+  src: "./fonts/fraunces/fraunces-latin-opsz-normal.woff2",
+  weight: "100 900",
   style: "normal",
-  axes: ["opsz"],
   variable: "--font-fraunces",
+  adjustFontFallback: "Times New Roman",
   preload: false,
 })
 
 /** Mono. */
-const geist = Geist({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const geist = localFont({
+  src: "./fonts/geist/geist-latin-wght-normal.woff2",
+  weight: "400 800",
+  style: "normal",
   variable: "--font-geist",
   preload: false,
 })
@@ -101,7 +112,12 @@ export const metadata: Metadata = {
   },
   description: siteDescription,
   applicationName: siteName,
-  openGraph: { type: "website", siteName, title: siteName, description: siteDescription },
+  openGraph: {
+    type: "website",
+    siteName,
+    title: siteName,
+    description: siteDescription,
+  },
   twitter: { card: "summary", title: siteName, description: siteDescription },
 }
 
