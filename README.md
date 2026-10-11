@@ -2,7 +2,7 @@
 
 One component library, five real products.
 
-Blocks is a design system and component library built on Next.js 16, React 19, Tailwind CSS v4 and Base UI. Its 65 components follow the shadcn/ui API, so they install with the shadcn CLI and drop into any app that uses it. Everything visual comes from design tokens, and five themes, each with its own accent, neutrals, shapes and fonts, change the whole look of the same components in light and dark.
+Blocks is a design system and component library built on Next.js 16, React 19, Tailwind CSS v4 and Base UI. Its 65 components follow the shadcn/ui API, so they install with the shadcn CLI, or from npm as `@ashxsf/blocks`, and drop into any app that uses it. Everything visual comes from design tokens, and five themes, each with its own accent, neutrals, shapes and fonts, change the whole look of the same components in light and dark.
 
 ## Use it in your app
 
@@ -19,6 +19,24 @@ npx shadcn@latest add https://<your-blocks-origin>/r/button.json --overwrite
 ```
 
 `blocks.json` installs the CSS, utilities, portal container, hooks and primitives every component relies on. After it, make `app/globals.css` exactly `@import "tailwindcss";` followed by `@import "./styles/blocks.css";`. `init` writes shadcn's own `lib/utils.ts` and `components/ui/button.tsx`, which `--overwrite` replaces; every other component installs with no flag, one at a time from `/r/<slug>.json`. The registry index is at `/r/registry.json`. The site's **Get started** page (`/foundations/get-started`) has the full steps, including the font variables each theme reads.
+
+### Or from npm
+
+```bash
+npm install @ashxsf/blocks
+```
+
+```css
+@import "tailwindcss";
+@import "@ashxsf/blocks/css";
+@source "../node_modules/@ashxsf/blocks/dist";
+```
+
+```tsx
+import { Button } from "@ashxsf/blocks"
+```
+
+The same components, CSS and tokens as a dependency instead of owned source. The three lines are `app/globals.css`; `@source` is relative to that file and lets Tailwind scan the package's class names. One file at a time: `@ashxsf/blocks/ui/button`. Fonts and themes work as with the registry.
 
 ## Themes
 
@@ -51,6 +69,7 @@ Open http://localhost:3000.
 | `npm run dev`                 | Builds the tokens, then starts the dev server                                         |
 | `npm run tokens`              | Compiles `design-system/` into `app/styles/tokens.css` and `design-system/generated/` |
 | `npm run registry`            | Builds the shadcn-compatible registry served at `/r`                                  |
+| `npm run package`             | Builds the npm package into `dist-pkg/`                                               |
 | `npm run check`               | Tokens, contrast gate, theme uniqueness gate, TypeScript and the design-system lint   |
 | `npm run lint`                | ESLint                                                                                |
 | `npm run verify`              | `check`, `lint` and a production build: run it before every deploy                    |

@@ -17,7 +17,7 @@ export const foundations: RegistryEntry[] = [
     title: "Get started",
     group: "Foundations",
     description:
-      "Install Blocks in a Next.js app with the shadcn CLI: the base styles, then any component.",
+      "Install Blocks in a Next.js app with the shadcn CLI or from npm: the base styles, then any component.",
   },
   {
     slug: "themes",

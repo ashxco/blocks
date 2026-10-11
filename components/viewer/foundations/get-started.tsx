@@ -29,9 +29,9 @@ import {
 } from "./layout"
 
 /*
- * Getting started: install Blocks in a Next.js app with the shadcn CLI. Every
- * command is built from the site's own origin (lib/site.ts), so a copied
- * command points at this deployment.
+ * Getting started: install Blocks in a Next.js app with the shadcn CLI, or
+ * from npm as @ashxsf/blocks. Every registry command is built from the site's
+ * own origin (lib/site.ts), so a copied command points at this deployment.
  */
 
 /**
@@ -65,7 +65,7 @@ const requirements = [
   },
   {
     name: "The shadcn CLI",
-    note: "Only to copy files in. There is no shadcn runtime dependency: Blocks components are built on Base UI.",
+    note: "Only to copy files in; the npm package below needs no CLI. There is no shadcn runtime dependency: Blocks components are built on Base UI.",
   },
 ]
 
@@ -130,6 +130,23 @@ const themeScope = `// The whole app: a theme and the mode, on <html>
 <section data-theme="forest" className="light">
 `
 
+/** The npm package: the same components, CSS and tokens as a dependency. */
+const npmPackage = "@ashxsf/blocks"
+
+const npmInstall = `npm install ${npmPackage}`
+
+const npmGlobalsCss = `@import "tailwindcss";
+@import "${npmPackage}/css";
+@source "../node_modules/${npmPackage}/dist";
+`
+
+const npmUsage = `// The barrel
+import { Button } from "${npmPackage}"
+
+// Or one file
+import { Button } from "${npmPackage}/ui/button"
+`
+
 /** Two columns from the narrow container width: copy on the left, code on the right. */
 const split =
   "grid gap-8 @narrow:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] @narrow:items-start @narrow:gap-10"
@@ -190,7 +207,7 @@ export function GetStartedFoundation({
       <Section
         id="requirements"
         title="Requirements"
-        description="Blocks is copied into your app as source, so it needs the stack it is written for. Nothing is fetched at run time."
+        description="Blocks runs inside your app, as copied source or as a dependency, so it needs the stack it is written for. Nothing is fetched at run time."
       >
         <ul className="grid divide-y border-y">
           {requirements.map((item) => (
@@ -334,7 +351,7 @@ export function GetStartedFoundation({
       <Section
         id="components"
         title="Add components"
-        description="Each component is its own registry item, named after its file in components/ui. Dependencies between components resolve on their own: dropdown-menu pulls in button."
+        description="Each component is its own registry item, named after its file in components/ui. Dependencies between components resolve on their own: alert-dialog pulls in button and dialog."
       >
         <div className={split}>
           <Prose>
@@ -354,8 +371,8 @@ export function GetStartedFoundation({
             <div className="grid gap-2">
               <SubHeading>Every item</SubHeading>
               <p className="text-body text-copy">
-                The index lists the base and every component with its files and
-                dependencies.
+                The index lists the base and every component with its files;
+                each item&apos;s own JSON names its dependencies.
               </p>
               <CommandRow text={registryIndex} label="Copy registry URL" />
             </div>
@@ -363,6 +380,47 @@ export function GetStartedFoundation({
           <div className="grid min-w-0 gap-6">
             <Snippet code={`${buttonCommand}\n${menuCommand}\n`} />
             <Snippet code={usage} file="components/toolbar.tsx" />
+          </div>
+        </div>
+      </Section>
+
+      <Section
+        id="npm"
+        title="Or install from npm"
+        description={
+          <>
+            Prefer a dependency over owned source? The same components and CSS
+            ship as <Code>{npmPackage}</Code>.
+          </>
+        }
+      >
+        <div className={split}>
+          <Prose>
+            <p className="text-body text-copy">
+              Add the package, then make <Code>app/globals.css</Code> these
+              three lines. <Code>{npmPackage}/css</Code> is the same{" "}
+              <Code>blocks.css</Code>, and <Code>@source</Code> points Tailwind
+              at the files in the package, so it generates every class the
+              components use. The path is relative to the CSS file.
+            </p>
+            <p className="text-body text-copy">
+              Import from the barrel, or one file at a time from{" "}
+              <Code>{npmPackage}/ui/&lt;slug&gt;</Code>. The helpers have entry
+              points of their own: <Code>{npmPackage}/utils</Code> for{" "}
+              <Code>cn</Code>, <Code>{npmPackage}/themes</Code>,{" "}
+              <Code>{npmPackage}/theme-scope</Code> and{" "}
+              <Code>{npmPackage}/portal</Code>.
+            </p>
+            <p className="text-body text-copy">
+              Fonts and themes work the same way: the package reads the font
+              variables above, and <Code>data-theme</Code> and{" "}
+              <Code>.dark</Code> scope any subtree, as below.
+            </p>
+          </Prose>
+          <div className="grid min-w-0 gap-6">
+            <Snippet code={`${npmInstall}\n`} />
+            <Snippet code={npmGlobalsCss} file="app/globals.css" />
+            <Snippet code={npmUsage} label="Copy imports" />
           </div>
         </div>
       </Section>
