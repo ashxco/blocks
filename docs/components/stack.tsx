@@ -39,7 +39,9 @@ export default function StackDocs() {
         <Stack className="max-w-lg">
           <Stack gap={1}>
             <h3 className="text-h4">Workspace</h3>
-            <p className="text-body text-copy">How Acme Inc. appears to members and guests.</p>
+            <p className="text-body text-copy">
+              How Acme Inc. appears to members and guests.
+            </p>
           </Stack>
           <Separator />
           <Stack gap={5}>
@@ -74,7 +76,9 @@ export default function StackDocs() {
                 <span className="h-8 rounded-sm border border-border-strong bg-background" />
                 <span className="h-8 rounded-sm border border-border-strong bg-background" />
               </Stack>
-              <code className="text-center font-mono text-code text-muted-foreground">gap={typeof gap === "number" ? `{${gap}}` : '"stack"'}</code>
+              <code className="text-center font-mono text-code text-muted-foreground">
+                gap={typeof gap === "number" ? `{${gap}}` : '"stack"'}
+              </code>
             </Stack>
           ))}
         </div>
@@ -110,9 +114,25 @@ export default function StackDocs() {
 
       <ApiTable
         rows={[
-          { prop: "gap", type: '0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12 | 16 | "stack"', default: '"stack"', description: "Space between children, in steps of --spacing, or --spacing-stack." },
-          { prop: "align", type: '"stretch" | "start" | "center" | "end"', default: '"stretch"', description: "Where children sit across the stack." },
-          { prop: "render", type: "ReactElement", description: "Render as another element, such as a form, section or ul." },
+          {
+            prop: "gap",
+            type: '0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12 | 16 | "stack"',
+            default: '"stack"',
+            description:
+              "Space between children, in steps of --spacing, or --spacing-stack.",
+          },
+          {
+            prop: "align",
+            type: '"stretch" | "start" | "center" | "end"',
+            default: '"stretch"',
+            description: "Where children sit across the stack.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description:
+              "Render as another element, such as a form, section or ul.",
+          },
         ]}
       />
     </Examples>

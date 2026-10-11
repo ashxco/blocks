@@ -25,7 +25,11 @@ export function startOfMonth(date: Date) {
 
 /** Whether both dates fall on the same calendar day. */
 export function isSameDay(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  )
 }
 
 /** Calendar days from `b` to `a`, ignoring the time of day and daylight-saving shifts. */
@@ -35,9 +39,20 @@ export function differenceInCalendarDays(a: Date, b: Date) {
   return Math.round((dayA - dayB) / DAY_MS)
 }
 
-const weekdayMonthDay = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" })
-const monthDay = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" })
-const monthDayYear = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" })
+const weekdayMonthDay = new Intl.DateTimeFormat("en-US", {
+  weekday: "long",
+  month: "long",
+  day: "numeric",
+})
+const monthDay = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+})
+const monthDayYear = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+})
 
 /** "Monday, October 12" */
 export function formatWeekdayMonthDay(date: Date) {

@@ -13,7 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field"
 import { Textarea } from "@/components/ui/textarea"
 
 function WeeklyUpdate() {
@@ -32,9 +37,18 @@ function WeeklyUpdate() {
         onChange={(e) => setText(e.target.value)}
         aria-describedby="ta-update-count"
       />
-      <FieldDescription id="ta-update-count" className="flex justify-between gap-4">
+      <FieldDescription
+        id="ta-update-count"
+        className="flex justify-between gap-4"
+      >
         <span>Sent to everyone following the project.</span>
-        <span className={remaining < 20 ? "shrink-0 font-semibold text-foreground tabular" : "shrink-0 tabular"}>
+        <span
+          className={
+            remaining < 20
+              ? "shrink-0 font-semibold text-foreground tabular"
+              : "shrink-0 tabular"
+          }
+        >
           {remaining} left
         </span>
       </FieldDescription>
@@ -55,7 +69,8 @@ function PauseProjectForm() {
         <CardHeader>
           <CardTitle>Help center is paused</CardTitle>
           <CardDescription className="text-pretty">
-            Automations have stopped. Your reason is in the project activity for the team.
+            Automations have stopped. Your reason is in the project activity for
+            the team.
           </CardDescription>
         </CardHeader>
         <CardFooter>
@@ -80,7 +95,9 @@ function PauseProjectForm() {
         onSubmit={(e) => {
           e.preventDefault()
           if (reason.trim().length < 10) {
-            setError("Add a short reason, at least 10 characters, so the team knows why.")
+            setError(
+              "Add a short reason, at least 10 characters, so the team knows why."
+            )
             reasonRef.current?.focus()
             return
           }
@@ -92,15 +109,21 @@ function PauseProjectForm() {
         <CardHeader>
           <CardTitle>Pause project</CardTitle>
           <CardDescription className="text-pretty">
-            Open tasks stay where they are, but automations stop and due date reminders go quiet.
+            Open tasks stay where they are, but automations stop and due date
+            reminders go quiet.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="flex items-center gap-3 rounded-(--control-radius) bg-muted px-4 py-3">
-            <FolderIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+            <FolderIcon
+              aria-hidden="true"
+              className="size-4 shrink-0 text-muted-foreground"
+            />
             <div className="grid min-w-0 gap-0.5">
               <p className="truncate text-label text-foreground">Help center</p>
-              <p className="text-caption text-muted-foreground">14 open tasks, owned by Sam Okafor</p>
+              <p className="text-caption text-muted-foreground">
+                14 open tasks, owned by Sam Okafor
+              </p>
             </div>
           </div>
           <Field data-invalid={Boolean(error)}>
@@ -150,8 +173,13 @@ export default function TextareaDocs() {
         <div className="w-full max-w-sm">
           <Field>
             <FieldLabel htmlFor="ta-default">Description</FieldLabel>
-            <Textarea id="ta-default" placeholder="New homepage, pricing page and help center links, live before the November launch." />
-            <FieldDescription>Shown on the project card. Markdown is not rendered.</FieldDescription>
+            <Textarea
+              id="ta-default"
+              placeholder="New homepage, pricing page and help center links, live before the November launch."
+            />
+            <FieldDescription>
+              Shown on the project card. Markdown is not rendered.
+            </FieldDescription>
           </Field>
         </div>
       </Example>
@@ -210,13 +238,21 @@ const [text, setText] = React.useState("")
             <Textarea
               id="ta-readonly"
               readOnly
-              defaultValue={"When a task moves to Done\nNotify the task owner\nPost in #website-relaunch"}
+              defaultValue={
+                "When a task moves to Done\nNotify the task owner\nPost in #website-relaunch"
+              }
             />
           </Field>
           <Field data-disabled="true">
             <FieldLabel htmlFor="ta-disabled">Task description</FieldLabel>
-            <Textarea id="ta-disabled" disabled defaultValue={"Goal:\nAcceptance criteria:\nLinks:"} />
-            <FieldDescription>Set by the Sprint planning template.</FieldDescription>
+            <Textarea
+              id="ta-disabled"
+              disabled
+              defaultValue={"Goal:\nAcceptance criteria:\nLinks:"}
+            />
+            <FieldDescription>
+              Set by the Sprint planning template.
+            </FieldDescription>
           </Field>
           <Field data-invalid className="@xl:col-span-2">
             <FieldLabel htmlFor="ta-invalid">Guest emails</FieldLabel>
@@ -226,7 +262,9 @@ const [text, setText] = React.useState("")
               aria-describedby="ta-invalid-error"
               defaultValue={"elena@northwind.com\nmarcus@globex"}
             />
-            <FieldError id="ta-invalid-error">Line 2 is missing the end of the address, like marcus@globex.com.</FieldError>
+            <FieldError id="ta-invalid-error">
+              Line 2 is missing the end of the address, like marcus@globex.com.
+            </FieldError>
           </Field>
         </div>
       </Example>
@@ -305,12 +343,38 @@ function onSubmit(e: React.FormEvent<HTMLFormElement>) {
 
       <ApiTable
         rows={[
-          { prop: "aria-invalid", type: "boolean", description: "Destructive border and focus outline. Link the FieldError with aria-describedby." },
-          { prop: "readOnly", type: "boolean", description: "Canvas colour, no fill and no resize handle." },
-          { prop: "disabled", type: "boolean", description: "Dims the field and blocks interaction." },
-          { prop: "maxLength", type: "number", description: "Hard limit on characters. Show the count nearby." },
-          { prop: "placeholder", type: "string", description: "An example of a good answer. It disappears as soon as people type." },
-          { prop: "…props", type: "TextareaHTMLAttributes", description: "Every native textarea attribute." },
+          {
+            prop: "aria-invalid",
+            type: "boolean",
+            description:
+              "Destructive border and focus outline. Link the FieldError with aria-describedby.",
+          },
+          {
+            prop: "readOnly",
+            type: "boolean",
+            description: "Canvas colour, no fill and no resize handle.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            description: "Dims the field and blocks interaction.",
+          },
+          {
+            prop: "maxLength",
+            type: "number",
+            description: "Hard limit on characters. Show the count nearby.",
+          },
+          {
+            prop: "placeholder",
+            type: "string",
+            description:
+              "An example of a good answer. It disappears as soon as people type.",
+          },
+          {
+            prop: "…props",
+            type: "TextareaHTMLAttributes",
+            description: "Every native textarea attribute.",
+          },
         ]}
       />
     </Examples>

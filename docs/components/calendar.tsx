@@ -17,8 +17,17 @@ import {
 } from "@/docs/sample/dates"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 /**
@@ -32,11 +41,22 @@ const frame = "rounded-(--card-radius) border"
 
 function SingleDate() {
   const [date, setDate] = React.useState<Date | undefined>(today)
-  return <Calendar mode="single" today={today} selected={date} onSelect={setDate} className={frame} />
+  return (
+    <Calendar
+      mode="single"
+      today={today}
+      selected={date}
+      onSelect={setDate}
+      className={frame}
+    />
+  )
 }
 
 /** The current two-week sprint, Monday Sep 28 to Sunday Oct 11, which crosses into October. */
-const sprint: DateRange = { from: new Date(2026, 8, 28), to: new Date(2026, 9, 11) }
+const sprint: DateRange = {
+  from: new Date(2026, 8, 28),
+  to: new Date(2026, 9, 11),
+}
 
 function SprintRange() {
   const [range, setRange] = React.useState<DateRange | undefined>(sprint)
@@ -126,7 +146,8 @@ function usePanelLayout(ref: React.RefObject<HTMLElement | null>): PanelLayout {
   React.useEffect(() => {
     const room = ref.current?.parentElement
     if (!room) return
-    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+    const rem =
+      parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
     const cell = (tokenPx("--calendar-cell-size") || 40) / 16
     const inset = (tokenPx("--card-padding-sm") || 16) / 16
     const hairlines = 4
@@ -134,7 +155,13 @@ function usePanelLayout(ref: React.RefObject<HTMLElement | null>): PanelLayout {
     const oneMonth = (10 + 1.5 + 7 * cell + inset) * rem + hairlines
     const observer = new ResizeObserver(([entry]) => {
       const width = entry.contentRect.width
-      setLayout(width >= twoMonths ? "two-months" : width >= oneMonth ? "one-month" : "stacked")
+      setLayout(
+        width >= twoMonths
+          ? "two-months"
+          : width >= oneMonth
+            ? "one-month"
+            : "stacked"
+      )
     })
     observer.observe(room)
     return () => observer.disconnect()
@@ -144,7 +171,8 @@ function usePanelLayout(ref: React.RefObject<HTMLElement | null>): PanelLayout {
 }
 
 /** Classes for the element that holds a RangePanel. */
-const panelDirection = (layout: PanelLayout) => (layout === "stacked" ? "flex-col" : "flex-row")
+const panelDirection = (layout: PanelLayout) =>
+  layout === "stacked" ? "flex-col" : "flex-row"
 
 /**
  * The body of the range popover: presets beside one or two months, or above
@@ -166,12 +194,19 @@ function RangePanel({
       <div
         className={cn(
           "shrink-0 gap-0.5 p-2",
-          layout === "stacked" ? "grid grid-cols-2 border-b" : "flex w-40 flex-col border-e"
+          layout === "stacked"
+            ? "grid grid-cols-2 border-b"
+            : "flex w-40 flex-col border-e"
         )}
       >
         {presets.map((preset) => {
           const from = subDays(today, preset.days - 1)
-          const active = Boolean(range?.from && range.to && isSameDay(range.from, from) && isSameDay(range.to, today))
+          const active = Boolean(
+            range?.from &&
+            range.to &&
+            isSameDay(range.from, from) &&
+            isSameDay(range.to, today)
+          )
           return (
             <Button
               key={preset.label}
@@ -197,7 +232,11 @@ function RangePanel({
         today={today}
         selected={range}
         onSelect={onRangeChange}
-        defaultMonth={twoMonths ? subDays(startOfMonth(today), 1) : (range?.to ?? range?.from ?? today)}
+        defaultMonth={
+          twoMonths
+            ? subDays(startOfMonth(today), 1)
+            : (range?.to ?? range?.from ?? today)
+        }
         disabled={{ after: today }}
         endMonth={today}
         className="bg-transparent"
@@ -221,24 +260,38 @@ function ReportRangePicker() {
   // The real popover opens clear of the card, exactly where the picture sits:
   // under the trigger's end edge, or from the card's start edge when stacked.
   const [offset, setOffset] = React.useState({ side: 8, align: 0 })
-  const [range, setRange] = React.useState<DateRange | undefined>({ from: subDays(today, 6), to: today })
+  const [range, setRange] = React.useState<DateRange | undefined>({
+    from: subDays(today, 6),
+    to: today,
+  })
 
   function handleOpenChange(next: boolean) {
     const card = cardRef.current?.getBoundingClientRect()
     const trigger = triggerRef.current?.getBoundingClientRect()
-    if (next && card && trigger) setOffset({ side: card.bottom - trigger.bottom + 8, align: card.left - trigger.left })
+    if (next && card && trigger)
+      setOffset({
+        side: card.bottom - trigger.bottom + 8,
+        align: card.left - trigger.left,
+      })
     setOpen(next)
   }
 
   return (
     <div ref={rootRef} className="grid w-fit max-w-full gap-2">
-      <Card ref={cardRef} size="sm" className="w-full flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4">
+      <Card
+        ref={cardRef}
+        size="sm"
+        className="w-full flex-row flex-wrap items-center justify-between gap-x-6 gap-y-4"
+      >
         <CardHeader className="min-w-48 flex-1 gap-1">
           <CardTitle>Tasks completed</CardTitle>
           <CardDescription>Website relaunch · All assignees</CardDescription>
         </CardHeader>
         <Popover open={open} onOpenChange={handleOpenChange}>
-          <PopoverTrigger ref={triggerRef} render={<Button variant="outline" className="ps-4" />}>
+          <PopoverTrigger
+            ref={triggerRef}
+            render={<Button variant="outline" className="ps-4" />}
+          >
             <CalendarIcon data-icon="inline-start" />
             <span className="tabular">{formatRange(range)}</span>
           </PopoverTrigger>
@@ -246,9 +299,16 @@ function ReportRangePicker() {
             align={layout === "stacked" ? "start" : "end"}
             alignOffset={layout === "stacked" ? offset.align : 0}
             sideOffset={offset.side}
-            className={cn("w-auto max-w-[calc(100vw-2rem)] gap-0 overflow-hidden p-0", panelDirection(layout))}
+            className={cn(
+              "w-auto max-w-[calc(100vw-2rem)] gap-0 overflow-hidden p-0",
+              panelDirection(layout)
+            )}
           >
-            <RangePanel range={range} onRangeChange={setRange} layout={layout} />
+            <RangePanel
+              range={range}
+              onRangeChange={setRange}
+              layout={layout}
+            />
           </PopoverContent>
         </Popover>
       </Card>
@@ -261,7 +321,7 @@ function ReportRangePicker() {
           // Beside the trigger's end edge, as the popover opens; full width when stacked.
           layout === "stacked"
             ? "justify-self-stretch"
-            : "justify-self-end me-[calc(var(--card-padding-sm)+var(--border-width-hairline))]",
+            : "me-[calc(var(--card-padding-sm)+var(--border-width-hairline))] justify-self-end",
           open && "invisible"
         )}
       >
@@ -385,16 +445,66 @@ export default function CalendarDocs() {
 
       <ApiTable
         rows={[
-          { prop: "mode", type: '"single" | "multiple" | "range"', description: "What the calendar selects." },
-          { prop: "selected / onSelect", type: "Date | Date[] | DateRange", description: "Controlled selection and its change handler. The type follows mode." },
-          { prop: "numberOfMonths", type: "number", default: "1", description: "Months shown side by side from md up, stacked below." },
-          { prop: "captionLayout", type: '"label" | "dropdown" | "dropdown-months" | "dropdown-years"', default: '"label"', description: "A bold month title, or menus to jump between months and years." },
-          { prop: "disabled", type: "Matcher | Matcher[]", description: "Days that can’t be picked, such as { before: date } or { dayOfWeek: [0, 6] }." },
-          { prop: "startMonth / endMonth", type: "Date", description: "The first and last month people can navigate to." },
-          { prop: "showOutsideDays", type: "boolean", default: "true", description: "Show muted days from the previous and next month." },
-          { prop: "buttonVariant", type: "Button variant", default: '"ghost"', description: "Variant of the previous and next month buttons." },
-          { prop: "today", type: "Date", default: "new Date()", description: "The day that carries the brand dot. Pass a fixed date when the calendar renders on the server." },
-          { prop: "className", type: "string", description: "Root classes. Set --calendar-cell-size to change the cell size." },
+          {
+            prop: "mode",
+            type: '"single" | "multiple" | "range"',
+            description: "What the calendar selects.",
+          },
+          {
+            prop: "selected / onSelect",
+            type: "Date | Date[] | DateRange",
+            description:
+              "Controlled selection and its change handler. The type follows mode.",
+          },
+          {
+            prop: "numberOfMonths",
+            type: "number",
+            default: "1",
+            description: "Months shown side by side from md up, stacked below.",
+          },
+          {
+            prop: "captionLayout",
+            type: '"label" | "dropdown" | "dropdown-months" | "dropdown-years"',
+            default: '"label"',
+            description:
+              "A bold month title, or menus to jump between months and years.",
+          },
+          {
+            prop: "disabled",
+            type: "Matcher | Matcher[]",
+            description:
+              "Days that can’t be picked, such as { before: date } or { dayOfWeek: [0, 6] }.",
+          },
+          {
+            prop: "startMonth / endMonth",
+            type: "Date",
+            description: "The first and last month people can navigate to.",
+          },
+          {
+            prop: "showOutsideDays",
+            type: "boolean",
+            default: "true",
+            description: "Show muted days from the previous and next month.",
+          },
+          {
+            prop: "buttonVariant",
+            type: "Button variant",
+            default: '"ghost"',
+            description: "Variant of the previous and next month buttons.",
+          },
+          {
+            prop: "today",
+            type: "Date",
+            default: "new Date()",
+            description:
+              "The day that carries the brand dot. Pass a fixed date when the calendar renders on the server.",
+          },
+          {
+            prop: "className",
+            type: "string",
+            description:
+              "Root classes. Set --calendar-cell-size to change the cell size.",
+          },
         ]}
       />
     </Examples>

@@ -20,7 +20,12 @@ const overlayCode = `<Grid aria-hidden className="absolute inset-0 auto-rows-[10
 
 function ColumnOverlay({ className }: { className?: string }) {
   return (
-    <Grid aria-hidden className={className ?? "absolute inset-0 auto-rows-[100%] overflow-hidden"}>
+    <Grid
+      aria-hidden
+      className={
+        className ?? "absolute inset-0 auto-rows-[100%] overflow-hidden"
+      }
+    >
       {Array.from({ length: 12 }, (_, column) => (
         <GridItem key={column} className="bg-brand-subtle" />
       ))}
@@ -61,12 +66,42 @@ const metrics = [
 ]
 
 const projects = [
-  { name: "Website relaunch", status: "On track", variant: "success", meta: "52 tasks · Priya Raman" },
-  { name: "Mobile app 2.0", status: "At risk", variant: "warning", meta: "87 tasks · Jordan Lee" },
-  { name: "Q4 planning", status: "On track", variant: "success", meta: "18 tasks · Hana Kim" },
-  { name: "Customer portal", status: "Off track", variant: "destructive", meta: "64 tasks · Daniel Brooks" },
-  { name: "Brand refresh", status: "On track", variant: "success", meta: "23 tasks · Sofia Alvarez" },
-  { name: "Help center", status: "Paused", variant: "secondary", meta: "31 tasks · Sam Okafor" },
+  {
+    name: "Website relaunch",
+    status: "On track",
+    variant: "success",
+    meta: "52 tasks · Priya Raman",
+  },
+  {
+    name: "Mobile app 2.0",
+    status: "At risk",
+    variant: "warning",
+    meta: "87 tasks · Jordan Lee",
+  },
+  {
+    name: "Q4 planning",
+    status: "On track",
+    variant: "success",
+    meta: "18 tasks · Hana Kim",
+  },
+  {
+    name: "Customer portal",
+    status: "Off track",
+    variant: "destructive",
+    meta: "64 tasks · Daniel Brooks",
+  },
+  {
+    name: "Brand refresh",
+    status: "On track",
+    variant: "success",
+    meta: "23 tasks · Sofia Alvarez",
+  },
+  {
+    name: "Help center",
+    status: "Paused",
+    variant: "secondary",
+    meta: "31 tasks · Sam Okafor",
+  },
 ] as const
 
 export default function GridDocs() {
@@ -102,7 +137,9 @@ export default function GridDocs() {
             {spanRows.map(({ span, title }) => (
               <GridItem key={title} span={span} className={tile}>
                 <p className="text-label">{title}</p>
-                <p className="text-caption text-muted-foreground">span={`{${span}}`}</p>
+                <p className="text-caption text-muted-foreground">
+                  span={`{${span}}`}
+                </p>
               </GridItem>
             ))}
           </Grid>
@@ -131,8 +168,14 @@ export default function GridDocs() {
       >
         <Grid>
           {metrics.map((metric) => (
-            <GridItem key={metric.label} span={{ md: 4, lg: 3 }} className={tile}>
-              <p className="text-caption text-muted-foreground">{metric.label}</p>
+            <GridItem
+              key={metric.label}
+              span={{ md: 4, lg: 3 }}
+              className={tile}
+            >
+              <p className="text-caption text-muted-foreground">
+                {metric.label}
+              </p>
               <p className="text-h3">{metric.value}</p>
               <p className="text-caption text-success">{metric.change}</p>
             </GridItem>
@@ -169,7 +212,11 @@ export default function GridDocs() {
         <div className="relative">
           <ColumnOverlay />
           <Grid className="relative">
-            <GridItem span={{ md: 6 }} start={{ md: 2, lg: 4 }} className={tile}>
+            <GridItem
+              span={{ md: 6 }}
+              start={{ md: 2, lg: 4 }}
+              className={tile}
+            >
               <Stack gap={4}>
                 <h3 className="text-h4">Invite your team</h3>
                 <Stack gap={2}>
@@ -206,7 +253,9 @@ export default function GridDocs() {
                 <h3 className="text-title">{project.name}</h3>
                 <Badge variant={project.variant}>{project.status}</Badge>
               </Inline>
-              <p className="text-caption text-muted-foreground">{project.meta}</p>
+              <p className="text-caption text-muted-foreground">
+                {project.meta}
+              </p>
             </Stack>
           ))}
         </Grid>
@@ -228,17 +277,41 @@ export default function GridDocs() {
       <ApiTable
         title="Grid"
         rows={[
-          { prop: "columns", type: '"system" | 1 … 12 | { base?, md?, lg? }', default: '"system"', description: "The system grid (--grid-columns: 4, 8 and 12), a fixed count, or a count per breakpoint. The gap is always --grid-gutter." },
-          { prop: "render", type: "ReactElement", description: "Render as another element, such as a section or ul." },
+          {
+            prop: "columns",
+            type: '"system" | 1 … 12 | { base?, md?, lg? }',
+            default: '"system"',
+            description:
+              "The system grid (--grid-columns: 4, 8 and 12), a fixed count, or a count per breakpoint. The gap is always --grid-gutter.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description: "Render as another element, such as a section or ul.",
+          },
         ]}
       />
 
       <ApiTable
         title="GridItem"
         rows={[
-          { prop: "span", type: '1 … 12 | "full" | { base?, md?, lg? }', description: "Columns to cover. With one per breakpoint, base defaults to \"full\" and each breakpoint keeps the value below it. Never wider than the grid at that breakpoint." },
-          { prop: "start", type: "1 … 12 | { base?, md?, lg? }", description: "The column to start at. Moves back when the span would run past the last column; ignored where the item fills the row." },
-          { prop: "render", type: "ReactElement", description: "Render as another element, such as an li or article." },
+          {
+            prop: "span",
+            type: '1 … 12 | "full" | { base?, md?, lg? }',
+            description:
+              'Columns to cover. With one per breakpoint, base defaults to "full" and each breakpoint keeps the value below it. Never wider than the grid at that breakpoint.',
+          },
+          {
+            prop: "start",
+            type: "1 … 12 | { base?, md?, lg? }",
+            description:
+              "The column to start at. Moves back when the span would run past the last column; ignored where the item fills the row.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description: "Render as another element, such as an li or article.",
+          },
         ]}
       />
     </Examples>

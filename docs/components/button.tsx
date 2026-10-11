@@ -1,6 +1,11 @@
 "use client"
 
-import { ArrowRightIcon, DownloadIcon, PlusIcon, Trash2Icon } from "lucide-react"
+import {
+  ArrowRightIcon,
+  DownloadIcon,
+  PlusIcon,
+  Trash2Icon,
+} from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -70,16 +75,28 @@ export default function ButtonDocs() {
             <Button size="lg">Large</Button>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button size="icon-xs" variant="outline" aria-label="Add task, extra small">
+            <Button
+              size="icon-xs"
+              variant="outline"
+              aria-label="Add task, extra small"
+            >
               <PlusIcon />
             </Button>
-            <Button size="icon-sm" variant="outline" aria-label="Add task, small">
+            <Button
+              size="icon-sm"
+              variant="outline"
+              aria-label="Add task, small"
+            >
               <PlusIcon />
             </Button>
             <Button size="icon" variant="outline" aria-label="Add task, medium">
               <PlusIcon />
             </Button>
-            <Button size="icon-lg" variant="outline" aria-label="Add task, large">
+            <Button
+              size="icon-lg"
+              variant="outline"
+              aria-label="Add task, large"
+            >
               <PlusIcon />
             </Button>
           </div>
@@ -170,10 +187,18 @@ export default function ButtonDocs() {
   <ArrowRightIcon data-icon="inline-end" />
 </Button>`}
       >
-        <Button nativeButton={false} render={<a href="#pricing" />} variant="outline">
+        <Button
+          nativeButton={false}
+          render={<a href="#pricing" />}
+          variant="outline"
+        >
           See Pricing
         </Button>
-        <Button nativeButton={false} render={<a href="#changelog" />} variant="link">
+        <Button
+          nativeButton={false}
+          render={<a href="#changelog" />}
+          variant="link"
+        >
           Read the Changelog
           <ArrowRightIcon data-icon="inline-end" />
         </Button>
@@ -195,10 +220,29 @@ export default function ButtonDocs() {
 
       <ApiTable
         rows={[
-          { prop: "variant", type: '"default" | "brand" | "secondary" | "outline" | "ghost" | "link" | "destructive" | "inverse" | "outline-inverse"', default: '"default"', description: "Visual style." },
-          { prop: "size", type: '"xs" | "sm" | "default" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg"', default: '"default"', description: "Height and padding, from --button-* tokens." },
-          { prop: "render", type: "ReactElement", description: "Render as another element, such as a link." },
-          { prop: "nativeButton", type: "boolean", default: "true", description: "Set to false when render is not a <button>." },
+          {
+            prop: "variant",
+            type: '"default" | "brand" | "secondary" | "outline" | "ghost" | "link" | "destructive" | "inverse" | "outline-inverse"',
+            default: '"default"',
+            description: "Visual style.",
+          },
+          {
+            prop: "size",
+            type: '"xs" | "sm" | "default" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg"',
+            default: '"default"',
+            description: "Height and padding, from --button-* tokens.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description: "Render as another element, such as a link.",
+          },
+          {
+            prop: "nativeButton",
+            type: "boolean",
+            default: "true",
+            description: "Set to false when render is not a <button>.",
+          },
         ]}
       />
     </Examples>

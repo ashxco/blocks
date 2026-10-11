@@ -12,11 +12,41 @@ import { initialsTone } from "@/docs/sample/people"
 import { Badge } from "@/components/ui/badge"
 
 const team = [
-  { initials: "MP", name: "Maya Patel", role: "Owner", email: "maya@acme.com", online: true },
-  { initials: "HK", name: "Hana Kim", role: "Admin", email: "hana@acme.com", online: false },
-  { initials: "PR", name: "Priya Raman", role: "Member", email: "priya@acme.com", online: true },
-  { initials: "SA", name: "Sofia Alvarez", role: "Member", email: "sofia@acme.com", online: false },
-  { initials: "JL", name: "Jordan Lee", role: "Member", email: "jordan@acme.com", online: false },
+  {
+    initials: "MP",
+    name: "Maya Patel",
+    role: "Owner",
+    email: "maya@acme.com",
+    online: true,
+  },
+  {
+    initials: "HK",
+    name: "Hana Kim",
+    role: "Admin",
+    email: "hana@acme.com",
+    online: false,
+  },
+  {
+    initials: "PR",
+    name: "Priya Raman",
+    role: "Member",
+    email: "priya@acme.com",
+    online: true,
+  },
+  {
+    initials: "SA",
+    name: "Sofia Alvarez",
+    role: "Member",
+    email: "sofia@acme.com",
+    online: false,
+  },
+  {
+    initials: "JL",
+    name: "Jordan Lee",
+    role: "Member",
+    email: "jordan@acme.com",
+    online: false,
+  },
 ]
 
 /* One teammate per tint, each in the tint every docs example gives them (docs/sample/people.ts), so nobody changes colour between examples. */
@@ -164,12 +194,16 @@ export default function AvatarDocs() {
           <div className="flex items-center justify-between gap-4 border-b px-5 py-4">
             <div className="grid gap-0.5">
               <h3 className="text-title text-foreground">Website relaunch</h3>
-              <p className="text-sm text-muted-foreground">5 members · 2 online</p>
+              <p className="text-sm text-muted-foreground">
+                5 members · 2 online
+              </p>
             </div>
             <AvatarGroup>
               {team.map((m) => (
                 <Avatar key={m.initials} size="sm">
-                  <AvatarFallback tone={initialsTone(m.initials)}>{m.initials}</AvatarFallback>
+                  <AvatarFallback tone={initialsTone(m.initials)}>
+                    {m.initials}
+                  </AvatarFallback>
                 </Avatar>
               ))}
             </AvatarGroup>
@@ -178,14 +212,32 @@ export default function AvatarDocs() {
             {team.map((m) => (
               <li key={m.email} className="flex items-center gap-3 px-5 py-3.5">
                 <Avatar>
-                  <AvatarFallback tone={initialsTone(m.initials)}>{m.initials}</AvatarFallback>
-                  {m.online ? <AvatarBadge className="bg-success" aria-label="Online" /> : null}
+                  <AvatarFallback tone={initialsTone(m.initials)}>
+                    {m.initials}
+                  </AvatarFallback>
+                  {m.online ? (
+                    <AvatarBadge className="bg-success" aria-label="Online" />
+                  ) : null}
                 </Avatar>
                 <div className="grid min-w-0 flex-1 gap-0.5">
-                  <p className="truncate text-sm font-semibold text-foreground">{m.name}</p>
-                  <p className="truncate text-sm text-muted-foreground">{m.email}</p>
+                  <p className="truncate text-sm font-semibold text-foreground">
+                    {m.name}
+                  </p>
+                  <p className="truncate text-sm text-muted-foreground">
+                    {m.email}
+                  </p>
                 </div>
-                <Badge variant={m.role === "Owner" ? "default" : m.role === "Admin" ? "outline" : "secondary"}>{m.role}</Badge>
+                <Badge
+                  variant={
+                    m.role === "Owner"
+                      ? "default"
+                      : m.role === "Admin"
+                        ? "outline"
+                        : "secondary"
+                  }
+                >
+                  {m.role}
+                </Badge>
               </li>
             ))}
           </ul>
@@ -195,7 +247,7 @@ export default function AvatarDocs() {
       <Guidelines
         do={[
           "Always include a fallback with initials. Images fail and take time to load.",
-          "Use alt=\"\" on the image when the name is written next to it.",
+          'Use alt="" on the image when the name is written next to it.',
           "Keep the same size for every avatar in a list or stack.",
         ]}
         dont={[
@@ -207,12 +259,42 @@ export default function AvatarDocs() {
 
       <ApiTable
         rows={[
-          { prop: "size", type: '"sm" | "default" | "lg" | "xl"', default: '"default"', description: "Avatar size from --avatar-size-*. Fallback text scales with it." },
-          { prop: "AvatarImage src", type: "string", description: "Photo URL. The fallback shows until it loads, and if it fails." },
-          { prop: "AvatarFallback tone", type: '"violet" | "mint" | "sand" | "sky" | "rose" | "muted"', default: "from initials", description: "Tint behind the initials." },
-          { prop: "AvatarFallback delay", type: "number", description: "Milliseconds to wait before showing the fallback, to avoid a flash." },
-          { prop: "AvatarBadge", type: "component", description: "Status dot on the lower edge. Ink by default; colour it with bg-success and similar." },
-          { prop: "AvatarGroupCount", type: "component", description: "The count at the end of a stack." },
+          {
+            prop: "size",
+            type: '"sm" | "default" | "lg" | "xl"',
+            default: '"default"',
+            description:
+              "Avatar size from --avatar-size-*. Fallback text scales with it.",
+          },
+          {
+            prop: "AvatarImage src",
+            type: "string",
+            description:
+              "Photo URL. The fallback shows until it loads, and if it fails.",
+          },
+          {
+            prop: "AvatarFallback tone",
+            type: '"violet" | "mint" | "sand" | "sky" | "rose" | "muted"',
+            default: "from initials",
+            description: "Tint behind the initials.",
+          },
+          {
+            prop: "AvatarFallback delay",
+            type: "number",
+            description:
+              "Milliseconds to wait before showing the fallback, to avoid a flash.",
+          },
+          {
+            prop: "AvatarBadge",
+            type: "component",
+            description:
+              "Status dot on the lower edge. Ink by default; colour it with bg-success and similar.",
+          },
+          {
+            prop: "AvatarGroupCount",
+            type: "component",
+            description: "The count at the end of a stack.",
+          },
         ]}
       />
     </Examples>

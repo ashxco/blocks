@@ -17,15 +17,44 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 const views = [
-  { value: "list", title: "List", description: "Tasks in rows, grouped by section. Best for quick triage." },
-  { value: "board", title: "Board", description: "A column for each status. Drag cards to move work along." },
-  { value: "timeline", title: "Timeline", description: "Tasks as bars across the weeks, with their dependencies." },
+  {
+    value: "list",
+    title: "List",
+    description: "Tasks in rows, grouped by section. Best for quick triage.",
+  },
+  {
+    value: "board",
+    title: "Board",
+    description: "A column for each status. Drag cards to move work along.",
+  },
+  {
+    value: "timeline",
+    title: "Timeline",
+    description: "Tasks as bars across the weeks, with their dependencies.",
+  },
 ]
 
 const plans = [
-  { value: "pro", title: "Pro", price: "$12", detail: "Per member a month, billed annually. Unlimited projects, 10,000 automation runs and 100 GB storage." },
-  { value: "business", title: "Business", price: "$24", detail: "Per member a month, billed annually. SSO, audit log and a 99.9% uptime SLA." },
-  { value: "enterprise", title: "Enterprise", price: "Custom", detail: "A dedicated success manager, custom contracts and data residency." },
+  {
+    value: "pro",
+    title: "Pro",
+    price: "$12",
+    detail:
+      "Per member a month, billed annually. Unlimited projects, 10,000 automation runs and 100 GB storage.",
+  },
+  {
+    value: "business",
+    title: "Business",
+    price: "$24",
+    detail:
+      "Per member a month, billed annually. SSO, audit log and a 99.9% uptime SLA.",
+  },
+  {
+    value: "enterprise",
+    title: "Enterprise",
+    price: "Custom",
+    detail: "A dedicated success manager, custom contracts and data residency.",
+  },
 ]
 
 function PlanPicker() {
@@ -33,7 +62,11 @@ function PlanPicker() {
   return (
     <FieldSet className="w-full">
       <FieldLegend variant="label">Plan</FieldLegend>
-      <RadioGroup value={plan} onValueChange={(v) => setPlan(v as string)} className="grid gap-3 @2xl:grid-cols-3">
+      <RadioGroup
+        value={plan}
+        onValueChange={(v) => setPlan(v as string)}
+        className="grid gap-3 @2xl:grid-cols-3"
+      >
         {plans.map((p) => (
           <FieldLabel key={p.value}>
             <Field orientation="horizontal">
@@ -123,7 +156,11 @@ export default function RadioGroupDocs() {
       >
         <FieldSet className="max-w-md">
           <FieldLegend variant="label">Default view</FieldLegend>
-          <RadioGroup defaultValue="board" name="view-described" className="gap-5">
+          <RadioGroup
+            defaultValue="board"
+            name="view-described"
+            className="gap-5"
+          >
             {views.map((m) => (
               <Field key={m.value} orientation="horizontal">
                 <RadioGroupItem value={m.value} id={`rgd-${m.value}`} />
@@ -193,7 +230,11 @@ export default function RadioGroupDocs() {
       >
         <FieldSet className="w-fit">
           <FieldLegend variant="label">Remind assignees</FieldLegend>
-          <RadioGroup defaultValue="1d" name="reminder" className="flex flex-wrap gap-x-6 gap-y-3">
+          <RadioGroup
+            defaultValue="1d"
+            name="reminder"
+            className="flex flex-wrap gap-x-6 gap-y-3"
+          >
             {[
               { value: "0d", label: "On the day" },
               { value: "1d", label: "1 day before" },
@@ -260,24 +301,34 @@ export default function RadioGroupDocs() {
                 <RadioGroupItem value="admin" id="rgs-admin" disabled />
                 <FieldContent>
                   <FieldLabel htmlFor="rgs-admin">Admin</FieldLabel>
-                  <FieldDescription>Only the workspace owner can add admins.</FieldDescription>
+                  <FieldDescription>
+                    Only the workspace owner can add admins.
+                  </FieldDescription>
                 </FieldContent>
               </Field>
             </RadioGroup>
           </FieldSet>
           <FieldSet>
             <FieldLegend variant="label">Open tasks</FieldLegend>
-            <RadioGroup name="open-tasks-states" aria-invalid aria-describedby="rgs-error">
+            <RadioGroup
+              name="open-tasks-states"
+              aria-invalid
+              aria-describedby="rgs-error"
+            >
               <Field orientation="horizontal" data-invalid>
                 <RadioGroupItem value="backlog" id="rgs-backlog" aria-invalid />
-                <FieldLabel htmlFor="rgs-backlog">Move them to the backlog</FieldLabel>
+                <FieldLabel htmlFor="rgs-backlog">
+                  Move them to the backlog
+                </FieldLabel>
               </Field>
               <Field orientation="horizontal" data-invalid>
                 <RadioGroupItem value="done" id="rgs-done" aria-invalid />
                 <FieldLabel htmlFor="rgs-done">Mark them as done</FieldLabel>
               </Field>
             </RadioGroup>
-            <FieldError id="rgs-error">Choose what happens to the 14 open tasks.</FieldError>
+            <FieldError id="rgs-error">
+              Choose what happens to the 14 open tasks.
+            </FieldError>
           </FieldSet>
         </div>
       </Example>
@@ -298,21 +349,63 @@ export default function RadioGroupDocs() {
       <ApiTable
         title="RadioGroup"
         rows={[
-          { prop: "value / defaultValue", type: "string", description: "The selected item’s value, controlled or initial." },
-          { prop: "onValueChange", type: "(value: unknown) => void", description: "Called with the new value when the selection changes." },
-          { prop: "name", type: "string", description: "Submitted with the form." },
-          { prop: "disabled", type: "boolean", default: "false", description: "Disables every item." },
-          { prop: "required", type: "boolean", default: "false", description: "A value must be chosen before the form submits." },
-          { prop: "className", type: "string", default: '"grid gap-3"', description: "Layout of the items: a column, a row or a grid of cards." },
+          {
+            prop: "value / defaultValue",
+            type: "string",
+            description: "The selected item’s value, controlled or initial.",
+          },
+          {
+            prop: "onValueChange",
+            type: "(value: unknown) => void",
+            description:
+              "Called with the new value when the selection changes.",
+          },
+          {
+            prop: "name",
+            type: "string",
+            description: "Submitted with the form.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description: "Disables every item.",
+          },
+          {
+            prop: "required",
+            type: "boolean",
+            default: "false",
+            description: "A value must be chosen before the form submits.",
+          },
+          {
+            prop: "className",
+            type: "string",
+            default: '"grid gap-3"',
+            description:
+              "Layout of the items: a column, a row or a grid of cards.",
+          },
         ]}
       />
 
       <ApiTable
         title="RadioGroupItem"
         rows={[
-          { prop: "value", type: "string", description: "The value this item selects." },
-          { prop: "disabled", type: "boolean", default: "false", description: "Dims the item and skips it with the arrow keys." },
-          { prop: "aria-invalid", type: "boolean", description: "Destructive border while unselected." },
+          {
+            prop: "value",
+            type: "string",
+            description: "The value this item selects.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description: "Dims the item and skips it with the arrow keys.",
+          },
+          {
+            prop: "aria-invalid",
+            type: "boolean",
+            description: "Destructive border while unselected.",
+          },
         ]}
       />
     </Examples>

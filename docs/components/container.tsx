@@ -70,18 +70,22 @@ export default function ContainerDocs() {
             <Stack gap={8}>
               <Stack gap={3}>
                 <h2 className="text-h3">Questions about billing</h2>
-                <p className="text-lead text-copy">Plans, seats and invoices, answered by the Acme team.</p>
+                <p className="text-lead text-copy">
+                  Plans, seats and invoices, answered by the Acme team.
+                </p>
               </Stack>
               <Stack gap={1}>
                 <h3 className="text-title">Can I change plans at any time?</h3>
                 <p className="text-body text-copy">
-                  Yes. Upgrades apply straight away and downgrades at the end of the billing period.
+                  Yes. Upgrades apply straight away and downgrades at the end of
+                  the billing period.
                 </p>
               </Stack>
               <Stack gap={1}>
                 <h3 className="text-title">How does annual billing work?</h3>
                 <p className="text-body text-copy">
-                  You pay for twelve months up front and save about 20%. Invoices arrive on the 1st.
+                  You pay for twelve months up front and save about 20%.
+                  Invoices arrive on the 1st.
                 </p>
               </Stack>
             </Stack>
@@ -98,14 +102,24 @@ export default function ContainerDocs() {
         dont={[
           "Don’t nest containers: the inner one adds a second set of gutters.",
           "Don’t add your own side padding to a container. The gutter is already there.",
-          "Don’t use max-w-prose for the reading width. It is Tailwind’s fixed 65ch; use size=\"prose\".",
+          'Don’t use max-w-prose for the reading width. It is Tailwind’s fixed 65ch; use size="prose".',
         ]}
       />
 
       <ApiTable
         rows={[
-          { prop: "size", type: '"prose" | "narrow" | "page" | "wide"', default: '"page"', description: "The maximum width, from --container-prose, --container-narrow, --container-page or --container-wide, plus the gutters." },
-          { prop: "render", type: "ReactElement", description: "Render as another element, such as main or section." },
+          {
+            prop: "size",
+            type: '"prose" | "narrow" | "page" | "wide"',
+            default: '"page"',
+            description:
+              "The maximum width, from --container-prose, --container-narrow, --container-page or --container-wide, plus the gutters.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description: "Render as another element, such as main or section.",
+          },
         ]}
       />
     </Examples>

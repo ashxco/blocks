@@ -1,6 +1,11 @@
 "use client"
 
-import { ChevronRightIcon, FolderIcon, HouseIcon, UserPlusIcon } from "lucide-react"
+import {
+  ChevronRightIcon,
+  FolderIcon,
+  HouseIcon,
+  UserPlusIcon,
+} from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import {
@@ -89,7 +94,7 @@ export default function BreadcrumbDocs() {
                     <button
                       type="button"
                       aria-label="Show hidden levels"
-                      className="rounded-(--button-radius) outline-none transition-colors duration-(--duration-fast) hover:bg-accent hover:text-foreground focus-visible:focus-ring data-popup-open:bg-accent"
+                      className="rounded-(--button-radius) transition-colors duration-(--duration-fast) outline-none hover:bg-accent hover:text-foreground focus-visible:focus-ring data-popup-open:bg-accent"
                     />
                   }
                 >
@@ -193,7 +198,9 @@ export default function BreadcrumbDocs() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="#website-relaunch">Website relaunch</BreadcrumbLink>
+                <BreadcrumbLink href="#website-relaunch">
+                  Website relaunch
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -205,7 +212,8 @@ export default function BreadcrumbDocs() {
             <div className="grid gap-1.5">
               <h3 className="text-h2">Members</h3>
               <p className="text-body text-copy">
-                5 people can see and edit Website relaunch. Guests only see the projects you invite them to.
+                5 people can see and edit Website relaunch. Guests only see the
+                projects you invite them to.
               </p>
             </div>
             <Button>
@@ -231,10 +239,30 @@ export default function BreadcrumbDocs() {
 
       <ApiTable
         rows={[
-          { prop: "render", type: "ReactElement", description: "BreadcrumbLink: render as another element, such as a Next.js Link." },
-          { prop: "href", type: "string", description: "BreadcrumbLink: the destination when it renders the default <a>." },
-          { prop: "children", type: "ReactNode", default: "<SlashIcon />", description: "BreadcrumbSeparator: the mark between levels." },
-          { prop: "aria-label", type: "string", default: '"breadcrumb"', description: "Breadcrumb: the name of the navigation landmark." },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description:
+              "BreadcrumbLink: render as another element, such as a Next.js Link.",
+          },
+          {
+            prop: "href",
+            type: "string",
+            description:
+              "BreadcrumbLink: the destination when it renders the default <a>.",
+          },
+          {
+            prop: "children",
+            type: "ReactNode",
+            default: "<SlashIcon />",
+            description: "BreadcrumbSeparator: the mark between levels.",
+          },
+          {
+            prop: "aria-label",
+            type: "string",
+            default: '"breadcrumb"',
+            description: "Breadcrumb: the name of the navigation landmark.",
+          },
         ]}
       />
     </Examples>

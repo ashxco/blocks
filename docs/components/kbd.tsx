@@ -1,4 +1,10 @@
-import { ArrowDownIcon, ArrowUpIcon, CommandIcon, CornerDownLeftIcon, SearchIcon } from "lucide-react"
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  CommandIcon,
+  CornerDownLeftIcon,
+  SearchIcon,
+} from "lucide-react"
 
 import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Button } from "@/components/ui/button"
@@ -91,8 +97,8 @@ export default function KbdDocs() {
             <Kbd>⌘</Kbd>
             <Kbd>K</Kbd>
           </KbdGroup>{" "}
-          to search projects, tasks and docs. Press <Kbd>Esc</Kbd> to close
-          the menu.
+          to search projects, tasks and docs. Press <Kbd>Esc</Kbd> to close the
+          menu.
         </p>
       </Example>
 
@@ -135,13 +141,21 @@ export default function KbdDocs() {
           <h3 className="text-h4 text-foreground">Keyboard shortcuts</h3>
           <dl className="divide-y overflow-hidden rounded-(--card-radius) border bg-card">
             {shortcuts.map((s) => (
-              <div key={s.action} className="flex items-center justify-between gap-6 px-5 py-3.5">
+              <div
+                key={s.action}
+                className="flex items-center justify-between gap-6 px-5 py-3.5"
+              >
                 <dt className="text-sm text-copy">{s.action}</dt>
                 <dd>
                   <KbdGroup>
                     {s.keys.map((combo, i) => (
-                      <span key={combo.join("+")} className="inline-flex items-center gap-1">
-                        {i > 0 && s.sequence ? <span className="px-0.5">then</span> : null}
+                      <span
+                        key={combo.join("+")}
+                        className="inline-flex items-center gap-1"
+                      >
+                        {i > 0 && s.sequence ? (
+                          <span className="px-0.5">then</span>
+                        ) : null}
                         {combo.map((key) => (
                           <Kbd key={key}>{key}</Kbd>
                         ))}
@@ -170,9 +184,21 @@ export default function KbdDocs() {
 
       <ApiTable
         rows={[
-          { prop: "Kbd", type: "<kbd> props", description: "One key. Text, a symbol or a 12px icon." },
-          { prop: "KbdGroup", type: "<kbd> props", description: "Keys pressed together or in sequence, 4px apart." },
-          { prop: "className", type: "string", description: "Extra classes, for spacing inside buttons or menus." },
+          {
+            prop: "Kbd",
+            type: "<kbd> props",
+            description: "One key. Text, a symbol or a 12px icon.",
+          },
+          {
+            prop: "KbdGroup",
+            type: "<kbd> props",
+            description: "Keys pressed together or in sequence, 4px apart.",
+          },
+          {
+            prop: "className",
+            type: "string",
+            description: "Extra classes, for spacing inside buttons or menus.",
+          },
         ]}
       />
     </Examples>

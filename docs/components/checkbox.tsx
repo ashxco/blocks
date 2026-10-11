@@ -27,7 +27,10 @@ const events = [
 type EventId = (typeof events)[number]["id"]
 
 function NotificationGroup() {
-  const [selected, setSelected] = React.useState<EventId[]>(["assigned", "mentions"])
+  const [selected, setSelected] = React.useState<EventId[]>([
+    "assigned",
+    "mentions",
+  ])
   const all = selected.length === events.length
   const some = selected.length > 0 && !all
 
@@ -40,20 +43,28 @@ function NotificationGroup() {
             id="cb-all"
             checked={all}
             indeterminate={some}
-            onCheckedChange={(checked) => setSelected(checked ? events.map((e) => e.id) : [])}
+            onCheckedChange={(checked) =>
+              setSelected(checked ? events.map((e) => e.id) : [])
+            }
             aria-controls={events.map((e) => `cb-${e.id}`).join(" ")}
           />
           <FieldLabel htmlFor="cb-all">All activity</FieldLabel>
         </Field>
         {events.map((event) => (
           // Children sit one box and one gap in, under the parent's label.
-          <Field key={event.id} orientation="horizontal" className="ps-[calc(var(--selection-size)+--spacing(3))]">
+          <Field
+            key={event.id}
+            orientation="horizontal"
+            className="ps-[calc(var(--selection-size)+--spacing(3))]"
+          >
             <Checkbox
               id={`cb-${event.id}`}
               checked={selected.includes(event.id)}
               onCheckedChange={(checked) =>
                 setSelected((current) =>
-                  checked ? [...current, event.id] : current.filter((id) => id !== event.id)
+                  checked
+                    ? [...current, event.id]
+                    : current.filter((id) => id !== event.id)
                 )
               }
             />
@@ -66,9 +77,24 @@ function NotificationGroup() {
 }
 
 const copyOptions = [
-  { value: "tasks", title: "Tasks and subtasks", description: "Keeps assignees and priorities. Due dates are cleared.", count: "42 tasks" },
-  { value: "docs", title: "Docs", description: "Specs and meeting notes, with their comments.", count: "6 docs" },
-  { value: "automations", title: "Automations", description: "Rules start paused until you turn them on.", count: "3 rules" },
+  {
+    value: "tasks",
+    title: "Tasks and subtasks",
+    description: "Keeps assignees and priorities. Due dates are cleared.",
+    count: "42 tasks",
+  },
+  {
+    value: "docs",
+    title: "Docs",
+    description: "Specs and meeting notes, with their comments.",
+    count: "6 docs",
+  },
+  {
+    value: "automations",
+    title: "Automations",
+    description: "Rules start paused until you turn them on.",
+    count: "3 rules",
+  },
 ]
 
 export default function CheckboxDocs() {
@@ -109,12 +135,17 @@ export default function CheckboxDocs() {
             { label: "On", props: { defaultChecked: true } },
             { label: "Mixed", props: { indeterminate: true } },
             { label: "Disabled", props: { disabled: true } },
-            { label: "Disabled on", props: { disabled: true, defaultChecked: true } },
+            {
+              label: "Disabled on",
+              props: { disabled: true, defaultChecked: true },
+            },
             { label: "Invalid", props: { "aria-invalid": true } },
           ].map(({ label, props }) => (
             <div key={label} className="grid justify-items-center gap-2.5">
               <Checkbox aria-label={label} {...props} />
-              <span className="text-center text-caption text-muted-foreground">{label}</span>
+              <span className="text-center text-caption text-muted-foreground">
+                {label}
+              </span>
             </div>
           ))}
         </div>
@@ -146,14 +177,20 @@ export default function CheckboxDocs() {
             <Checkbox id="cb-approval" defaultChecked />
             <FieldContent>
               <FieldLabel htmlFor="cb-approval">Require approval</FieldLabel>
-              <FieldDescription>Tasks move to Done only after the project owner approves them.</FieldDescription>
+              <FieldDescription>
+                Tasks move to Done only after the project owner approves them.
+              </FieldDescription>
             </FieldContent>
           </Field>
           <Field orientation="horizontal">
             <Checkbox id="cb-subtasks" />
             <FieldContent>
-              <FieldLabel htmlFor="cb-subtasks">Close subtasks with their parent</FieldLabel>
-              <FieldDescription>When a task is marked done, its open subtasks are completed too.</FieldDescription>
+              <FieldLabel htmlFor="cb-subtasks">
+                Close subtasks with their parent
+              </FieldLabel>
+              <FieldDescription>
+                When a task is marked done, its open subtasks are completed too.
+              </FieldDescription>
             </FieldContent>
           </Field>
         </FieldGroup>
@@ -228,9 +265,15 @@ const some = selected.length > 0 && !all
                   <FieldContent>
                     <FieldTitle>{option.title}</FieldTitle>
                     <FieldDescription>{option.description}</FieldDescription>
-                    <p className="mt-1 text-label text-foreground tabular">{option.count}</p>
+                    <p className="mt-1 text-label text-foreground tabular">
+                      {option.count}
+                    </p>
                   </FieldContent>
-                  <Checkbox name="copy" value={option.value} defaultChecked={index === 0} />
+                  <Checkbox
+                    name="copy"
+                    value={option.value}
+                    defaultChecked={index === 0}
+                  />
                 </Field>
               </FieldLabel>
             ))}
@@ -252,14 +295,21 @@ const some = selected.length > 0 && !all
       >
         <div className="w-full max-w-md">
           <Field orientation="horizontal" data-invalid>
-            <Checkbox id="cb-terms" aria-invalid aria-describedby="cb-terms-error" />
+            <Checkbox
+              id="cb-terms"
+              aria-invalid
+              aria-describedby="cb-terms-error"
+            />
             <FieldContent>
               <FieldLabel htmlFor="cb-terms">
                 <span>
-                  I understand this deletes every task in <span className="whitespace-nowrap">Onboarding redesign</span>
+                  I understand this deletes every task in{" "}
+                  <span className="whitespace-nowrap">Onboarding redesign</span>
                 </span>
               </FieldLabel>
-              <FieldError id="cb-terms-error">Tick the box to confirm, then delete the project.</FieldError>
+              <FieldError id="cb-terms-error">
+                Tick the box to confirm, then delete the project.
+              </FieldError>
             </FieldContent>
           </Field>
         </div>
@@ -281,13 +331,44 @@ const some = selected.length > 0 && !all
 
       <ApiTable
         rows={[
-          { prop: "checked / defaultChecked", type: "boolean", description: "Controlled or initial state." },
-          { prop: "onCheckedChange", type: "(checked: boolean) => void", description: "Called when the box is ticked or unticked." },
-          { prop: "indeterminate", type: "boolean", default: "false", description: "Shows a dash for a partly selected group." },
-          { prop: "disabled", type: "boolean", default: "false", description: "Dims the box and blocks interaction." },
-          { prop: "aria-invalid", type: "boolean", description: "Destructive border while unchecked." },
-          { prop: "name / value", type: "string", description: "Submitted with the form when checked." },
-          { prop: "required", type: "boolean", default: "false", description: "Must be checked before the form submits." },
+          {
+            prop: "checked / defaultChecked",
+            type: "boolean",
+            description: "Controlled or initial state.",
+          },
+          {
+            prop: "onCheckedChange",
+            type: "(checked: boolean) => void",
+            description: "Called when the box is ticked or unticked.",
+          },
+          {
+            prop: "indeterminate",
+            type: "boolean",
+            default: "false",
+            description: "Shows a dash for a partly selected group.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description: "Dims the box and blocks interaction.",
+          },
+          {
+            prop: "aria-invalid",
+            type: "boolean",
+            description: "Destructive border while unchecked.",
+          },
+          {
+            prop: "name / value",
+            type: "string",
+            description: "Submitted with the form when checked.",
+          },
+          {
+            prop: "required",
+            type: "boolean",
+            default: "false",
+            description: "Must be checked before the form submits.",
+          },
         ]}
       />
     </Examples>

@@ -32,7 +32,9 @@ export default function InlineDocs() {
         <Inline justify="between" gap={4}>
           <Stack gap={1}>
             <h3 className="text-h4">Website relaunch</h3>
-            <p className="text-caption text-muted-foreground">52 tasks · Due Nov 14, 2026</p>
+            <p className="text-caption text-muted-foreground">
+              52 tasks · Due Nov 14, 2026
+            </p>
           </Stack>
           <Inline>
             <Button variant="outline">Share</Button>
@@ -89,7 +91,9 @@ export default function InlineDocs() {
 </Inline>`}
       >
         <Inline gap={2} wrap={false} className="max-w-64">
-          <span className="min-w-0 truncate text-label">Billing migration for enterprise workspaces</span>
+          <span className="min-w-0 truncate text-label">
+            Billing migration for enterprise workspaces
+          </span>
           <Badge variant="warning">At risk</Badge>
         </Inline>
       </Example>
@@ -97,7 +101,7 @@ export default function InlineDocs() {
       <Guidelines
         do={[
           "Use Inline for clusters that can wrap: buttons, badges, avatars and metadata.",
-          "Use justify=\"between\" for a title with its actions.",
+          'Use justify="between" for a title with its actions.',
           "Keep the default 8px gap for controls, and a wider one for loose metadata.",
         ]}
         dont={[
@@ -109,11 +113,36 @@ export default function InlineDocs() {
 
       <ApiTable
         rows={[
-          { prop: "gap", type: '0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12 | 16 | "stack"', default: "2", description: "Space between items, in steps of --spacing, or --spacing-stack. Wrapped lines take the same gap." },
-          { prop: "align", type: '"start" | "center" | "end" | "baseline" | "stretch"', default: '"center"', description: "Where items sit across the row." },
-          { prop: "justify", type: '"start" | "center" | "end" | "between"', default: '"start"', description: "Where items sit along the row." },
-          { prop: "wrap", type: "boolean", default: "true", description: "Wrap onto more lines when the row is full." },
-          { prop: "render", type: "ReactElement", description: "Render as another element, such as a ul or nav." },
+          {
+            prop: "gap",
+            type: '0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12 | 16 | "stack"',
+            default: "2",
+            description:
+              "Space between items, in steps of --spacing, or --spacing-stack. Wrapped lines take the same gap.",
+          },
+          {
+            prop: "align",
+            type: '"start" | "center" | "end" | "baseline" | "stretch"',
+            default: '"center"',
+            description: "Where items sit across the row.",
+          },
+          {
+            prop: "justify",
+            type: '"start" | "center" | "end" | "between"',
+            default: '"start"',
+            description: "Where items sit along the row.",
+          },
+          {
+            prop: "wrap",
+            type: "boolean",
+            default: "true",
+            description: "Wrap onto more lines when the row is full.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description: "Render as another element, such as a ul or nav.",
+          },
         ]}
       />
     </Examples>
