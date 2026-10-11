@@ -4,7 +4,7 @@ A design system: design tokens, five themes and 64 components, documented in one
 
 - **Tokens:** W3C DTCG files compiled by Style Dictionary into Tailwind CSS v4 variables, in light and dark, with per-breakpoint values where a token needs them.
 - **Themes:** Blocks, Ocean, Forest, Ember and Mono. Each sets its own accent, neutrals, shapes and fonts, works in light and dark, and passes the contrast and uniqueness gates.
-- **Components:** shadcn/ui on Base UI, restyled to Blocks, including the layout primitives (Container, Stack, Inline, Grid) and a 4 / 8 / 12-column grid.
+- **Components:** built on Base UI and following shadcn/ui's component API, with no shadcn dependency, including the layout primitives (Container, Stack, Inline, Grid) and a 4 / 8 / 12-column grid.
 - **Viewer:** the site at `/`, with Foundations, Components and Themes. Examples use Acme Inc., a fictional work-management company.
 
 ## Requirements

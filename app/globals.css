@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import "./styles/animate.css";
+@import "./styles/variants.css";
 @import "./styles/tokens.css";
 
 /* dark: follows the nearest theme scope, so a .light subtree inside a dark

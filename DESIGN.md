@@ -1,6 +1,6 @@
 # Blocks design system
 
-Blocks is a design system and component library built on Next.js 16, React 19, Tailwind CSS v4, Base UI and shadcn/ui. Everything visual is controlled by design tokens, and five themes change the whole look from the same components. This document is the contract every component, docs example and viewer page follows.
+Blocks is a design system and component library built on Next.js 16, React 19, Tailwind CSS v4 and Base UI, with components that follow shadcn/ui's API. Everything visual is controlled by design tokens, and five themes change the whole look from the same components. This document is the contract every component, docs example and viewer page follows.
 
 ## The look
 
@@ -162,7 +162,7 @@ In the UI the picker is labelled **Theme**; light and dark is **Appearance**.
 
 1. Create `design-system/themes/<id>.tokens.json`. It holds only what it changes, plus `$description` and `$extensions.blocks.theme` (`name`, `order`, `modes`). A theme may set: `theme.accent.*` and `theme.neutral.*` (point every step at a fixed scale in the primitives, as every preset does), `radius.*`, `component.*` (e.g. `component.button.radius`, `component.button.radius-sm`, `component.kern.pull` for its heading face's punctuation, `component.link.decoration-line`), `font.family.sans`, `font.family.heading` and `font.family.mono` (each with the face's name in `$extensions.blocks.name` and its genre in `$extensions.blocks.genre`: `geometric`, `neo-grotesque`, `grotesque`, `humanist`, `serif` or `mono`), `type.<role>` with only `{ "letterSpacing": … }`, and individual semantic colours per mode under `light.color.*` and `dark.color.*`. The build rejects anything else.
 2. A new scale goes into `design-system/tokens/primitives.tokens.json`; `node scripts/color-scale.mjs accent <hue> <peak-chroma>` or `… neutral <hue> <chroma-factor>` prints one built like the others.
-3. A new font: load it with `next/font/google` in `app/layout.tsx` with a `variable` and `preload: false` (upright only, and the variable font when the face has one), add the variable's class to `<html>`, and reference `var(--font-…)` in the theme's `font.family.sans` or `font.family.heading`. The viewer loads a theme's faces before it switches to it, with no change needed.
+3. A new font: self-host it. Commit its latin, upright woff2 (the variable font when the face has one) under `app/fonts/<family>/` with its license (`OFL.txt`), load it with `next/font/local` in `app/layout.tsx` with a `variable`, its weight range and `preload: false`, add the variable's class to `<html>`, and reference `var(--font-…)` in the theme's `font.family.sans` or `font.family.heading`. The viewer loads a theme's faces before it switches to it, with no change needed.
 4. Run `npm run tokens`, then `npm run contrast` and `npm run themes`. The theme is in `themes` (tokens.ts), in `data-theme`, in `?theme=` and in the picker.
 
 ### Contrast gate
@@ -185,7 +185,7 @@ It prints every theme's traits, the pairwise matrix and what each pair shares. A
 
 ## Components (components/ui)
 
-shadcn/ui components on **Base UI** primitives (`@base-ui/react`), restyled to Blocks. Their APIs stay shadcn-compatible; only styling changes.
+Components on **Base UI** primitives (`@base-ui/react`), styled with Blocks tokens. Their APIs follow shadcn/ui's, so shadcn examples carry over, but Blocks has no shadcn dependency: the state variants (`data-open:`, `data-checked:` …) live in `app/styles/variants.css`, the enter and exit animations (`animate-in`, `fade-in-0`, `slide-in-from-*` …) in `app/styles/animate.css`, and the Questionnaire and Message scroller behaviour in `lib/primitives`. Fonts are self-hosted from `app/fonts`, so nothing is fetched from another host at build or run time.
 
 - Layout primitives: `Container` (`size` prose, narrow, page (default), wide: the `container-*` utility as a component, for the column inside a full-width section), `Stack` (a vertical flow; `gap` is a spacing step 0 … 16 or `"stack"`, the default; `align`), `Inline` (a wrapping row of buttons, badges or metadata; `gap` (default 2), `align`, `justify`, `wrap`) and `Grid` / `GridItem` (the system grid, or `columns` for a fixed count; `span` 1 … 12 or `"full"` and `start`, each one value or `{ base, md, lg }`, mobile first). Space siblings with these, not margins. All take `render` to change the element.
 - Compose with the **render prop**, not `asChild`: `<Button nativeButton={false} render={<Link href="/pricing" />}>Pricing</Button>`. Set `nativeButton={false}` whenever a Button renders a non-button element. Triggers work the same way: `<DialogTrigger render={<Button variant="outline" />}>Open</DialogTrigger>`.
