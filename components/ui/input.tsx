@@ -17,7 +17,7 @@ const inputVariants = cva(
     "transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard outline-none",
     "placeholder:text-muted-foreground",
     "hover:border-foreground/25",
-    "focus-visible:border-ring focus-visible:bg-background focus-visible:focus-ring",
+    "focus-visible:bg-background focus-visible:focus-ring-inset",
     "[&[readonly]]:bg-background",
     "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",
     "group-data-[invalid=true]/field:border-destructive! group-data-[invalid=true]/field:focus-visible:outline-destructive",

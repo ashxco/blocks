@@ -709,7 +709,7 @@
   --grid-gutter: 1rem;
   --border-width-hairline: 1px;
   --border-width-strong: 2px;
-  --focus-width: 2px;
+  --focus-width: 1.5px;
   --focus-offset: 2px;
   --duration-instant: 80ms;
   --duration-fast: 140ms;

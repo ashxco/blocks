@@ -269,7 +269,7 @@ function QuestionnaireInput({
           "h-(--control-height-md) w-full min-w-0 rounded-(--control-radius) border border-input bg-muted px-(--control-padding-x) text-control text-foreground",
           "transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard outline-none",
           "placeholder:text-muted-foreground hover:border-foreground/25",
-          "focus-visible:border-ring focus-visible:bg-background focus-visible:focus-ring",
+          "focus-visible:bg-background focus-visible:focus-ring-inset",
           "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",
           "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
           className

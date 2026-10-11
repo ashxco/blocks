@@ -14,11 +14,13 @@ Minimal, clean and immersive. White canvas, near-black ink, one accent from the 
 | Dark emphasis panels (`bg-panel text-panel-foreground`) | Eyebrow labels, small badges or pills above headings |
 | The theme's accent (`brand`) used sparingly: links, focus, active indicators, one highlighted word | Decorative numbering such as "01 / 02 / 03" or step counters |
 | Real, plain-language placeholder copy | Lorem ipsum, emoji as decoration |
-| Visible focus (`focus-visible:focus-ring`) | Glow rings (`ring-3 ring-ring/50`) as focus styles |
+| Keyboard focus that is visible but quiet (`focus-visible:focus-ring`; fields use `focus-visible:focus-ring-inset`) | Glow rings (`ring-3 ring-ring/50`), double rings, or focus shown after a mouse or touch press |
 
 Badges exist in the system for **status and counts in app UI** (e.g. "Active", "3 new"). They are not used as section labels.
 
 The only blur in the system is `backdrop-blur-glass`, for the floating menu button on phones and for overlay backdrops. Every scrim (dialog, alert dialog, sheet, drawer, command dialog, mobile sidebar) is `bg-overlay backdrop-blur-glass`, and docs stages and thumbnails show it as it is: never switch the blur off in a preview.
+
+Focus shows for the keyboard only. `FocusModality` (`components/focus-modality.tsx`, mounted in the root layout) marks `<html data-modality="pointer">` after a mouse or touch press, which sets `--focus-width` to 0, so every focus outline in the system disappears until the next Tab or navigation key. Style focus only through `focus-ring` and `focus-ring-inset` (or outlines that read `--focus-width`), never with border or background colour changes alone, so this rule covers it. The ring is `--focus-width` (1.5px) in the `--ring` colour, 2px clear of buttons and flush on fields.
 
 These rules hold in every theme (see Themes): a theme changes the accent, the neutrals' tint, the shapes and the fonts, never the look's principles.
 
@@ -193,7 +195,7 @@ Components on **Base UI** primitives (`@base-ui/react`), styled with Blocks toke
 - Keep `data-slot` attributes; add `data-variant` / `data-size` where useful.
 - Overlays (menus, popovers, selects, dialogs, sheets, tooltips): `bg-popover`, 1px `border` (`border-popover-border` on anchored overlays, plain `border` on dialogs and sheets), `rounded-(--overlay-radius)` (dialogs `rounded-(--dialog-radius)`), no shadow, enter/exit with fade and a 4px slide or 98% scale using `--duration-base` and `ease-out`. Widths come from tokens: `w-(--popover-width)`, `min-w-(--menu-min-width)`, `max-w-(--tooltip-max-width)`, `max-w-(--dialog-width-sm)`.
 - Overlay portals: every wrapper renders its Base UI Portal through `ScopedPortal` (`@/lib/portal-container`), which resolves the container from the `container` prop, then the nearest `PortalScope` or `PortalContainerProvider`, then Base UI's default. Content components that portal take a `container` prop for pinning into a preview stage.
-- Controls (input, select, textarea, combobox, OTP): `h-(--control-height-md)`, `rounded-(--control-radius)`, `bg-muted` fill with `border-input`; on focus `border-ring` plus `focus-ring` outline; invalid uses `border-destructive`. Typed text in the default size is `text-control` (never `text-base md:text-sm`); the `sm` size uses `text-sm` and `lg` uses `text-base`.
+- Controls (input, select, textarea, combobox, OTP): `h-(--control-height-md)`, `rounded-(--control-radius)`, `bg-muted` fill with `border-input`; on keyboard focus one thin line in the ring colour over the border (`focus-visible:focus-ring-inset`), never a border colour change plus an outline; invalid uses `border-destructive`. Typed text in the default size is `text-control` (never `text-base md:text-sm`); the `sm` size uses `text-sm` and `lg` uses `text-base`.
 - Text links in the accent (`text-brand`) take `link-underline` (globals.css), not `hover:underline`: it underlines on hover, and at rest where the theme's `--link-decoration-line` says so (Mono), so a link never depends on hue alone.
 - Selection controls (checkbox, radio, switch, slider): ink when on (`bg-primary`), brand only for focus.
 - Tabs: underline style by default (ink 2px indicator), plus a segmented variant. Segmented tracks (tabs and the toggle group) take the button radius, or the small button radius at `size="sm"`, and the active shape and items inside take the track's radius minus 0.25rem (its border and padding), so corners nest in every theme and pills stay pills.

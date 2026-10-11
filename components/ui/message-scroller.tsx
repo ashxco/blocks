@@ -49,9 +49,9 @@ function MessageScrollerViewport({
       data-slot="message-scroller-viewport"
       className={cn(
         "size-full min-h-0 min-w-0 overflow-y-auto overscroll-contain contain-content outline-none",
-        "[scrollbar-color:var(--border-strong)_transparent] [scrollbar-gutter:stable] [scrollbar-width:thin]",
+        "[scrollbar-width:thin] [scrollbar-color:var(--border-strong)_transparent] [scrollbar-gutter:stable]",
         // Inset focus outline, since the scroller clips anything outside it.
-        "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring",
+        "focus-visible:focus-ring focus-visible:-outline-offset-(--focus-width)",
         "data-autoscrolling:[scrollbar-color:transparent_transparent] data-pending-scroll:invisible",
         className
       )}
@@ -126,7 +126,9 @@ function MessageScrollerButton({
         <>
           <ArrowDownIcon />
           <span className="sr-only">
-            {direction === "end" ? "Scroll to latest message" : "Scroll to first message"}
+            {direction === "end"
+              ? "Scroll to latest message"
+              : "Scroll to first message"}
           </span>
         </>
       )}

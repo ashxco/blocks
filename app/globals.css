@@ -132,6 +132,22 @@
   outline-offset: var(--focus-offset);
 }
 
+/* The focus line for fields (inputs, selects, textareas, comboboxes): one
+   thin line in the ring colour laid over the hairline border, with no gap,
+   so a focused field reads as outlined rather than ringed. */
+@utility focus-ring-inset {
+  outline: var(--focus-width) solid var(--ring);
+  outline-offset: calc(var(--border-width-hairline) * -1);
+}
+
+/* Focus shows for the keyboard only. FocusModality marks <html> with
+   data-modality="pointer" after a mouse or touch press, and every focus
+   outline (focus-ring, focus-ring-inset, and outlines that read
+   --focus-width) collapses to nothing until the next Tab or navigation key. */
+:root[data-modality="pointer"] {
+  --focus-width: 0px;
+}
+
 /* Text link cue: underlined on hover, and at rest where the theme says so
    (--link-decoration-line: underline in Mono, whose accent is ink, so links
    still read as links without a hue). */

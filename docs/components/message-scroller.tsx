@@ -7,7 +7,12 @@ import { ApiTable, Example, Examples, Guidelines } from "@/docs/kit"
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
 import { Button } from "@/components/ui/button"
 import { Marker, MarkerContent, MarkerIcon } from "@/components/ui/marker"
-import { Message, MessageAvatar, MessageContent, MessageHeader } from "@/components/ui/message"
+import {
+  Message,
+  MessageAvatar,
+  MessageContent,
+  MessageHeader,
+} from "@/components/ui/message"
 import {
   MessageScroller,
   MessageScrollerButton,
@@ -24,15 +29,43 @@ type Turn =
   | { id: string; role: "marker"; text: string }
 
 const history: Turn[] = [
-  { id: "t1", role: "user", text: "What’s left before Website relaunch goes live on Nov 14?" },
-  { id: "t2", role: "assistant", text: "Fourteen of 52 tasks are still open. One is blocked: “Fix the pricing table on mobile” is waiting on the final plan names from Hana Kim." },
-  { id: "t3", role: "user", text: "Who has the most on their plate this week?" },
+  {
+    id: "t1",
+    role: "user",
+    text: "What’s left before Website relaunch goes live on Nov 14?",
+  },
+  {
+    id: "t2",
+    role: "assistant",
+    text: "Fourteen of 52 tasks are still open. One is blocked: “Fix the pricing table on mobile” is waiting on the final plan names from Hana Kim.",
+  },
+  {
+    id: "t3",
+    role: "user",
+    text: "Who has the most on their plate this week?",
+  },
   { id: "t4", role: "marker", text: "Read the workload report" },
-  { id: "t5", role: "assistant", text: "Jordan Lee, with 18 open tasks across Website relaunch and Mobile app 2.0. Sofia Alvarez has 9, so she could take the pricing table fix." },
+  {
+    id: "t5",
+    role: "assistant",
+    text: "Jordan Lee, with 18 open tasks across Website relaunch and Mobile app 2.0. Sofia Alvarez has 9, so she could take the pricing table fix.",
+  },
   { id: "t6", role: "user", text: "Move it to Sofia and keep the due date." },
-  { id: "t7", role: "assistant", text: "Done. “Fix the pricing table on mobile” is now assigned to Sofia Alvarez and still due Oct 15. I left a comment on the task so Jordan knows." },
-  { id: "t8", role: "user", text: "Can you draft the agenda for Monday’s planning meeting?" },
-  { id: "t9", role: "assistant", text: "It’s in Docs as “Weekly planning, Oct 12”: blocked tasks first, then the launch checklist, then next week’s priorities. It should take about 30 minutes." },
+  {
+    id: "t7",
+    role: "assistant",
+    text: "Done. “Fix the pricing table on mobile” is now assigned to Sofia Alvarez and still due Oct 15. I left a comment on the task so Jordan knows.",
+  },
+  {
+    id: "t8",
+    role: "user",
+    text: "Can you draft the agenda for Monday’s planning meeting?",
+  },
+  {
+    id: "t9",
+    role: "assistant",
+    text: "It’s in Docs as “Weekly planning, Oct 12”: blocked tasks first, then the launch checklist, then next week’s priorities. It should take about 30 minutes.",
+  },
 ]
 
 const answers = [
@@ -61,7 +94,10 @@ function Turns({ turns }: { turns: Turn[] }) {
         </Message>
       ) : (
         <Message>
-          <MessageAvatar className="bg-primary text-primary-foreground" aria-hidden="true">
+          <MessageAvatar
+            className="bg-primary text-primary-foreground"
+            aria-hidden="true"
+          >
             <SparklesIcon />
           </MessageAvatar>
           <MessageContent>
@@ -102,7 +138,10 @@ function AskAcme() {
     timer.current = setTimeout(() => {
       const reply = answers[answered.current % answers.length]
       answered.current += 1
-      setTurns((current) => [...current, { id: `a${id}`, role: "assistant", text: reply }])
+      setTurns((current) => [
+        ...current,
+        { id: `a${id}`, role: "assistant", text: reply },
+      ])
       setThinking(false)
     }, 1200)
   }
@@ -140,7 +179,7 @@ function AskAcme() {
         </MessageScroller>
 
         <form onSubmit={send} className="shrink-0 border-t border-border p-3">
-          <div className="flex items-center gap-2 rounded-(--button-radius) border border-input bg-muted py-1.5 pr-1.5 pl-4 transition-colors duration-(--duration-fast) ease-standard focus-within:border-ring focus-within:bg-background has-[input:focus-visible]:focus-ring">
+          <div className="flex items-center gap-2 rounded-(--button-radius) border border-input bg-muted py-1.5 pr-1.5 pl-4 transition-colors duration-(--duration-fast) ease-standard focus-within:bg-background has-focus-visible:focus-ring-inset has-[input:focus-visible]:focus-ring">
             <label htmlFor="ask-acme-scroller" className="sr-only">
               Ask Acme
             </label>
@@ -152,7 +191,12 @@ function AskAcme() {
               autoComplete="off"
               className="h-8 min-w-0 flex-1 bg-transparent text-control text-foreground outline-none placeholder:text-muted-foreground"
             />
-            <Button type="submit" size="icon-sm" aria-label="Send" disabled={!draft.trim() || thinking}>
+            <Button
+              type="submit"
+              size="icon-sm"
+              aria-label="Send"
+              disabled={!draft.trim() || thinking}
+            >
               <ArrowUpIcon />
             </Button>
           </div>
@@ -163,7 +207,13 @@ function AskAcme() {
 }
 
 /** A bordered, fixed-height frame for the smaller examples. */
-function ScrollerFrame({ className, children }: { className: string; children: React.ReactNode }) {
+function ScrollerFrame({
+  className,
+  children,
+}: {
+  className: string
+  children: React.ReactNode
+}) {
   return (
     <div
       className={cn(
@@ -206,9 +256,21 @@ function JumpToLatest() {
 
 const earlier: Turn[] = [
   { id: "e1", role: "user", text: "When is Website relaunch due?" },
-  { id: "e2", role: "assistant", text: "Nov 14. Priya Raman leads it, and 38 of 52 tasks are done." },
-  { id: "e3", role: "user", text: "Can you move the launch review to the week before?" },
-  { id: "e4", role: "assistant", text: "Yes. “Book the launch review” is now due Nov 6, and Maya Patel gets a reminder two days before." },
+  {
+    id: "e2",
+    role: "assistant",
+    text: "Nov 14. Priya Raman leads it, and 38 of 52 tasks are done.",
+  },
+  {
+    id: "e3",
+    role: "user",
+    text: "Can you move the launch review to the week before?",
+  },
+  {
+    id: "e4",
+    role: "assistant",
+    text: "Yes. “Book the launch review” is now due Nov 6, and Maya Patel gets a reminder two days before.",
+  },
 ]
 
 /**
@@ -238,7 +300,10 @@ function LoadEarlier() {
     <MessageScrollerProvider defaultScrollPosition="end">
       <ScrollerFrame className="h-96">
         <MessageScroller className="flex-1">
-          <MessageScrollerViewport aria-label="Conversation with Acme, with earlier messages" preserveScrollOnPrepend>
+          <MessageScrollerViewport
+            aria-label="Conversation with Acme, with earlier messages"
+            preserveScrollOnPrepend
+          >
             <MessageScrollerContent className="px-5 py-6">
               {state !== "done" ? (
                 <MessageScrollerItem
@@ -352,22 +417,73 @@ export default function MessageScrollerDocs() {
       <ApiTable
         title="MessageScrollerProvider"
         rows={[
-          { prop: "autoScroll", type: "boolean", default: "false", description: "Follow new content while the viewport is at the end." },
-          { prop: "defaultScrollPosition", type: '"start" | "end" | "last-anchor"', default: '"end"', description: "Where the viewport starts." },
-          { prop: "scrollEdgeThreshold", type: "number", description: "Distance in pixels from an edge that still counts as at the edge." },
-          { prop: "scrollMargin", type: "number", description: "Space kept above a message when scrolling to it." },
+          {
+            prop: "autoScroll",
+            type: "boolean",
+            default: "false",
+            description: "Follow new content while the viewport is at the end.",
+          },
+          {
+            prop: "defaultScrollPosition",
+            type: '"start" | "end" | "last-anchor"',
+            default: '"end"',
+            description: "Where the viewport starts.",
+          },
+          {
+            prop: "scrollEdgeThreshold",
+            type: "number",
+            description:
+              "Distance in pixels from an edge that still counts as at the edge.",
+          },
+          {
+            prop: "scrollMargin",
+            type: "number",
+            description: "Space kept above a message when scrolling to it.",
+          },
         ]}
       />
 
       <ApiTable
         title="Parts"
         rows={[
-          { prop: "messageId", type: "string", description: "MessageScrollerItem: stable id, used by scrollToMessage and visibility tracking." },
-          { prop: "scrollAnchor", type: "boolean", default: "false", description: "MessageScrollerItem: scroll this item to the top when it arrives, for question-and-answer layouts." },
-          { prop: "preserveScrollOnPrepend", type: "boolean", default: "true", description: "MessageScrollerViewport: keep the reading position when older messages load above." },
-          { prop: "direction", type: '"start" | "end"', default: '"end"', description: "MessageScrollerButton: which end to jump to. It fades in only when that end is out of view." },
-          { prop: "variant / size", type: "Button props", default: '"outline" / "icon-sm"', description: "MessageScrollerButton renders an icon Button." },
-          { prop: "useMessageScroller()", type: "hook", description: "scrollToEnd, scrollToStart and scrollToMessage(id)." },
+          {
+            prop: "messageId",
+            type: "string",
+            description:
+              "MessageScrollerItem: stable id, used by scrollToMessage and visibility tracking.",
+          },
+          {
+            prop: "scrollAnchor",
+            type: "boolean",
+            default: "false",
+            description:
+              "MessageScrollerItem: scroll this item to the top when it arrives, for question-and-answer layouts.",
+          },
+          {
+            prop: "preserveScrollOnPrepend",
+            type: "boolean",
+            default: "true",
+            description:
+              "MessageScrollerViewport: keep the reading position when older messages load above.",
+          },
+          {
+            prop: "direction",
+            type: '"start" | "end"',
+            default: '"end"',
+            description:
+              "MessageScrollerButton: which end to jump to. It fades in only when that end is out of view.",
+          },
+          {
+            prop: "variant / size",
+            type: "Button props",
+            default: '"outline" / "icon-sm"',
+            description: "MessageScrollerButton renders an icon Button.",
+          },
+          {
+            prop: "useMessageScroller()",
+            type: "hook",
+            description: "scrollToEnd, scrollToStart and scrollToMessage(id).",
+          },
         ]}
       />
     </Examples>
