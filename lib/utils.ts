@@ -8,8 +8,9 @@ import { typeRoles } from "@/design-system/generated/tokens"
  * The stock merger treats unknown text-* utilities as colours, so
  * "text-label text-foreground" would lose text-label. Registering the roles
  * (generated from the typography tokens) as font sizes keeps both, and still
- * lets one role override another.
+ * lets one role override another. The explicit type is for the npm package
+ * build: tsc cannot name createCn's inferred return type in a .d.ts.
  */
-export const cn = createCn({
+export const cn: ReturnType<typeof createCn> = createCn({
   extend: { classGroups: { "font-size": [{ text: [...typeRoles] }] } },
 })

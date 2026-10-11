@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false,
+    "outDir": "dist-pkg/dist",
+    "rootDir": "dist-pkg/src"
+  },
+  "include": ["dist-pkg/src/**/*.ts", "dist-pkg/src/**/*.tsx"],
+  "exclude": ["node_modules"]
+}

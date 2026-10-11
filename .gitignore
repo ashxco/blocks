@@ -40,3 +40,6 @@ next-env.d.ts
 
 # generated shadcn registry (npm run registry)
 /public/r/
+
+# npm package build (npm run package)
+/dist-pkg/

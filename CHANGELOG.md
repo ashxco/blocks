@@ -15,5 +15,6 @@ Stability: tokens and themes are stable; component APIs are beta until 1.0 and m
 - 65 components built on Base UI with the shadcn/ui API, including the layout primitives and the system grid.
 - The viewer: foundations, component docs and the showcase.
 - A shadcn-compatible registry served at `/r`, with `blocks.json` as the base item and one item per component.
+- npm package `@ashxsf/blocks` with the same components, CSS and tokens, as an alternative to the registry.
 - The Get started page.
 - `llms.txt`, with the install commands, every page and the full design contract.
