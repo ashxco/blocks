@@ -90,7 +90,7 @@ function SelectTrigger({
       className={cn(
         "group/select-trigger flex w-fit min-w-0 items-center justify-between gap-2 rounded-(--control-radius) border border-input bg-muted whitespace-nowrap text-foreground select-none",
         "transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard",
-        "outline-none hover:border-foreground/25 focus-visible:border-ring focus-visible:focus-ring",
+        "outline-none hover:border-foreground/25 focus-visible:focus-ring-inset",
         "data-popup-open:border-foreground/30 data-popup-open:bg-background",
         "data-placeholder:text-muted-foreground",
         "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive data-invalid:border-destructive",

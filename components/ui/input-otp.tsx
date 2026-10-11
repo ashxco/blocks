@@ -68,7 +68,7 @@ function InputOTPSlot({
         "font-mono text-lg font-semibold text-foreground tabular",
         "transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
         "group-hover/input-otp:border-foreground/25",
-        "data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:bg-background data-[active=true]:focus-ring",
+        "data-[active=true]:z-10 data-[active=true]:bg-background data-[active=true]:focus-ring-inset",
         "group-has-[input[aria-invalid=true]]/input-otp:border-destructive aria-invalid:border-destructive",
         "group-data-[invalid=true]/field:border-destructive!",
         "group-has-[input[aria-invalid=true]]/input-otp:data-[active=true]:outline-destructive data-[active=true]:aria-invalid:outline-destructive",

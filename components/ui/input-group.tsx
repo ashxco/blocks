@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button"
 /**
  * Blocks input group. One filled control (the same surface as <Input>) that
  * holds an input or textarea plus addons: icons, text, keys or small
- * buttons. The whole group takes the focus border and outline when its
- * control is focused.
+ * buttons. The whole group takes the focus line when its control is
+ * focused from the keyboard.
  *
  *   <InputGroup>
  *     <InputGroupAddon><SearchIcon /></InputGroupAddon>
@@ -24,7 +24,7 @@ const inputGroupVariants = cva(
     "transition-[background-color,border-color] duration-(--duration-fast) ease-standard outline-none",
     "hover:border-foreground/25",
     // Focus: the group carries the focus state of its control.
-    "has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:bg-background has-[[data-slot=input-group-control]:focus-visible]:focus-ring",
+    "has-[[data-slot=input-group-control]:focus-visible]:bg-background has-[[data-slot=input-group-control]:focus-visible]:focus-ring-inset",
     // Invalid
     "has-[[data-slot][aria-invalid=true]]:border-destructive! has-[[data-slot][aria-invalid=true]]:outline-destructive!",
     "group-data-[invalid=true]/field:border-destructive! group-data-[invalid=true]/field:outline-destructive!",

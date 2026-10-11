@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import localFont from "next/font/local"
 
 import "./globals.css"
+import { FocusModality } from "@/components/focus-modality"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toast"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -143,6 +144,7 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider defaultTheme="light">
+          <FocusModality />
           <Toaster>
             <TooltipProvider>{children}</TooltipProvider>
           </Toaster>

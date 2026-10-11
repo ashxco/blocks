@@ -3988,9 +3988,9 @@ export const tokens: DesignToken[] = [
     "tier": "layout",
     "group": "focus",
     "type": "dimension",
-    "value": "2px",
+    "value": "1.5px",
     "utility": "focus-visible:focus-ring",
-    "description": "Focus outline width."
+    "description": "Focus outline width. It shows for the keyboard only (see FocusModality)."
   },
   {
     "name": "focus.offset",

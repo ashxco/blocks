@@ -97,7 +97,7 @@ function Calendar({
         dropdown_root: cn(
           "relative flex h-(--control-height-xs) items-center rounded-(--control-radius) border border-input bg-muted ps-3 pe-2",
           "transition-[border-color] duration-(--duration-fast) ease-standard hover:border-foreground/25",
-          "has-focus-visible:border-ring has-focus-visible:focus-ring",
+          "has-focus-visible:focus-ring-inset",
           defaultClassNames.dropdown_root
         ),
         dropdown: cn(

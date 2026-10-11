@@ -46,7 +46,7 @@ function NativeSelect({
           // A disabled empty first option acts as a placeholder: mute it until a value is picked.
           "has-[option[value='']:checked]:text-muted-foreground",
           "transition-[background-color,border-color,color] duration-(--duration-fast) ease-standard",
-          "outline-none hover:border-foreground/25 focus-visible:border-ring focus-visible:focus-ring",
+          "outline-none hover:border-foreground/25 focus-visible:focus-ring-inset",
           "aria-invalid:border-destructive aria-invalid:focus-visible:outline-destructive",
           "disabled:pointer-events-none disabled:cursor-not-allowed",
           selectSize[size]

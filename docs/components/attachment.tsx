@@ -29,11 +29,21 @@ import {
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 
-type Draft = { id: string; name: string; meta: string; kind: "text" | "sheet" | "image" }
+type Draft = {
+  id: string
+  name: string
+  meta: string
+  kind: "text" | "sheet" | "image"
+}
 
 const initialDrafts: Draft[] = [
   { id: "a1", name: "homepage-brief.pdf", meta: "PDF · 240 KB", kind: "text" },
-  { id: "a2", name: "pricing-table.xlsx", meta: "Spreadsheet · 24 KB", kind: "sheet" },
+  {
+    id: "a2",
+    name: "pricing-table.xlsx",
+    meta: "Spreadsheet · 24 KB",
+    kind: "sheet",
+  },
   { id: "a3", name: "hero-mockup.png", meta: "PNG · 412 KB", kind: "image" },
 ]
 
@@ -46,7 +56,7 @@ function DraftIcon({ kind }: { kind: Draft["kind"] }) {
 function Composer() {
   const [drafts, setDrafts] = React.useState(initialDrafts)
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-2 rounded-(--card-radius) border border-border bg-background p-2 transition-colors duration-(--duration-fast) ease-standard focus-within:border-ring has-[textarea:focus-visible]:focus-ring">
+    <div className="mx-auto grid w-full max-w-3xl gap-2 rounded-(--card-radius) border border-border bg-background p-2 transition-colors duration-(--duration-fast) ease-standard has-focus-visible:focus-ring-inset has-[textarea:focus-visible]:focus-ring">
       {drafts.length > 0 ? (
         <AttachmentGroup aria-label="Attached files">
           {drafts.map((d) => (
@@ -61,7 +71,9 @@ function Composer() {
               <AttachmentActions>
                 <AttachmentAction
                   aria-label={`Remove ${d.name}`}
-                  onClick={() => setDrafts((current) => current.filter((x) => x.id !== d.id))}
+                  onClick={() =>
+                    setDrafts((current) => current.filter((x) => x.id !== d.id))
+                  }
                 >
                   <XIcon />
                 </AttachmentAction>
@@ -136,7 +148,9 @@ export default function AttachmentDocs() {
             </AttachmentMedia>
             <AttachmentContent>
               <AttachmentTitle>Add a file</AttachmentTitle>
-              <AttachmentDescription>Drop it here or browse, up to 25 MB</AttachmentDescription>
+              <AttachmentDescription>
+                Drop it here or browse, up to 25 MB
+              </AttachmentDescription>
             </AttachmentContent>
           </Attachment>
           <Attachment state="uploading" className="w-full">
@@ -145,7 +159,9 @@ export default function AttachmentDocs() {
             </AttachmentMedia>
             <AttachmentContent>
               <AttachmentTitle>brand-guidelines-v2.pdf</AttachmentTitle>
-              <AttachmentDescription>Uploading · 64% of 18.2 MB</AttachmentDescription>
+              <AttachmentDescription>
+                Uploading · 64% of 18.2 MB
+              </AttachmentDescription>
             </AttachmentContent>
             <AttachmentActions>
               <AttachmentAction aria-label="Cancel upload">
@@ -168,7 +184,9 @@ export default function AttachmentDocs() {
             </AttachmentMedia>
             <AttachmentContent>
               <AttachmentTitle>launch-video.mov</AttachmentTitle>
-              <AttachmentDescription>Too large. Files must be under 25 MB.</AttachmentDescription>
+              <AttachmentDescription>
+                Too large. Files must be under 25 MB.
+              </AttachmentDescription>
             </AttachmentContent>
             <AttachmentActions>
               <AttachmentAction aria-label="Try again">
@@ -210,7 +228,9 @@ export default function AttachmentDocs() {
             </AttachmentMedia>
             <AttachmentContent>
               <AttachmentTitle>meeting-notes.md</AttachmentTitle>
-              {size !== "xs" ? <AttachmentDescription>Markdown · 6 KB</AttachmentDescription> : null}
+              {size !== "xs" ? (
+                <AttachmentDescription>Markdown · 6 KB</AttachmentDescription>
+              ) : null}
             </AttachmentContent>
           </Attachment>
         ))}
@@ -237,7 +257,10 @@ export default function AttachmentDocs() {
             <AttachmentDescription>1.2 MB</AttachmentDescription>
           </AttachmentContent>
           <AttachmentActions>
-            <AttachmentAction variant="outline" aria-label="Remove dashboard.png">
+            <AttachmentAction
+              variant="outline"
+              aria-label="Remove dashboard.png"
+            >
               <XIcon />
             </AttachmentAction>
           </AttachmentActions>
@@ -305,12 +328,45 @@ export default function AttachmentDocs() {
 
       <ApiTable
         rows={[
-          { prop: "state", type: '"idle" | "uploading" | "processing" | "error" | "done"', default: '"done"', description: "Attachment: drives the border, media and title treatment. Busy states set aria-busy." },
-          { prop: "size", type: '"default" | "sm" | "xs"', default: '"default"', description: "Attachment: padding, media size and type size." },
-          { prop: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', description: "Attachment: vertical puts the media on top, for thumbnails." },
-          { prop: "variant", type: '"icon" | "image"', default: '"icon"', description: "AttachmentMedia: image crops an img to the square and dims it while busy." },
-          { prop: "render", type: "ReactElement", description: "AttachmentTrigger: render as a link to open the file in a new page." },
-          { prop: "variant / size", type: "Button props", default: '"ghost" / "icon-xs"', description: "AttachmentAction is a Button." },
+          {
+            prop: "state",
+            type: '"idle" | "uploading" | "processing" | "error" | "done"',
+            default: '"done"',
+            description:
+              "Attachment: drives the border, media and title treatment. Busy states set aria-busy.",
+          },
+          {
+            prop: "size",
+            type: '"default" | "sm" | "xs"',
+            default: '"default"',
+            description: "Attachment: padding, media size and type size.",
+          },
+          {
+            prop: "orientation",
+            type: '"horizontal" | "vertical"',
+            default: '"horizontal"',
+            description:
+              "Attachment: vertical puts the media on top, for thumbnails.",
+          },
+          {
+            prop: "variant",
+            type: '"icon" | "image"',
+            default: '"icon"',
+            description:
+              "AttachmentMedia: image crops an img to the square and dims it while busy.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            description:
+              "AttachmentTrigger: render as a link to open the file in a new page.",
+          },
+          {
+            prop: "variant / size",
+            type: "Button props",
+            default: '"ghost" / "icon-xs"',
+            description: "AttachmentAction is a Button.",
+          },
         ]}
       />
     </Examples>

@@ -140,7 +140,7 @@ function ComboboxInput({
               "h-(--control-height-md) gap-1 rounded-(--control-radius) border border-input bg-muted ps-(--control-padding-x) pe-2",
               "transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
               "hover:border-foreground/25 data-popup-open:border-foreground/30 data-popup-open:bg-background",
-              "has-[input:focus-visible]:border-ring has-[input:focus-visible]:focus-ring",
+              "has-[input:focus-visible]:focus-ring-inset",
               "has-aria-invalid:border-destructive has-aria-invalid:has-[input:focus-visible]:outline-destructive",
             ],
         className
@@ -325,7 +325,7 @@ function ComboboxChips({
         "flex min-h-(--control-height-md) w-full min-w-0 flex-wrap items-center gap-1.5 rounded-(--control-radius) border border-input bg-muted py-2 ps-(--control-padding-x) pe-2 text-control text-foreground",
         "transition-[background-color,border-color] duration-(--duration-fast) ease-standard",
         "hover:border-foreground/25",
-        "has-[input:focus-visible]:border-ring has-[input:focus-visible]:focus-ring",
+        "has-[input:focus-visible]:focus-ring-inset",
         "has-aria-invalid:border-destructive",
         "has-data-[slot=combobox-chip]:ps-2",
         "has-disabled:pointer-events-none has-disabled:opacity-50",

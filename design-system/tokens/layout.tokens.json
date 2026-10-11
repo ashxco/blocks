@@ -59,7 +59,7 @@
   },
   "focus": {
     "$type": "dimension",
-    "width": { "$value": "2px", "$description": "Focus outline width." },
+    "width": { "$value": "1.5px", "$description": "Focus outline width. It shows for the keyboard only (see FocusModality)." },
     "offset": { "$value": "2px", "$description": "Gap between element and focus outline." }
   },
   "motion": {
