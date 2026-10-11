@@ -8,7 +8,7 @@ import { foundations } from "@/lib/registry"
 export const metadata: Metadata = {
   title: "Foundations",
   description:
-    "Themes, colour, type, space, shape, motion, icons and every token behind the Blocks design system.",
+    "Getting started, themes, colour, type, space, shape, motion, icons and every token behind the Blocks design system.",
 }
 
 export default function Page() {

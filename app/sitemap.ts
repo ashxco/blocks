@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...foundations.map((entry) => `/foundations/${entry.slug}`),
     "/components",
     ...components.map((entry) => `/components/${entry.slug}`),
+    "/showcase",
   ]
   return paths.map((path) => ({ url: `${siteUrl}${path === "/" ? "" : path}` }))
 }

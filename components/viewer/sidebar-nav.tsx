@@ -98,6 +98,19 @@ export function SidebarNav({
           </Collapsible.Root>
         )
       })}
+      <Link
+        href="/showcase"
+        onClick={onNavigate}
+        aria-current={pathname === "/showcase" ? "page" : undefined}
+        data-active={pathname === "/showcase" || undefined}
+        className={cn(
+          "flex h-9 items-center rounded-(--overlay-item-radius) px-3 text-label font-bold text-foreground outline-none",
+          "transition-colors duration-(--duration-fast) hover:bg-accent focus-visible:focus-ring",
+          pathname === "/showcase" && "bg-accent"
+        )}
+      >
+        Showcase
+      </Link>
     </nav>
   )
 }

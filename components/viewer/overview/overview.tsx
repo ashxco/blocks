@@ -19,9 +19,11 @@ import {
 } from "@/components/viewer/overview/entry-tiles"
 import { ProjectCard } from "@/components/viewer/overview/project-card"
 import { ThemeShowcase } from "@/components/viewer/overview/theme-showcase"
+import { CopyButton } from "@/components/viewer/copy-button"
 import { SearchTrigger } from "@/components/viewer/search-trigger"
 import { tokens } from "@/design-system/generated/tokens"
 import { components, foundations } from "@/lib/registry"
+import { installCommand } from "@/lib/site"
 import { themes } from "@/lib/themes"
 
 const counts = [
@@ -71,37 +73,62 @@ export function Overview() {
         <div className="grid gap-10 sm:gap-14">
           <h1 className="text-hero">
             <span className="block">
-              Build it once<Punct>,</Punct>
+              One library<Punct>,</Punct>
             </span>
             <span className="block">
-              in <span className="text-brand">tokens</span>
+              five <span className="text-brand">products</span>
               <Punct>.</Punct>
             </span>
           </h1>
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-16">
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-end lg:gap-16">
             <p className="max-w-prose text-lead text-copy">
-              Blocks is a design system for Next.js. Its foundations and{" "}
-              {components.length} accessible components all answer to one set of
-              tokens, so every component changes when the system does.
+              Blocks is a token-first design system for Next.js. Its foundations
+              and {components.length} accessible components answer to one set of
+              tokens, so a theme changes the whole product and the build fails
+              when a rule is broken.
             </p>
-            <div className="grid gap-3 sm:flex sm:flex-wrap">
-              <Button
-                size="lg"
-                nativeButton={false}
-                render={<Link href="/components" />}
-              >
-                Browse Components
-                <ArrowRightIcon data-icon="inline-end" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                nativeButton={false}
-                render={<Link href="/foundations/themes" />}
-              >
-                Explore the Themes
-                <ArrowRightIcon data-icon="inline-end" />
-              </Button>
+            <div className="grid min-w-0 gap-4">
+              <div className="grid gap-3 sm:flex sm:flex-wrap">
+                <Button
+                  size="lg"
+                  nativeButton={false}
+                  render={<Link href="/components" />}
+                >
+                  Browse Components
+                  <ArrowRightIcon data-icon="inline-end" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  nativeButton={false}
+                  render={<Link href="/foundations/get-started" />}
+                >
+                  Get Started
+                </Button>
+                <Button
+                  size="lg"
+                  variant="ghost"
+                  nativeButton={false}
+                  render={<Link href="/showcase" />}
+                >
+                  See the Showcase
+                  <ArrowRightIcon data-icon="inline-end" />
+                </Button>
+              </div>
+              {/* Install row: the base registry item, ready to copy. */}
+              <div className="flex min-w-0 items-center gap-2 rounded-(--control-radius) border bg-muted py-1.5 pr-1.5 pl-4">
+                <code
+                  aria-label="Install command"
+                  className="min-w-0 flex-1 [scrollbar-width:thin] overflow-x-auto font-mono text-code whitespace-nowrap text-foreground"
+                >
+                  {installCommand}
+                </code>
+                <CopyButton
+                  text={installCommand}
+                  label="Copy install command"
+                  className="shrink-0"
+                />
+              </div>
             </div>
           </div>
         </div>

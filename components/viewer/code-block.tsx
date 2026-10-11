@@ -82,7 +82,8 @@ function tokenize(code: string): Token[] {
     return true
   }
 
-  const comment = /\{\/\*[\s\S]*?\*\/\}|\/\*[\s\S]*?\*\/|\/\/[^\n]*/y
+  // A "//" straight after a colon is a URL scheme (http://…), not a comment.
+  const comment = /\{\/\*[\s\S]*?\*\/\}|\/\*[\s\S]*?\*\/|(?<!:)\/\/[^\n]*/y
   const string =
     /`(?:\\[\s\S]|[^`\\])*`|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/y
   const tagOpen = /<\/?(?=[A-Za-z])/y

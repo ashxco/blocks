@@ -148,7 +148,7 @@ const themesEntry = foundations.find((e) => e.slug === "themes")
  * header, the 404 pages and the overview link to it on its own.
  */
 interface TopLink {
-  id: SectionId | "themes"
+  id: SectionId | "themes" | "showcase"
   title: string
   href: string
   description: string
@@ -171,6 +171,12 @@ export const topLinks: TopLink[] = [
         },
       ]
     : []),
+  {
+    id: "showcase" as const,
+    title: "Showcase",
+    href: "/showcase",
+    description: "One Acme screen in every theme.",
+  },
 ]
 
 export interface PagerLink {
